@@ -1,0 +1,10 @@
+group = 'org.monarchinitiative.ontonote'
+version = '0.0.1-SNAPSHOT'
+
+allprojects {
+    apply plugin: 'groovy'
+    // define spock test runtime for all projects
+    dependencies {
+        testCompile group: 'org.spockframework', name: 'spock-core', version: '1.3-groovy-2.4'
+    }
+}

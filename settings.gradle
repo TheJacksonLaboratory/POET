@@ -1,0 +1,9 @@
+rootProject.name = 'OntoNote'
+include 'ontonote-ingest'
+findProject(':ontonote-ingest')
+include 'ontonote-web'
+findProject(':ontonote-web')
+include 'ontonote-core'
+findProject(':ontonote-core')
+include 'ontonote-core'
+
