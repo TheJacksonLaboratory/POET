@@ -1,4 +1,4 @@
-# OntoNote: a new way to curate ontologies.
+# POET
 
 
 # Setup

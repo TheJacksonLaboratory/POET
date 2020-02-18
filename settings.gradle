@@ -1,9 +1,9 @@
-rootProject.name = 'OntoNote'
-include 'ontonote-ingest'
-findProject(':ontonote-ingest')
-include 'ontonote-web'
-findProject(':ontonote-web')
-include 'ontonote-core'
-findProject(':ontonote-core')
-include 'ontonote-core'
+rootProject.name = 'POET'
+include 'poet-ingest'
+findProject(':poet-ingest')
+include 'poet-web'
+findProject(':poet-web')
+include 'poet-core'
+findProject(':poet-core')
+include 'poet-core'
 
