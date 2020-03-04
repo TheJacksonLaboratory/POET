@@ -1,10 +1,10 @@
-package org.monarchinitiative.ontonote.OntoNote;
+package org.monarchinitiative.poet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class OntoNoteApplicationTests {
+class PoetApplicationTests {
 
 	@Test
 	void contextLoads() {

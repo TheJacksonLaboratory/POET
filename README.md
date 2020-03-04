@@ -7,7 +7,15 @@ TODO
 
 # Running
 
-TODO
+`
+./gradlew bootRun
+`
+
+# Building for deployment
+
+`
+./gradlew war
+`
 
 # Contributors
 
