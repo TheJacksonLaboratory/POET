@@ -7,8 +7,8 @@ import { MatListModule } from "@angular/material/list";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatIconModule } from "@angular/material/icon";
 import { SearchComponent } from './search/search.component';
-
-
+import { MatTableModule } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   declarations: [SearchComponent],
@@ -20,7 +20,8 @@ import { SearchComponent } from './search/search.component';
     MatListModule,
     MatDividerModule,
     MatIconModule,
-    MatToolbarModule,
+    MatTableModule,
+    MatCardModule
   ],
   exports: [
     MatToolbarModule,
@@ -29,7 +30,8 @@ import { SearchComponent } from './search/search.component';
     MatListModule,
     MatDividerModule,
     MatIconModule,
-    MatToolbarModule
+    MatTableModule,
+    MatCardModule
   ]
 })
 export class SharedModule { }

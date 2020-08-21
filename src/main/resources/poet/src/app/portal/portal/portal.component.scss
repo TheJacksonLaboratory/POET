@@ -33,3 +33,15 @@ mat-sidenav-container {
   }
   background-color: var(--primary-color);
 }
+
+.outlet-container {
+    padding: 1rem;
+}
+
+.username-sidenav {
+    cursor: pointer;
+    outline: 0;
+    &:hover {
+        opacity: .8;
+    }
+}

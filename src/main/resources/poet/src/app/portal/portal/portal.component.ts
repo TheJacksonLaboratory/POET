@@ -20,7 +20,6 @@ export class PortalComponent implements OnInit {
   }
 
   toggleSidenav(){
-    console.log(this.sidenav.opened);
     this.isSideNavOpen = this.sidenav.opened;
   }
 }

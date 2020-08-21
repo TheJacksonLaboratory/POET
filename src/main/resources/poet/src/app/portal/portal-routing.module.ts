@@ -7,8 +7,8 @@ import { PortalDashboardComponent } from './portal-home/portal-dashboard.compone
 
 const routes: Routes = [
       { path: '', component: PortalComponent, children: [
-      { path: 'dashboard', component: PortalDashboardComponent },
-      { path: 'curate', component: PortalCurateComponent }
+        { path: 'dashboard', component: PortalDashboardComponent },
+        { path: 'curate', component: PortalCurateComponent }
     ]
   },
 ];

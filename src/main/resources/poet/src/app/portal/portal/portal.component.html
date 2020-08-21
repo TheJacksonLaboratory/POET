@@ -3,7 +3,7 @@
     <div class="top-sidenav">
       <mat-icon (click)="sidenav.toggle(); toggleSidenav()" class="close-sidebar">close</mat-icon>
       <br>
-      <h3 class="username-sidenav"> USERNAME </h3>
+      <h3 class="username-sidenav" [routerLink]="['/portal/dashboard']"> USERNAME </h3>
     </div>
     <mat-nav-list>
       <h2 matSubheader> Actions </h2>
@@ -24,6 +24,8 @@
     <div (click)="sidenav.toggle(); toggleSidenav()" *ngIf="!isSideNavOpen" class="toggler">
       <mat-icon>menu</mat-icon>
     </div>
-    <router-outlet></router-outlet>
+    <div class="outlet-container">
+        <router-outlet></router-outlet>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
