@@ -1,15 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PortalHomeComponent } from './portal-home/portal-home.component';
+import { PortalDashboardComponent } from './portal-home/portal-dashboard.component';
 import { SharedModule } from "../shared/shared.module";
 import { PortalRoutingModule } from "./portal-routing.module";
 import { PortalCurateComponent } from './portal-curate/portal-curate.component';
-import {RouterModule} from "@angular/router";
+import { RouterModule } from "@angular/router";
+import { PortalComponent } from './portal/portal.component';
 
 
 
 @NgModule({
-  declarations: [PortalHomeComponent, PortalCurateComponent],
+  declarations: [PortalDashboardComponent, PortalCurateComponent, PortalComponent],
   imports: [
     CommonModule,
     SharedModule,
