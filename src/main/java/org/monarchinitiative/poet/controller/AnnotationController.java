@@ -1,12 +1,13 @@
 package org.monarchinitiative.poet.controller;
 
-import org.monarchinitiative.poet.model.MaxoAnnotation;
-import org.monarchinitiative.poet.model.RareDiseaseAnnotation;
+import org.monarchinitiative.poet.model.entities.MaxoAnnotation;
+import org.monarchinitiative.poet.model.entities.Publication;
+import org.monarchinitiative.poet.model.entities.RareDiseaseAnnotation;
 import org.monarchinitiative.poet.service.AnnotationService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/annotation") // /annotation/<type>/<action>
+@RequestMapping(value = "/annotation/") // /annotation/<type>/<action>
 public class AnnotationController {
 
     private final AnnotationService annotationService;
@@ -22,7 +23,7 @@ public class AnnotationController {
      */
     @PostMapping(value = "/rare", headers = "Accept=application/json")
     public RareDiseaseAnnotation newRareAnnotation(@RequestBody RareDiseaseAnnotation annotation) {
-        return annotationService.createRareAnnotation(annotation);
+        return annotationService.createRareDiseaseAnnotation(annotation);
     }
 
     /**
@@ -40,7 +41,7 @@ public class AnnotationController {
      * @return created
      */
     @GetMapping(value = "/test", headers = "Accept=application/json")
-    public void test() {
-        //return annotationService.createAnnotation(annotation);
+    public Publication test() {
+        return annotationService.createPublication();
     }
 }

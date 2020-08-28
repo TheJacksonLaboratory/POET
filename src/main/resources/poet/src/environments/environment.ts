@@ -2,8 +2,10 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+const POET_BASE_URL = 'http://localhost:8080/api/poet/';
 export const environment = {
-  production: false
+  production: false,
+  POET_API_SEARCH_URL: POET_BASE_URL + '/search'
 };
 
 /*

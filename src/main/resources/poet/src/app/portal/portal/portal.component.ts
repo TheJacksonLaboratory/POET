@@ -9,7 +9,7 @@ export class PortalComponent implements OnInit {
 
   @ViewChild('sidenav') sidenav: any;
   sideNavItems =  [
-    {title: 'New Curation', route: '/portal/curate', icon: 'create'},
+    {title: 'New Curation', route: '/portal/curate/new', icon: 'create'},
     {title: 'Edit Submissions', route: '/portal/submissions', icon: 'view_list'},
     {title: 'Curation Tutorial', route: '/portal/help', icon: 'help' }
   ];

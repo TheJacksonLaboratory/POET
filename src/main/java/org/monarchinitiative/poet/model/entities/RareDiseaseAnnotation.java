@@ -1,4 +1,4 @@
-package org.monarchinitiative.poet.model;
+package org.monarchinitiative.poet.model.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,10 +20,10 @@ public class RareDiseaseAnnotation {
     private String source;
     private String biocurator;
 
-    RareDiseaseAnnotation(){
+    public RareDiseaseAnnotation(){
     }
 
-    RareDiseaseAnnotation(String diseaseId, String diseaseName, String hpoId, String hpoName, String ageOfOnset,
+    public RareDiseaseAnnotation(String diseaseId, String diseaseName, String hpoId, String hpoName, String ageOfOnset,
                                  String evidence, String modifier, String description, String aspect, String source,
                                  String biocurator) {
         this.diseaseId = diseaseId;

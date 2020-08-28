@@ -9,16 +9,18 @@ import { PortalComponent } from './portal/portal.component';
 import { MaxoCurationComponent } from './portal-curate/maxo-curation/maxo-curation.component';
 import { HpoCurationComponent } from './portal-curate/hpo-curation/hpo-curation.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { DialogCurationComponent } from './portal-curate/dialog-curation/dialog-curation.component';
 
 
 @NgModule({
-  declarations: [PortalDashboardComponent, PortalCurateComponent, PortalComponent, MaxoCurationComponent, HpoCurationComponent],
+  declarations: [PortalDashboardComponent, PortalCurateComponent, PortalComponent, MaxoCurationComponent, HpoCurationComponent, DialogCurationComponent],
   imports: [
     CommonModule,
     SharedModule,
     RouterModule,
     PortalRoutingModule,
     FlexLayoutModule
-  ]
+  ],
+  entryComponents: [DialogCurationComponent]
 })
 export class PortalModule { }

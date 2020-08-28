@@ -21,8 +21,10 @@
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <div (click)="sidenav.toggle(); toggleSidenav()" *ngIf="!isSideNavOpen" class="toggler">
-      <mat-icon>menu</mat-icon>
+    <div class="toggle-container" *ngIf="!isSideNavOpen">
+      <div (click)="sidenav.toggle(); toggleSidenav()"  class="toggler">
+        <mat-icon>menu</mat-icon>
+      </div>
     </div>
     <div class="outlet-container">
         <router-outlet></router-outlet>

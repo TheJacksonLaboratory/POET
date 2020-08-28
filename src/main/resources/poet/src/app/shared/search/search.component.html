@@ -1,1 +1,19 @@
-<p>search works!</p>
+<div>
+  <mat-form-field>
+    <input matInput placeholder="Search" aria-label="State" [matAutocomplete]="auto" [formControl]="searchControl">
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+      <mat-option *ngIf="isLoading" class="is-loading">Loading...</mat-option>
+      <ng-container *ngIf="!isLoading">
+        <mat-option *ngFor="let response of filteredResponse" [value]="response.value">
+          <span><b>{{response.name}}</b> ({{response.value}})</span>
+        </mat-option>
+      </ng-container>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <br>
+
+  <ng-container *ngIf="errorMsg">
+    {{errorMsg}}
+  </ng-container>
+</div>

@@ -19,9 +19,14 @@ mat-sidenav-container {
   }
 }
 
+.list-item-active {
+  background-color: darkslategrey;
+}
+
 .toggler {
   color: white;
   width: fit-content;
+  position: absolute;
   padding: .25rem .5rem;
   & mat-icon {
     font-size: 36px;

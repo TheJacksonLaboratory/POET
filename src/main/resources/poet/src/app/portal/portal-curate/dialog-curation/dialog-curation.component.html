@@ -1,0 +1,41 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>New Curation</h2>
+  <mat-dialog-content class="mat-typography">
+    <!-- Existing Curation Search By Disease Name / DOI -->
+    <!-- If disease name or DOI not found pass them to new curation -->
+    <div class="existing-curation" *ngIf="!newCuration">
+      <app-search></app-search>
+      <p class="new-hint" (click)="newCuration = true">
+        Not finding what you're looking for? Start a new curation.
+      </p>
+    </div>
+    <!-- New Curation By Ontology -->
+    <div class="new-curation" *ngIf="newCuration">
+      <div class="ontology-select">
+        <h3>What are you curating for?</h3>
+        <mat-form-field appearance="fill">
+          <mat-label>Ontologies</mat-label>
+          <mat-select [(value)]="selectedOntology">
+            <mat-option *ngFor="let option of curationOptions" [value]="option.value">{{option.view}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="annotation-source">
+        <mat-form-field appearance="outline" *ngIf="selectedOntology">
+          <mat-label>Annotation Source DOI</mat-label>
+          <input matInput placeholder="PubMed Identifier" [formControl]="annotationSourceControl"  [errorStateMatcher]="matcher" [(ngModel)]="selectedPMID" ngDefaultControl>
+          <mat-hint>(e.g.) 31479590</mat-hint>
+          <mat-error *ngIf="annotationSourceControl.hasError('required')">
+            PubMed Identifier is <strong>required</strong>.
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+  </mat-dialog-content>
+  <div class="dialog-spacer"></div>
+  <mat-dialog-actions align="end">
+  <button mat-button *ngIf="annotationSourceControl.valid" [mat-dialog-close]="true" cdkFocusInitial>Get Started!</button>
+  <button mat-button mat-dialog-close>Cancel</button>
+  </mat-dialog-actions>
+</div>

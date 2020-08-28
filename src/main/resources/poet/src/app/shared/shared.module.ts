@@ -9,6 +9,12 @@ import { MatIconModule } from "@angular/material/icon";
 import { SearchComponent } from './search/search.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatSelectModule } from '@angular/material/select';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 @NgModule({
   declarations: [SearchComponent],
@@ -21,7 +27,14 @@ import { MatCardModule } from '@angular/material/card';
     MatDividerModule,
     MatIconModule,
     MatTableModule,
-    MatCardModule
+    MatCardModule,
+    MatDialogModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule
   ],
   exports: [
     MatToolbarModule,
@@ -31,7 +44,15 @@ import { MatCardModule } from '@angular/material/card';
     MatDividerModule,
     MatIconModule,
     MatTableModule,
-    MatCardModule
+    MatCardModule,
+    MatDialogModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    SearchComponent
   ]
 })
 export class SharedModule { }

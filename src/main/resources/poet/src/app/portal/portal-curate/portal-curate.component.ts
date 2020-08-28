@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
+import {DialogCurationComponent} from "./dialog-curation/dialog-curation.component";
 
 @Component({
   selector: 'app-portal-curate',
@@ -7,9 +10,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PortalCurateComponent implements OnInit {
 
-  constructor() { }
+  constructor(private route: ActivatedRoute, public dialog: MatDialog) {
+  }
 
   ngOnInit(): void {
+    // Open modal dialog to figure out what is the goal
+    const dialogRef = this.dialog.open(DialogCurationComponent, {
+      width: '500px',
+      height: '450px'
+    });
+    //
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
+    });
   }
 
 }
