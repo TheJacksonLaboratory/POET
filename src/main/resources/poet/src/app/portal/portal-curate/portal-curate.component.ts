@@ -10,6 +10,7 @@ import {DialogCurationComponent} from "./dialog-curation/dialog-curation.compone
 })
 export class PortalCurateComponent implements OnInit {
 
+
   constructor(private route: ActivatedRoute, public dialog: MatDialog) {
   }
 
@@ -17,7 +18,7 @@ export class PortalCurateComponent implements OnInit {
     // Open modal dialog to figure out what is the goal
     const dialogRef = this.dialog.open(DialogCurationComponent, {
       width: '500px',
-      height: '450px'
+      height: '500px'
     });
     //
     dialogRef.afterClosed().subscribe(result => {

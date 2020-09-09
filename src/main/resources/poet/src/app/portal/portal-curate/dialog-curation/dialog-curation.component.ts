@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import {ErrorStateMatcher} from "@angular/material/core";
 import {FormControl, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {MatDialogRef} from "@angular/material/dialog";
+import {SearchResult} from "../../../shared/models/models";
+import {CurationService} from "../../../shared/services/curation.service";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { PubmedService } from "../../../shared/services/pubmed.service";
+import { Observable, throwError } from "rxjs";
 
 @Component({
   selector: 'app-dialog-curation',
@@ -17,18 +22,57 @@ export class DialogCurationComponent implements OnInit {
     { value:  'maxo', view: 'Medical Action Ontology (MAxO)' }
   ];
   selectedOntology: string;
-  selectedPMID: "";
+  selectedPublication: any;
+  selectedDisease: any;
   newCuration: boolean = false;
+  ontologySelection: boolean = false;
+  searchingPubMed: boolean = false;
+  publicationInput: string = '';
   matcher = new DialogErrorStateMatcher();
 
-  constructor(public dialogRef: MatDialogRef<DialogCurationComponent>) { }
+  constructor(public dialogRef: MatDialogRef<DialogCurationComponent>,
+              private curationService: CurationService, private pubmedService: PubmedService ) { }
 
-  ngOnInit(): void {}
-
-  closeDialog() {
-    this.dialogRef.close({'ontology': this.selectedOntology, 'doi': this.selectedPMID});
+  ngOnInit(): void {
+    this.annotationSourceControl.valueChanges
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe(id => {
+        // Make request to pubmed
+        if(id){
+          this.searchingPubMed = true;
+          this.pubmedService.findPublication(id).subscribe((data) => {
+            if(!data){
+              this.annotationSourceControl.setErrors({notFound: true});
+            }
+              this.selectedPublication = data;
+          }, (err) => {
+              this.annotationSourceControl.setErrors({notFound: true});
+          }).add(() => {
+            this.searchingPubMed = false;
+          });
+        }
+    })
   }
 
+  closeDialog() {
+    this.dialogRef.close({'ontology': this.selectedOntology,
+      'source': {
+        'publication': this.selectedPublication,
+        'disease':   this.selectedDisease}});
+  }
+
+  selectExisting(searchResult: SearchResult){
+    console.log(this.curationService.searchAnnotationSource(searchResult.value, searchResult.type));
+  }
+
+  selectDisease(disease: any) {
+    console.log(disease);
+    this.selectedDisease = disease;
+  }
+
+  resetForm(){
+    this.annotationSourceControl.reset();
+  }
 }
 
 /** Error when invalid control is dirty, touched, or submitted. */

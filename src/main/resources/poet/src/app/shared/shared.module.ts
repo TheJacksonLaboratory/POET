@@ -11,13 +11,15 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatSelectModule } from '@angular/material/select';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatInputModule} from "@angular/material/input";
-import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MonarchSearchComponent } from './monarch-search/monarch-search.component';
+import { MatProgressBarModule } from "@angular/material/progress-bar";
 
 @NgModule({
-  declarations: [SearchComponent],
+  declarations: [SearchComponent, MonarchSearchComponent],
   imports: [
     CommonModule,
     MatToolbarModule,
@@ -34,7 +36,9 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatProgressBarModule,
+    MatDividerModule
   ],
   exports: [
     MatToolbarModule,
@@ -52,7 +56,11 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
-    SearchComponent
+    MatProgressBarModule,
+    MatDividerModule,
+    SearchComponent,
+    MonarchSearchComponent
   ]
 })
-export class SharedModule { }
+export class SharedModule {
+}

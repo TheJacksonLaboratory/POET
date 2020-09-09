@@ -10,6 +10,7 @@ import { MaxoCurationComponent } from './portal-curate/maxo-curation/maxo-curati
 import { HpoCurationComponent } from './portal-curate/hpo-curation/hpo-curation.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { DialogCurationComponent } from './portal-curate/dialog-curation/dialog-curation.component';
+import { HttpClientModule } from "@angular/common/http";
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { DialogCurationComponent } from './portal-curate/dialog-curation/dialog-
     CommonModule,
     SharedModule,
     RouterModule,
+    HttpClientModule,
     PortalRoutingModule,
     FlexLayoutModule
   ],

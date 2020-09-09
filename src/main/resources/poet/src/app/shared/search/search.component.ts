@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { FormControl } from "@angular/forms";
 import { debounceTime, finalize } from "rxjs/operators";
 import { tap } from "rxjs/internal/operators/tap";
@@ -12,6 +12,8 @@ import { CurationService } from "../services/curation.service";
 })
 export class SearchComponent implements OnInit {
 
+  @Output()
+  onSearchSelect: EventEmitter<any> = new EventEmitter<any>();
   searchControl = new FormControl();
   filteredResponse: any;
   isLoading = false;
@@ -47,6 +49,10 @@ export class SearchComponent implements OnInit {
         }
         console.log(this.filteredResponse);
       });
+  }
+
+  onSelection(result){
+    this.onSearchSelect.emit(result);
   }
 
 }

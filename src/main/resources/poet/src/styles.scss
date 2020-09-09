@@ -211,7 +211,7 @@ $mat-warn: (
     darker: $dark-primary-text,
   )
 );
-$theme-warn: mat-palette($mat-warn, main, lighter, darker);;
+$theme-warn: mat-palette($mat-warn, main, lighter, darker);
 
 $theme: mat-dark-theme($theme-primary, $theme-accent, $theme-warn);
 $altTheme: mat-light-theme($theme-primary, $theme-accent, $theme-warn);
@@ -230,7 +230,8 @@ $altTheme: mat-light-theme($theme-primary, $theme-accent, $theme-warn);
   padding: 0 1.15em;
   margin: 0 .65em;
   min-width: 3em;
-  line-height: 36.4px
+  line-height: 36.4px;
+  border-radius: 0 !important;
 }
 
 .mat-standard-chip {
@@ -246,6 +247,16 @@ $altTheme: mat-light-theme($theme-primary, $theme-accent, $theme-warn);
   }
 }
 
+.mat-form-field.mat-focused {
+  & .mat-form-field-ripple {
+    background-color: #368BA2 !important;
+  }
+
+  & .mat-form-field-label {
+    color: #368BA2 !important;
+  }
+}
+
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
@@ -256,3 +267,6 @@ $altTheme: mat-light-theme($theme-primary, $theme-accent, $theme-warn);
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+.existing-curation .mat-form-field, .monarch-search-wrapper .mat-form-field {
+  width: 90%;
+}
