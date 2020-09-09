@@ -9,6 +9,6 @@ public interface PublicationRepository extends CrudRepository<Publication, Long>
 
     List<Publication> findByPublicationNameContaining(String name);
     List<Publication> findByPublicationIdentifierStartingWithOrPublicationNameContainingIgnoreCase(String id, String name);
-    Publication findByPublicationIdentifier(Integer id);
+    Publication findByPublicationIdentifier(String id);
 
 }

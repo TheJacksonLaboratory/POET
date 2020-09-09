@@ -14,4 +14,11 @@ public class AnnotationSource {
 
     @ManyToOne
     private Disease disease;
+
+    public AnnotationSource(){}
+
+    public AnnotationSource(Publication publication, Disease disease){
+        this.publication = publication;
+        this.disease = disease;
+    }
 }

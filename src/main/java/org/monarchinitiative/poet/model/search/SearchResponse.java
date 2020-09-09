@@ -16,7 +16,7 @@ public class SearchResponse {
         if(publications.size() > 0){
             for (Publication publication : publications) {
                 results.add(new SimpleSearchResponse(publication.getPublicationName(),
-                        publication.getPublicationIdentifier()));
+                        publication.getPublicationIdentifier(), "publication"));
             }
         }
     }
@@ -24,7 +24,7 @@ public class SearchResponse {
     public void addDiseasesToResponse(List<Disease> diseases){
         if(diseases.size() > 0){
             for (Disease disease : diseases) {
-                results.add(new SimpleSearchResponse(disease.getDiseaseName(),  disease.getDiseaseId()));
+                results.add(new SimpleSearchResponse(disease.getDiseaseName(), disease.getDiseaseId(), "disease"));
             }
         }
     }

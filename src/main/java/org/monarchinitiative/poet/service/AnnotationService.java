@@ -1,7 +1,9 @@
 package org.monarchinitiative.poet.service;
-import org.monarchinitiative.poet.model.entities.MaxoAnnotation;
-import org.monarchinitiative.poet.model.entities.Publication;
-import org.monarchinitiative.poet.model.entities.RareDiseaseAnnotation;
+import org.monarchinitiative.poet.model.MaxoRequest;
+import org.monarchinitiative.poet.model.entities.*;
+import org.monarchinitiative.poet.repository.AnnotationSourceRepository;
+import org.monarchinitiative.poet.repository.DiseaseRepository;
+import org.monarchinitiative.poet.repository.MaxoAnnotationRepository;
 import org.monarchinitiative.poet.repository.PublicationRepository;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +11,17 @@ import org.springframework.stereotype.Service;
 public class AnnotationService {
 
     private PublicationRepository publicationRepository;
+    private DiseaseRepository diseaseRepository;
+    private AnnotationSourceRepository annotationSourceRepository;
+    private MaxoAnnotationRepository maxoAnnotationRepository;
 
-    public AnnotationService(PublicationRepository publicationRepository) {
+    public AnnotationService(PublicationRepository publicationRepository,
+                             DiseaseRepository diseaseRepository, AnnotationSourceRepository annotationSourceRepository,
+                             MaxoAnnotationRepository maxoAnnotationRepository) {
         this.publicationRepository = publicationRepository;
+        this.diseaseRepository = diseaseRepository;
+        this.annotationSourceRepository = annotationSourceRepository;
+        this.maxoAnnotationRepository = maxoAnnotationRepository;
     }
 
     /**
@@ -38,16 +48,28 @@ public class AnnotationService {
      * Create a MaXo annotation with a pending review status.
      * enforcing business rules with the status of the annotation
      *
-     * @param annotation - a maxo annotation from the client
-     * @return created
+     * @param maxoRequest - a maxo request body
+     * @return boolean created
      */
-    public MaxoAnnotation createMaxoAnnotation(MaxoAnnotation annotation) {
-        return annotation;
+    public boolean createMaxoAnnotation(MaxoRequest maxoRequest) {
+        Publication publication = publicationRepository.findByPublicationIdentifier(maxoRequest.getPublicationIdentifier());
+        Disease disease = diseaseRepository.findDiseaseByDiseaseId(maxoRequest.getDiseaseId());
+        AnnotationSource annotationSource;
+        if(disease != null && publication != null){
+            // We have a valid publication and a valid disease, do we have an annotation source for them?
+            annotationSource = annotationSourceRepository.findByPublicationAndDisease(publication, disease);
+            if(annotationSource == null){
+                // Couldn't find a valid source, create it and continue.
+                annotationSource = new AnnotationSource(publication, disease);
+                annotationSourceRepository.save(annotationSource);
+            }
+            MaxoAnnotation annotation = new MaxoAnnotation(maxoRequest, annotationSource);
+            maxoAnnotationRepository.save(annotation);
+            return true;
+        }
+        return false;
     }
 
-    /*public Annotation createAnnotation(CommonDiseaseAnnotation annotation) {
-        return new CommonDiseaseAnnotation();
-    }*/
 
     public Publication createPublication(){
         Publication publication = new Publication("27741350", "Measuring cancer evolution from the genome");
