@@ -10,22 +10,24 @@ public class Disease {
     private Long id;
 
     @Column(nullable = false)
-    private String diseaseId;
-    private String diseaseName;
-    private String alternateId;
+    private String identifier;
+    private String name;
 
     @OneToMany(mappedBy = "disease")
     private List<AnnotationSource> amnotationSource;
 
+    protected Disease(){}
+
+    public Disease(String identifier, String name) {
+        this.identifier = identifier;
+        this.name = name;
+    }
+
     public String getDiseaseId() {
-        return diseaseId;
+        return identifier;
     }
 
     public String getDiseaseName() {
-        return diseaseName;
-    }
-
-    public String getAlternateId() {
-        return alternateId;
+        return name;
     }
 }

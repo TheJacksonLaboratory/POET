@@ -4,6 +4,8 @@ import { debounceTime, finalize } from "rxjs/operators";
 import { tap } from "rxjs/internal/operators/tap";
 import { switchMap } from "rxjs/internal/operators/switchMap";
 import { CurationService } from "../services/curation.service";
+import { of } from "rxjs/internal/observable/of";
+import { MonarchSearchResult, SearchResult } from "../models/models";
 
 @Component({
   selector: 'app-search',
@@ -30,16 +32,19 @@ export class SearchComponent implements OnInit {
           this.filteredResponse = [];
           this.isLoading = true;
         }),
-        switchMap(value =>
-          this.curationService.searchAll(value)
-          .pipe(
-            finalize(() => {
-              this.isLoading = false
-            }),
-          )
-        )
-      )
-      .subscribe(data => {
+        switchMap(value => {
+          if(this.hasValidInput(value)){
+            return this.curationService.searchAll(value)
+              .pipe(
+                finalize(() => {
+                  this.isLoading = false
+                }),
+              );
+          } else {
+            return of();
+          }
+        })
+      ).subscribe(data => {
         if (data['results'] == undefined) {
           this.errorMsg = data['Error'];
           this.filteredResponse = [];
@@ -47,7 +52,6 @@ export class SearchComponent implements OnInit {
           this.errorMsg = "";
           this.filteredResponse = data['results'];
         }
-        console.log(this.filteredResponse);
       });
   }
 
@@ -55,4 +59,15 @@ export class SearchComponent implements OnInit {
     this.onSearchSelect.emit(result);
   }
 
+  hasValidInput(val: string){
+    if(val && val.length >= 3){
+      return val;
+    }
+  }
+
+  displayFn(searchResult: SearchResult){
+    if(searchResult){
+      return searchResult.name;
+    }
+  }
 }

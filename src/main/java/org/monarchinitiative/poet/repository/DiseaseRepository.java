@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface DiseaseRepository extends CrudRepository<Disease, Long> {
 
-    List<Disease> searchDiseasesByDiseaseNameContaining(String name);
-    List<Disease> searchDiseasesByDiseaseIdContaining(String id);
-    List<Disease> findDiseaseByDiseaseNameContainingIgnoreCaseOrDiseaseIdContainingIgnoreCase(String name, String id);
-    Disease findDiseaseByDiseaseId(String id);
-    Disease findDiseaseByDiseaseName(String name);
+    List<Disease> findDiseasesByNameContaining(String name);
+    List<Disease> findDiseasesByIdentifierContaining(String id);
+    List<Disease> findDiseaseByNameContainingIgnoreCaseOrIdentifierContainingIgnoreCase(String name, String id);
+    Disease findDiseaseByIdentifier(String id);
+    Disease findDiseaseByName(String name);
 }

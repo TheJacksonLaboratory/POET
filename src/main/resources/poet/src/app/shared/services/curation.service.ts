@@ -11,16 +11,13 @@ export class CurationService {
 
   // A search for articles or diseases
   searchAll(query: string){
-    let parameters: HttpParams = new HttpParams();
-    parameters.set('query', query);
+    let parameters: HttpParams = new HttpParams().set('query', query);
     return this.httpClient.get(environment.POET_API_SEARCH_URL, {params: parameters});
   }
 
   // Search Annotation Source
   searchAnnotationSource(query: string, type: string){
-    let parameters: HttpParams = new HttpParams();
-    parameters.set('query', query);
-    parameters.set('type', type);
+    let parameters: HttpParams = new HttpParams().set('query', query).set('type', type);
     return this.httpClient.get(environment.POET_API_SEARCH_ANNOTATION_SOURCE_URL,{params: parameters});
   }
 }

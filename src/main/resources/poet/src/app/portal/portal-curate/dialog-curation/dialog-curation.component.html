@@ -7,7 +7,7 @@
       Step 3 Figure out which ontology
     -->
     <!-- Existing Curation Search By Disease Name / DOI -->
-    <!-- If disease name or DOI not found pass them to new curation -->
+    <!-- Find disease or publication, then find all annotation sources for it. -->
     <div class="existing-curation" *ngIf="!newCuration">
       <p>To start a curation please link to an existing publication or disease. </p>
       <app-search (onSearchSelect)="selectExisting($event)"></app-search>
@@ -16,7 +16,11 @@
       </p>
     </div>
     <!-- HEY PUT THE ANNOTATION SOURCE TABLE HERE -->
-    <!-- New Curation By Ontology -->
+
+
+
+
+    <!-- New Annotation Source -->
     <div class="new-curation" *ngIf="newCuration">
       <div class="annotation-source">
         <mat-form-field appearance="outline">
@@ -48,8 +52,8 @@
       </div>
     </div>
     <!-- Ontology Select -->
-    <div class="ontology-select" *ngIf="selectedDisease && selectedPublication">
-      <h3>What are you curating for?</h3>
+    <div class="ontology-select" *ngIf="shouldShowOntologySelection()">
+      <h3>What ontology are you curating for?</h3>
       <mat-form-field appearance="fill">
         <mat-label>Ontologies</mat-label>
         <mat-select [(value)]="selectedOntology">
@@ -61,7 +65,7 @@
   </mat-dialog-content>
   <div class="dialog-spacer"></div>
   <mat-dialog-actions align="end">
-  <button mat-button *ngIf="annotationSourceControl.valid && selectedDisease && selectedPublication" (click)="closeDialog()" cdkFocusInitial>Get Started!</button>
+  <button mat-button *ngIf="dialogRequirementsMet()" (click)="closeDialog()" cdkFocusInitial>Get Started!</button>
   <button mat-button mat-dialog-close>Cancel</button>
   </mat-dialog-actions>
 </div>

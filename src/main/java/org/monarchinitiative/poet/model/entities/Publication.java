@@ -1,7 +1,6 @@
 package org.monarchinitiative.poet.model.entities;
 
 import org.monarchinitiative.poet.model.entities.AnnotationSource;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -17,20 +16,25 @@ public class Publication {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(unique = true) private String publicationIdentifier;
-    private String publicationName;
+    @Column(unique = true) private String identifier;
+    private String name;
 
     @OneToMany(mappedBy = "publication")
-    private List<AnnotationSource> amnotationSource;
+    private List<AnnotationSource> annotationSources;
+
+    private String date;
+    private String firstAuthor;
 
     protected Publication(){}
 
     /*
      * Creates new publication.
      */
-    public Publication(String id, String name){
-        this.setPublicationIdentifier(id);
-        this.setPublicationName(name);
+    public Publication(String id, String name, String date, String firstAuthor){
+        this.identifier = id;
+        this.name = name;
+        this.date = date;
+        this.firstAuthor = firstAuthor;
     }
 
     /**
@@ -39,11 +43,7 @@ public class Publication {
      * @return
      */
     public String getPublicationIdentifier() {
-        return publicationIdentifier;
-    }
-
-    public void setPublicationIdentifier(String identifier) {
-        this.publicationIdentifier = identifier;
+        return identifier;
     }
 
     /**
@@ -52,10 +52,13 @@ public class Publication {
      * @return
      */
     public String getPublicationName() {
-        return publicationName;
+        return name;
     }
 
-    public void setPublicationName(String publicationName) {
-        this.publicationName = publicationName;
+    public String getDate() {
+        return date;
+    }
+    public String getFirstAuthor() {
+        return firstAuthor;
     }
 }

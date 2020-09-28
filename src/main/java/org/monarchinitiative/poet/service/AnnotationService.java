@@ -52,8 +52,8 @@ public class AnnotationService {
      * @return boolean created
      */
     public boolean createMaxoAnnotation(MaxoRequest maxoRequest) {
-        Publication publication = publicationRepository.findByPublicationIdentifier(maxoRequest.getPublicationIdentifier());
-        Disease disease = diseaseRepository.findDiseaseByDiseaseId(maxoRequest.getDiseaseId());
+        Publication publication = publicationRepository.findByIdentifier(maxoRequest.getPublicationIdentifier());
+        Disease disease = diseaseRepository.findDiseaseByIdentifier(maxoRequest.getDiseaseId());
         AnnotationSource annotationSource;
         if(disease != null && publication != null){
             // We have a valid publication and a valid disease, do we have an annotation source for them?
@@ -71,12 +71,12 @@ public class AnnotationService {
     }
 
 
-    public Publication createPublication(){
+    /*public Publication createPublication(){
         Publication publication = new Publication("27741350", "Measuring cancer evolution from the genome");
         Publication publication1 = new Publication("3009398", "Confirming biology through biology.");
         publicationRepository.save(publication);
         publicationRepository.save(publication1);
         return publication;
-    }
+    }*/
 
 }

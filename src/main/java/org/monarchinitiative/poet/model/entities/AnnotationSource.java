@@ -21,4 +21,12 @@ public class AnnotationSource {
         this.publication = publication;
         this.disease = disease;
     }
+
+    public Publication getPublication() {
+        return publication;
+    }
+
+    public Disease getDisease() {
+        return disease;
+    }
 }

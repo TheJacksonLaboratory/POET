@@ -3,12 +3,12 @@ package org.monarchinitiative.poet.model.search;
 public class SimpleSearchResponse {
 
     private String name;
-    private String value;
+    private String id;
     private String type;
 
-    public SimpleSearchResponse(String name, String value, String type){
+    public SimpleSearchResponse(String name, String id, String type){
         this.name = name;
-        this.value = value;
+        this.id = id;
         this.type = type;
     }
 
@@ -16,8 +16,8 @@ public class SimpleSearchResponse {
         return name;
     }
 
-    public String getValue() {
-        return value;
+    public String getId() {
+        return id;
     }
 
     public String getType() {

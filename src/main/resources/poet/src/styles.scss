@@ -270,3 +270,20 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .existing-curation .mat-form-field, .monarch-search-wrapper .mat-form-field {
   width: 90%;
 }
+
+.result-name {
+  font-size: .75rem;
+  text-transform: uppercase;
+  max-width: 75%;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  text-overflow: ellipsis;
+  float: left;
+}
+
+.result-id {
+  color: whitesmoke;
+  font-size: .65rem;
+}
+

@@ -25,9 +25,8 @@ export class DialogCurationComponent implements OnInit {
   selectedPublication: any;
   selectedDisease: any;
   newCuration: boolean = false;
-  ontologySelection: boolean = false;
   searchingPubMed: boolean = false;
-  publicationInput: string = '';
+  selectedExisting: boolean = false;
   matcher = new DialogErrorStateMatcher();
 
   constructor(public dialogRef: MatDialogRef<DialogCurationComponent>,
@@ -55,24 +54,54 @@ export class DialogCurationComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialogRef.close({'ontology': this.selectedOntology,
-      'source': {
-        'publication': this.selectedPublication,
-        'disease':   this.selectedDisease}});
+    if(!this.selectedExisting){
+      this.dialogRef.close(
+        {
+          'ontology': this.selectedOntology,
+          'source': {
+            'publication': this.selectedPublication,
+            'disease':   this.selectedDisease
+          },
+          'action': 'create'
+        });
+    } else {
+      this.dialogRef.close(
+        {
+          'ontology': this.selectedOntology,
+          'source': {
+            'publication': this.selectedPublication,
+            'disease':   this.selectedDisease
+          },
+          'action': 'fetch'
+        });
+    }
   }
 
   selectExisting(searchResult: SearchResult){
-    console.log(this.curationService.searchAnnotationSource(searchResult.value, searchResult.type));
+    this.selectedExisting = true;
+    if(searchResult.type == 'disease'){
+      this.selectedDisease = searchResult;
+    } else if (searchResult.type == 'publication'){
+      this.selectedPublication = searchResult;
+    }
   }
 
   selectDisease(disease: any) {
-    console.log(disease);
     this.selectedDisease = disease;
   }
 
-  resetForm(){
+  resetForm() {
     this.annotationSourceControl.reset();
   }
+
+  shouldShowOntologySelection() {
+    return (this.selectedDisease && this.selectedPublication) || this.selectedExisting;
+  }
+
+  dialogRequirementsMet(){
+    return (this.annotationSourceControl.valid && this.selectedDisease && this.selectedPublication) || this.selectedExisting;
+  }
+
 }
 
 /** Error when invalid control is dirty, touched, or submitted. */

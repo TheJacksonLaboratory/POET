@@ -5,8 +5,8 @@
       <mat-option *ngIf="isLoading" class="is-loading">Loading...</mat-option>
       <ng-container *ngIf="!isLoading">
         <mat-option *ngFor="let result of filteredResponse" [value]="result">
-          <span class="mondo-name"><b>{{result.match}}</b></span>&nbsp;
-          <span class="mondo-id">{{result.id}}</span>
+          <span class="result-name"><b>{{result.match}}</b></span>&nbsp;
+          <span class="result-id">{{result.id}}</span>
         </mat-option>
       </ng-container>
     </mat-autocomplete>
