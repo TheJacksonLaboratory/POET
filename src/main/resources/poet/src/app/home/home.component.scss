@@ -1,0 +1,56 @@
+.home {
+  background: #296a7c;
+  height: 100%;
+  .call-to-action {
+    padding: 7.5rem 0 0 0;
+    color: white;
+    text-align: center;
+
+    & .title {
+      font-size: 3.5rem;
+    }
+
+    & .sub-title {
+      padding: 2.5rem;
+    }
+
+    & .first-btn {
+      margin-right: 1rem;
+    }
+
+    @media screen and (max-width: 1023px){
+      & .title {
+        font-size: 2.5rem;
+      }
+
+      & .sub-title {
+        padding: 1rem;
+      }
+    }
+  }
+
+  & .banner-supported {
+    width: 100%;
+    & .icon-wrapper {
+      padding: 0 2.5rem;
+
+      &:hover {
+        opacity: 0.65;
+        cursor: pointer;
+      }
+      & .icon {
+        height: 100px;
+        width: 100px;
+      }
+    }
+  }
+  @media screen and (max-width: 767px){
+    & .banner-supported {
+      margin: 2rem 0 0 0;
+      & .icon-wrapper{
+        padding: 0 0 2.5rem 0;
+      }
+    }
+  }
+}
+

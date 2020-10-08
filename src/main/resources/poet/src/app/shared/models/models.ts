@@ -44,3 +44,10 @@ export interface MaxoAnnotation extends Annotation {
   relation: string;
   extension: string;
 }
+
+export interface HomeIcon {
+  imageSrc: string;
+  name: string;
+  dateAdded: string;
+  link: string;
+}

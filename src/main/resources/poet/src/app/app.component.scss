@@ -2,9 +2,19 @@
   margin-right: 1.5rem;
 }
 
-.container {
-  height: 100%;
-}
 .nav-btn {
   text-transform: uppercase;
+}
+
+.content {
+  height: 100%;
+  overflow: auto;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
 }

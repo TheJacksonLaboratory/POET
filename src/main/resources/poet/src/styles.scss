@@ -243,7 +243,7 @@ $altTheme: mat-light-theme($theme-primary, $theme-accent, $theme-warn);
   font-size: 24px;
   font-family: 'Material Icons Outlined', 'Material Icons';
   .mat-badge-content {
-    font-family: 'Roboto';
+    font-family: 'Quicksand';
   }
 }
 
@@ -264,8 +264,8 @@ $altTheme: mat-light-theme($theme-primary, $theme-accent, $theme-warn);
 
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body { height: 100%; width: 100%; box-sizing: border-box; }
+body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 
 .existing-curation .mat-form-field, .monarch-search-wrapper .mat-form-field {
   width: 90%;
