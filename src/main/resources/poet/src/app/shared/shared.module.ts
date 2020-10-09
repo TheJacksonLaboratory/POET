@@ -17,6 +17,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MonarchSearchComponent } from './monarch-search/monarch-search.component';
 import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [SearchComponent, MonarchSearchComponent],
@@ -38,6 +39,7 @@ import { MatProgressBarModule } from "@angular/material/progress-bar";
     MatInputModule,
     MatAutocompleteModule,
     MatProgressBarModule,
+    MatProgressSpinnerModule,
     MatDividerModule
   ],
   exports: [
@@ -59,6 +61,7 @@ import { MatProgressBarModule } from "@angular/material/progress-bar";
     MatProgressBarModule,
     MatDividerModule,
     SearchComponent,
+    MatProgressSpinnerModule,
     MonarchSearchComponent
   ]
 })

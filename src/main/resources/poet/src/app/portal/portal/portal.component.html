@@ -1,9 +1,18 @@
 <mat-sidenav-container>
-  <mat-sidenav #sidenav mode="side" opened="true">
+  <mat-sidenav #sidenav mode="side" [opened]=isSideNavOpen>
     <div class="top-sidenav">
       <mat-icon (click)="sidenav.toggle(); toggleSidenav()" class="close-sidebar">close</mat-icon>
       <br>
-      <h3 class="username-sidenav" [routerLink]="['/portal/dashboard']"> USERNAME </h3>
+      <ng-container *ngIf="auth.user$ | async as user  else guest">
+        <h3 class="username-sidenav" [routerLink]="['/portal/dashboard']">
+          {{user.nickname}}
+        </h3>
+      </ng-container>
+      <ng-template #guest>
+        <h3 class="username-sidenav" [routerLink]="['/portal/dashboard']">
+          Guest
+        </h3>
+      </ng-template>
     </div>
     <mat-nav-list>
       <h2 matSubheader> Actions </h2>
@@ -11,23 +20,26 @@
          mat-list-item
          (click)="sidenav.toggle(); toggleSidenav()"
          [routerLink]="[item.route]"
+         [disabled]="!(auth.isAuthenticated$ | async) && item.private"
          routerLinkActive="list-item-active"
          [routerLinkActiveOptions]="{exact:true}">
         <mat-icon matListIcon> {{ item.icon }} </mat-icon>
         &nbsp;{{item.title}}
       </a>
-
       <mat-divider></mat-divider>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
     <div class="toggle-container" *ngIf="!isSideNavOpen">
       <div (click)="sidenav.toggle(); toggleSidenav()"  class="toggler">
-        <mat-icon>menu</mat-icon>
+        <mat-icon>keyboard_arrow_right</mat-icon>
       </div>
     </div>
-    <div class="outlet-container">
+    <div class="outlet-container" [ngClass]="{'sidenav-closed': !this.isSideNavOpen}">
         <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
+<div class="overlay" *ngIf="auth.isLoading$ | async">
+  <mat-progress-bar color="accent" mode="indeterminate"></mat-progress-bar>
+</div>

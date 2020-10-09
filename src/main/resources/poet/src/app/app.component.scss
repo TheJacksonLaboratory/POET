@@ -1,5 +1,6 @@
 .brand {
   margin-right: 1.5rem;
+  cursor: pointer;
 }
 
 .nav-btn {
@@ -9,6 +10,7 @@
 .content {
   height: 100%;
   overflow: auto;
+  margin-top: 64px;
 }
 
 .navbar {
@@ -16,5 +18,5 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 2;
+  z-index: 3;
 }

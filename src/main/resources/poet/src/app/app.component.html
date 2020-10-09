@@ -1,10 +1,24 @@
 <mat-toolbar class="mat-elevation-z2 navbar" color="primary">
   <mat-toolbar-row>
     <div class="brand" routerLink="/">POET</div>
-    <button mat-button class="primary nav-btn" routerLink="/portal">Learn</button>
+    <button mat-button class="primary nav-btn">Learn</button>
     <button mat-button class="primary nav-btn">Connect</button>
     <div fxFlex class="toolbar-spacer"></div>
-    <button mat-button class="primary nav-btn">Login</button>
+    <ng-container *ngIf="isHomePage() && (auth.isLoading$ | async); else loggedIn">
+      <mat-spinner diameter="25" color="warn"></mat-spinner>
+    </ng-container>
+    <ng-template #loggedIn>
+      <ng-container *ngIf="auth.isAuthenticated$ | async; else loggedOut">
+        <button mat-button class="primary nav-btn" (click)="auth.logout({ returnTo: document.location.origin })">
+          Log out
+        </button>
+      </ng-container>
+    </ng-template>
+    <ng-template #loggedOut>
+      <ng-container>
+        <button mat-button class="primary nav-btn" (click)="loginWithRedirect()">Login</button>
+      </ng-container>
+    </ng-template>
   </mat-toolbar-row>
 </mat-toolbar>
 <div class="content">

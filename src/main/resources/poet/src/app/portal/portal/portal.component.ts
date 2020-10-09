@@ -1,4 +1,5 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AuthService } from "@auth0/auth0-angular";
 
 @Component({
   selector: 'app-portal',
@@ -9,14 +10,24 @@ export class PortalComponent implements OnInit {
 
   @ViewChild('sidenav') sidenav: any;
   sideNavItems =  [
-    {title: 'New Curation', route: '/portal/curate/new', icon: 'create'},
-    {title: 'Edit Submissions', route: '/portal/submissions', icon: 'view_list'},
-    {title: 'Curation Tutorial', route: '/portal/help', icon: 'help' }
+    {title: 'New Curation', route: '/portal/curate/new', icon: 'create', private: true},
+    {title: 'Edit Submissions', route: '/portal/submissions', icon: 'view_list', private: true},
+    {title: 'Curation Tutorial', route: '/portal/help', icon: 'help', private: false}
   ];
-  isSideNavOpen = true;
-  constructor() { }
+  isSideNavOpen = false;
+  constructor(public auth: AuthService) { }
 
   ngOnInit(): void {
+    // Want to open if not loading..
+    this.auth.isLoading$.subscribe((loading) => {
+      if(!loading){
+        this.isSideNavOpen = true;
+      }
+    })
+
+    this.auth.user$.subscribe((user) => {
+      console.log(user);
+    });
   }
 
   toggleSidenav(){

@@ -8,8 +8,11 @@ import { SharedModule } from "./shared/shared.module";
 import { HomeComponent } from './home/home.component';
 import { PortalModule } from "./portal/portal.module";
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { AuthModule } from "@auth0/auth0-angular";
-
+import { AuthConfig, AuthModule } from "@auth0/auth0-angular";
+const config: AuthConfig = {
+  domain: 'dev-poet.us.auth0.com',
+  clientId: 'zAquxh5T1sPsoqBmSd8R7UasuFCcl9LY'
+}
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,11 +24,8 @@ import { AuthModule } from "@auth0/auth0-angular";
     BrowserAnimationsModule,
     SharedModule,
     PortalModule,
-    FlexLayoutModule
-    /*AuthModule.forRoot({
-      domain: 'dev-poet.us.auth0.com',
-      clientId: 'Y3zMbuJHFVDyeHR6RPt7mC6bw4jQGcgv'
-    })*/
+    FlexLayoutModule,
+    AuthModule.forRoot(config)
   ],
   providers: [],
   bootstrap: [AppComponent]
