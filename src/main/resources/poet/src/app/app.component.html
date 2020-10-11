@@ -2,7 +2,7 @@
   <mat-toolbar-row>
     <div class="brand" routerLink="/">POET</div>
     <button mat-button class="primary nav-btn">Learn</button>
-    <button mat-button class="primary nav-btn">Connect</button>
+    <button mat-button class="primary nav-btn" (click)="testApi()">Connect</button>
     <div fxFlex class="toolbar-spacer"></div>
     <ng-container *ngIf="isHomePage() && (auth.isLoading$ | async); else loggedIn">
       <mat-spinner diameter="25" color="warn"></mat-spinner>

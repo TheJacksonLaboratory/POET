@@ -32,7 +32,7 @@ public class MaxoController {
      * @return created
      */
     @PostMapping(value = "/", headers = "Accept=application/json")
-    public ResponseEntity newMaxoAnnotation(@RequestBody MaxoRequest maxoRequest) {
+    public ResponseEntity<?> newMaxoAnnotation(@RequestBody MaxoRequest maxoRequest) {
         if(annotationService.createMaxoAnnotation(maxoRequest)){
          return new ResponseEntity(HttpStatus.CREATED);
         } else {

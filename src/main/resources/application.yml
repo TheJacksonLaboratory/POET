@@ -15,3 +15,5 @@ spring:
         resourceserver:
           jwt:
             issuer-uri: https://dev-poet.us.auth0.com/
+auth0:
+  audience: poet-api-audience

@@ -8,10 +8,15 @@ import { SharedModule } from "./shared/shared.module";
 import { HomeComponent } from './home/home.component';
 import { PortalModule } from "./portal/portal.module";
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthHttpInterceptor } from '@auth0/auth0-angular';
 import { AuthConfig, AuthModule } from "@auth0/auth0-angular";
+import { environment as env} from "../environments/environment";
 const config: AuthConfig = {
-  domain: 'dev-poet.us.auth0.com',
-  clientId: 'zAquxh5T1sPsoqBmSd8R7UasuFCcl9LY'
+  ...env.auth,
+  httpInterceptor: {
+    ...env.httpInterceptor,
+  }
 }
 @NgModule({
   declarations: [
@@ -27,7 +32,7 @@ const config: AuthConfig = {
     FlexLayoutModule,
     AuthModule.forRoot(config)
   ],
-  providers: [],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule {
