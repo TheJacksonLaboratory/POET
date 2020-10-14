@@ -33,6 +33,5 @@ export class AppComponent {
       redirect_uri: redirect_uri,
       appState: {target: target}
     });
-
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { trigger, transition, useAnimation } from '@angular/animations';
 import { fadeIn, bounceInLeft } from 'ng-animate';
 import { HomeIcon } from "../shared/models/models";
+import { AuthService } from "@auth0/auth0-angular";
 
 @Component({
   selector: 'app-home',
@@ -33,9 +34,19 @@ export class HomeComponent implements OnInit {
       link: "https://github.com/monarch-initiative/MAxO"
     }
   ]
-  constructor() { }
+  constructor(public auth: AuthService) { }
 
   ngOnInit(): void {
+  }
+
+  signupWithredirect(): void {
+    const target = '/portal/dashboard'
+    const redirect_uri = window.location.origin + target;
+    this.auth.loginWithRedirect(  {
+      redirect_uri: redirect_uri,
+      appState: {target: target},
+      screen_hint: "signup",
+    });
   }
 
 }

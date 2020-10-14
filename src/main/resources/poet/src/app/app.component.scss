@@ -1,6 +1,16 @@
 .brand {
-  margin-right: 1.5rem;
+  margin-right: 1rem;
   cursor: pointer;
+
+  & .icon {
+    height: 50px;
+    width: 50px;
+    margin-top: .5rem;
+
+    &:hover {
+      opacity: .75;
+    }
+  }
 }
 
 .nav-btn {

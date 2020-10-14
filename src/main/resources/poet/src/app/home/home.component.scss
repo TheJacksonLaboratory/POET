@@ -1,13 +1,18 @@
 .home {
-  background: #296a7c;
+  background: linear-gradient(to bottom, #275467 3%, #29657c 10%, #275669 55%, #275467 65%, #2b3f4e 85%, #2e3844);
   height: 100%;
+  
   .call-to-action {
-    padding: 7.5rem 0 0 0;
     color: white;
     text-align: center;
 
     & .title {
       font-size: 3.5rem;
+    }
+
+    & .logo-title {
+      height: 175px;
+      margin-bottom: 3.5rem;
     }
 
     & .sub-title {
@@ -16,6 +21,7 @@
 
     & .first-btn {
       margin-right: 1rem;
+      background-color: #393939 !important;
     }
 
     @media screen and (max-width: 1023px){
