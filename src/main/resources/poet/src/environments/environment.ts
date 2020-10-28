@@ -12,7 +12,7 @@ export const environment = {
     audience
   },
   httpInterceptor: {
-    allowedList: [POET_BASE_URL]
+    allowedList: [POET_BASE_URL + "/*"]
   },
   production: false,
   POET_API_SEARCH_URL: POET_BASE_URL + '/search',
