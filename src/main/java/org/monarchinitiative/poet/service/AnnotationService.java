@@ -52,8 +52,8 @@ public class AnnotationService {
      * @return boolean created
      */
     public boolean createMaxoAnnotation(MaxoRequest maxoRequest) {
-        Publication publication = publicationRepository.findByIdentifier(maxoRequest.getPublicationIdentifier());
-        Disease disease = diseaseRepository.findDiseaseByIdentifier(maxoRequest.getDiseaseId());
+        Publication publication = publicationRepository.findByPublicationId(maxoRequest.getPublicationIdentifier());
+        Disease disease = diseaseRepository.findDiseaseByDiseaseId(maxoRequest.getDiseaseId());
         AnnotationSource annotationSource;
         if(disease != null && publication != null){
             // We have a valid publication and a valid disease, do we have an annotation source for them?

@@ -1,6 +1,5 @@
 package org.monarchinitiative.poet.repository;
 
-import org.monarchinitiative.poet.model.entities.Annotation;
 import org.monarchinitiative.poet.model.entities.AnnotationSource;
 import org.monarchinitiative.poet.model.entities.MaxoAnnotation;
 import org.springframework.data.repository.CrudRepository;

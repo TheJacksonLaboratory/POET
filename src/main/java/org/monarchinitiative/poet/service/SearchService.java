@@ -28,19 +28,19 @@ public class SearchService {
 
     public SearchResponse searchPublicationAndDisease(String query){
         SearchResponse response = new SearchResponse();
-        response.addDiseasesToResponse(diseaseRepository.findDiseaseByNameContainingIgnoreCaseOrIdentifierContainingIgnoreCase(query, query));
-        response.addPublicationsToResponse(publicationRepository.findByIdentifierStartingWithOrNameContainingIgnoreCase(query, query));
+        response.addDiseasesToResponse(diseaseRepository.findDiseaseByDiseaseNameContainingIgnoreCaseOrDiseaseIdContainingIgnoreCase(query, query));
+        response.addPublicationsToResponse(publicationRepository.findByPublicationIdStartingWithOrPublicationNameContainingIgnoreCase(query, query));
         return response;
     }
 
     public List<AnnotationSource> searchAnnotationSource(String query, String type){
         if(type.equals("disease")){
-            Disease disease = diseaseRepository.findDiseaseByIdentifier(query);
+            Disease disease = diseaseRepository.findDiseaseByDiseaseId(query);
             if(disease != null){
                 return annotationSourceRepository.findDistinctByDisease(disease);
             }
         } else if(type.equals("publication")){
-            Publication publication = publicationRepository.findByIdentifier(query);
+            Publication publication = publicationRepository.findByPublicationId(query);
             if(publication != null) {
                 return annotationSourceRepository.findDistinctByPublication(publication);
             }
