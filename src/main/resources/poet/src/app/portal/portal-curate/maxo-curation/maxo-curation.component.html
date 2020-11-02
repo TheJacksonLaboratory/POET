@@ -6,6 +6,27 @@
     New Annotation
   </mat-card-subtitle>
   <mat-card-content>
-
+    <mat-form-field appearance="outline">
+      <mat-label>MAxO Term</mat-label>
+      <input matInput placeholder="Find a MAxO Term" [formControl]="maxoFormControl" ngDefaultControl>
+      <button mat-button *ngIf="maxoFormControl.value != ''" matSuffix mat-icon-button aria-label="Clear" (click)="resetMaxoForm()">
+        <mat-icon>close</mat-icon>
+      </button>
+      <mat-hint *ngIf="!selectedMaxo">Some example maxo term</mat-hint>
+      <mat-error *ngIf="maxoFormControl.hasError('notFound')">
+        Looks like there was an error with the MAxO API.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>HPO Term</mat-label>
+      <input matInput placeholder="Find a HPO Term" [formControl]="hpoFormControl" ngDefaultControl>
+      <button mat-button *ngIf="hpoFormControl.value != ''" matSuffix mat-icon-button aria-label="Clear" (click)="resetHpoForm()">
+        <mat-icon>close</mat-icon>
+      </button>
+      <mat-hint *ngIf="!selectedHpo">Arachnodactyly</mat-hint>
+      <mat-error *ngIf="maxoFormControl.hasError('notFound')">
+        Looks like there was an error with the HPO API.
+      </mat-error>
+    </mat-form-field>
   </mat-card-content>
 </mat-card>

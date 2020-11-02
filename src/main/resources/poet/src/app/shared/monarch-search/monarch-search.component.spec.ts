@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MonarchSearchComponent } from './monarch-search.component';
-import { MonarchServiceService } from "../services/monarch-service.service";
+import { MonarchService } from "../services/monarch.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { SharedModule } from "../shared.module";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -13,7 +13,7 @@ describe('MonarchSearchComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ MonarchSearchComponent ],
-      providers: [ MonarchServiceService ],
+      providers: [ MonarchService ],
       imports: [ HttpClientTestingModule, SharedModule, BrowserAnimationsModule ]
     })
     .compileComponents();

@@ -5,7 +5,7 @@ import { environment } from "../../../environments/environment";
 @Injectable({
   providedIn: 'root'
 })
-export class MonarchServiceService {
+export class MonarchService {
 
   constructor(private httpClient: HttpClient) {
   }

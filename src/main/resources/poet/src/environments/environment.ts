@@ -4,6 +4,7 @@
 const POET_BASE_URL = 'http://localhost:8080/api/v1';
 const MONARCH_BASE_URL = 'https://api.monarchinitiative.org/api';
 const PUBMED_BASE_URL = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
+const HPO_BASE_URL = 'https://hpo.jax.org/api/';
 import { domain, clientId, audience } from '../../auth.config.json';
 export const environment = {
   auth: {
@@ -17,9 +18,11 @@ export const environment = {
   production: false,
   POET_BASE_URL: POET_BASE_URL,
   POET_API_SEARCH_URL: POET_BASE_URL + '/search',
-  MONARCH_SEARCH_URL: MONARCH_BASE_URL + '/search/entity/autocomplete/',
   POET_API_DISEASE_ENTITY_URL: POET_BASE_URL + '/entity/disease/',
   POET_API_PUBLICATION_ENTITY_URL: POET_BASE_URL + '/entity/publication/',
+  HPO_API_HPO_SEARCH_URL: HPO_BASE_URL + 'hpo/search',
+  HPO_API_MAXO_SEARCH_URL: HPO_BASE_URL + 'maxo/search/maxo',
+  MONARCH_SEARCH_URL: MONARCH_BASE_URL + '/search/entity/autocomplete/',
   PUBMED_SUMMARY_URL: PUBMED_BASE_URL + 'esummary.fcgi'
 };
 
