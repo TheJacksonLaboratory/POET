@@ -16,14 +16,14 @@ export interface Annotation {
 }
 
 export interface AnnotationSource {
-  id: number;
+  id?: number;
   publication: Publication;
   disease: Disease;
 }
 
 export interface Publication {
-  id: string;
-  name: string;
+  publicationId: string;
+  publicationName: string;
   date: string;
   doi: string;
   firstAuthor: string;

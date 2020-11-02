@@ -1,0 +1,36 @@
+<mat-card class="selection-card" *ngIf="(selectedDisease || selectedPublication) && activeType">
+  <mat-card-title>
+    <div *ngIf="selectedDisease">
+      <span class="title-name">{{selectedDisease.diseaseName}}</span>&nbsp;
+      <span class="title-id">{{selectedDisease.diseaseId}}</span>
+    </div>
+    <div *ngIf="selectedPublication">
+      <span class="title-name">{{selectedPublication.publicationName}}</span>&nbsp;
+      <span class="title-id">{{selectedPublication.publicationId}}</span>
+    </div>
+  </mat-card-title>
+  <mat-card-subtitle>
+    Please select an associated {{oppositeActiveType()}} for this {{this.activeType}} that you want to annotate
+    to.
+  </mat-card-subtitle>
+  <mat-card-content>
+    <mat-selection-list #diseases [multiple]="false" (selectionChange)="onSelectedListItem($event.option.value)">
+      <mat-list-option class="selection-wrapper" *ngFor="let disease of annotatedDiseases$ | async" [value]="disease">
+        <mat-icon matListIcon>coronavirus</mat-icon>
+        <div class="selection-text">
+          {{disease.diseaseName}}
+          <span class="selection-id">{{disease.diseaseId}}</span>
+        </div>
+      </mat-list-option>
+    </mat-selection-list>
+    <mat-selection-list #publications [multiple]="false" (selectionChange)="onSelectedListItem($event.option.value)">
+      <mat-list-option class="selection-wrapper" *ngFor="let publication of annotatedPublications$ | async" [value]="publication">
+        <mat-icon matListIcon>library_books</mat-icon>
+        <div class="selection-text">
+          {{publication.publicationName}}
+          <span class="selection-id">{{publication.publicationId}}</span>
+        </div>
+      </mat-list-option>
+    </mat-selection-list>
+  </mat-card-content>
+</mat-card>

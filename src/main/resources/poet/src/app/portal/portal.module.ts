@@ -11,10 +11,11 @@ import { HpoCurationComponent } from './portal-curate/hpo-curation/hpo-curation.
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { DialogCurationComponent } from './portal-curate/dialog-curation/dialog-curation.component';
 import { HttpClientModule } from "@angular/common/http";
+import { SelectionCardComponent } from './portal-curate/selection-card/selection-card.component';
 
 
 @NgModule({
-  declarations: [PortalDashboardComponent, PortalCurateComponent, PortalComponent, MaxoCurationComponent, HpoCurationComponent, DialogCurationComponent],
+  declarations: [PortalDashboardComponent, PortalCurateComponent, PortalComponent, MaxoCurationComponent, HpoCurationComponent, DialogCurationComponent, SelectionCardComponent],
   imports: [
     CommonModule,
     SharedModule,

@@ -1,8 +1,23 @@
-<!--<div class="disease-step" fxLayout="column" fxLayoutAlign="space-around center">
-    <mat-card>
-        <mat-card-title>
-            Disease
-        </mat-card-title>
-        Simple card
-    </mat-card>
-</div>-->
+<mat-progress-bar *ngIf="showLoader && !(auth.isLoading$ | async)" color="accent" mode="indeterminate"></mat-progress-bar>
+<div class="curation-container" [fxLayout]="fxLayout" [fxLayoutAlign]="fxLayoutAlign">
+  <app-selection-card [fxFlex]="fxFlexAnnotations" [activeType]="selectionType" [activeId]="selectionId" (working)="doingWork($event)"
+                      (sourceSelection)="onSourceSelection($event)"></app-selection-card>
+  <div *ngIf="selectedOntology && sourceSelected else selectOntology" class="curation-cards" [fxFlex]="fxFlexForm">
+    <div *ngIf="selectedOntology === 'maxo'">
+      <app-maxo-curation></app-maxo-curation>
+    </div>
+    <div *ngIf="selectedOntology === 'hpo'">
+      <app-hpo-curation></app-hpo-curation>
+    </div>
+  </div>
+  <ng-template #selectOntology>
+    <div *ngIf="sourceSelected">
+      <mat-card>
+        <mat-card-content>
+          <button mat-raised-button>MAXO</button>
+          <button mat-raised-button>HPO</button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-template>
+</div>

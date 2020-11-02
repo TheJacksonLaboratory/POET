@@ -58,20 +58,16 @@ export class DialogCurationComponent implements OnInit {
       this.dialogRef.close(
         {
           'ontology': this.selectedOntology,
-          'source': {
-            'publication': this.selectedPublication,
-            'disease':   this.selectedDisease
-          },
+          'publication': this.selectedPublication,
+          'disease':   this.selectedDisease,
           'action': 'create'
         });
     } else {
       this.dialogRef.close(
         {
           'ontology': this.selectedOntology,
-          'source': {
-            'publication': this.selectedPublication,
-            'disease':   this.selectedDisease
-          },
+          'publication': this.selectedPublication,
+          'disease':   this.selectedDisease,
           'action': 'fetch'
         });
     }

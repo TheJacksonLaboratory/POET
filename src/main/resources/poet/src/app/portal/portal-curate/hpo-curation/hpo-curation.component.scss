@@ -1,0 +1,11 @@
+.hpo-card {
+  margin-left: 5px;
+  & .mat-card-title, .mat-card-subtitle {
+    text-align: center;
+  }
+
+  & .mat-card-subtitle {
+    font-size: 18px;
+    color: whitesmoke;
+  }
+}
