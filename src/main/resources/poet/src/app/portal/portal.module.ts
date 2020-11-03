@@ -12,10 +12,12 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { DialogCurationComponent } from './portal-curate/dialog-curation/dialog-curation.component';
 import { HttpClientModule } from "@angular/common/http";
 import { SelectionCardComponent } from './portal-curate/selection-card/selection-card.component';
+import { OntologySheet } from './portal-curate/selection-card/ontology-sheet/ontology-sheet.component';
 
 
 @NgModule({
-  declarations: [PortalDashboardComponent, PortalCurateComponent, PortalComponent, MaxoCurationComponent, HpoCurationComponent, DialogCurationComponent, SelectionCardComponent],
+  declarations: [PortalDashboardComponent, PortalCurateComponent, PortalComponent, MaxoCurationComponent,
+    HpoCurationComponent, DialogCurationComponent, SelectionCardComponent, OntologySheet],
   imports: [
     CommonModule,
     SharedModule,

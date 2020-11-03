@@ -8,4 +8,17 @@
     font-size: 18px;
     color: whitesmoke;
   }
+
+  & .form-content-section {
+    width: 50%;
+    margin: 1.25rem auto 0 auto;
+    & .maxo-form {
+      width: 100%
+    }
+  }
+
+  & .mat-card-actions {
+    text-align: center;
+    margin-top: 1.25rem;
+  }
 }

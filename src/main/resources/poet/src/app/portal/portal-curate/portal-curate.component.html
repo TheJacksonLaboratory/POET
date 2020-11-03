@@ -1,8 +1,9 @@
 <mat-progress-bar *ngIf="showLoader && !(auth.isLoading$ | async)" color="accent" mode="indeterminate"></mat-progress-bar>
 <div class="curation-container" [fxLayout]="fxLayout" [fxLayoutAlign]="fxLayoutAlign">
-  <app-selection-card [fxFlex]="fxFlexAnnotations" [activeType]="selectionType" [activeId]="selectionId" (working)="doingWork($event)"
+  <app-selection-card [fxFlex]="fxFlexAnnotations" [activeType]="selectionType" [activeId]="selectionId"
+                      [activeOntology]="selectedOntology" (working)="doingWork($event)"
                       (sourceSelection)="onSourceSelection($event)"></app-selection-card>
-  <div *ngIf="selectedOntology && sourceSelected else selectOntology" class="curation-cards" [fxFlex]="fxFlexForm">
+  <div *ngIf="selectedOntology && sourceSelected" class="curation-cards" [fxFlex]="fxFlexForm" [@bounceInLeft]="shouldAnimateMove">
     <div *ngIf="selectedOntology === 'maxo'">
       <app-maxo-curation></app-maxo-curation>
     </div>
@@ -10,14 +11,4 @@
       <app-hpo-curation></app-hpo-curation>
     </div>
   </div>
-  <ng-template #selectOntology>
-    <div *ngIf="sourceSelected">
-      <mat-card>
-        <mat-card-content>
-          <button mat-raised-button>MAXO</button>
-          <button mat-raised-button>HPO</button>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  </ng-template>
 </div>

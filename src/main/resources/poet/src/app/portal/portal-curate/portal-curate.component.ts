@@ -1,15 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
-import {DialogCurationComponent} from "./dialog-curation/dialog-curation.component";
-import {CurationService} from "../../shared/services/curation.service";
-import { AnnotationSource, Disease, Publication } from "../../shared/models/models";
+import { MatDialog } from "@angular/material/dialog";
+import { DialogCurationComponent } from "./dialog-curation/dialog-curation.component";
+import { CurationService } from "../../shared/services/curation.service";
 import { AuthService } from "@auth0/auth0-angular";
+import { transition, trigger, useAnimation } from "@angular/animations";
+import { bounceInLeft } from "ng-animate";
 
 @Component({
   selector: 'app-portal-curate',
   templateUrl: './portal-curate.component.html',
-  styleUrls: ['./portal-curate.component.scss']
+  styleUrls: ['./portal-curate.component.scss'],
+  animations: [
+    trigger('bounceInLeft', [transition('* => *', useAnimation(bounceInLeft, {
+      params: {timing: 1}
+    }))]),
+  ]
 })
 export class PortalCurateComponent implements OnInit {
 
@@ -22,7 +28,9 @@ export class PortalCurateComponent implements OnInit {
   fxLayout: string = "column";
   fxLayoutAlign: string = "space-around center";
   fxFlexAnnotations: string;
-  fxFlexForm : string;
+  fxFlexForm: string;
+  shouldAnimateMove: boolean = false;
+
   constructor(private route: ActivatedRoute, public dialog: MatDialog,
               public curationService: CurationService, public auth: AuthService) {
   }
@@ -30,7 +38,7 @@ export class PortalCurateComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       let id = params['id'];
-      if(id){
+      if (id) {
         this.selectionType = this.determineIdType(id);
         this.selectionId = id;
       } else {
@@ -42,18 +50,18 @@ export class PortalCurateComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
           // Get Selection Type
-          if(result){
-            if(result.action === 'fetch'){
-              if(result.disease){
+          if (result) {
+            if (result.action === 'fetch') {
+              if (result.disease) {
                 this.selectionType = 'disease';
                 this.selectionId = result.disease.id;
                 this.selectedOntology = result.ontology;
-              } else if(result.publication){
+              } else if (result.publication) {
                 this.selectionType = 'publication';
                 this.selectionId = result.publication.id;
                 this.selectedOntology = result.ontology;
               }
-            } else if ( result.action === 'create'){
+            } else if (result.action === 'create') {
               // TODO: Have creating source an option.
             }
           }
@@ -66,12 +74,14 @@ export class PortalCurateComponent implements OnInit {
    * On Source Selection move card to display 2.
    * @param source
    */
-  onSourceSelection(source: AnnotationSource) {
+  onSourceSelection(source: any) {
     this.sourceSelected = true;
+    this.selectedOntology = source.ontology;
     this.fxLayout = "row";
     this.fxLayoutAlign = "start stretch";
-    this.fxFlexAnnotations = "40";
-    this.fxFlexForm = "60";
+    this.fxFlexAnnotations = "50";
+    this.fxFlexForm = "50";
+    this.shouldAnimateMove = true;
   }
 
   /**
@@ -79,10 +89,10 @@ export class PortalCurateComponent implements OnInit {
    * @param id
    */
   determineIdType(id: string): string {
-    if(id){
-      if(id.includes("OMIM")){
+    if (id) {
+      if (id.includes("OMIM")) {
         return "disease";
-      } else if(id.includes("PMID")){
+      } else if (id.includes("PMID")) {
         return "publication";
       }
     }
@@ -92,7 +102,7 @@ export class PortalCurateComponent implements OnInit {
    * Set loader based on work happening in child components or this component.
    * @param working
    */
-  doingWork(working: boolean){
+  doingWork(working: boolean) {
     this.showLoader = working;
   }
 }

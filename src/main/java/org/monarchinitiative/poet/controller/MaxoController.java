@@ -51,6 +51,8 @@ public class MaxoController {
         diseaseRepository.save(disease);
         diseaseRepository.save(disease2);
         AnnotationSource source = new AnnotationSource(publication, disease);
+        AnnotationSource source2 = new AnnotationSource(publication2, disease);
         annotationSourceRepository.save(source);
+        annotationSourceRepository.save(source2);
     }
 }

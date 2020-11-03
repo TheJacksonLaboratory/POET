@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HpoService } from "../../../shared/services/hpo.service";
-import { FormControl } from "@angular/forms";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { debounceTime, distinctUntilChanged, finalize } from "rxjs/operators";
 
 @Component({
@@ -9,11 +9,14 @@ import { debounceTime, distinctUntilChanged, finalize } from "rxjs/operators";
   styleUrls: ['./maxo-curation.component.scss']
 })
 export class MaxoCurationComponent implements OnInit {
-
-  maxoFormControl = new FormControl();
-  hpoFormControl = new FormControl();
+  maxoFormControl = new FormControl('', Validators.required);
+  hpoFormControl = new FormControl('', Validators.required);
+  evidenceFormControl = new FormControl('', Validators.required);
+  relationFormControl = new FormControl('', Validators.required);
   selectedMaxo: any;
   selectedHpo: any;
+  description: string;
+  extension: string;
   constructor(public hpoService: HpoService) { }
 
   ngOnInit(): void {

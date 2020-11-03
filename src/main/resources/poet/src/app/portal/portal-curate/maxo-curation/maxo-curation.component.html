@@ -1,32 +1,80 @@
 <mat-card class="maxo-card">
   <mat-card-title>
-    Medical Action Ontology [ MAxO ]
+    New Annotation
   </mat-card-title>
   <mat-card-subtitle>
-    New Annotation
+    for <br>
+   <strong>Medical Action Ontology [ MAxO ]</strong>
   </mat-card-subtitle>
   <mat-card-content>
-    <mat-form-field appearance="outline">
-      <mat-label>MAxO Term</mat-label>
-      <input matInput placeholder="Find a MAxO Term" [formControl]="maxoFormControl" ngDefaultControl>
-      <button mat-button *ngIf="maxoFormControl.value != ''" matSuffix mat-icon-button aria-label="Clear" (click)="resetMaxoForm()">
-        <mat-icon>close</mat-icon>
-      </button>
-      <mat-hint *ngIf="!selectedMaxo">Some example maxo term</mat-hint>
-      <mat-error *ngIf="maxoFormControl.hasError('notFound')">
-        Looks like there was an error with the MAxO API.
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>HPO Term</mat-label>
-      <input matInput placeholder="Find a HPO Term" [formControl]="hpoFormControl" ngDefaultControl>
-      <button mat-button *ngIf="hpoFormControl.value != ''" matSuffix mat-icon-button aria-label="Clear" (click)="resetHpoForm()">
-        <mat-icon>close</mat-icon>
-      </button>
-      <mat-hint *ngIf="!selectedHpo">Arachnodactyly</mat-hint>
-      <mat-error *ngIf="maxoFormControl.hasError('notFound')">
-        Looks like there was an error with the HPO API.
-      </mat-error>
-    </mat-form-field>
+      <div class="form-content-section">
+      <mat-form-field class="maxo-form" appearance="fill">
+        <mat-label>MAxO Term</mat-label>
+        <input matInput placeholder="Find a MAxO Term" [formControl]="maxoFormControl" ngDefaultControl>
+        <button mat-button *ngIf="maxoFormControl.value != ''" matSuffix mat-icon-button aria-label="Clear" (click)="resetMaxoForm()">
+          <mat-icon>close</mat-icon>
+        </button>
+        <mat-hint *ngIf="!selectedMaxo">Some example maxo term</mat-hint>
+        <mat-error *ngIf="maxoFormControl.hasError('notFound')">
+          Looks like there was an error with the MAxO API.
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-content-section">
+      <mat-form-field class="maxo-form" appearance="fill">
+        <mat-label>HPO Term</mat-label>
+        <input matInput placeholder="Find a HPO Term" [formControl]="hpoFormControl" ngDefaultControl>
+        <button mat-button *ngIf="hpoFormControl.value != ''" matSuffix mat-icon-button aria-label="Clear" (click)="resetHpoForm()">
+          <mat-icon>close</mat-icon>
+        </button>
+        <mat-hint *ngIf="!selectedHpo">Arachnodactyly</mat-hint>
+        <mat-error *ngIf="maxoFormControl.hasError('notFound')">
+          Looks like there was an error with the HPO API.
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-content-section">
+      <mat-form-field appearance="fill">
+        <mat-label>Evidence</mat-label>
+        <mat-select [formControl]="evidenceFormControl">
+          <mat-option [value]="'TAS'">TAS</mat-option>
+          <mat-option [value]="'IEA'">IEA</mat-option>
+          <mat-option [value]="'PCS'">PCS</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="form-content-section">
+      <mat-form-field appearance="fill">
+        <mat-label>Relation</mat-label>
+        <mat-select [formControl]="relationFormControl" >
+          <mat-option [value]="'TREATS'">TREATS</mat-option>
+          <mat-option [value]="'PREVENTS'">PREVENTS</mat-option>
+          <mat-option [value]="'INVESTIGATES'">INVESTIGATES</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </mat-card-content>
+  <div class="form-content-section">
+    <mat-form-field class="maxo-form">
+      <mat-label>CHEBI Extension</mat-label>
+      <input matInput type="text" [(ngModel)]="extension">
+      <button mat-button *ngIf="extension" matSuffix mat-icon-button aria-label="Clear" (click)="extension=''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <div class="form-content-section">
+    <mat-form-field class="maxo-form">
+      <mat-label>Additional Annotation Description</mat-label>
+      <input matInput type="text" [(ngModel)]="description">
+      <button mat-button *ngIf="description" matSuffix mat-icon-button aria-label="Clear" (click)="description=''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  <mat-card-actions>
+    <button mat-raised-button color="primary">SUBMIT</button>
+    <button mat-stroked-button>CLEAR</button>
+  </mat-card-actions>
 </mat-card>

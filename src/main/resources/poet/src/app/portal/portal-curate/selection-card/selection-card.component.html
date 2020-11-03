@@ -1,4 +1,4 @@
-<mat-card class="selection-card" *ngIf="(selectedDisease || selectedPublication) && activeType">
+<mat-card [@bounceInLeft]="triggerBounceIn" class="selection-card" *ngIf="(selectedDisease || selectedPublication) && activeType">
   <mat-card-title>
     <div *ngIf="selectedDisease">
       <span class="title-name">{{selectedDisease.diseaseName}}</span>&nbsp;
