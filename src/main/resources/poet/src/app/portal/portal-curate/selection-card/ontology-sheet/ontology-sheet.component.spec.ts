@@ -1,20 +1,27 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OntologySheetComponent } from './ontology-sheet.component';
+import { OntologySheet } from './ontology-sheet.component';
+import { SharedModule } from "../../../../shared/shared.module";
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from "@angular/material/bottom-sheet";
 
 describe('OntologySheetComponent', () => {
-  let component: OntologySheetComponent;
-  let fixture: ComponentFixture<OntologySheetComponent>;
+  let component: OntologySheet;
+  let fixture: ComponentFixture<OntologySheet>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OntologySheetComponent ]
+      declarations: [ OntologySheet ],
+      imports: [ SharedModule ],
+      providers: [
+        { provide: MatBottomSheetRef, useValue: {} },
+        { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} }
+        ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OntologySheetComponent);
+    fixture = TestBed.createComponent(OntologySheet);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

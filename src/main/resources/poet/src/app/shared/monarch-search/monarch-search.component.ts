@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl } from "@angular/forms";
 import { debounceTime, distinctUntilChanged, finalize, switchMap, tap } from "rxjs/operators";
 import { MonarchService } from "../services/monarch.service";
-import { MonarchSearchResult } from "../models/models";
+import { MonarchSearchResult } from "../models/search-models";
 import { of } from "rxjs/internal/observable/of";
 
 @Component({

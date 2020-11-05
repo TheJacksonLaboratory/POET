@@ -10,10 +10,11 @@
   }
 
   & .form-content-section {
-    width: 50%;
+    width: 60%;
+    min-width: 300px;
     margin: 1.25rem auto 0 auto;
     & .maxo-form {
-      width: 100%
+      width: 100%;
     }
   }
 

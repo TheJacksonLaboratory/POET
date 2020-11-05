@@ -21,7 +21,7 @@ export const environment = {
   POET_API_DISEASE_ENTITY_URL: POET_BASE_URL + '/entity/disease/',
   POET_API_PUBLICATION_ENTITY_URL: POET_BASE_URL + '/entity/publication/',
   HPO_API_HPO_SEARCH_URL: HPO_BASE_URL + 'hpo/search',
-  HPO_API_MAXO_SEARCH_URL: HPO_BASE_URL + 'maxo/search/maxo',
+  HPO_API_MAXO_SEARCH_URL: HPO_BASE_URL + 'maxo/search/',
   MONARCH_SEARCH_URL: MONARCH_BASE_URL + '/search/entity/autocomplete/',
   PUBMED_SUMMARY_URL: PUBMED_BASE_URL + 'esummary.fcgi'
 };

@@ -1,14 +1,3 @@
-export interface SearchResult {
-  type: string;
-  id: string;
-  name: string;
-}
-
-export interface MonarchSearchResult {
-  match: string;
-  id: string;
-}
-
 export interface Annotation {
   type: string;
   status: string;

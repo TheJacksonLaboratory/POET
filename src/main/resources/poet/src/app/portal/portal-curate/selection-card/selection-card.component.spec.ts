@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SelectionCardComponent } from './selection-card.component';
 import { CurationService } from "../../../shared/services/curation.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { SharedModule } from "../../../shared/shared.module";
 
 describe('SelectionCardComponent', () => {
   let component: SelectionCardComponent;
@@ -12,7 +13,7 @@ describe('SelectionCardComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ SelectionCardComponent ],
       providers: [ CurationService ],
-      imports: [ HttpClientTestingModule ]
+      imports: [ HttpClientTestingModule, SharedModule ]
     })
     .compileComponents();
   }));
