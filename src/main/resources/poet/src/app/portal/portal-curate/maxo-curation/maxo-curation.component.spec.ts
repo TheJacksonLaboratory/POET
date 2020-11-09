@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MaxoCurationComponent } from './maxo-curation.component';
-import { HpoService } from "../../../shared/services/hpo.service";
+import { HpoService } from "../../../shared/services/external/hpo.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { SharedModule } from "../../../shared/shared.module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";

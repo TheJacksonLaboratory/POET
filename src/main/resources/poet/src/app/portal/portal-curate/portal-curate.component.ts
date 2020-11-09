@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogCurationComponent } from "./dialog-curation/dialog-curation.component";
-import { CurationService } from "../../shared/services/curation.service";
+import { CurationService } from "../../shared/services/curation/curation.service";
 import { AuthService } from "@auth0/auth0-angular";
 import { transition, trigger, useAnimation } from "@angular/animations";
 import { bounceInLeft } from "ng-animate";
+import { StateService } from "../../shared/services/state/state.service";
 
 @Component({
   selector: 'app-portal-curate',
@@ -22,17 +23,17 @@ export class PortalCurateComponent implements OnInit {
   currentStep: string = "selection";
   selectionType: string;
   selectionId: string;
-  sourceSelected: boolean = false;
   selectedOntology: string;
   showLoader: boolean = false;
   fxLayout: string = "column";
   fxLayoutAlign: string = "space-around center";
   fxFlexAnnotations: string;
   fxFlexForm: string;
-  shouldAnimateMove: boolean = false;
+  sourceAndOntologySelected: boolean = false;
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog,
-              public curationService: CurationService, public auth: AuthService) {
+              public curationService: CurationService, public stateService: StateService,
+              public auth: AuthService) {
   }
 
   ngOnInit(): void {
@@ -55,11 +56,9 @@ export class PortalCurateComponent implements OnInit {
               if (result.disease) {
                 this.selectionType = 'disease';
                 this.selectionId = result.disease.id;
-                this.selectedOntology = result.ontology;
               } else if (result.publication) {
                 this.selectionType = 'publication';
                 this.selectionId = result.publication.id;
-                this.selectedOntology = result.ontology;
               }
             } else if (result.action === 'create') {
               // TODO: Have creating source an option.
@@ -68,20 +67,17 @@ export class PortalCurateComponent implements OnInit {
         });
       }
     });
-  }
 
-  /**
-   * On Source Selection move card to display 2.
-   * @param source
-   */
-  onSourceSelection(source: any) {
-    this.sourceSelected = true;
-    this.selectedOntology = source.ontology;
-    this.fxLayout = "row";
-    this.fxLayoutAlign = "start stretch";
-    this.fxFlexAnnotations = "50";
-    this.fxFlexForm = "50";
-    this.shouldAnimateMove = true;
+    this.stateService.selectedOntology.subscribe( (ontology) => this.selectedOntology = ontology);
+    this.stateService.sourceAndOntologySelected.subscribe((selected) => {
+      if(selected){
+        this.fxLayout = "row";
+        this.fxLayoutAlign = "start stretch";
+        this.fxFlexAnnotations = "50";
+        this.fxFlexForm = "50";
+        this.sourceAndOntologySelected = selected;
+      }
+    });
   }
 
   /**
@@ -104,5 +100,17 @@ export class PortalCurateComponent implements OnInit {
    */
   doingWork(working: boolean) {
     this.showLoader = working;
+  }
+
+  shouldShowSourceSelection () {
+    return this.selectionType && this.selectionId && !this.sourceAndOntologySelected;
+  }
+
+  shouldShowMaxoCard() {
+    return this.sourceAndOntologySelected && this.selectedOntology === 'maxo';
+  }
+
+  shouldShowHpoCard() {
+    return this.sourceAndOntologySelected && this.selectedOntology === 'hpo';
   }
 }

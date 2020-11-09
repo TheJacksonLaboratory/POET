@@ -80,16 +80,18 @@
       <mat-form-field class="maxo-form">
         <mat-label>CHEBI Extension</mat-label>
         <input matInput type="text" formControlName="extensionFormControl">
-        <button mat-button *ngIf="extension" matSuffix mat-icon-button aria-label="Clear" (click)="extension=''">
+        <button mat-button *ngIf="formControlGroup.get('extensionFormControl').value != ''" matSuffix mat-icon-button aria-label="Clear"
+                (click)="formControlGroup.get('extensionFormControl').reset()">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>
     </div>
     <div class="form-content-section">
       <mat-form-field class="maxo-form">
-        <mat-label>Additional Annotation Description</mat-label>
-        <input matInput type="text" formControlName="descriptionFormControl">
-        <button mat-button *ngIf="description" matSuffix mat-icon-button aria-label="Clear" (click)="description=''">
+        <mat-label>Additional Annotation Comment</mat-label>
+        <input matInput type="text" formControlName="commentFormControl">
+        <button mat-button *ngIf="formControlGroup.get('commentFormControl').value != ''" matSuffix mat-icon-button aria-label="Clear"
+                (click)="formControlGroup.get('commentFormControl').reset()">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>

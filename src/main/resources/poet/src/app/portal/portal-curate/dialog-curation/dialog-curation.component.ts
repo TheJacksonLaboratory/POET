@@ -3,9 +3,10 @@ import { ErrorStateMatcher } from "@angular/material/core";
 import { FormControl, FormGroupDirective, NgForm, Validators } from "@angular/forms";
 import { MatDialogRef } from "@angular/material/dialog";
 import { SearchResult } from "../../../shared/models/search-models";
-import { CurationService } from "../../../shared/services/curation.service";
+import { CurationService } from "../../../shared/services/curation/curation.service";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
-import { PubmedService } from "../../../shared/services/pubmed.service";
+import { PubmedService } from "../../../shared/services/external/pubmed.service";
+import { StateService } from "../../../shared/services/state/state.service";
 
 @Component({
   selector: 'app-dialog-curation',
@@ -29,7 +30,8 @@ export class DialogCurationComponent implements OnInit {
   matcher = new DialogErrorStateMatcher();
 
   constructor(public dialogRef: MatDialogRef<DialogCurationComponent>,
-              private curationService: CurationService, private pubmedService: PubmedService) {
+              private curationService: CurationService, private pubmedService: PubmedService,
+              private stateService: StateService) {
   }
 
   ngOnInit(): void {
@@ -57,7 +59,6 @@ export class DialogCurationComponent implements OnInit {
     if (!this.selectedExisting) {
       this.dialogRef.close(
         {
-          'ontology': this.selectedOntology,
           'publication': this.selectedPublication,
           'disease': this.selectedDisease,
           'action': 'create'
@@ -65,11 +66,11 @@ export class DialogCurationComponent implements OnInit {
     } else {
       this.dialogRef.close(
         {
-          'ontology': this.selectedOntology,
           'publication': this.selectedPublication,
           'disease': this.selectedDisease,
           'action': 'fetch'
         });
+      this.stateService.setSelectedOntology(this.selectedOntology);
     }
   }
 

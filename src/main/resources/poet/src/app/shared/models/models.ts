@@ -8,6 +8,7 @@ export interface AnnotationSource {
   id?: number;
   publication: Publication;
   disease: Disease;
+  ontology?: string;
 }
 
 export interface Publication {
@@ -28,7 +29,7 @@ export interface MaxoAnnotation extends Annotation {
   maxoName: string;
   hpoName: string;
   hpoId: string;
-  eco: string;
+  evidence: string;
   comment: string;
   relation: string;
   extension: string;

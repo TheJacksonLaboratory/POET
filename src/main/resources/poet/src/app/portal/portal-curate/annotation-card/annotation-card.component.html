@@ -1,0 +1,36 @@
+<mat-card [@bounceInLeft]="triggerBounceIn" class="selection-card">
+  <mat-card-title>
+    Annotation Source
+    <div class="disease">
+      <span class="title-name">{{disease.diseaseName}}</span>&nbsp;
+      <span class="title-id">{{disease.diseaseId}}</span>
+    </div>
+    <div class="publication">
+      <span class="title-name">{{publication.publicationName}}</span>&nbsp;
+      <span class="title-id">{{publication.publicationId}}</span>
+    </div>
+  </mat-card-title>
+  <mat-card-subtitle>
+    Annotation Source
+  </mat-card-subtitle>
+  <mat-card-content>
+    <mat-selection-list #maxo [multiple]="false" (selectionChange)="onSelectedListItem($event.option.value)">
+      <mat-list-option class="selection-wrapper" *ngFor="let maxo of maxoAnnotations | async" [value]="disease">
+        <mat-icon matListIcon>coronavirus</mat-icon>
+        <div class="selection-text">
+          {{maxo.maxoName}}
+          <span class="selection-id">{{maxo.maxoId}}</span>
+        </div>
+      </mat-list-option>
+    </mat-selection-list>
+<!--    <mat-selection-list #hpo [multiple]="false" (selectionChange)="onSelectedListItem($event.option.value)">-->
+<!--      <mat-list-option class="selection-wrapper" *ngFor="let publication of annotatedPublications$ | async" [value]="publication">-->
+<!--        <mat-icon matListIcon>library_books</mat-icon>-->
+<!--        <div class="selection-text">-->
+<!--          {{publication.publicationName}}-->
+<!--          <span class="selection-id">{{publication.publicationId}}</span>-->
+<!--        </div>-->
+<!--      </mat-list-option>-->
+<!--    </mat-selection-list>-->
+  </mat-card-content>
+</mat-card>

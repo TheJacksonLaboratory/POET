@@ -1,14 +1,8 @@
 <mat-progress-bar *ngIf="showLoader && !(auth.isLoading$ | async)" color="accent" mode="indeterminate"></mat-progress-bar>
 <div class="curation-container" [fxLayout]="fxLayout" [fxLayoutAlign]="fxLayoutAlign">
-  <app-selection-card [fxFlex]="fxFlexAnnotations" [activeType]="selectionType" [activeId]="selectionId"
-                      [activeOntology]="selectedOntology" (working)="doingWork($event)"
-                      (sourceSelection)="onSourceSelection($event)"></app-selection-card>
-  <div *ngIf="selectedOntology && sourceSelected" class="curation-cards" [fxFlex]="fxFlexForm" [@bounceInLeft]="shouldAnimateMove">
-    <div *ngIf="selectedOntology === 'maxo'">
-      <app-maxo-curation></app-maxo-curation>
-    </div>
-    <div *ngIf="selectedOntology === 'hpo'">
-      <app-hpo-curation></app-hpo-curation>
-    </div>
-  </div>
+  <app-source-selection-card [fxFlex]="fxFlexAnnotations" [activeType]="selectionType" [activeId]="selectionId"
+                      (working)="doingWork($event)" *ngIf="shouldShowSourceSelection()"></app-source-selection-card>
+  <app-annotation-card [fxFlex]="fxFlexAnnotations" *ngIf="sourceAndOntologySelected"></app-annotation-card>
+  <app-maxo-curation [fxFlex]="fxFlexForm" [@bounceInLeft]="sourceAndOntologySelected" *ngIf="shouldShowMaxoCard()"></app-maxo-curation>
+  <app-hpo-curation [fxFlex]="fxFlexForm" [@bounceInLeft]="sourceAndOntologySelected" *ngIf="shouldShowHpoCard()"></app-hpo-curation>
 </div>

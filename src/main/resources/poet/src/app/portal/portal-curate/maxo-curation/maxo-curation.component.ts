@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { HpoService } from "../../../shared/services/hpo.service";
+import { Component, Input, OnInit } from '@angular/core';
+import { HpoService } from "../../../shared/services/external/hpo.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { HpoTerm, MaxoSearchResult, MaxoTerm } from "../../../shared/models/search-models";
+import { AnnotationSource, MaxoAnnotation } from "../../../shared/models/models";
+import { CurationService } from "../../../shared/services/curation/curation.service";
+import { StateService } from "../../../shared/services/state/state.service";
+import { forkJoin, Observable } from "rxjs";
 
 @Component({
   selector: 'app-maxo-curation',
@@ -10,29 +14,33 @@ import { HpoTerm, MaxoSearchResult, MaxoTerm } from "../../../shared/models/sear
   styleUrls: ['./maxo-curation.component.scss']
 })
 export class MaxoCurationComponent implements OnInit {
+
+
+  @Input('selectedSource') annotationSource: AnnotationSource;
   selectedMaxo: MaxoTerm;
   selectedHpo: HpoTerm;
-  description: string;
-  extension: string;
   maxoOptions: MaxoSearchResult[];
   hpoOptions: HpoTerm[];
+  response: string;
+  showMaxoForm: boolean = false;
   formControlGroup: FormGroup = new FormGroup({
     maxoFormControl: new FormControl('', Validators.required),
     hpoFormControl: new FormControl('', Validators.required),
     evidenceFormControl: new FormControl('', Validators.required),
     relationFormControl: new FormControl('', Validators.required),
-    extensionFormControl: new FormControl('', Validators.required),
-    descriptionFormControl: new FormControl('', Validators.required),
+    extensionFormControl: new FormControl(''), // Make a custom validator for chebi
+    commentFormControl: new FormControl(''),
   });
 
-  constructor(public hpoService: HpoService) {
+  constructor(public hpoService: HpoService,
+              public curationService: CurationService,
+              public stateService: StateService) {
   }
 
   ngOnInit(): void {
     this.formControlGroup.get("maxoFormControl").valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
-        // Make request to pubmed
         if (query && query.length >= 3) {
           this.hpoService.searchMaxoTerms(query).subscribe((data) => {
             if (!data) {
@@ -48,7 +56,6 @@ export class MaxoCurationComponent implements OnInit {
     this.formControlGroup.get("hpoFormControl").valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
-        // Make request to pubmed
         if (query && query.length > 3) {
           this.hpoService.searchHPOTerms(query).subscribe((data) => {
             if (!data) {
@@ -62,8 +69,21 @@ export class MaxoCurationComponent implements OnInit {
       });
   }
 
-  submitForm() {
-    //TODO: Do some funky stuff here
+  submitForm(): void {
+    const maxoAnnotation = {
+      maxoId: this.formControlGroup.get('maxoFormControl').value.ontologyId.toString(),
+      maxoName: this.formControlGroup.get('maxoFormControl').value.name,
+      hpoId: this.formControlGroup.get('hpoFormControl').value.id,
+      hpoName: this.formControlGroup.get('hpoFormControl').value.name,
+      evidence: this.formControlGroup.get('evidenceFormControl').value,
+      relation: this.formControlGroup.get('relationFormControl').value,
+      comment: this.formControlGroup.get('commentFormControl').value,
+    }
+    this.curationService.saveMaxoAnnotation(maxoAnnotation).subscribe(() =>{
+      this.response = "ha";
+    }, (err) => {
+      this.response = "you fucked up!";
+    });
   }
 
   resetMaxoForm() {

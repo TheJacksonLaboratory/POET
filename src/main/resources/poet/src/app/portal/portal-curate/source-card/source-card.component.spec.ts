@@ -1,17 +1,17 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SelectionCardComponent } from './selection-card.component';
-import { CurationService } from "../../../shared/services/curation.service";
+import { SourceCardComponent } from './source-card.component';
+import { CurationService } from "../../../shared/services/curation/curation.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { SharedModule } from "../../../shared/shared.module";
 
 describe('SelectionCardComponent', () => {
-  let component: SelectionCardComponent;
-  let fixture: ComponentFixture<SelectionCardComponent>;
+  let component: SourceCardComponent;
+  let fixture: ComponentFixture<SourceCardComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SelectionCardComponent ],
+      declarations: [ SourceCardComponent ],
       providers: [ CurationService ],
       imports: [ HttpClientTestingModule, SharedModule ]
     })
@@ -19,7 +19,7 @@ describe('SelectionCardComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SelectionCardComponent);
+    fixture = TestBed.createComponent(SourceCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
