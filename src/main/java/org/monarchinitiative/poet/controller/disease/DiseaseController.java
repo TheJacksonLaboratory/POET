@@ -1,6 +1,7 @@
-package org.monarchinitiative.poet.controller;
+package org.monarchinitiative.poet.controller.disease;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.monarchinitiative.poet.exceptions.DiseaseNotFoundException;
 import org.monarchinitiative.poet.model.entities.Disease;
 import org.monarchinitiative.poet.model.entities.Publication;
 import org.monarchinitiative.poet.service.EntityService;
@@ -25,7 +26,12 @@ public class DiseaseController {
     @JsonView(DiseaseViews.Simple.class)
     @GetMapping(value = "/{id}", headers = "Accept=application/json")
     public Disease getDiseaseWithAnnotations(@PathVariable(value="id") String id){
-        return this.entityService.getDisease(id);
+        Disease disease = this.entityService.getDisease(id);
+        if(disease != null){
+            return this.entityService.getDisease(id);
+        } else {
+            throw new DiseaseNotFoundException(id);
+        }
     }
 
     @JsonView(PublicationViews.Simple.class)

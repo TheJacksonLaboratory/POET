@@ -6,6 +6,7 @@ import org.monarchinitiative.poet.repository.DiseaseRepository;
 import org.monarchinitiative.poet.repository.PublicationRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -28,7 +29,12 @@ public class EntityService {
     }
 
     public List<Publication> getDiseasePublications(String id){
-        return this.diseaseRepository.findDiseaseByDiseaseId(id).getPublications();
+        Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(id);
+        if(disease != null){
+            return disease.getPublications();
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     public Publication getPublication(String id){
@@ -36,7 +42,12 @@ public class EntityService {
     }
 
     public List<Disease> getPublicationDiseases(String id){
-        return this.publicationRepository.findByPublicationId(id).getDiseases();
+        Publication publication = this.publicationRepository.findByPublicationId(id);
+        if(publication != null) {
+            return publication.getDiseases();
+        } else {
+            return Collections.emptyList();
+        }
     }
 
 

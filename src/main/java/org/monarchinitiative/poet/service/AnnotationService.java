@@ -7,6 +7,9 @@ import org.monarchinitiative.poet.repository.MaxoAnnotationRepository;
 import org.monarchinitiative.poet.repository.PublicationRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
+
 @Service
 public class AnnotationService {
 
@@ -44,6 +47,19 @@ public class AnnotationService {
         return new RareDiseaseAnnotation();
     }
 
+    public List<MaxoAnnotation> getMaxoAnnotation(String publicationId, String diseaseId, String sort) {
+            final AnnotationSource annotationSource = getAnnotationSource(publicationId, diseaseId);
+            if(annotationSource != null){
+                List<MaxoAnnotation> annotations = this.maxoAnnotationRepository.findDistinctByAnnotationSource(annotationSource);
+                if(annotations.size() > 0){
+                    return annotations;
+                } else {
+                    return Collections.emptyList();
+                }
+            }
+            return null;
+    }
+
     /**
      * Create a MaXo annotation with a pending review status.
      * enforcing business rules with the status of the annotation
@@ -52,22 +68,23 @@ public class AnnotationService {
      * @return boolean created
      */
     public boolean createMaxoAnnotation(MaxoRequest maxoRequest) {
-        Publication publication = publicationRepository.findByPublicationId(maxoRequest.getPublicationIdentifier());
-        Disease disease = diseaseRepository.findDiseaseByDiseaseId(maxoRequest.getDiseaseId());
-        AnnotationSource annotationSource;
-        if(disease != null && publication != null){
-            // We have a valid publication and a valid disease, do we have an annotation source for them?
-            annotationSource = annotationSourceRepository.findByPublicationAndDisease(publication, disease);
-            if(annotationSource == null){
-                // Couldn't find a valid source, create it and continue.
-                annotationSource = new AnnotationSource(publication, disease);
-                annotationSourceRepository.save(annotationSource);
-            }
-            MaxoAnnotation annotation = new MaxoAnnotation(maxoRequest, annotationSource);
+        // We have a valid publication and a valid disease, do we have an annotation source for them?
+        final AnnotationSource annotationSource = getAnnotationSource(maxoRequest.getPublicationId(),maxoRequest.getDiseaseId());
+        if(annotationSource != null){
+            final MaxoAnnotation annotation = new MaxoAnnotation(maxoRequest, annotationSource);
             maxoAnnotationRepository.save(annotation);
             return true;
         }
         return false;
+    }
+
+    private AnnotationSource getAnnotationSource(String publicationId, String diseaseId){
+        final Publication publication = publicationRepository.findByPublicationId(publicationId);
+        final Disease disease = diseaseRepository.findDiseaseByDiseaseId(diseaseId);
+        if(disease !=null && publication != null) {
+            return annotationSourceRepository.findByPublicationAndDisease(publication, disease);
+        }
+        return null;
     }
 
 
