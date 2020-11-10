@@ -25,10 +25,10 @@ export class PortalCurateComponent implements OnInit {
   selectionId: string;
   selectedOntology: string;
   showLoader: boolean = false;
-  fxLayout: string = "column";
-  fxLayoutAlign: string = "space-around center";
-  fxFlexAnnotations: string;
-  fxFlexForm: string;
+  fxLayout: string = "row";
+  fxLayoutAlign: string = "start stretch";
+  fxFlexAnnotations: string = "33";
+  fxFlexForm: string = "33";
   sourceAndOntologySelected: boolean = false;
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog,

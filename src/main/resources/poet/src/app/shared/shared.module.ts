@@ -19,9 +19,11 @@ import { MonarchSearchComponent } from './monarch-search/monarch-search.componen
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
+import { ErrorSnackComponent } from './error-snack/error-snack.component';
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 @NgModule({
-  declarations: [SearchComponent, MonarchSearchComponent],
+  declarations: [SearchComponent, MonarchSearchComponent, ErrorSnackComponent],
   imports: [
     CommonModule,
     MatToolbarModule,
@@ -42,7 +44,8 @@ import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatDividerModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    MatSnackBarModule
   ],
   exports: [
     MatToolbarModule,
@@ -65,6 +68,7 @@ import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
     SearchComponent,
     MatProgressSpinnerModule,
     MatBottomSheetModule,
+    MatSnackBarModule,
     MonarchSearchComponent
   ]
 })

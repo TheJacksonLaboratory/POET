@@ -8,6 +8,7 @@ import { MatBottomSheet } from "@angular/material/bottom-sheet";
 import { transition, trigger, useAnimation } from "@angular/animations";
 import { bounceInLeft } from "ng-animate";
 import { StateService } from "../../../shared/services/state/state.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-source-selection-card',
@@ -32,7 +33,7 @@ export class SourceCardComponent implements OnChanges, OnInit {
   triggerBounceIn: boolean = false;
   showSourceCard: boolean = true;
   constructor(public curationService: CurationService,
-              private ontologySheet: MatBottomSheet, private stateService: StateService) {
+              private ontologySheet: MatBottomSheet, private stateService: StateService, private route: Router) {
 
   }
 
@@ -44,7 +45,9 @@ export class SourceCardComponent implements OnChanges, OnInit {
       this.workEvent.emit(true);
       this.curationService.getDisease(this.id).pipe(
         finalize(() => this.workEvent.emit(false))
-      ).subscribe((disease) => this.selectedDisease = disease);
+      ).subscribe((disease) => this.selectedDisease = disease, (error) => {
+          this.route.navigate(['portal/dashboard'], {state: {error:true, message: error.text }});
+      });
       this.annotatedPublications$ = this.curationService.getDiseasePublications(this.id);
     } else if (this.isActiveTypePublication()) {
       this.workEvent.emit(true);
