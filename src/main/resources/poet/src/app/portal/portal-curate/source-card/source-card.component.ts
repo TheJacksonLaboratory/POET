@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
 import { finalize } from "rxjs/operators";
 import { OntologySheet } from "./ontology-sheet/ontology-sheet.component";
 import { MatBottomSheet } from "@angular/material/bottom-sheet";
-import { transition, trigger, useAnimation } from "@angular/animations";
+import { animate, query, stagger, style, transition, trigger, useAnimation } from "@angular/animations";
 import { bounceInLeft } from "ng-animate";
 import { StateService } from "../../../shared/services/state/state.service";
 import { Router } from "@angular/router";
@@ -13,12 +13,7 @@ import { Router } from "@angular/router";
 @Component({
   selector: 'app-source-selection-card',
   templateUrl: './source-card.component.html',
-  styleUrls: ['./source-card.component.scss'],
-  animations: [
-    trigger('bounceInLeft', [transition("0 => 1", useAnimation(bounceInLeft, {
-      params: {timing: .5}
-    }))]),
-  ]
+  styleUrls: ['./source-card.component.scss']
 })
 export class SourceCardComponent implements OnChanges, OnInit {
 
@@ -30,8 +25,7 @@ export class SourceCardComponent implements OnChanges, OnInit {
   selectedPublication: Publication;
   annotatedDiseases$: Observable<Disease[]>;
   annotatedPublications$: Observable<Publication[]>;
-  triggerBounceIn: boolean = false;
-  showSourceCard: boolean = true;
+
   constructor(public curationService: CurationService,
               private ontologySheet: MatBottomSheet, private stateService: StateService, private route: Router) {
 
@@ -45,7 +39,10 @@ export class SourceCardComponent implements OnChanges, OnInit {
       this.workEvent.emit(true);
       this.curationService.getDisease(this.id).pipe(
         finalize(() => this.workEvent.emit(false))
-      ).subscribe((disease) => this.selectedDisease = disease, (error) => {
+      ).subscribe((disease) => {
+        this.selectedDisease = disease
+        this.stateService.setSelectedDisease(disease);
+      }, (error) => {
           this.route.navigate(['portal/dashboard'], {state: {error:true, message: error.text }});
       });
       this.annotatedPublications$ = this.curationService.getDiseasePublications(this.id);
@@ -53,10 +50,11 @@ export class SourceCardComponent implements OnChanges, OnInit {
       this.workEvent.emit(true);
       this.curationService.getPublication(this.id).pipe(
         finalize(() => this.workEvent.emit(false))
-      ).subscribe((publication) => this.selectedPublication = publication);
+      ).subscribe((publication) =>
+        this.selectedPublication = publication
+      );
       this.annotatedDiseases$ = this.curationService.getPublicationDiseases(this.id);
     }
-    this.triggerBounceIn = true;
   }
 
   /**

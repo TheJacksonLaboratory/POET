@@ -1,8 +1,30 @@
-<mat-progress-bar *ngIf="showLoader && !(auth.isLoading$ | async)" color="accent" mode="indeterminate"></mat-progress-bar>
-<div class="curation-container" [fxLayout]="fxLayout" [fxLayoutAlign]="fxLayoutAlign">
-  <app-source-selection-card [fxFlex]="fxFlexAnnotations" [activeType]="selectionType" [activeId]="selectionId"
-                      (working)="doingWork($event)" *ngIf="shouldShowSourceSelection()"></app-source-selection-card>
-  <app-annotation-card [fxFlex]="fxFlexAnnotations" *ngIf="sourceAndOntologySelected"></app-annotation-card>
-  <app-maxo-curation [fxFlex]="fxFlexForm" [@bounceInLeft]="sourceAndOntologySelected" *ngIf="shouldShowMaxoCard()"></app-maxo-curation>
-  <app-hpo-curation [fxFlex]="fxFlexForm" [@bounceInLeft]="sourceAndOntologySelected" *ngIf="shouldShowHpoCard()"></app-hpo-curation>
+<div class="portal-curate">
+  <mat-toolbar class="top-banner" *ngIf="selectedDisease && selectedDisease.diseaseId != null">
+    <mat-toolbar-row>
+      <h2 class="display-name">{{selectedDisease.diseaseName}} &nbsp; <span class="display-id">{{selectedDisease.diseaseId}}</span></h2>
+      <span class="spacer"></span>
+      <div class="search-wrapper">
+        <app-search></app-search>
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <div class="nav-tab-container" *ngIf="selectedDisease && selectedDisease.diseaseId != null">
+    <nav mat-tab-nav-bar color="primary">
+      <a *ngFor="let annotation of annotationItems"
+         (click)="changeOntology(annotation.value)"
+         mat-tab-link
+         [active]="this.selectedOntology == annotation.value">
+        <mat-icon matListIcon> {{ annotation.icon }} </mat-icon>
+        &nbsp;{{annotation.display}}
+      </a>
+    </nav>
+  </div>
+  <div class="curation-container" [fxLayout]="fxLayout" [fxLayoutAlign]="fxLayoutAlign" [@fadeIn]="selectedOntology">
+    <app-source-selection-card [fxFlex]="fxFlexAnnotations" [activeType]="selectionType" [activeId]="selectionId"
+                               (working)="doingWork($event)" *ngIf="shouldShowSourceSelection()"></app-source-selection-card>
+    <app-annotation-card [fxFlex]="fxFlexAnnotations" *ngIf="selectedDisease"></app-annotation-card>
+    <app-maxo-curation [fxFlex]="fxFlexForm" *ngIf="shouldShowMaxoCard()"></app-maxo-curation>
+    <app-hpo-curation [fxFlex]="fxFlexForm" *ngIf="shouldShowHpoCard()"></app-hpo-curation>
+  </div>
 </div>
+

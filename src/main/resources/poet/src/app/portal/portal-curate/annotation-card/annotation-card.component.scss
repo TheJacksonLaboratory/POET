@@ -1,8 +1,6 @@
 .annotation-card {
-
-  .mat-card-title {
-    text-transform: uppercase;
-  }
+  box-shadow: none !important;
+  background-color: #393939;
   .mat-card-title, .mat-card-subtitle {
     text-align: center;
   }
@@ -16,5 +14,18 @@
       font-weight: 500;
       margin: 1rem;
     }
-   }
+  }
+
+  & .selection-id {
+    font-size: 1rem;
+    text-transform: capitalize;
+  }
+
+  & .add-annotation-btn {
+    color: white;
+  }
+
+  & .annotation-missing {
+      text-align: center;
+  }
 }

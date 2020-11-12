@@ -61,9 +61,13 @@ export class CurationService {
    * @param ontology
    * @param sort
    */
-  getMaxoAnnotations(publication: Publication, disease: Disease, ontology: string, sort: string): Observable<MaxoAnnotation[]>{
-    const params = new HttpParams().set("sort", sort).set("ontology", ontology);
-    return this.httpClient.get<any>(environment.POET_API_MAXO_ANNOTATION + `${publication.publicationId}/${disease.diseaseId}`, {params: params});
+  getMaxoAnnotations(disease: Disease, publication: Publication, sort: string): Observable<MaxoAnnotation[]>{
+    const params = new HttpParams().set("sort", sort);
+    if(publication != null){
+      return this.httpClient.get<any>(environment.POET_API_MAXO_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
+    } else {
+      return this.httpClient.get<any>(environment.POET_API_MAXO_ANNOTATION + disease.diseaseId, {params: params});
+    }
   }
 
   /**

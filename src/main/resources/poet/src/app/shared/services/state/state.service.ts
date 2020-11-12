@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
-import { AnnotationSource } from "../../models/models";
+import { AnnotationSource, Disease } from "../../models/models";
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +10,16 @@ export class StateService implements OnInit {
     publication: null,
     disease: null
   });
-  selectedOntologySubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
-  sourceAndOntologySelectedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  private selectedOntologySubject: BehaviorSubject<string> = new BehaviorSubject<string>('maxo');
+  private sourceAndOntologySelectedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private selectedDiseaseSubject: BehaviorSubject<Disease> = new BehaviorSubject<Disease>(null);
 
   selectedAnnotationSource: Observable<AnnotationSource> = this.selectedAnnotationSourceSubject.asObservable();
   selectedOntology: Observable<string> = this.selectedOntologySubject.asObservable();
   sourceAndOntologySelected: Observable<boolean> = this.sourceAndOntologySelectedSubject.asObservable();
+  selectedDisease: Observable<Disease> = this.selectedDiseaseSubject.asObservable();
+
 
   constructor() {
 
@@ -41,6 +45,10 @@ export class StateService implements OnInit {
     if(this.selectedOntologySubject.getValue() != ''){
       this.sourceAndOntologySelectedSubject.next(true);
     }
+  }
+
+  setSelectedDisease(disease: Disease){
+    this.selectedDiseaseSubject.next(disease);
   }
 
   getSelectedSource() {

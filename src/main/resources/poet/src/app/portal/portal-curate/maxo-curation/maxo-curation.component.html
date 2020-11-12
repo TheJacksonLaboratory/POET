@@ -3,8 +3,7 @@
     New Annotation
   </mat-card-title>
   <mat-card-subtitle>
-    for <br>
-   <strong>Medical Action Ontology [ MAxO ]</strong>
+   Medical Action Ontology [ MAxO ]
   </mat-card-subtitle>
   <mat-card-content>
     <form [formGroup]="formControlGroup">
@@ -100,7 +99,13 @@
   </mat-card-content>
 
   <mat-card-actions>
-    <button mat-raised-button color="primary" (click)="submitForm()">SUBMIT</button>
-    <button mat-stroked-button (click)="resetMaxoForm()">CLEAR</button>
+    <div class="left-actions">
+      <button mat-raised-button color="primary" (click)="submitForm()">SUBMIT</button>
+      <mat-spinner color="accent" [diameter]="20" mode="indeterminate" *ngIf="savingAnnotation"></mat-spinner>
+    </div>
+    <div class="right-actions">
+      <button mat-stroked-button>Save Draft</button>
+      <button mat-stroked-button (click)="resetMaxoForm()">Clear</button>
+    </div>
   </mat-card-actions>
 </mat-card>

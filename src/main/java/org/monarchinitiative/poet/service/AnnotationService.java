@@ -47,14 +47,30 @@ public class AnnotationService {
         return new RareDiseaseAnnotation();
     }
 
-    public List<MaxoAnnotation> getMaxoAnnotation(String publicationId, String diseaseId, String sort) {
-            final AnnotationSource annotationSource = getAnnotationSource(publicationId, diseaseId);
-            if(annotationSource != null){
-                List<MaxoAnnotation> annotations = this.maxoAnnotationRepository.findDistinctByAnnotationSource(annotationSource);
-                if(annotations.size() > 0){
-                    return annotations;
+    public List<MaxoAnnotation> getMaxoAnnotation(String diseaseId, String publicationId, String sort) {
+            // If publication get source, then annotations for that source
+            // Otherwise get all annotationSource
+            if(publicationId != null){
+                final AnnotationSource annotationSource = getAnnotationSource(publicationId, diseaseId);
+                if(annotationSource != null){
+                    List<MaxoAnnotation> annotations = this.maxoAnnotationRepository.findDistinctByAnnotationSource(annotationSource);
+                    if(annotations.size() > 0){
+                        return annotations;
+                    } else {
+                        return Collections.emptyList();
+                    }
+                }
+            } else {
+                Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
+                if(disease != null) {
+                    List<MaxoAnnotation> annotations = this.maxoAnnotationRepository.findAllByAnnotationSourceDisease(disease);
+                    if(annotations.size() > 0){
+                        return annotations;
+                    } else {
+                        return Collections.emptyList();
+                    }
                 } else {
-                    return Collections.emptyList();
+                    return null;
                 }
             }
             return null;

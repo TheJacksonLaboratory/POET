@@ -1,17 +1,9 @@
-<mat-card [@bounceInLeft]="triggerBounceIn" class="selection-card" *ngIf="(selectedDisease || selectedPublication)">
+<mat-card class="selection-card" *ngIf="(selectedDisease || selectedPublication)">
   <mat-card-title>
-    <div *ngIf="selectedDisease">
-      <span class="title-name">{{selectedDisease.diseaseName}}</span>&nbsp;
-      <span class="title-id">{{selectedDisease.diseaseId}}</span>
-    </div>
-    <div *ngIf="selectedPublication">
-      <span class="title-name">{{selectedPublication.publicationName}}</span>&nbsp;
-      <span class="title-id">{{selectedPublication.publicationId}}</span>
-    </div>
+    Sources
   </mat-card-title>
   <mat-card-subtitle>
-    Please select an associated {{oppositeActiveType()}} for this {{this.activeType}} that you want to annotate
-    to.
+    Associated {{oppositeActiveType()}} for this {{this.activeType}}.
   </mat-card-subtitle>
   <mat-card-content>
     <mat-selection-list #diseases [multiple]="false" (selectionChange)="onSelectedListItem($event.option.value)">

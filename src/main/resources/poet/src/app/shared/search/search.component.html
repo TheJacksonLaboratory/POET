@@ -1,4 +1,4 @@
-<div>
+<div class="search">
   <mat-form-field>
     <input matInput placeholder="Search Publications or Diseases" aria-label="State" [matAutocomplete]="auto" [formControl]="searchControl">
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelection($event.option.value)" [displayWith]="displayFn.bind(this)">

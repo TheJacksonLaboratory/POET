@@ -1,5 +1,6 @@
 .selection-card {
-
+  box-shadow: none !important;
+  background-color: #393939;
   & .mat-card-title, & .mat-card-subtitle {
     text-align: center;
   }
@@ -13,7 +14,13 @@
 
   & .selection-wrapper {
     & .selection-id {
+      font-size: .65rem;
+      font-weight: normal;
+    }
+
+    & .selection-text {
       font-size: .8rem;
+      font-weight: 600;
     }
   }
 }

@@ -20,7 +20,12 @@
 .content {
   height: 100%;
   overflow: auto;
-  margin-top: 64px;
+
+  &.curate {
+    background: #393939;
+  }
+
+  background: #2c3e4c;
 }
 
 .navbar {
@@ -29,4 +34,10 @@
   left: 0;
   right: 0;
   z-index: 3;
+}
+
+.portal-actions {
+  & .home {
+    text-transform: uppercase;
+  }
 }

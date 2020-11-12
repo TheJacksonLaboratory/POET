@@ -32,11 +32,11 @@ public class MaxoController {
     }
 
     @JsonView(AnnotationViews.Simple.class)
-    @GetMapping("/{publicationId}/{diseaseId}")
-    public List<MaxoAnnotation> getMaxoAnnotation(@PathVariable("publicationId") String publicationId,
-                                                  @PathVariable("diseaseId")  String diseaseId,
+    @GetMapping(value = {"/{diseaseId}", "/{diseaseId}/{publicationId}"})
+    public List<MaxoAnnotation> getMaxoAnnotation(@PathVariable("diseaseId")  String diseaseId,
+                                                  @PathVariable(value = "publicationId", required = false) String publicationId,
                                                   @RequestParam(defaultValue = "desc date") String sort){
-        final List<MaxoAnnotation> annotations = this.annotationService.getMaxoAnnotation(publicationId, diseaseId, sort);
+        final List<MaxoAnnotation> annotations = this.annotationService.getMaxoAnnotation(diseaseId, publicationId, sort);
         if(annotations != null){
             return annotations;
         } else {

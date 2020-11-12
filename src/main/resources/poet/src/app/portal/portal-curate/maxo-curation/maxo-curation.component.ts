@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { HpoService } from "../../../shared/services/external/hpo.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, finalize } from "rxjs/operators";
 import { HpoTerm, MaxoSearchResult, MaxoTerm } from "../../../shared/models/search-models";
 import { AnnotationSource, MaxoAnnotation } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
@@ -22,6 +22,7 @@ export class MaxoCurationComponent implements OnInit {
   maxoOptions: MaxoSearchResult[];
   hpoOptions: HpoTerm[];
   response: string;
+  savingAnnotation: boolean = false;
   showMaxoForm: boolean = false;
   formControlGroup: FormGroup = new FormGroup({
     maxoFormControl: new FormControl('', Validators.required),
@@ -79,7 +80,11 @@ export class MaxoCurationComponent implements OnInit {
       relation: this.formControlGroup.get('relationFormControl').value,
       comment: this.formControlGroup.get('commentFormControl').value,
     }
-    this.curationService.saveMaxoAnnotation(maxoAnnotation).subscribe(() =>{
+    this.savingAnnotation = true;
+    this.curationService.saveMaxoAnnotation(maxoAnnotation).pipe(
+      finalize(() => this.savingAnnotation = false)
+    ).subscribe(() => {
+      // Show snacker with message then reset form
       this.response = "ha";
     }, (err) => {
       this.response = "you fucked up!";
