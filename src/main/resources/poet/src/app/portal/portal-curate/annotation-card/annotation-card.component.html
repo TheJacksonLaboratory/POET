@@ -1,10 +1,10 @@
 <mat-card [@bounceInLeft]="triggerBounceIn" class="annotation-card">
   <mat-card-title>
-    <span *ngIf="ontology == 'maxo'">Medical Actions</span>
+    <span *ngIf="ontology == 'maxo'">Existing Medical Actions</span>
     <span *ngIf="ontology == 'hpo'">Phenotypes</span>
   </mat-card-title>
   <mat-card-subtitle>
-    <span *ngIf="ontology == 'maxo'">A list of curated medical actions for phenotypes of this disease</span>
+    <span *ngIf="ontology == 'maxo'">To add a new medical action please select or create a source.</span>
     <span *ngIf="ontology == 'hpo'">A list of curated phenotypes of this disease</span>
   </mat-card-subtitle>
   <mat-card-content>

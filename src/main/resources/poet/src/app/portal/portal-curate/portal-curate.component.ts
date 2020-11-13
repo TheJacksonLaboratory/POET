@@ -26,9 +26,11 @@ export class PortalCurateComponent implements OnInit {
   showLoader: boolean = false;
   fxLayout: string = "row";
   fxLayoutAlign: string = "start stretch";
-  fxFlexAnnotations: string = "33";
+  fxFlexAnnotations: string = "40";
   fxFlexForm: string = "33";
+  fxFlexOffset: string = "10";
   sourceAndOntologySelected: boolean = false;
+  showForm: boolean = false;
   annotationItems = [
     { value: 'hpo', display: 'Phenotypes', icon: 'assignment'},
     { value: 'maxo', display: 'Medical Actions', icon:  'healing' }
@@ -76,6 +78,14 @@ export class PortalCurateComponent implements OnInit {
     this.stateService.selectedDisease.subscribe((disease) => {
       this.selectedDisease = disease;
     });
+
+    this.stateService.sourceAndOntologySelected.subscribe((source) => {
+      if(source){
+        this.showForm = true;
+        this.fxFlexAnnotations = "33";
+        this.fxFlexOffset = "0";
+      }
+    });
   }
 
   /**
@@ -105,11 +115,11 @@ export class PortalCurateComponent implements OnInit {
   }
 
   shouldShowMaxoCard() {
-    return this.selectedDisease && this.selectedOntology === 'maxo';
+    return this.selectedDisease && this.selectedOntology === 'maxo' && this.showForm;
   }
 
   shouldShowHpoCard() {
-    return this.selectedDisease && this.selectedOntology === 'hpo';
+    return this.selectedDisease && this.selectedOntology === 'hpo' && this.showForm;
   }
 
   changeOntology(ontology: string){

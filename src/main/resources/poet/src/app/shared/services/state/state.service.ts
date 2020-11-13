@@ -14,11 +14,13 @@ export class StateService implements OnInit {
   private selectedOntologySubject: BehaviorSubject<string> = new BehaviorSubject<string>('maxo');
   private sourceAndOntologySelectedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private selectedDiseaseSubject: BehaviorSubject<Disease> = new BehaviorSubject<Disease>(null);
+  private onSuccessAnnotationSubmissionSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   selectedAnnotationSource: Observable<AnnotationSource> = this.selectedAnnotationSourceSubject.asObservable();
   selectedOntology: Observable<string> = this.selectedOntologySubject.asObservable();
   sourceAndOntologySelected: Observable<boolean> = this.sourceAndOntologySelectedSubject.asObservable();
   selectedDisease: Observable<Disease> = this.selectedDiseaseSubject.asObservable();
+  onSuccessAnnotationSubmission: Observable<boolean> = this.onSuccessAnnotationSubmissionSubject.asObservable();
 
 
   constructor() {
@@ -53,5 +55,9 @@ export class StateService implements OnInit {
 
   getSelectedSource() {
     return this.selectedAnnotationSourceSubject.getValue();
+  }
+
+  triggerAnnotationSuccess(success: boolean){
+    this.onSuccessAnnotationSubmissionSubject.next(success);
   }
 }

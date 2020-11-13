@@ -1,6 +1,6 @@
 <div class="search">
   <mat-form-field>
-    <input matInput placeholder="Search Publications or Diseases" aria-label="State" [matAutocomplete]="auto" [formControl]="searchControl">
+    <input matInput placeholder="Search Diseases or Publications" aria-label="State" [matAutocomplete]="auto" [formControl]="searchControl">
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelection($event.option.value)" [displayWith]="displayFn.bind(this)">
       <mat-option *ngIf="isLoading" class="is-loading">Loading...</mat-option>
       <ng-container *ngIf="!isLoading">

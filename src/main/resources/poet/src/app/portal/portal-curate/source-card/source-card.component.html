@@ -6,7 +6,7 @@
     Associated {{oppositeActiveType()}} for this {{this.activeType}}.
   </mat-card-subtitle>
   <mat-card-content>
-    <mat-selection-list #diseases [multiple]="false" (selectionChange)="onSelectedListItem($event.option.value)">
+    <!--<mat-selection-list #diseases [multiple]="false" (selectionChange)="onSelectedListItem($event.option.value)">
       <mat-list-option class="selection-wrapper" *ngFor="let disease of annotatedDiseases$ | async" [value]="disease">
         <mat-icon matListIcon>coronavirus</mat-icon>
         <div class="selection-text">
@@ -14,7 +14,7 @@
           <span class="selection-id">{{disease.diseaseId}}</span>
         </div>
       </mat-list-option>
-    </mat-selection-list>
+    </mat-selection-list>-->
     <mat-selection-list #publications [multiple]="false" (selectionChange)="onSelectedListItem($event.option.value)">
       <mat-list-option class="selection-wrapper" *ngFor="let publication of annotatedPublications$ | async" [value]="publication">
         <mat-icon matListIcon>library_books</mat-icon>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HpoService } from "../../../shared/services/external/hpo.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { debounceTime, distinctUntilChanged, finalize } from "rxjs/operators";
@@ -17,6 +17,7 @@ export class MaxoCurationComponent implements OnInit {
 
 
   @Input('selectedSource') annotationSource: AnnotationSource;
+  @Output('onAnnotationSuccess') onAnnotationSuccess: EventEmitter<boolean> = new EventEmitter<boolean>();
   selectedMaxo: MaxoTerm;
   selectedHpo: HpoTerm;
   maxoOptions: MaxoSearchResult[];
@@ -85,7 +86,7 @@ export class MaxoCurationComponent implements OnInit {
       finalize(() => this.savingAnnotation = false)
     ).subscribe(() => {
       // Show snacker with message then reset form
-      this.response = "ha";
+      this.stateService.triggerAnnotationSuccess(true);
     }, (err) => {
       this.response = "you fucked up!";
     });

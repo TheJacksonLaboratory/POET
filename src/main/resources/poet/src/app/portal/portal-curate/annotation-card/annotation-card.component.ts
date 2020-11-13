@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Disease, MaxoAnnotation, Publication } from "../../../shared/models/models";
+import { AnnotationSource, Disease, MaxoAnnotation, Publication } from "../../../shared/models/models";
 import { StateService } from "../../../shared/services/state/state.service";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { Observable } from "rxjs";
@@ -38,11 +38,14 @@ export class AnnotationCardComponent implements OnInit {
     })
 
     this.stateService.selectedAnnotationSource.subscribe((source) => {
-      this.publication = source.publication;
-      this.disease = source.disease;
-      // Could get funky here
-      if(this.ontology && this.disease){
-        this.maxoAnnotations = this.curationService.getMaxoAnnotations(this.disease, this.publication,"");
+      this.updateAnnotations(source);
+    });
+
+    this.stateService.onSuccessAnnotationSubmission.subscribe((success) => {
+      // Reload if submission is successful for now.
+      // TODO: Polling in the future.
+      if(success){
+        this.updateAnnotations(null);
       }
     });
   }
@@ -56,6 +59,17 @@ export class AnnotationCardComponent implements OnInit {
       return "Medical Actions";
     } else if(this.ontology == 'hpo'){
       return "Phenotypes";
+    }
+  }
+
+  updateAnnotations(source: AnnotationSource) {
+    if(source){
+      this.publication = source.publication;
+      this.disease = source.disease;
+    }
+    // Could get funky here
+    if(this.ontology && this.disease){
+      this.maxoAnnotations = this.curationService.getMaxoAnnotations(this.disease, this.publication,"");
     }
   }
 

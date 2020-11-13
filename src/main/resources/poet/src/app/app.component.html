@@ -3,12 +3,10 @@
     <div class="brand" routerLink="/">
       <img class="icon" src="assets/poet-logo_white-icon-only.png"/>
     </div>
+    <button mat-button class="primary nav-btn" *ngIf="(auth.isAuthenticated$ | async)" [routerLink]="['/portal/dashboard']">Dashboard</button>
     <button mat-button class="primary nav-btn">Learn</button>
     <button mat-button class="primary nav-btn" (click)="testApi()">Connect</button>
     <div fxFlex class="toolbar-spacer"></div>
-    <button mat-icon-button [routerLink]="['/portal/dashboard']" matTooltip="Dashboard">
-      <mat-icon>home</mat-icon>
-    </button>
     <div class="portal-actions" *ngIf="isPortalPage()">
       <button mat-icon-button [matMenuTriggerFor]="menu">
         <mat-icon>more_vert</mat-icon>
