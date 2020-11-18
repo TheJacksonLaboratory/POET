@@ -1,4 +1,4 @@
-package org.monarchinitiative.poet.controller;
+package org.monarchinitiative.poet.controller.annotation;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.exceptions.AnnotationSourceException;
@@ -11,6 +11,7 @@ import org.monarchinitiative.poet.service.AnnotationService;
 import org.monarchinitiative.poet.views.AnnotationViews;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class MaxoController {
     public List<MaxoAnnotation> getMaxoAnnotation(@PathVariable("diseaseId")  String diseaseId,
                                                   @PathVariable(value = "publicationId", required = false) String publicationId,
                                                   @RequestParam(defaultValue = "desc date") String sort){
+
         final List<MaxoAnnotation> annotations = this.annotationService.getMaxoAnnotation(diseaseId, publicationId, sort);
         if(annotations != null){
             return annotations;
@@ -50,8 +52,8 @@ public class MaxoController {
      * @return created
      */
     @PostMapping(value = "/", headers = "Accept=application/json")
-    public ResponseEntity<?> createMaxoAnnotation(@RequestBody MaxoRequest maxoRequest) {
-        if(annotationService.createMaxoAnnotation(maxoRequest)){
+    public ResponseEntity<?> createMaxoAnnotation(@RequestBody MaxoRequest maxoRequest, Authentication authentication) {
+        if(annotationService.createMaxoAnnotation(maxoRequest, authentication)){
          return new ResponseEntity(HttpStatus.CREATED);
         } else {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -59,7 +61,7 @@ public class MaxoController {
     }
 
     @GetMapping(value = "/insert", headers = "Accept=application/json")
-    public void insert(){
+    public void insert(Authentication authentication){
         Publication publication = new Publication("PMID:31479590", "Encoding Clinical Data with the Human Phenotype Ontology for Computational Differential Diagnostics.", "2019 Sept", "Kohler S");
         Publication publication2 = new Publication("PMID:30476213", "Expansion of the Human Phenotype Ontology (HPO) knowledge base and resources", "2019 Jan", "Kohler S");
         Publication publication3 = new Publication("PMID:30323234", "Mikes future first author paper", "2020 Jan", "Gargano M");

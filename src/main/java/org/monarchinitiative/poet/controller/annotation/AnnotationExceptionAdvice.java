@@ -1,4 +1,4 @@
-package org.monarchinitiative.poet.controller;
+package org.monarchinitiative.poet.controller.annotation;
 
 import org.monarchinitiative.poet.exceptions.DiseaseNotFoundException;
 import org.springframework.http.HttpStatus;

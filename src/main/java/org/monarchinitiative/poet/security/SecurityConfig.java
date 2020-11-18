@@ -14,8 +14,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().mvcMatchers("*").authenticated().
-                and().cors().and().oauth2ResourceServer().jwt();
+        http.authorizeRequests().antMatchers("/api/v1/h2-console/**").permitAll()
+                .mvcMatchers("/api/v1/user/**").authenticated()
+                .and().cors().and().oauth2ResourceServer().jwt();
+        http.csrf().disable();
+        http.headers().frameOptions().disable();
     }
 
     @Value("${auth0.audience}")

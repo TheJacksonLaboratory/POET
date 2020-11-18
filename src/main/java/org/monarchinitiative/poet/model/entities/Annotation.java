@@ -1,7 +1,9 @@
 package org.monarchinitiative.poet.model.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.AnnotationStatus;
+import org.monarchinitiative.poet.views.AnnotationViews;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -36,6 +38,7 @@ public class Annotation {
         this.annotationSource = annotationSource;
     }
 
+    @JsonView(AnnotationViews.Simple.class)
     public AnnotationStatus getStatus() {
         return status;
     }

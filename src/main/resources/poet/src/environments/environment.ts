@@ -17,6 +17,7 @@ export const environment = {
   },
   production: false,
   POET_BASE_URL: POET_BASE_URL,
+  POET_API_CHECK_USER_URL: POET_BASE_URL + '/user/check',
   POET_API_SEARCH_URL: POET_BASE_URL + '/search',
   POET_API_MAXO_ANNOTATION: POET_BASE_URL + '/annotation/maxo/',
   POET_API_DISEASE_ENTITY_URL: POET_BASE_URL + '/entity/disease/',

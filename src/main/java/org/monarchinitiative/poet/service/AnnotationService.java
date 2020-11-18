@@ -1,10 +1,10 @@
 package org.monarchinitiative.poet.service;
+
 import org.monarchinitiative.poet.model.MaxoRequest;
 import org.monarchinitiative.poet.model.entities.*;
-import org.monarchinitiative.poet.repository.AnnotationSourceRepository;
-import org.monarchinitiative.poet.repository.DiseaseRepository;
-import org.monarchinitiative.poet.repository.MaxoAnnotationRepository;
-import org.monarchinitiative.poet.repository.PublicationRepository;
+import org.monarchinitiative.poet.model.enumeration.CurationAction;
+import org.monarchinitiative.poet.repository.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -17,14 +17,19 @@ public class AnnotationService {
     private DiseaseRepository diseaseRepository;
     private AnnotationSourceRepository annotationSourceRepository;
     private MaxoAnnotationRepository maxoAnnotationRepository;
+    private UserRepository userRepository;
+    private UserActivityRepository userActivityRespository;
 
     public AnnotationService(PublicationRepository publicationRepository,
                              DiseaseRepository diseaseRepository, AnnotationSourceRepository annotationSourceRepository,
-                             MaxoAnnotationRepository maxoAnnotationRepository) {
+                             MaxoAnnotationRepository maxoAnnotationRepository, UserRepository userRepository,
+                             UserActivityRepository userActivityRepository) {
         this.publicationRepository = publicationRepository;
         this.diseaseRepository = diseaseRepository;
         this.annotationSourceRepository = annotationSourceRepository;
         this.maxoAnnotationRepository = maxoAnnotationRepository;
+        this.userRepository = userRepository;
+        this.userActivityRespository = userActivityRepository;
     }
 
     /**
@@ -83,12 +88,13 @@ public class AnnotationService {
      * @param maxoRequest - a maxo request body
      * @return boolean created
      */
-    public boolean createMaxoAnnotation(MaxoRequest maxoRequest) {
+    public boolean createMaxoAnnotation(MaxoRequest maxoRequest, Authentication authentication) {
         // We have a valid publication and a valid disease, do we have an annotation source for them?
         final AnnotationSource annotationSource = getAnnotationSource(maxoRequest.getPublicationId(),maxoRequest.getDiseaseId());
         if(annotationSource != null){
             final MaxoAnnotation annotation = new MaxoAnnotation(maxoRequest, annotationSource);
             maxoAnnotationRepository.save(annotation);
+            updateUserActivity(authentication, CurationAction.CREATE, annotation);
             return true;
         }
         return false;
@@ -103,13 +109,14 @@ public class AnnotationService {
         return null;
     }
 
-
-    /*public Publication createPublication(){
-        Publication publication = new Publication("27741350", "Measuring cancer evolution from the genome");
-        Publication publication1 = new Publication("3009398", "Confirming biology through biology.");
-        publicationRepository.save(publication);
-        publicationRepository.save(publication1);
-        return publication;
-    }*/
-
+    private void updateUserActivity(Authentication authentication, CurationAction curationAction, Annotation annotation){
+          User user = userRepository.findDistinctByAuthId(authentication.getName());
+          if(user != null){
+              UserActivity userActivity = new UserActivity(user, curationAction, annotation);
+              userActivityRespository.save(userActivity);
+          } else {
+              // We got a sec leak
+              System.out.println("Rut Roh!");
+          }
+    }
 }
