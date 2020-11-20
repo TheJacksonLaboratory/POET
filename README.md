@@ -1,14 +1,30 @@
 # POET
-
+A Full-Stack annotation application to generate data for disease and associated ontologies.
 
 # Setup
 
-TODO
+Java 1.8
+
+Intellij
+
+- Import project as gradle project
+- Ensure the gradle runtime is the wrapper (usually defaults)
+
 
 # Running
 
-TODO
+`
+./gradlew bootRun
+`
+
+Endpoints will be served at http://localhost:8080/api/v1/
+
+# Building for deployment
+
+`
+./gradlew war
+`
 
 # Contributors
 
-TODO
+Michael [iimpulse](https://github.com/iimpulse) Gargano

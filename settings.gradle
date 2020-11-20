@@ -1,9 +1,1 @@
 rootProject.name = 'POET'
-include 'poet-ingest'
-findProject(':poet-ingest')
-include 'poet-web'
-findProject(':poet-web')
-include 'poet-core'
-findProject(':poet-core')
-include 'poet-core'
-

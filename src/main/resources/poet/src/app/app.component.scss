@@ -1,0 +1,32 @@
+.brand {
+  margin-right: 1rem;
+  cursor: pointer;
+
+  & .icon {
+    height: 50px;
+    width: 50px;
+    margin-top: .5rem;
+
+    &:hover {
+      opacity: .75;
+    }
+  }
+}
+
+.nav-btn {
+  text-transform: uppercase;
+}
+
+.content {
+  height: 100%;
+  overflow: auto;
+  margin-top: 64px;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+}

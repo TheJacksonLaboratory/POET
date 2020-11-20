@@ -1,0 +1,71 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>New Curation</h2>
+  <mat-dialog-content class="mat-typography">
+    <!--
+      Step 1 is to get an annotation source both publication and disease
+      Step 2 Enter a new source either disease or publication
+      Step 3 Figure out which ontology
+    -->
+    <!-- Existing Curation Search By Disease Name / DOI -->
+    <!-- Find disease or publication, then find all annotation sources for it. -->
+    <div class="existing-curation" *ngIf="!newCuration">
+      <p>To start a curation please link to an existing publication or disease. </p>
+      <app-search (onSearchSelect)="selectExisting($event)"></app-search>
+      <p class="new-hint" (click)="newCuration = true">
+        Not finding what you're looking for? <a mat-stroked-button color="accent">Create a source</a>
+      </p>
+    </div>
+    <!-- HEY PUT THE ANNOTATION SOURCE TABLE HERE -->
+
+
+
+
+    <!-- New Annotation Source -->
+    <div class="new-curation" *ngIf="newCuration">
+      <div class="annotation-source">
+        <mat-form-field appearance="outline">
+          <mat-label>Publication</mat-label>
+          <input matInput placeholder="PubMed Identifier" [formControl]="annotationSourceControl" [errorStateMatcher]="matcher" ngDefaultControl>
+          <button mat-button *ngIf="annotationSourceControl.value != ''" matSuffix mat-icon-button aria-label="Clear" (click)="resetForm()">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-hint *ngIf="!selectedPublication">Try: 31479590</mat-hint>
+          <mat-error *ngIf="annotationSourceControl.hasError('required')">
+            PubMed Identifier is <strong>required</strong>. Try: 31479590
+          </mat-error>
+          <mat-error *ngIf="annotationSourceControl.hasError('notFound')">
+            Could not find data for this identifer. Please enter a full and valid PubMed Id.
+          </mat-error>
+        </mat-form-field>
+        <mat-progress-bar *ngIf="searchingPubMed" mode="indeterminate"></mat-progress-bar>
+        <div *ngIf="selectedPublication">
+          <div class="selected-publication">
+            <span class="title">{{selectedPublication.title}}</span>
+            <span class="date">&nbsp;{{selectedPublication.pubdate}}.&nbsp;</span>
+            <span class="uid">[{{selectedPublication.uid}}]</span>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="monarch-search-wrapper">
+            <app-monarch-search (onDiseaseSelect)="selectDisease($event)"></app-monarch-search>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Ontology Select -->
+    <div class="ontology-select" *ngIf="shouldShowOntologySelection()">
+      <h3>What ontology are you curating for?</h3>
+      <mat-form-field appearance="fill">
+        <mat-label>Ontologies</mat-label>
+        <mat-select [(value)]="selectedOntology">
+          <mat-option *ngFor="let option of curationOptions" [value]="option.value">{{option.view}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+  </mat-dialog-content>
+  <div class="dialog-spacer"></div>
+  <mat-dialog-actions align="end">
+  <button mat-button *ngIf="dialogRequirementsMet()" (click)="closeDialog()" cdkFocusInitial>Get Started!</button>
+  <button mat-button mat-dialog-close>Cancel</button>
+  </mat-dialog-actions>
+</div>
