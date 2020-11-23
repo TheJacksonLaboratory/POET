@@ -4,6 +4,7 @@ package org.monarchinitiative.poet.model.entities;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.AnnotationStatus;
 import org.monarchinitiative.poet.views.AnnotationViews;
+import org.monarchinitiative.poet.views.UserActivityViews;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -22,6 +23,9 @@ public class Annotation {
 
     @Enumerated(EnumType.STRING)
     private AnnotationStatus status;
+
+    @Column(name="annotation_type", insertable = false, updatable = false)
+    protected String annotationType;
 
     public Annotation(){}
 
@@ -45,6 +49,11 @@ public class Annotation {
 
     public void setStatus(AnnotationStatus status) {
         this.status = status;
+    }
+
+    @JsonView(UserActivityViews.Simple.class)
+    public String getAnnotationType() {
+        return annotationType;
     }
 
     @Override

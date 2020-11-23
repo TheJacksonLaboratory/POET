@@ -1,6 +1,8 @@
 package org.monarchinitiative.poet.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.enumeration.CurationAction;
+import org.monarchinitiative.poet.views.UserActivityViews;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,15 +13,19 @@ public class UserActivity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @JsonView(UserActivityViews.Simple.class)
     @ManyToOne
     private User user;
 
+    @JsonView(UserActivityViews.Simple.class)
     @OneToOne
     private Annotation annotation;
 
+    @JsonView(UserActivityViews.Simple.class)
     @Column(name = "datetime", columnDefinition = "TIMESTAMP")
     private LocalDateTime localDateTime;
 
+    @JsonView(UserActivityViews.Simple.class)
     @Enumerated(EnumType.ORDINAL)
     private CurationAction curationAction;
 

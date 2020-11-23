@@ -33,7 +33,7 @@ export class PortalCurateComponent implements OnInit {
   showForm: boolean = false;
   annotationItems = [
     { value: 'hpo', display: 'Phenotypes', icon: 'assignment'},
-    { value: 'maxo', display: 'Medical Actions', icon:  'healing' }
+    { value: 'maxo', display: 'Treatments', icon:  'healing' }
   ];
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog,

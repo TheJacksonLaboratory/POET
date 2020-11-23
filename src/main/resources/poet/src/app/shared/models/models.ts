@@ -35,6 +35,13 @@ export interface MaxoAnnotation extends Annotation {
   extension: string;
 }
 
+export interface UserActivityResponse {
+  annotation: object;
+  curationAction: string;
+  localDateTime: string;
+  user: object;
+}
+
 export interface HomeIcon {
   imageSrc: string;
   name: string;

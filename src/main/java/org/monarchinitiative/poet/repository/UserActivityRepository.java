@@ -1,9 +1,10 @@
 package org.monarchinitiative.poet.repository;
 
-import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.entities.UserActivity;
 import org.springframework.data.repository.CrudRepository;
+import java.util.List;
 
 public interface UserActivityRepository extends CrudRepository<UserActivity, Long> {
-    User findUserActivityByUserAuthId(String authId);
+    List<UserActivity> findUserActivityByUserAuthId(String authId);
+    Integer countAllByAnnotation_AnnotationTypeAndUserAuthId(String annotation_type, String authId);
 }
