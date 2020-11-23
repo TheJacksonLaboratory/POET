@@ -1,11 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SourceCardComponent } from './source-card.component';
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { SharedModule } from "../../../shared/shared.module";
+import { RouterTestingModule } from "@angular/router/testing";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
-describe('SelectionCardComponent', () => {
+describe('SourceCardComponent', () => {
   let component: SourceCardComponent;
   let fixture: ComponentFixture<SourceCardComponent>;
 
@@ -13,7 +14,7 @@ describe('SelectionCardComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ SourceCardComponent ],
       providers: [ CurationService ],
-      imports: [ HttpClientTestingModule, SharedModule ]
+      imports: [ HttpClientTestingModule, SharedModule, RouterTestingModule, MatSnackBarModule ]
     })
     .compileComponents();
   }));

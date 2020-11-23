@@ -61,13 +61,13 @@ export class PortalDashboardComponent implements OnInit {
 
     for (let i = 0; i < dates.length; i++) {
       let date = dates[i];
-      counts[date] = counts[date] ? counts[date].value + 1 : {
+      counts[date] = counts[date] && counts[date].value ? {name: date, value: counts[date].value + 1} : {
         name: date,
         value: 1
       };
     }
 
-    let graphSeries = Object.keys(counts).map((date) => counts[date]);
+    let graphSeries = Object.values(counts);
 
     return [{
       "name": "Annotations",

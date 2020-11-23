@@ -1,14 +1,22 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PortalDashboardComponent } from './portal-dashboard.component';
+import {AuthConfig, AuthModule} from "@auth0/auth0-angular";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {Router} from "@angular/router";
+import {RouterTestingModule} from "@angular/router/testing";
 
 describe('PortalDashboardComponent', () => {
   let component: PortalDashboardComponent;
   let fixture: ComponentFixture<PortalDashboardComponent>;
-
+  const authConfig: AuthConfig  = {
+    domain: "fake",
+    clientId: "fake"
+  };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PortalDashboardComponent ]
+      declarations: [ PortalDashboardComponent ],
+      imports: [AuthModule.forRoot(authConfig), RouterTestingModule, HttpClientTestingModule]
     })
     .compileComponents();
   }));
@@ -34,9 +42,12 @@ describe('PortalDashboardComponent', () => {
     ];
     let expectedData = [{
       "name": "Annotations",
-      "series": [{"name": "November 1", "value": 2},
-        {"name": "November 3", "value": 1},
-        {"name": "November 1", "value": 3}]}];
+      "series": [
+          {"name": "November 1", "value": 2},
+          {"name": "November 3", "value": 1},
+          {"name": "November 4", "value": 3}
+        ]
+    }];
     expect(component.graphUserActivity(testData)).toEqual(expectedData);
   })
 });
