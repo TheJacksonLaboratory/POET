@@ -53,7 +53,7 @@ public class Publication {
      *
      * @return
      */
-    public String getPublicationIdentifier() {
+    public String getPublicationId() {
         return publicationId;
     }
 

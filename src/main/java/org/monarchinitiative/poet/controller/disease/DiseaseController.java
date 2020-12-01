@@ -28,7 +28,7 @@ public class DiseaseController {
     public Disease getDiseaseWithAnnotations(@PathVariable(value="id") String id){
         Disease disease = this.entityService.getDisease(id);
         if(disease != null){
-            return this.entityService.getDisease(id);
+            return disease;
         } else {
             throw new DiseaseNotFoundException(id);
         }

@@ -1,19 +1,54 @@
+spring:
+  profiles: test
+  datasource:
+    url: jdbc:h2:mem:poet
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-poet.us.auth0.com/
+---
+spring:
+  profiles: development
+  datasource:
+    url: jdbc:h2:file:~/Develop/poet/poet
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-poet.us.auth0.com/
+---
+spring:
+  profiles: production
+  datasource:
+    url: jdbc:h2:file:~/Develop/poet/poet
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-poet.us.auth0.com/
+---
 server:
     servlet:
         context-path: /api/v1/
-spring:
-    datasource:
-        url: jdbc:h2:file:~/Develop/poet/poet
-    h2:
-        console:
-            enabled: true
-    jpa:
-        hibernate:
-            ddl-auto: create
-    security:
-      oauth2:
-        resourceserver:
-          jwt:
-            issuer-uri: https://dev-poet.us.auth0.com/
+
 auth0:
   audience: poet-api-audience

@@ -16,7 +16,7 @@ public class SearchResponse {
         if(publications.size() > 0){
             for (Publication publication : publications) {
                 results.add(new SimpleSearchResponse(publication.getPublicationName(),
-                        publication.getPublicationIdentifier(), "publication"));
+                        publication.getPublicationId(), "publication"));
             }
         }
     }

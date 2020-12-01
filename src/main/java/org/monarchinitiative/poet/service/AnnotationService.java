@@ -90,12 +90,14 @@ public class AnnotationService {
      */
     public boolean createMaxoAnnotation(MaxoRequest maxoRequest, Authentication authentication) {
         // We have a valid publication and a valid disease, do we have an annotation source for them?
-        final AnnotationSource annotationSource = getAnnotationSource(maxoRequest.getPublicationId(),maxoRequest.getDiseaseId());
-        if(annotationSource != null){
-            final MaxoAnnotation annotation = new MaxoAnnotation(maxoRequest, annotationSource);
-            maxoAnnotationRepository.save(annotation);
-            updateUserActivity(authentication, CurationAction.CREATE, annotation);
-            return true;
+        if(maxoRequest != null){
+            final AnnotationSource annotationSource = getAnnotationSource(maxoRequest.getPublicationId(), maxoRequest.getDiseaseId());
+            if(annotationSource != null){
+                final MaxoAnnotation annotation = new MaxoAnnotation(maxoRequest, annotationSource);
+                maxoAnnotationRepository.save(annotation);
+                updateUserActivity(authentication, CurationAction.CREATE, annotation);
+                return true;
+            }
         }
         return false;
     }
@@ -118,5 +120,21 @@ public class AnnotationService {
               // We got a sec leak
               System.out.println("Rut Roh!");
           }
+    }
+
+    public void insertTestData(){
+        Publication publication = new Publication("PMID:31479590", "Encoding Clinical Data with the Human Phenotype Ontology for Computational Differential Diagnostics.", "2019 Sept", "Kohler S");
+        Publication publication2 = new Publication("PMID:30476213", "Expansion of the Human Phenotype Ontology (HPO) knowledge base and resources", "2019 Jan", "Kohler S");
+        Publication publication3 = new Publication("PMID:30323234", "Mikes future first author paper", "2020 Jan", "Gargano M");
+        publicationRepository.save(publication);
+        publicationRepository.save(publication2);
+        publicationRepository.save(publication3);
+        Disease disease = new Disease("OMIM:154700", "Marfan Syndrome");
+        Disease disease2 = new Disease("OMIM:300200", "Adrenal Hypoplasia, Congenital");
+        diseaseRepository.save(disease);
+        diseaseRepository.save(disease2);
+        annotationSourceRepository.save(new AnnotationSource(publication3, disease));
+        annotationSourceRepository.save(new AnnotationSource(publication, disease));
+        annotationSourceRepository.save(new AnnotationSource(publication2, disease));
     }
 }

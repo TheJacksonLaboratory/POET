@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/search") // /annotation/<type>/<action>
+@RequestMapping(value = "/search")
 public class SearchController {
 
     private final SearchService searchService;
@@ -29,15 +29,4 @@ public class SearchController {
     public SearchResponse searchPublicationsAndDiseases(@RequestParam String query) {
         return searchService.searchPublicationAndDisease(query.trim());
     }
-
-    /**
-     *
-     * @param query - a string to find a disease annotation by id.
-     * @return the rare disease annotation or nothing
-     */
-    @GetMapping(value = "/annotation-source", headers = "Accept=application/json")
-    public List<AnnotationSource> searchAnnotationSources(@RequestParam String query, @RequestParam String type) {
-        return searchService.searchAnnotationSource(query.trim(), type.trim());
-    }
-
 }
