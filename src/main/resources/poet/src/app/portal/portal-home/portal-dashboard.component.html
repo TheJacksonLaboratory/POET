@@ -21,7 +21,7 @@
         Contributions
       </mat-card-title>
       <mat-card-content>
-        <div class="chart-wrapper" *ngIf="!noContributions && pieData">
+        <div class="chart-wrapper" *ngIf="pieData?.length > 0">
           <ngx-charts-pie-chart
             [results]="pieData"
             legend="true"
@@ -32,9 +32,10 @@
             scheme="ocean"
           >
           </ngx-charts-pie-chart>
-            <div class="no-contributions" *ngIf="noContributions">
-              <h4>No official contributions yet! <mat-icon>sentiment_dissatisfied</mat-icon>  </h4>
-            </div>
+        </div>
+        <div class="no-contributions" *ngIf="pieData?.length === 0">
+          <h4>No official contributions yet!</h4>
+          <button mat-raised-button color="accent">Get Started</button>
         </div>
       </mat-card-content>
     </mat-card>
@@ -100,6 +101,9 @@
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
         </mat-table>
+        <div class="curated-not-found" [hidden]="dataSource?.data.length != 0">
+          <h4>No recently curated items found.</h4>
+        </div>
         <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
       </mat-card-content>
     </mat-card>

@@ -21,7 +21,6 @@ export class PortalDashboardComponent implements OnInit {
   displayedColumns: string[] = ['category', 'curator', 'date', 'time', 'actions'];
   dataSource;
   user: any;
-  noContributions: boolean = false;
   pieData;
   lineData;
   constructor(public authService: AuthService, private router: Router, public curationService: CurationService) { }
