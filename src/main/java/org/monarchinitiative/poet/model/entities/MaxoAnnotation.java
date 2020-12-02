@@ -64,7 +64,7 @@ public class MaxoAnnotation extends Annotation {
         this.maxoName = maxoRequest.getMaxoName();
         this.hpoId = maxoRequest.getHpoId();
         this.hpoName = maxoRequest.getHpoName();
-        this.evidenceType = maxoRequest.getEvidenceType();
+        this.evidenceType = maxoRequest.getEvidence();
         this.comment = maxoRequest.getComment();
         this.relation = maxoRequest.getRelation();
         this.extension = maxoRequest.getExtension();

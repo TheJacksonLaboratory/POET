@@ -7,7 +7,7 @@ public class MaxoRequest {
     private String maxoName;
     private String hpoName;
     private String hpoId;
-    private String evidenceType;
+    private String evidence;
     private String comment;
     private String relation;
     private String extension;
@@ -18,6 +18,21 @@ public class MaxoRequest {
 
 
     MaxoRequest(){}
+
+    public MaxoRequest(String maxoId, String maxoName, String hpoName, String hpoId, String evidence, String comment, String relation, String extension, String publicationId, String publicationName, String diseaseId, String diseaseName) {
+        this.maxoId = maxoId;
+        this.maxoName = maxoName;
+        this.hpoName = hpoName;
+        this.hpoId = hpoId;
+        this.evidence = evidence;
+        this.comment = comment;
+        this.relation = relation;
+        this.extension = extension;
+        this.publicationId = publicationId;
+        this.publicationName = publicationName;
+        this.diseaseId = diseaseId;
+        this.diseaseName = diseaseName;
+    }
 
     public String getMaxoId() {
         return maxoId;
@@ -35,8 +50,8 @@ public class MaxoRequest {
         return hpoId;
     }
 
-    public String getEvidenceType() {
-        return evidenceType;
+    public String getEvidence() {
+        return evidence;
     }
 
     public String getComment() {

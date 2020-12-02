@@ -1,11 +1,8 @@
 package org.monarchinitiative.poet.service;
 
 import org.monarchinitiative.poet.model.Contribution;
-import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.entities.UserActivity;
-import org.monarchinitiative.poet.repository.MaxoAnnotationRepository;
 import org.monarchinitiative.poet.repository.UserActivityRepository;
-import org.monarchinitiative.poet.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -14,16 +11,11 @@ import java.util.List;
 
 @Service
 public class StatisticsService {
-    private UserActivityRepository userActivityRepository;
-    private MaxoAnnotationRepository maxoAnnotationRepository;
-    private UserRepository userRepository;
 
-    public StatisticsService(UserActivityRepository userActivityRepository,
-                             MaxoAnnotationRepository maxoAnnotationRepository,
-                             UserRepository userRepository) {
+    private UserActivityRepository userActivityRepository;
+
+    public StatisticsService(UserActivityRepository userActivityRepository){
         this.userActivityRepository = userActivityRepository;
-        this.maxoAnnotationRepository = maxoAnnotationRepository;
-        this.userRepository = userRepository;
     }
 
     public List<UserActivity> getUserActivity(String who, Authentication authentication){

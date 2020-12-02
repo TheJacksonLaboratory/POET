@@ -1,7 +1,6 @@
 package org.monarchinitiative.poet.controller;
 
-import org.monarchinitiative.poet.model.entities.AnnotationSource;
-import org.monarchinitiative.poet.model.search.SearchResponse;
+import org.monarchinitiative.poet.model.SearchResponse;
 import org.monarchinitiative.poet.service.SearchService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +25,7 @@ public class SearchController {
      * @return the rare disease annotation or nothing
      */
     @GetMapping(value = "", headers = "Accept=application/json")
-    public SearchResponse searchPublicationsAndDiseases(@RequestParam String query) {
+    public List<SearchResponse> searchPublicationsAndDiseases(@RequestParam String query) {
         return searchService.searchPublicationAndDisease(query.trim());
     }
 }

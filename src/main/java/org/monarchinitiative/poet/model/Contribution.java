@@ -6,9 +6,9 @@ public class Contribution {
     Integer phenopackets;
 
     public Contribution(Integer maxo, Integer hpo, Integer phenopackets) {
-        this.maxo = maxo;
-        this.hpo = hpo;
-        this.phenopackets = phenopackets;
+        this.maxo = maxo == null ? 0 : maxo;
+        this.hpo = hpo == null ? 0 : hpo;
+        this.phenopackets = phenopackets == null ? 0 : phenopackets;
     }
 
     public Integer getMaxo() {

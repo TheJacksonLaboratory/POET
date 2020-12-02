@@ -1,6 +1,6 @@
 package org.monarchinitiative.poet.controller
 
-import org.monarchinitiative.poet.model.search.SearchResponse
+import org.monarchinitiative.poet.model.SearchResponse
 import org.monarchinitiative.poet.service.SearchService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,8 +40,8 @@ class SearchControllerSpec extends Specification{
 
         where:
         serviceResponse      | searchTerm      | expectedResponse                            | desc
-        new SearchResponse() | "OMIM:00392928" | MockMvcResultMatchers.status().isOk()       | "test search term with disease"
-        new SearchResponse() | "PMID:20391892" | MockMvcResultMatchers.status().isOk()       | "test search term with publication"
+        [new SearchResponse()] | "OMIM:00392928" | MockMvcResultMatchers.status().isOk() | "test search term with disease"
+        [new SearchResponse()] | "PMID:20391892" | MockMvcResultMatchers.status().isOk()       | "test search term with publication"
         null                 | ""              | MockMvcResultMatchers.status().isOk()       | "test search term nothing"
     }
 }
