@@ -48,6 +48,14 @@ public class Publication {
         this.firstAuthor = firstAuthor;
     }
 
+    public Publication(String publicationId, String publicationName, String date, String firstAuthor, List<AnnotationSource> annotationSources){
+        this.publicationId = publicationId;
+        this.publicationName = publicationName;
+        this.date = date;
+        this.firstAuthor = firstAuthor;
+        this.annotationSources = annotationSources;
+    }
+
     /**
      * Returns the PubMed Identifier.
      *

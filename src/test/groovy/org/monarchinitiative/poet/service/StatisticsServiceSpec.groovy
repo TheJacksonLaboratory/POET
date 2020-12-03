@@ -17,7 +17,7 @@ import spock.lang.Unroll
 
 @Unroll
 @ActiveProfiles(value = "test")
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [StatisticsServiceConfig.class])
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class])
 class StatisticsServiceSpec extends Specification {
 
     @Autowired

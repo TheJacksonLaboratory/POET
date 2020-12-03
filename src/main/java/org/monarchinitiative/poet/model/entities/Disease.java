@@ -32,6 +32,13 @@ public class Disease {
         this.diseaseName = diseaseName;
     }
 
+    public Disease(String diseaseId, String diseaseName, List<AnnotationSource> annotationSources) {
+        this.diseaseId = diseaseId;
+        this.diseaseName = diseaseName;
+        this.annotationSource = annotationSources;
+    }
+
+
     public String getDiseaseId() {
         return diseaseId;
     }
