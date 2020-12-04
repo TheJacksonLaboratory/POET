@@ -3,11 +3,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.ApplicationContext
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
 
 @SpringBootTest
-@ActiveProfiles(value = "test")
+@ContextConfiguration
 class ApplicationContextTest extends Specification {
 
     @Autowired

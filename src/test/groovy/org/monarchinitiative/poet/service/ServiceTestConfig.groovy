@@ -6,13 +6,11 @@ import org.monarchinitiative.poet.repository.MaxoAnnotationRepository
 import org.monarchinitiative.poet.repository.PublicationRepository
 import org.monarchinitiative.poet.repository.UserActivityRepository
 import org.monarchinitiative.poet.repository.UserRepository
+import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import spock.mock.DetachedMockFactory
 
-import javax.swing.text.html.parser.Entity
-
-@Configuration
+@TestConfiguration
 class ServiceTestConfig {
     def mockFactory = new DetachedMockFactory()
 
@@ -54,6 +52,7 @@ class ServiceTestConfig {
         )
         return annotationService
     }
+
     @Bean
     EntityService entityService(){
         EntityService entityService = new EntityService(diseaseStub(), publicationStub())

@@ -32,7 +32,7 @@ class DiseaseControllerSpec extends Specification {
     }
 
     @Unroll
-    def "when we test get maxo annotations"(){
+    def "when we test get maxo annotations #desc"(){
         given:
         entityService.getDisease(_) >> inputDisease
 
@@ -43,8 +43,8 @@ class DiseaseControllerSpec extends Specification {
         where:
         inputDisease                                  | inputDiseaseId   | expectedResponse                                | desc
         new Disease("OMIM:154700", "Marfan Syndrome") | "OMIM:154700"    | MockMvcResultMatchers.status().isOk()           | "test get disease by id with pub"
-        null                                          | "OMIM:0091920"   | MockMvcResultMatchers.status().isOk()           | "test get disease by id find nothing"
-        ""                                            | ""               | MockMvcResultMatchers.status().isNotFound()     | "test get disease by nothing should fail"
+        null                                          | "OMIM:0091920"   | MockMvcResultMatchers.status().isNotFound()     | "test get disease by id find nothing"
+        null                                            | ""               | MockMvcResultMatchers.status().isNotFound()     | "test get disease by nothing find nothing"
     }
 
 

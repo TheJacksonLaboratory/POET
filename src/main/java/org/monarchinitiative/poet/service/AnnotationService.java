@@ -32,26 +32,6 @@ public class AnnotationService {
         this.userActivityRespository = userActivityRepository;
     }
 
-    /**
-     * Create a rare annotation with a pending review status.
-     * enforcing business rules with the status of the annotation
-     *
-     * @param annotation - a rare annotation from the client
-     * @return created
-     */
-    public RareDiseaseAnnotation createRareDiseaseAnnotation(RareDiseaseAnnotation annotation) {
-        // Check fields / annotations format
-        // insert into annotation field
-        // link up annotation id in rare disease table
-        // get user
-        // update users activity table with annotation
-        return annotation;
-    }
-
-    public RareDiseaseAnnotation getRareDiseaseAnnotation(String disease){
-        return new RareDiseaseAnnotation();
-    }
-
     public List<MaxoAnnotation> getMaxoAnnotation(String diseaseId, String publicationId, String sort) {
             // If publication get source, then annotations for that source
             // Otherwise get all annotationSource

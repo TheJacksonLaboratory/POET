@@ -1,4 +1,19 @@
 spring:
+  profiles:
+    default: development
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-poet.us.auth0.com/
+server:
+  servlet:
+    context-path: /api/v1/
+
+auth0:
+  audience: poet-api-audience
+---
+spring:
   profiles: test
   datasource:
     url: jdbc:h2:mem:poet
@@ -8,11 +23,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://dev-poet.us.auth0.com/
 ---
 spring:
   profiles: development
@@ -24,11 +34,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://dev-poet.us.auth0.com/
 ---
 spring:
   profiles: production
@@ -40,15 +45,3 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://dev-poet.us.auth0.com/
----
-server:
-    servlet:
-        context-path: /api/v1/
-
-auth0:
-  audience: poet-api-audience
