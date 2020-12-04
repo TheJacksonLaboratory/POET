@@ -1,0 +1,21 @@
+.selection-card {
+  box-shadow: none !important;
+  background-color: #393939;
+  & .mat-card-title, & .mat-card-subtitle {
+    text-align: center;
+  }
+  & .title-name {
+    font-size: 1.4rem;
+  }
+
+  & .title-id {
+    font-size: 1rem;
+  }
+
+  & .selection-wrapper {
+    & .selection-id {
+      font-size: .8rem;
+      font-weight: normal;
+    }
+  }
+}

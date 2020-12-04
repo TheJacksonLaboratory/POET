@@ -4,6 +4,7 @@ package org.monarchinitiative.poet.model.entities;
 import org.monarchinitiative.poet.model.AnnotationStatus;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -41,6 +42,30 @@ public class Annotation {
 
     public void setStatus(AnnotationStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Annotation that = (Annotation) o;
+        return id == that.id &&
+                Objects.equals(annotationSource, that.annotationSource) &&
+                status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, annotationSource, status);
+    }
+
+    @Override
+    public String toString() {
+        return "Annotation{" +
+                "id=" + id +
+                ", annotationSource=" + annotationSource +
+                ", status=" + status +
+                '}';
     }
 }
 

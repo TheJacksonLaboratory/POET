@@ -3,9 +3,9 @@ import { FormControl } from "@angular/forms";
 import { debounceTime, finalize } from "rxjs/operators";
 import { tap } from "rxjs/internal/operators/tap";
 import { switchMap } from "rxjs/internal/operators/switchMap";
-import { CurationService } from "../services/curation.service";
+import { CurationService } from "../services/curation/curation.service";
 import { of } from "rxjs/internal/observable/of";
-import { MonarchSearchResult, SearchResult } from "../models/models";
+import { SearchResult } from "../models/search-models";
 
 @Component({
   selector: 'app-search',

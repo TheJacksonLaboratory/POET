@@ -287,3 +287,22 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   font-size: .65rem;
 }
 
+
+.auto-complete-option {
+
+  & .option-name {
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  & .option-id {
+    font-size: 12px;
+    color: #43b9da;
+  }
+}
+
+.mat-ink-bar {
+  background-color: #393939 !important;
+}
+
+.ngx-charts text { fill: #fff; }

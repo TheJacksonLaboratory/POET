@@ -18,9 +18,17 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MonarchSearchComponent } from './monarch-search/monarch-search.component';
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
+import { ErrorSnackComponent } from './error-snack/error-snack.component';
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTab, MatTabsModule } from "@angular/material/tabs";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatMenuModule } from "@angular/material/menu";
+import { NgxChartsModule } from "@swimlane/ngx-charts";
+import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 
 @NgModule({
-  declarations: [SearchComponent, MonarchSearchComponent],
+  declarations: [SearchComponent, MonarchSearchComponent, ErrorSnackComponent],
   imports: [
     CommonModule,
     MatToolbarModule,
@@ -40,7 +48,14 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     MatAutocompleteModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
-    MatDividerModule
+    MatDividerModule,
+    MatBottomSheetModule,
+    MatSnackBarModule,
+    MatTabsModule,
+    MatTooltipModule,
+    MatMenuModule,
+    NgxChartsModule,
+    MatPaginatorModule
   ],
   exports: [
     MatToolbarModule,
@@ -62,7 +77,14 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     MatDividerModule,
     SearchComponent,
     MatProgressSpinnerModule,
-    MonarchSearchComponent
+    MatBottomSheetModule,
+    MatSnackBarModule,
+    MonarchSearchComponent,
+    MatTabsModule,
+    MatTooltipModule,
+    MatMenuModule,
+    NgxChartsModule,
+    MatPaginatorModule
   ]
 })
 export class SharedModule {

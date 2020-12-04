@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {ErrorStateMatcher} from "@angular/material/core";
-import {FormControl, FormGroupDirective, NgForm, Validators} from "@angular/forms";
-import {MatDialogRef} from "@angular/material/dialog";
-import {SearchResult} from "../../../shared/models/models";
-import {CurationService} from "../../../shared/services/curation.service";
+import { ErrorStateMatcher } from "@angular/material/core";
+import { FormControl, FormGroupDirective, NgForm, Validators } from "@angular/forms";
+import { MatDialogRef } from "@angular/material/dialog";
+import { SearchResult } from "../../../shared/models/search-models";
+import { CurationService } from "../../../shared/services/curation/curation.service";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
-import { PubmedService } from "../../../shared/services/pubmed.service";
-import { Observable, throwError } from "rxjs";
+import { PubmedService } from "../../../shared/services/external/pubmed.service";
+import { StateService } from "../../../shared/services/state/state.service";
 
 @Component({
   selector: 'app-dialog-curation',
@@ -18,8 +18,8 @@ export class DialogCurationComponent implements OnInit {
   annotationSourceControl = new FormControl('', [
     Validators.required]);
   curationOptions: any[] = [
-    { value:  'hpo', view: 'Human Phenotype Ontology (HPO)' },
-    { value:  'maxo', view: 'Medical Action Ontology (MAxO)' }
+    {value: 'hpo', view: 'Human Phenotype Ontology (HPO)'},
+    {value: 'maxo', view: 'Medical Action Ontology (MAxO)'}
   ];
   selectedOntology: string;
   selectedPublication: any;
@@ -30,58 +30,55 @@ export class DialogCurationComponent implements OnInit {
   matcher = new DialogErrorStateMatcher();
 
   constructor(public dialogRef: MatDialogRef<DialogCurationComponent>,
-              private curationService: CurationService, private pubmedService: PubmedService ) { }
+              private curationService: CurationService, private pubmedService: PubmedService,
+              private stateService: StateService) {
+  }
 
   ngOnInit(): void {
     this.annotationSourceControl.valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(id => {
         // Make request to pubmed
-        if(id){
+        if (id) {
           this.searchingPubMed = true;
           this.pubmedService.findPublication(id).subscribe((data) => {
-            if(!data){
+            if (!data) {
               this.annotationSourceControl.setErrors({notFound: true});
             }
-              this.selectedPublication = data;
+            this.selectedPublication = data;
           }, (err) => {
-              this.annotationSourceControl.setErrors({notFound: true});
+            this.annotationSourceControl.setErrors({notFound: true});
           }).add(() => {
             this.searchingPubMed = false;
           });
         }
-    })
+      })
   }
 
   closeDialog() {
-    if(!this.selectedExisting){
+    if (!this.selectedExisting) {
       this.dialogRef.close(
         {
-          'ontology': this.selectedOntology,
-          'source': {
-            'publication': this.selectedPublication,
-            'disease':   this.selectedDisease
-          },
+          'publication': this.selectedPublication,
+          'disease': this.selectedDisease,
           'action': 'create'
         });
     } else {
       this.dialogRef.close(
         {
-          'ontology': this.selectedOntology,
-          'source': {
-            'publication': this.selectedPublication,
-            'disease':   this.selectedDisease
-          },
+          'publication': this.selectedPublication,
+          'disease': this.selectedDisease,
           'action': 'fetch'
         });
+      this.stateService.setSelectedOntology(this.selectedOntology);
     }
   }
 
-  selectExisting(searchResult: SearchResult){
+  selectExisting(searchResult: SearchResult) {
     this.selectedExisting = true;
-    if(searchResult.type == 'disease'){
+    if (searchResult.type == 'disease') {
       this.selectedDisease = searchResult;
-    } else if (searchResult.type == 'publication'){
+    } else if (searchResult.type == 'publication') {
       this.selectedPublication = searchResult;
     }
   }
@@ -98,7 +95,7 @@ export class DialogCurationComponent implements OnInit {
     return (this.selectedDisease && this.selectedPublication) || this.selectedExisting;
   }
 
-  dialogRequirementsMet(){
+  dialogRequirementsMet() {
     return (this.annotationSourceControl.valid && this.selectedDisease && this.selectedPublication) || this.selectedExisting;
   }
 

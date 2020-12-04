@@ -1,0 +1,39 @@
+.maxo-card {
+  box-shadow: none !important;
+  background-color: #393939;
+  margin-left: 5px;
+
+  & .mat-card-title, .mat-card-subtitle {
+    text-align: center;
+  }
+
+  & .form-content-section {
+    width: 75%;
+    min-width: 300px;
+    margin: 1.25rem auto 0 auto;
+    & .maxo-form {
+      width: 100%;
+    }
+  }
+
+  & .mat-card-actions {
+    margin: 1.25rem auto 0 auto;
+    width: 75%;
+    min-width: 300px;
+
+
+    & .left-actions {
+      display: inline-flex;
+
+      & .mat-progress-spinner {
+        margin-left: 1rem;
+        margin-top: .5rem;
+      }
+    }
+
+    & .right-actions {
+      float: right;
+      display: inline-flex;
+    }
+  }
+}

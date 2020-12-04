@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SearchResponse {
 
-    private List<SimpleSearchResponse> results = new ArrayList<>();
+    private final List<SimpleSearchResponse> results = new ArrayList<>();
 
     public SearchResponse(){}
 

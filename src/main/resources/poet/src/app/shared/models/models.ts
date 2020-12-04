@@ -1,14 +1,3 @@
-export interface SearchResult {
-  type: string;
-  id: string;
-  name: string;
-}
-
-export interface MonarchSearchResult {
-  match: string;
-  id: string;
-}
-
 export interface Annotation {
   type: string;
   status: string;
@@ -16,14 +5,15 @@ export interface Annotation {
 }
 
 export interface AnnotationSource {
-  id: number;
+  id?: number;
   publication: Publication;
   disease: Disease;
+  ontology?: string;
 }
 
 export interface Publication {
-  id: string;
-  name: string;
+  publicationId: string;
+  publicationName: string;
   date: string;
   doi: string;
   firstAuthor: string;
@@ -39,7 +29,7 @@ export interface MaxoAnnotation extends Annotation {
   maxoName: string;
   hpoName: string;
   hpoId: string;
-  eco: string;
+  evidence: string;
   comment: string;
   relation: string;
   extension: string;

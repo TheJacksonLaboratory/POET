@@ -11,6 +11,11 @@ import { HttpClient } from "@angular/common/http";
 })
 export class AppComponent {
   title = 'poet';
+  portalActionItems =  [
+    {title: 'New Curation', route: '/portal/curate', icon: 'create', private: true},
+    {title: 'Edit Submissions', route: '/portal/submissions', icon: 'view_list', private: true},
+    {title: 'Curation Tutorial', route: '/portal/help', icon: 'help', private: false}
+  ];
 
   constructor(public auth: AuthService, @Inject(DOCUMENT) public document: Document, public router: Router
   , private http: HttpClient) {
@@ -18,6 +23,18 @@ export class AppComponent {
 
   isHomePage(){
     return this.router.url === '/';
+  }
+
+  isPortalPage(){
+    return this.router.url.includes("portal");
+  }
+
+  isDashboardPage(){
+    return this.router.url.includes('dashboard');
+  }
+
+  isCuratePage(){
+    return this.router.url.includes('curate');
   }
 
   testApi(){

@@ -1,0 +1,35 @@
+<mat-card [@bounceInLeft]="triggerBounceIn" class="annotation-card">
+  <mat-card-title>
+    <span *ngIf="ontology == 'maxo'">Existing Medical Actions</span>
+    <span *ngIf="ontology == 'hpo'">Phenotypes</span>
+  </mat-card-title>
+  <mat-card-subtitle>
+    <span *ngIf="ontology == 'maxo'">To add a new medical action please select or create a source.</span>
+    <span *ngIf="ontology == 'hpo'">A list of curated phenotypes of this disease</span>
+  </mat-card-subtitle>
+  <mat-card-content>
+  <mat-selection-list #maxo [multiple]="false" (selectionChange)="onSelectedListItem($event.option.value)">
+    <mat-list-option class="selection-wrapper" *ngFor="let maxo of maxoAnnotations | async" [value]="disease">
+      <mat-icon matListIcon>medical_services</mat-icon>
+      <div class="selection-text">
+        <span class="selection-id">
+          {{maxo.maxoName}} &nbsp; {{maxo.relation}} &nbsp; {{maxo.hpoName}}
+        </span>
+      </div>
+    </mat-list-option>
+  </mat-selection-list>
+  <div class="annotation-missing" *ngIf="(maxoAnnotations | async)?.length == 0">
+        No {{ontologyToDisplay()}} Found.
+  </div>
+
+<!--    <mat-selection-list #hpo [multiple]="false" (selectionChange)="onSelectedListItem($event.option.value)">-->
+<!--      <mat-list-option class="selection-wrapper" *ngFor="let publication of annotatedPublications$ | async" [value]="publication">-->
+<!--        <mat-icon matListIcon>library_books</mat-icon>-->
+<!--        <div class="selection-text">-->
+<!--          {{publication.publicationName}}-->
+<!--          <span class="selection-id">{{publication.publicationId}}</span>-->
+<!--        </div>-->
+<!--      </mat-list-option>-->
+<!--    </mat-selection-list>-->
+  </mat-card-content>
+</mat-card>

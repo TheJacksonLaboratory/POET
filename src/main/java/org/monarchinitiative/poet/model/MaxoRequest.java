@@ -7,11 +7,11 @@ public class MaxoRequest {
     private String maxoName;
     private String hpoName;
     private String hpoId;
-    private String eco;
+    private String evidenceType;
     private String comment;
     private String relation;
     private String extension;
-    private String publicationIdentifier;
+    private String publicationId;
     private String publicationName;
     private String diseaseId;
     private String diseaseName;
@@ -35,8 +35,8 @@ public class MaxoRequest {
         return hpoId;
     }
 
-    public String getEco() {
-        return eco;
+    public String getEvidenceType() {
+        return evidenceType;
     }
 
     public String getComment() {
@@ -51,8 +51,8 @@ public class MaxoRequest {
         return extension;
     }
 
-    public String getPublicationIdentifier() {
-        return publicationIdentifier;
+    public String getPublicationId() {
+        return publicationId;
     }
 
     public String getPublicationName() {

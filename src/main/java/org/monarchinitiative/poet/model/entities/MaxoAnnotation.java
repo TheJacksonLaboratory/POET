@@ -1,8 +1,10 @@
 package org.monarchinitiative.poet.model.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.AnnotationStatus;
 import org.monarchinitiative.poet.model.MaxoRequest;
+import org.monarchinitiative.poet.views.AnnotationViews;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -11,37 +13,46 @@ import javax.persistence.Entity;
 @DiscriminatorValue("maxo")
 public class MaxoAnnotation extends Annotation {
 
+    @JsonView(AnnotationViews.Simple.class)
     private String maxoId;
+    @JsonView(AnnotationViews.Simple.class)
     private String maxoName;
+    @JsonView(AnnotationViews.Simple.class)
     private String hpoName;
+    @JsonView(AnnotationViews.Simple.class)
     private String hpoId;
-    private String eco;
+    @JsonView(AnnotationViews.Simple.class)
+    private String evidenceType;
+    @JsonView(AnnotationViews.Simple.class)
     private String comment;
+    @JsonView(AnnotationViews.Simple.class)
     private String relation;
+    @JsonView(AnnotationViews.Simple.class)
     private String extension;
 
     public MaxoAnnotation(){}
 
     public MaxoAnnotation(AnnotationSource annotationSource, AnnotationStatus status, String maxoId,
-                          String maxoName, String hpoName, String hpoId, String eco, String comment, String relation,
+                          String maxoName, String hpoName, String hpoId, String evidenceType, String comment, String relation,
                           String extension) {
         super(annotationSource, status);
         this.maxoId = maxoId;
         this.maxoName = maxoName;
         this.hpoName = hpoName;
         this.hpoId = hpoId;
-        this.eco = eco;
+        this.evidenceType = evidenceType;
         this.comment = comment;
         this.relation = relation;
         this.extension = extension;
     }
 
-    public MaxoAnnotation(String maxoId, String maxoName, String hpoName, String hpoId, String eco, String comment, String relation, String extension) {
+    public MaxoAnnotation(String maxoId, String maxoName, String hpoName, String hpoId, String evidenceType,
+                          String comment, String relation, String extension) {
         this.maxoId = maxoId;
         this.maxoName = maxoName;
         this.hpoName = hpoName;
         this.hpoId = hpoId;
-        this.eco = eco;
+        this.evidenceType = evidenceType;
         this.comment = comment;
         this.relation = relation;
         this.extension = extension;
@@ -53,7 +64,7 @@ public class MaxoAnnotation extends Annotation {
         this.maxoName = maxoRequest.getMaxoName();
         this.hpoId = maxoRequest.getHpoId();
         this.hpoName = maxoRequest.getHpoName();
-        this.eco = maxoRequest.getEco();
+        this.evidenceType = maxoRequest.getEvidenceType();
         this.comment = maxoRequest.getComment();
         this.relation = maxoRequest.getRelation();
         this.extension = maxoRequest.getExtension();
@@ -75,8 +86,8 @@ public class MaxoAnnotation extends Annotation {
         return hpoId;
     }
 
-    public String getEco() {
-        return eco;
+    public String getEvidenceType() {
+        return evidenceType;
     }
 
     public String getComment() {

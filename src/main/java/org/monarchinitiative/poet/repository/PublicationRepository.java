@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface PublicationRepository extends CrudRepository<Publication, Long> {
 
-    List<Publication> findByNameContaining(String name);
-    List<Publication> findByIdentifierStartingWithOrNameContainingIgnoreCase(String id, String name);
-    Publication findByIdentifier(String id);
+    List<Publication> findByPublicationNameContaining(String name);
+    List<Publication> findByPublicationIdStartingWithOrPublicationNameContainingIgnoreCase(String id, String name);
+    Publication findByPublicationId(String id);
 
 }
