@@ -9,7 +9,7 @@ import { PortalComponent } from './portal/portal.component';
 import { TreatmentCurationComponent } from './portal-curate/treatment-curation/treatment-curation.component';
 import { HpoCurationComponent } from './portal-curate/hpo-curation/hpo-curation.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { DialogSourceComponent } from './portal-curate/dialog-curation/dialog-source.component';
+import { DialogSourceComponent } from './portal-curate/dialog-source/dialog-source.component';
 import { HttpClientModule } from "@angular/common/http";
 import { AnnotationCardComponent } from './portal-curate/annotation-card/annotation-card.component';
 

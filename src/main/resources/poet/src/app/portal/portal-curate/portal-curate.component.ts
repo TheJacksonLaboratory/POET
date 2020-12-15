@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
-import { DialogSourceComponent } from "./dialog-curation/dialog-source.component";
+import { DialogSourceComponent } from "./dialog-source/dialog-source.component";
 import { CurationService } from "../../shared/services/curation/curation.service";
 import { AuthService } from "@auth0/auth0-angular";
 import { transition, trigger, useAnimation } from "@angular/animations";

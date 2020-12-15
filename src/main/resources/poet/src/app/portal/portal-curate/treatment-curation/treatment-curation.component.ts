@@ -7,7 +7,7 @@ import { AnnotationSource, Publication } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { StateService } from "../../../shared/services/state/state.service";
 import { MatDialog } from "@angular/material/dialog";
-import { DialogSourceComponent } from "../dialog-curation/dialog-source.component";
+import { DialogSourceComponent } from "../dialog-source/dialog-source.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
