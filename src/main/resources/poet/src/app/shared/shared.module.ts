@@ -25,6 +25,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatMenuModule } from "@angular/material/menu";
 import { NgxChartsModule } from "@swimlane/ngx-charts";
 import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 @NgModule({
   declarations: [SearchComponent, MonarchSearchComponent],
@@ -54,7 +55,9 @@ import { MatPaginatorModule } from "@angular/material/paginator";
     MatTooltipModule,
     MatMenuModule,
     NgxChartsModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatCheckboxModule,
+    MatTooltipModule
   ],
   exports: [
     MatToolbarModule,
@@ -83,7 +86,9 @@ import { MatPaginatorModule } from "@angular/material/paginator";
     MatTooltipModule,
     MatMenuModule,
     NgxChartsModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatCheckboxModule,
+    MatTooltipModule
   ]
 })
 export class SharedModule {

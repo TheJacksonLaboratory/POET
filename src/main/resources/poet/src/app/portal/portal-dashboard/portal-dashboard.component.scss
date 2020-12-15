@@ -9,6 +9,14 @@
     margin: 1rem 0 0 0;
   }
 
+  & .search-card {
+    text-align: center;
+    & .search-wrapper {
+      margin: 0 auto;
+      width: 40%;
+    }
+  }
+
   & .profile-card {
     max-height: 350px;
     & .mat-card-title {

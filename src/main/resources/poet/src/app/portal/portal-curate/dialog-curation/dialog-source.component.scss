@@ -1,0 +1,57 @@
+
+.mat-dialog-title {
+  text-align: center;
+}
+.mat-dialog-content {
+  max-height: unset;
+  min-height: 150px;
+}
+
+.dialog-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-spacer {
+  flex-grow: 1;
+}
+
+.new-hint {
+  font-size: .8rem;
+  cursor: pointer;
+}
+
+.mat-form-field, .mat-input-element {
+  width: 80%;
+}
+
+.monarch-search-wrapper {
+  margin-top: 1rem;
+}
+
+.selected-publication {
+
+  border: 1px solid gray;
+  padding: 10px;
+  margin-bottom: 1.25rem;
+
+  & .date {
+    font-style: italic;
+    font-size: .85rem;
+  }
+
+  & .title {
+    font-weight: bold;
+  }
+
+  & .uid {
+    font-size: .85rem;
+  }
+}
+
+.pubmed-publication {
+  border: solid 1px gray;
+  border-radius: 0.25rem;
+  padding: 1rem;
+}

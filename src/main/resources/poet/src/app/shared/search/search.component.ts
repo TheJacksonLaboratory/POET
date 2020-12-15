@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl } from "@angular/forms";
 import { debounceTime, finalize } from "rxjs/operators";
 import { tap } from "rxjs/internal/operators/tap";
@@ -21,7 +21,8 @@ export class SearchComponent implements OnInit {
   isLoading = false;
   errorMsg: string;
 
-  constructor(private curationService: CurationService) { }
+  constructor(private curationService: CurationService) {
+  }
 
   ngOnInit(): void {
     this.searchControl.valueChanges
@@ -33,7 +34,7 @@ export class SearchComponent implements OnInit {
           this.isLoading = true;
         }),
         switchMap(value => {
-          if(this.hasValidInput(value)){
+          if (this.hasValidInput(value)) {
             return this.curationService.searchAll(value)
               .pipe(
                 finalize(() => {
@@ -45,28 +46,25 @@ export class SearchComponent implements OnInit {
           }
         })
       ).subscribe(data => {
-        if (data['results'] == undefined) {
-          this.errorMsg = data['Error'];
-          this.filteredResponse = [];
-        } else {
-          this.errorMsg = "";
-          this.filteredResponse = data['results'];
-        }
-      });
+      if (data) {
+        this.errorMsg = ""
+        this.filteredResponse = data;
+      }
+    });
   }
 
-  onSelection(result){
+  onSelection(result) {
     this.onSearchSelect.emit(result);
   }
 
-  hasValidInput(val: string){
-    if(val && val.length >= 3){
+  hasValidInput(val: string) {
+    if (val && val.length >= 3) {
       return val;
     }
   }
 
-  displayFn(searchResult: SearchResult){
-    if(searchResult){
+  displayFn(searchResult: SearchResult) {
+    if (searchResult) {
       return searchResult.name;
     }
   }

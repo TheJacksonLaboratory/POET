@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
-import { DialogCurationComponent } from "./dialog-curation/dialog-curation.component";
+import { DialogSourceComponent } from "./dialog-curation/dialog-source.component";
 import { CurationService } from "../../shared/services/curation/curation.service";
 import { AuthService } from "@auth0/auth0-angular";
-import { animate, query, stagger, style, transition, trigger, useAnimation } from "@angular/animations";
+import { transition, trigger, useAnimation } from "@angular/animations";
 import { fadeIn } from "ng-animate";
 import { StateService } from "../../shared/services/state/state.service";
-import { Disease } from "../../shared/models/models";
+import { Disease, Publication } from "../../shared/models/models";
+import { finalize } from "rxjs/operators";
 
 @Component({
   selector: 'app-portal-curate',
@@ -23,33 +24,53 @@ export class PortalCurateComponent implements OnInit {
   selectionId: string;
   selectedOntology: string;
   selectedDisease: Disease;
+  selectedPublication: Publication;
   showLoader: boolean = false;
   fxLayout: string = "row";
   fxLayoutAlign: string = "start stretch";
-  fxFlexAnnotations: string = "40";
-  fxFlexForm: string = "33";
-  fxFlexOffset: string = "10";
+  fxFlexAnnotations: string = "50";
+  fxFlexForm: string = "42";
+  fxFlexFormOffset: string = "5"
+  fxFlexAnnotationOffset: string = "25";
   sourceAndOntologySelected: boolean = false;
   showForm: boolean = false;
   annotationItems = [
-    { value: 'hpo', display: 'Phenotypes', icon: 'assignment'},
-    { value: 'maxo', display: 'Treatments', icon:  'healing' }
+    {value: 'hpo', display: 'Phenotypes', icon: 'assignment'},
+    {value: 'maxo', display: 'Treatments', icon: 'healing'}
   ];
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog,
               public curationService: CurationService, public stateService: StateService,
-              public auth: AuthService) {
+              public auth: AuthService, public router: Router) {
   }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       let id = params['id'];
       if (id) {
+        if (this.determineIdType(id) == 'disease') {
+          this.doingWork(true);
+          this.curationService.getDisease(id).pipe(
+            finalize(() => this.doingWork(false))
+          ).subscribe((disease) => {
+            this.selectedDisease = disease
+            this.stateService.setSelectedDisease(disease);
+          }, (error) => {
+            this.router.navigate(['portal/dashboard'], {state: {error: true, message: error.text}});
+          });
+        } else if (this.determineIdType(id) == 'publication') {
+          this.doingWork(true);
+          this.curationService.getPublication(id).pipe(
+            finalize(() => this.doingWork(false))
+          ).subscribe((publication) =>
+            this.selectedPublication = publication
+          );
+        }
         this.selectionType = this.determineIdType(id);
         this.selectionId = id;
       } else {
         // Open modal dialog to figure out what is the goal
-        const dialogRef = this.dialog.open(DialogCurationComponent, {
+        const dialogRef = this.dialog.open(DialogSourceComponent, {
           width: '500px',
           height: '500px'
         });
@@ -73,19 +94,17 @@ export class PortalCurateComponent implements OnInit {
       }
     });
 
-    this.stateService.selectedOntology.subscribe( (ontology) => this.selectedOntology = ontology);
+    this.stateService.selectedOntology.subscribe((ontology) => this.selectedOntology = ontology);
+  }
 
-    this.stateService.selectedDisease.subscribe((disease) => {
-      this.selectedDisease = disease;
-    });
+  /**
+   * Display Form
+   */
 
-    this.stateService.sourceAndOntologySelected.subscribe((source) => {
-      if(source){
-        this.showForm = true;
-        this.fxFlexAnnotations = "33";
-        this.fxFlexOffset = "0";
-      }
-    });
+  displayForm() {
+    this.showForm = true;
+    this.fxFlexAnnotations = "42";
+    this.fxFlexAnnotationOffset = "5";
   }
 
   /**
@@ -110,10 +129,6 @@ export class PortalCurateComponent implements OnInit {
     this.showLoader = working;
   }
 
-  shouldShowSourceSelection () {
-    return this.selectionType && this.selectionId && !this.sourceAndOntologySelected;
-  }
-
   shouldShowMaxoCard() {
     return this.selectedDisease && this.selectedOntology === 'maxo' && this.showForm;
   }
@@ -122,7 +137,7 @@ export class PortalCurateComponent implements OnInit {
     return this.selectedDisease && this.selectedOntology === 'hpo' && this.showForm;
   }
 
-  changeOntology(ontology: string){
+  changeOntology(ontology: string) {
     this.stateService.setSelectedOntology(ontology);
   }
 }

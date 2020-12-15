@@ -1,23 +1,35 @@
 <mat-card [@bounceInLeft]="triggerBounceIn" class="annotation-card">
   <mat-card-title>
-    <span *ngIf="ontology == 'maxo'">Existing Medical Actions</span>
+    <span *ngIf="ontology == 'maxo'">Treatments</span>
     <span *ngIf="ontology == 'hpo'">Phenotypes</span>
+    <button class="new-annotation" mat-mini-fab color="primary" aria-label="Add Annotation" (click)="annotationAction(null, 'edit', -1)">
+      <mat-icon>add</mat-icon>
+    </button>
   </mat-card-title>
   <mat-card-subtitle>
-    <span *ngIf="ontology == 'maxo'">To add a new medical action please select or create a source.</span>
-    <span *ngIf="ontology == 'hpo'">A list of curated phenotypes of this disease</span>
+    <span *ngIf="ontology == 'maxo'">A list of curated medical actions for this disease.</span>
+    <span *ngIf="ontology == 'hpo'">A list of curated phenotypes of this disease</span><br><br>
   </mat-card-subtitle>
   <mat-card-content>
-  <mat-selection-list #maxo [multiple]="false" (selectionChange)="onSelectedListItem($event.option.value)">
-    <mat-list-option class="selection-wrapper" *ngFor="let maxo of maxoAnnotations | async" [value]="disease">
-      <mat-icon matListIcon>medical_services</mat-icon>
+  <mat-list #maxo>
+    <mat-list-item class="selection-wrapper mat-elevation-z3" [ngClass]="{'active': activeIndex == i}" *ngFor="let maxo of maxoAnnotations | async; let i = index">
+      <mat-icon matListIcon>health_and_safety</mat-icon>
       <div class="selection-text">
         <span class="selection-id">
           {{maxo.maxoName}} &nbsp; {{maxo.relation}} &nbsp; {{maxo.hpoName}}
         </span>
       </div>
-    </mat-list-option>
-  </mat-selection-list>
+      <div class="spacer"></div>
+        <button mat-icon-button aria-label="Edit MAxO annotation"
+                (click)="annotationAction(maxo, 'edit', i)">
+          <mat-icon>create</mat-icon>
+        </button>
+        <button mat-icon-button aria-label="Adding MAxO annotation"
+                (click)="annotationAction(maxo, 'view', i)">
+          <mat-icon>launch</mat-icon>
+        </button>
+    </mat-list-item>
+  </mat-list>
   <div class="annotation-missing" *ngIf="(maxoAnnotations | async)?.length == 0">
         No {{ontologyToDisplay()}} Found.
   </div>

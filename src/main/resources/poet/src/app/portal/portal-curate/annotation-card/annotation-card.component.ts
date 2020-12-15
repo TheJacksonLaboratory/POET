@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { AnnotationSource, Disease, MaxoAnnotation, Publication } from "../../../shared/models/models";
 import { StateService } from "../../../shared/services/state/state.service";
 import { CurationService } from "../../../shared/services/curation/curation.service";
@@ -21,7 +21,11 @@ export class AnnotationCardComponent implements OnInit {
   publication: Publication;
   ontology: string;
   maxoAnnotations: Observable<MaxoAnnotation[]>;
+  annotationMode: any;
   triggerBounceIn: any;
+  activeIndex: any;
+  @Output('openForm') openAnnotationForm: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   constructor(public stateService: StateService, public curationService: CurationService) { }
 
   ngOnInit(): void {
@@ -35,23 +39,15 @@ export class AnnotationCardComponent implements OnInit {
         this.disease = disease;
         this.maxoAnnotations = this.curationService.getMaxoAnnotations(this.disease, null, "")
       }
-    })
-
-    this.stateService.selectedAnnotationSource.subscribe((source) => {
-      this.updateAnnotations(source);
     });
 
-    this.stateService.onSuccessAnnotationSubmission.subscribe((success) => {
+    this.stateService.triggerReloadAnnotations.subscribe((reload) => {
       // Reload if submission is successful for now.
       // TODO: Polling in the future.
-      if(success){
+      if(reload){
         this.updateAnnotations(null);
       }
     });
-  }
-
-  onSelectedListItem(item: any) {
-    // Send information to MaxoCard to display or edit.
   }
 
   ontologyToDisplay(){
@@ -73,4 +69,18 @@ export class AnnotationCardComponent implements OnInit {
     }
   }
 
+  openForm(){
+    this.openAnnotationForm.emit(true);
+  }
+
+  annotationAction(annotation: any, action: any, index: any){
+    this.activeIndex = index;
+    if(this.ontology == 'maxo'){
+      this.stateService.setSelectedTreatmentAnnotation(annotation);
+    } else {
+      this.stateService.setSelectedPhenotypeAnnotation(annotation);
+    }
+    this.stateService.setSelectedAnnotationMode(action);
+    this.openForm();
+  }
 }

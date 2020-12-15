@@ -12,6 +12,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthHttpInterceptor } from '@auth0/auth0-angular';
 import { AuthConfig, AuthModule } from "@auth0/auth0-angular";
 import { environment as env} from "../environments/environment";
+import { MAT_DIALOG_DEFAULT_OPTIONS } from "@angular/material/dialog";
 const config: AuthConfig = {
   ...env.auth,
   httpInterceptor: {
@@ -32,7 +33,8 @@ const config: AuthConfig = {
     FlexLayoutModule,
     AuthModule.forRoot(config)
   ],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true }],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {panelClass: 'mat-dialog-override'}}],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -20,12 +20,8 @@
     </nav>
   </div>
   <div class="curation-container" [fxLayout]="fxLayout" [fxLayoutAlign]="fxLayoutAlign" [@fadeIn]="selectedOntology">
-
-    <app-annotation-card [fxFlex]="fxFlexAnnotations" [fxFlexOffset]="fxFlexOffset" *ngIf="selectedDisease"></app-annotation-card>
-    <app-source-selection-card [fxFlex]="fxFlexAnnotations" [activeType]="selectionType" [activeId]="selectionId"
-                               (working)="doingWork($event)" *ngIf="shouldShowSourceSelection()"></app-source-selection-card>
-    <app-maxo-curation [fxFlex]="fxFlexForm" *ngIf="shouldShowMaxoCard()"></app-maxo-curation>
-    <app-hpo-curation [fxFlex]="fxFlexForm" *ngIf="shouldShowHpoCard()"></app-hpo-curation>
+    <app-annotation-card [fxFlex]="fxFlexAnnotations" [fxFlexOffset]="fxFlexAnnotationOffset" *ngIf="selectedDisease" (openForm)="displayForm()"></app-annotation-card>
+    <app-treatment-curation [fxFlex]="fxFlexForm"  [fxFlexOffset]="fxFlexFormOffset" *ngIf="shouldShowMaxoCard()"></app-treatment-curation>
+    <app-hpo-curation [fxFlex]="fxFlexForm" [fxFlexOffset]="fxFlexFormOffset"  *ngIf="shouldShowHpoCard()"></app-hpo-curation>
   </div>
 </div>
-

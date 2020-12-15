@@ -306,3 +306,45 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 }
 
 .ngx-charts text { fill: #fff; }
+
+.maxo-card {
+  & .mat-select-panel mat-option.mat-option {
+    height: 3.5em;
+  }
+
+  & .mat-select-panel mat-option.mat-option {
+    height: 3.5em;
+  }
+}
+
+
+.mat-option-text.mat-option-text {
+  white-space: normal;
+  line-height: 1.25rem;
+  cursor: pointer;
+}
+
+.maxo-card .mat-list-item .mat-list-item-content {
+  justify-content: space-between;
+}
+
+.maxo-card .mat-icon {
+  cursor: pointer;
+}
+
+// overrides.scss or styles.scss
+// This fixes https://github.com/angular/components/issues/4609
+.mat-dialog-override {
+  mat-dialog-container {
+    > :first-child {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    mat-dialog-content,
+    div[mat-dialog-content] {
+      flex-grow: 1;
+      max-height: unset;
+    }
+  }
+}

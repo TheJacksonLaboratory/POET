@@ -1,18 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MaxoCurationComponent } from './maxo-curation.component';
+import { TreatmentCurationComponent } from './treatment-curation.component';
 import { HpoService } from "../../../shared/services/external/hpo.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { SharedModule } from "../../../shared/shared.module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe('MaxoCurationComponent', () => {
-  let component: MaxoCurationComponent;
-  let fixture: ComponentFixture<MaxoCurationComponent>;
+  let component: TreatmentCurationComponent;
+  let fixture: ComponentFixture<TreatmentCurationComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MaxoCurationComponent ],
+      declarations: [ TreatmentCurationComponent ],
       providers: [ HpoService ],
       imports: [ HttpClientTestingModule, SharedModule, NoopAnimationsModule ]
     })
@@ -20,7 +20,7 @@ describe('MaxoCurationComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MaxoCurationComponent);
+    fixture = TestBed.createComponent(TreatmentCurationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

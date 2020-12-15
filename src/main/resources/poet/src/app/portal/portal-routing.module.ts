@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PortalCurateComponent } from "./portal-curate/portal-curate.component";
 import { PortalComponent } from "./portal/portal.component";
-import { PortalDashboardComponent } from './portal-home/portal-dashboard.component';
+import { PortalDashboardComponent } from './portal-dashboard/portal-dashboard.component';
 
 
 const routes: Routes = [
