@@ -2,6 +2,7 @@
   box-shadow: none !important;
   background-color: #393939;
   margin-left: 5px;
+  border: 1px solid gray;
 
   & .mat-card-title, .mat-card-subtitle {
     text-align: center;
@@ -29,7 +30,7 @@
   }
 
   & .mat-card-actions {
-    margin: 1.25rem auto 0 auto;
+    margin: 1.25rem auto 1.25rem auto;
     min-width: 300px;
 
 

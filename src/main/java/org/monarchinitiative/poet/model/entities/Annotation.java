@@ -19,6 +19,7 @@ public class Annotation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @ManyToOne
+    @JsonView(AnnotationViews.Simple.class)
     private AnnotationSource annotationSource;
 
     @Enumerated(EnumType.STRING)

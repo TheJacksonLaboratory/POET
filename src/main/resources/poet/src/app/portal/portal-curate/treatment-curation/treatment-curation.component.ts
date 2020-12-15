@@ -57,6 +57,7 @@ export class TreatmentCurationComponent implements OnInit {
 
     this.stateService.selectedTreatmentAnnotation.subscribe((annotation) => {
       if(!annotation){
+        this.selectedPublications = [];
         this.resetMaxoForm();
       } else {
         this.selectedAnnotation = annotation;
@@ -130,6 +131,7 @@ export class TreatmentCurationComponent implements OnInit {
     this.formControlGroup.get('relationFormControl').setValue(annotation.relation);
     this.formControlGroup.get('extensionFormControl').setValue(annotation.extension);
     this.formControlGroup.get('commentFormControl').setValue(annotation.comment);
+    this.selectedPublications = [annotation.annotationSource.publication];
 
   }
 

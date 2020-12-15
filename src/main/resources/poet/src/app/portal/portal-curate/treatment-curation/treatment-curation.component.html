@@ -19,9 +19,9 @@
     <button mat-raised-button color="primary" (click)="selectPublication()"
             *ngIf="selectedPublications.length === 0" [disabled]="lockForm">Select Publication</button>
     <mat-list class="publication-list" aria-label="publication selection">
-      <mat-list-item *ngFor="let publication of selectedPublications">
+      <mat-list-item *ngFor="let publication of selectedPublications" [disabled]="lockForm">
         {{publication.publicationName}} {{publication.publicationId}}
-        <mat-icon (click)="remove(publication)">cancel</mat-icon>
+        <mat-icon (click)="remove(publication)" *ngIf="!lockForm">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
     <form [formGroup]="formControlGroup">

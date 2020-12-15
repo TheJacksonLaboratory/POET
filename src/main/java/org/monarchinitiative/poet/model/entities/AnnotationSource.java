@@ -1,5 +1,8 @@
 package org.monarchinitiative.poet.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.monarchinitiative.poet.views.AnnotationViews;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,6 +13,7 @@ public class AnnotationSource {
     private long id;
 
     @ManyToOne
+    @JsonView(AnnotationViews.Simple.class)
     private Publication publication;
 
     @ManyToOne
