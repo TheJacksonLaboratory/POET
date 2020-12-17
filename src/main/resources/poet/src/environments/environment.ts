@@ -27,7 +27,8 @@ export const environment = {
   HPO_API_HPO_SEARCH_URL: HPO_BASE_URL + 'hpo/search',
   HPO_API_MAXO_SEARCH_URL: HPO_BASE_URL + 'maxo/search/',
   MONARCH_SEARCH_URL: MONARCH_BASE_URL + '/search/entity/autocomplete/',
-  PUBMED_SUMMARY_URL: PUBMED_BASE_URL + 'esummary.fcgi'
+  PUBMED_SUMMARY_URL: PUBMED_BASE_URL + 'esummary.fcgi',
+  AUDIENCE_ROLE: "https://poet.jax.org/role"
 };
 
 /*

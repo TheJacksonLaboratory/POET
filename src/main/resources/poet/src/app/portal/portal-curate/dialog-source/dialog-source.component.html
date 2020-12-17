@@ -4,7 +4,7 @@
     <div class="existing-curation" *ngIf="!newPublication">
       <div *ngIf="selectedDisease">
         <mat-selection-list #publications (selectionChange)="selectPublication($event.option.value)" multiple="false">
-          <mat-list-option class="selection-wrapper" value="new">
+          <mat-list-option class="selection-wrapper" value="new" *ngIf="isElevatedCurator()">
             <mat-icon matListIcon>add_box</mat-icon>
             <div class="selection-text">
               <strong>Add New Publication for {{selectedDisease.diseaseName}}</strong>

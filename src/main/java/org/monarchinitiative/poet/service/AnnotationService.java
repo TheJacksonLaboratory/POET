@@ -1,6 +1,6 @@
 package org.monarchinitiative.poet.service;
 
-import org.monarchinitiative.poet.model.MaxoRequest;
+import org.monarchinitiative.poet.model.requests.MaxoRequest;
 import org.monarchinitiative.poet.model.entities.*;
 import org.monarchinitiative.poet.model.enumeration.CurationAction;
 import org.monarchinitiative.poet.repository.*;

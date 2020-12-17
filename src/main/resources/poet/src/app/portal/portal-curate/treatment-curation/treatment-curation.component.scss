@@ -16,7 +16,7 @@
     background-color: #2b3f4e;
   }
 
-  .mat-card-content, .mat-card-actions{
+  .mat-card-content, .mat-card-actions {
     min-width: 300px;
     margin: 0 auto 0 auto;
   }
@@ -24,6 +24,7 @@
   & .form-content-section {
     min-width: 300px;
     margin: 1.25rem auto 0 auto;
+
     & .maxo-form {
       width: 100%;
     }
@@ -54,11 +55,14 @@
   }
 
   & .mode-icon {
+    float: right;
 
     &.lock {
-      color: darkred;
+      color: indianred;
     }
 
-    float: right;
+    &.unlock {
+      color: lightgreen;
+    }
   }
 }

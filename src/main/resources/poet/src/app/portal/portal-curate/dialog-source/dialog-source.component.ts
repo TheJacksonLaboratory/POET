@@ -9,6 +9,8 @@ import { PubmedService } from "../../../shared/services/external/pubmed.service"
 import { StateService } from "../../../shared/services/state/state.service";
 import {Disease, Publication} from "../../../shared/models/models";
 import {Observable} from "rxjs";
+import { environment } from "../../../../environments/environment";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-dialog-curation',
@@ -32,7 +34,7 @@ export class DialogSourceComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<DialogSourceComponent>,
               private curationService: CurationService, private pubmedService: PubmedService,
               private stateService: StateService,
-              @Inject(MAT_DIALOG_DATA) public data: any) {
+              @Inject(MAT_DIALOG_DATA) public data: any, private _snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
@@ -57,7 +59,6 @@ export class DialogSourceComponent implements OnInit {
             if (!data) {
               this.annotationSourceControl.setErrors({notFound: true});
             }
-            console.log(data);
             this.selectedPublication = data;
           }, (err) => {
             this.annotationSourceControl.setErrors({notFound: true});
@@ -85,7 +86,37 @@ export class DialogSourceComponent implements OnInit {
   }
 
   saveNewPublication() {
+    this.curationService.savePublication(
+      {
+        disease: this.selectedDisease,
+        publication: {
+          "publicationId": "PMID:" + this.selectedPublication.uid,
+          "publicationName": this.selectedPublication.title,
+          "date": this.selectedPublication.pubdate,
+          "firstAuthor": this.selectedPublication.sortfirstauthor
+        }
+      }
+    ).subscribe(() => {
+      this.annotatedPublications$ = this.curationService.getDiseasePublications(this.selectedDisease.diseaseId);
+      this.newPublication = false;
+    }, error => {
+      const message = this.getErrorMessage(error);
+      this._snackBar.open(message, 'Close', {
+        duration: 5000,
+      });
+    });
+  }
 
+  getErrorMessage(error: any){
+    if(error.error.message){
+      return "[ERROR]: " + error.error.message;
+    } else {
+      return "[ERROR]: " + error.message;
+    }
+  }
+
+  isElevatedCurator(){
+    return this.data.userRole == "ELEVATED_CURATOR";
   }
 
   dialogRequirementsMet() {
@@ -99,6 +130,7 @@ export class DialogSourceComponent implements OnInit {
       this.selectedPublication = publication;
     }
   }
+
   allTasksCompleted(){
     return this.newPublicationChecks.every(t => t.completed);
   }

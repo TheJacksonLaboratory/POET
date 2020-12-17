@@ -9,6 +9,7 @@ import { fadeIn } from "ng-animate";
 import { StateService } from "../../shared/services/state/state.service";
 import { Disease, Publication } from "../../shared/models/models";
 import { finalize } from "rxjs/operators";
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: 'app-portal-curate',
@@ -21,10 +22,8 @@ import { finalize } from "rxjs/operators";
 export class PortalCurateComponent implements OnInit {
 
   selectionType: string;
-  selectionId: string;
   selectedOntology: string;
   selectedDisease: Disease;
-  selectedPublication: Publication;
   showLoader: boolean = false;
   fxLayout: string = "row";
   fxLayoutAlign: string = "start stretch";
@@ -38,10 +37,11 @@ export class PortalCurateComponent implements OnInit {
     {value: 'hpo', display: 'Phenotypes', icon: 'assignment'},
     {value: 'maxo', display: 'Treatments', icon: 'healing'}
   ];
+  userRole: string = 'CURATOR';
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog,
               public curationService: CurationService, public stateService: StateService,
-              public auth: AuthService, public router: Router) {
+              public authService: AuthService, public router: Router) {
   }
 
   ngOnInit(): void {
@@ -58,43 +58,17 @@ export class PortalCurateComponent implements OnInit {
           }, (error) => {
             this.router.navigate(['portal/dashboard'], {state: {error: true, message: error.text}});
           });
-        } else if (this.determineIdType(id) == 'publication') {
-          this.doingWork(true);
-          this.curationService.getPublication(id).pipe(
-            finalize(() => this.doingWork(false))
-          ).subscribe((publication) =>
-            this.selectedPublication = publication
-          );
         }
-        this.selectionType = this.determineIdType(id);
-        this.selectionId = id;
       } else {
-        // Open modal dialog to figure out what is the goal
-        const dialogRef = this.dialog.open(DialogSourceComponent, {
-          width: '500px',
-          height: '500px'
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-          // Get Selection Type
-          if (result) {
-            if (result.action === 'fetch') {
-              if (result.disease) {
-                this.selectionType = 'disease';
-                this.selectionId = result.disease.id;
-              } else if (result.publication) {
-                this.selectionType = 'publication';
-                this.selectionId = result.publication.id;
-              }
-            } else if (result.action === 'create') {
-              // TODO: Have creating source an option.
-            }
-          }
-        });
+        this.router.navigate(['/portal/dashboard']);
       }
     });
 
     this.stateService.selectedOntology.subscribe((ontology) => this.selectedOntology = ontology);
+
+    this.authService.user$.subscribe((user) => {
+      this.userRole = user[environment.AUDIENCE_ROLE];
+    })
   }
 
   /**

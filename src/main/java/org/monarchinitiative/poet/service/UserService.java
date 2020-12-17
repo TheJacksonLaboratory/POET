@@ -14,11 +14,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public boolean saveNewUser(String authId, String nickname, String email, String orcid, CurationRole curationRole){
-        if(authId !=null && nickname !=null && email !=null){
+    public boolean saveNewUser(String authId, String nickname, String email, String orcid, CurationRole curationRole) {
+        if (authId != null && nickname != null && email != null) {
             final User user = new User(authId, nickname, email, orcid, curationRole);
 
-            if(userRepository.findDistinctByAuthId(authId) != null){
+            if (userRepository.findDistinctByAuthId(authId) != null) {
                 return true;
             }
             // Check for errors.

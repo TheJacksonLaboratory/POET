@@ -49,6 +49,14 @@ public class Publication {
         this.firstAuthor = firstAuthor;
     }
 
+    public Publication(Publication publication){
+        this.publicationId = publication.getPublicationId();
+        this.publicationName = publication.getPublicationName();
+        this.date = publication.getDate();
+        this.firstAuthor = publication.getFirstAuthor();
+
+    }
+
     public Publication(String publicationId, String publicationName, String date, String firstAuthor, List<AnnotationSource> annotationSources){
         this.publicationId = publicationId;
         this.publicationName = publicationName;

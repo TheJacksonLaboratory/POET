@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HpoService } from "../../../shared/services/external/hpo.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
@@ -19,6 +19,7 @@ export class TreatmentCurationComponent implements OnInit {
 
 
   @Input('selectedSource') annotationSource: AnnotationSource;
+  @Input('role') userRole : string;
   @Output('onAnnotationSuccess') onAnnotationSuccess: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   selectedAnnotation: any;
@@ -153,6 +154,9 @@ export class TreatmentCurationComponent implements OnInit {
   selectPublication(){
    this.dialog.open(DialogSourceComponent, {
       minWidth: 300,
+      data: {
+        "userRole": this.userRole
+      }
    });
   }
 

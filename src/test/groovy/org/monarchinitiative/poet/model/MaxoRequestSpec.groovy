@@ -1,5 +1,6 @@
 package org.monarchinitiative.poet.model
 
+import org.monarchinitiative.poet.model.requests.MaxoRequest
 import org.springframework.test.context.ActiveProfiles
 import spock.lang.Specification
 import spock.lang.Unroll

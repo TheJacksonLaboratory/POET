@@ -54,4 +54,8 @@ public class User {
     public String getOrcId() {
         return orcId;
     }
+
+    public CurationRole getCurationRole() {
+        return curationRole;
+    }
 }

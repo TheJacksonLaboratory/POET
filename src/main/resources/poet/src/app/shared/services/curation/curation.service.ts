@@ -48,6 +48,14 @@ export class CurationService {
   }
 
   /**
+   * Save a publication to a disease.
+   */
+  savePublication(annotationSource: any) {
+    return this.httpClient.post(environment.POET_API_PUBLICATION_ENTITY_URL, annotationSource)
+  }
+
+
+  /**
    * Get a list of diseases associated to a publication
    * @param id - ideally a PMID.
    */

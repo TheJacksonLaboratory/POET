@@ -6,18 +6,19 @@
               matTooltipPosition="below">
       lock
     </mat-icon>
-    <mat-icon class="mode-icon" *ngIf="!lockForm"
+    <mat-icon class="mode-icon unlock" *ngIf="!lockForm"
               matTooltip="Editing Mode"
               matTooltipPosition="below">
       lock_open
     </mat-icon>
   </mat-card-title>
   <mat-card-subtitle>
-   Medical Action Ontology [ MAxO ]<br><br>
+    Medical Action Ontology [ MAxO ]<br><br>
   </mat-card-subtitle>
   <mat-card-content>
     <button mat-raised-button color="primary" (click)="selectPublication()"
-            *ngIf="selectedPublications.length === 0" [disabled]="lockForm">Select Publication</button>
+            *ngIf="selectedPublications.length === 0" [disabled]="lockForm">Select Publication
+    </button>
     <mat-list class="publication-list" aria-label="publication selection">
       <mat-list-item *ngFor="let publication of selectedPublications" [disabled]="lockForm">
         {{publication.publicationName}} {{publication.publicationId}}
@@ -25,89 +26,92 @@
       </mat-list-item>
     </mat-list>
     <form [formGroup]="formControlGroup">
-    <div class="form-content-section">
-      <mat-form-field class="maxo-form" appearance="fill">
-        <mat-label>HPO Term</mat-label>
-        <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
-               [matAutocomplete]="hpo" [disabled]="lockForm">
-        <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != ''" matSuffix mat-icon-button aria-label="Clear" (click)="resetHpoTermSelect()">
-          <mat-icon>close</mat-icon>
-        </button>
-        <mat-hint *ngIf="!selectedHpo">Try: arachnodactyly</mat-hint>
-        <mat-error *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound')">
-          Looks like there was an error with the HPO API.
-        </mat-error>
-        <mat-autocomplete #hpo="matAutocomplete" (optionSelected)="selectedHpo = $event.option.value"
-                          [displayWith]="displayHpoFn">
-          <mat-option class="auto-complete-option" *ngFor="let option of hpoOptions" [value]="option">
-            <span class="option-name">{{option.name}}</span>
-            &nbsp;
-            <span class="option-id">{{option.id}}</span>
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-    </div>
-    <div class="form-content-section">
-      <mat-form-field class="maxo-form" appearance="fill">
-        <mat-label>MAxO Term</mat-label>
-        <input matInput placeholder="Search for a MAxO Term" formControlName="maxoFormControl" ngDefaultControl
-               [matAutocomplete]="maxoAuto" [disabled]="lockForm">
-        <button mat-button *ngIf="formControlGroup.get('maxoFormControl').value != ''"
-                matSuffix mat-icon-button aria-label="Clear" (click)="resetMaxoTermSelect()">
-          <mat-icon>close</mat-icon>
-        </button>
-        <mat-hint *ngIf="!selectedTreatment">Try: cognitive therapy</mat-hint>
-        <mat-error *ngIf="formControlGroup.get('maxoFormControl').hasError('notFound')">
-          Looks like there was an error with the MAxO API.
-        </mat-error>
-        <mat-autocomplete #maxoAuto="matAutocomplete" (optionSelected)="selectedTreatment = $event.option.value"
-                          [displayWith]="displayMaxoFn">
-          <mat-option class="auto-complete-option" *ngFor="let option of maxoOptions" [value]="option">
-            <span class="option-name">{{option.name}}</span>
-            &nbsp;
-            <span class="option-id">{{option.ontologyId}}</span>
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-    </div>
-    <div class="form-content-section">
-      <mat-form-field appearance="fill">
-        <mat-label>Evidence</mat-label>
-        <mat-select formControlName="evidenceFormControl" [disabled]="lockForm">
-          <mat-option [value]="'TAS'">TAS</mat-option>
-          <mat-option [value]="'IEA'">IEA</mat-option>
-          <mat-option [value]="'PCS'">PCS</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="fill" class="relation">
-        <mat-label>Relation</mat-label>
-        <mat-select formControlName="relationFormControl" [disabled]="lockForm">
-          <mat-option [value]="'TREATS'">TREATS</mat-option>
-          <mat-option [value]="'PREVENTS'">PREVENTS</mat-option>
-          <mat-option [value]="'INVESTIGATES'">INVESTIGATES</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="form-content-section">
-      <mat-form-field class="maxo-form">
-        <mat-label>CHEBI Extension</mat-label>
-        <input matInput type="text" formControlName="extensionFormControl" [disabled]="lockForm">
-        <button mat-button *ngIf="formControlGroup.get('extensionFormControl').value != ''" matSuffix mat-icon-button aria-label="Clear"
-                (click)="formControlGroup.get('extensionFormControl').reset()">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
-    </div>
-    <div class="form-content-section">
-      <mat-form-field class="maxo-form">
-        <mat-label>Additional Annotation Comment</mat-label>
-        <input matInput type="text" formControlName="commentFormControl" [disabled]="lockForm">
-        <button mat-button *ngIf="formControlGroup.get('commentFormControl').value != ''" matSuffix mat-icon-button aria-label="Clear"
-                (click)="formControlGroup.get('commentFormControl').reset()">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
-    </div>
+      <div class="form-content-section">
+        <mat-form-field class="maxo-form" appearance="fill">
+          <mat-label>HPO Term</mat-label>
+          <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
+                 [matAutocomplete]="hpo" [disabled]="lockForm">
+          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != ''" matSuffix mat-icon-button
+                  aria-label="Clear" (click)="resetHpoTermSelect()">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-hint *ngIf="!selectedHpo">Try: arachnodactyly</mat-hint>
+          <mat-error *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound')">
+            Looks like there was an error with the HPO API.
+          </mat-error>
+          <mat-autocomplete #hpo="matAutocomplete" (optionSelected)="selectedHpo = $event.option.value"
+                            [displayWith]="displayHpoFn">
+            <mat-option class="auto-complete-option" *ngFor="let option of hpoOptions" [value]="option">
+              <span class="option-name">{{option.name}}</span>
+              &nbsp;
+              <span class="option-id">{{option.id}}</span>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="form-content-section">
+        <mat-form-field class="maxo-form" appearance="fill">
+          <mat-label>MAxO Term</mat-label>
+          <input matInput placeholder="Search for a MAxO Term" formControlName="maxoFormControl" ngDefaultControl
+                 [matAutocomplete]="maxoAuto" [disabled]="lockForm">
+          <button mat-button *ngIf="formControlGroup.get('maxoFormControl').value != ''"
+                  matSuffix mat-icon-button aria-label="Clear" (click)="resetMaxoTermSelect()">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-hint *ngIf="!selectedTreatment">Try: cognitive therapy</mat-hint>
+          <mat-error *ngIf="formControlGroup.get('maxoFormControl').hasError('notFound')">
+            Looks like there was an error with the MAxO API.
+          </mat-error>
+          <mat-autocomplete #maxoAuto="matAutocomplete" (optionSelected)="selectedTreatment = $event.option.value"
+                            [displayWith]="displayMaxoFn">
+            <mat-option class="auto-complete-option" *ngFor="let option of maxoOptions" [value]="option">
+              <span class="option-name">{{option.name}}</span>
+              &nbsp;
+              <span class="option-id">{{option.ontologyId}}</span>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="form-content-section">
+        <mat-form-field appearance="fill">
+          <mat-label>Evidence</mat-label>
+          <mat-select formControlName="evidenceFormControl" [disabled]="lockForm">
+            <mat-option [value]="'TAS'">TAS</mat-option>
+            <mat-option [value]="'IEA'">IEA</mat-option>
+            <mat-option [value]="'PCS'">PCS</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="relation">
+          <mat-label>Relation</mat-label>
+          <mat-select formControlName="relationFormControl" [disabled]="lockForm">
+            <mat-option [value]="'TREATS'">TREATS</mat-option>
+            <mat-option [value]="'PREVENTS'">PREVENTS</mat-option>
+            <mat-option [value]="'INVESTIGATES'">INVESTIGATES</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-content-section">
+        <mat-form-field class="maxo-form">
+          <mat-label>CHEBI Extension</mat-label>
+          <input matInput type="text" formControlName="extensionFormControl" [disabled]="lockForm">
+          <button mat-button *ngIf="formControlGroup.get('extensionFormControl').value != ''" matSuffix mat-icon-button
+                  aria-label="Clear"
+                  (click)="formControlGroup.get('extensionFormControl').reset()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <div class="form-content-section">
+        <mat-form-field class="maxo-form">
+          <mat-label>Additional Annotation Comment</mat-label>
+          <input matInput type="text" formControlName="commentFormControl" [disabled]="lockForm">
+          <button mat-button *ngIf="formControlGroup.get('commentFormControl').value != ''" matSuffix mat-icon-button
+                  aria-label="Clear"
+                  (click)="formControlGroup.get('commentFormControl').reset()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
     </form>
   </mat-card-content>
 
