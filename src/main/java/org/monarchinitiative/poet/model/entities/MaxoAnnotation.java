@@ -2,12 +2,13 @@ package org.monarchinitiative.poet.model.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
-import org.monarchinitiative.poet.model.AnnotationStatus;
+import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.model.MaxoRequest;
 import org.monarchinitiative.poet.views.AnnotationViews;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import java.util.Objects;
 
 @Entity
 @DiscriminatorValue("maxo")
@@ -64,7 +65,7 @@ public class MaxoAnnotation extends Annotation {
         this.maxoName = maxoRequest.getMaxoName();
         this.hpoId = maxoRequest.getHpoId();
         this.hpoName = maxoRequest.getHpoName();
-        this.evidenceType = maxoRequest.getEvidenceType();
+        this.evidenceType = maxoRequest.getEvidence();
         this.comment = maxoRequest.getComment();
         this.relation = maxoRequest.getRelation();
         this.extension = maxoRequest.getExtension();
@@ -100,5 +101,26 @@ public class MaxoAnnotation extends Annotation {
 
     public String getExtension() {
         return extension;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        MaxoAnnotation that = (MaxoAnnotation) o;
+        return Objects.equals(maxoId, that.maxoId) &&
+                Objects.equals(maxoName, that.maxoName) &&
+                Objects.equals(hpoName, that.hpoName) &&
+                Objects.equals(hpoId, that.hpoId) &&
+                Objects.equals(evidenceType, that.evidenceType) &&
+                Objects.equals(comment, that.comment) &&
+                Objects.equals(relation, that.relation) &&
+                Objects.equals(extension, that.extension);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), maxoId, maxoName, hpoName, hpoId, evidenceType, comment, relation, extension);
     }
 }

@@ -1,7 +1,6 @@
 package org.monarchinitiative.poet.controller;
 
-import org.monarchinitiative.poet.model.entities.AnnotationSource;
-import org.monarchinitiative.poet.model.search.SearchResponse;
+import org.monarchinitiative.poet.model.SearchResponse;
 import org.monarchinitiative.poet.service.SearchService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,8 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * This class is an implementation of Spring's Rest Controller. It provides RESTful API's to search the main
+ * entities of poet.
+ *
+ * @author Michael Gargano
+ * @since 0.5.0
+ */
 @RestController
-@RequestMapping(value = "/search") // /annotation/<type>/<action>
+@RequestMapping(value = "/search")
 public class SearchController {
 
     private final SearchService searchService;
@@ -21,23 +27,14 @@ public class SearchController {
     }
 
     /**
+     * The endpoint to retrieve a disease annotation by disease id.
      *
-     * @param query - a string to find a disease annotation by id.
-     * @return the rare disease annotation or nothing
+     * @param query a query string to search for publication or diseases
+     * @return a list of search response objects containing ids and names.
+     * @since 0.5.0
      */
     @GetMapping(value = "", headers = "Accept=application/json")
-    public SearchResponse searchPublicationsAndDiseases(@RequestParam String query) {
+    public List<SearchResponse> searchPublicationsAndDiseases(@RequestParam String query) {
         return searchService.searchPublicationAndDisease(query.trim());
     }
-
-    /**
-     *
-     * @param query - a string to find a disease annotation by id.
-     * @return the rare disease annotation or nothing
-     */
-    @GetMapping(value = "/annotation-source", headers = "Accept=application/json")
-    public List<AnnotationSource> searchAnnotationSources(@RequestParam String query, @RequestParam String type) {
-        return searchService.searchAnnotationSource(query.trim(), type.trim());
-    }
-
 }

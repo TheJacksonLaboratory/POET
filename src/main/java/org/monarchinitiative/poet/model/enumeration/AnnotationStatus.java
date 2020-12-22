@@ -1,4 +1,4 @@
-package org.monarchinitiative.poet.model;
+package org.monarchinitiative.poet.model.enumeration;
 
 public enum AnnotationStatus {
     OFFICIAL,

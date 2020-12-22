@@ -1,15 +1,23 @@
 package org.monarchinitiative.poet.service;
+
 import org.monarchinitiative.poet.model.MaxoRequest;
 import org.monarchinitiative.poet.model.entities.*;
-import org.monarchinitiative.poet.repository.AnnotationSourceRepository;
-import org.monarchinitiative.poet.repository.DiseaseRepository;
-import org.monarchinitiative.poet.repository.MaxoAnnotationRepository;
-import org.monarchinitiative.poet.repository.PublicationRepository;
+import org.monarchinitiative.poet.model.enumeration.CurationAction;
+import org.monarchinitiative.poet.repository.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 
+
+/**
+ * A spring service component created to provide business logic and functionality to manage annotations
+ * for poet entities.
+ *
+ * @author Michael Gargano
+ * @since 0.5.0
+ */
 @Service
 public class AnnotationService {
 
@@ -17,36 +25,31 @@ public class AnnotationService {
     private DiseaseRepository diseaseRepository;
     private AnnotationSourceRepository annotationSourceRepository;
     private MaxoAnnotationRepository maxoAnnotationRepository;
+    private UserRepository userRepository;
+    private UserActivityRepository userActivityRespository;
 
     public AnnotationService(PublicationRepository publicationRepository,
                              DiseaseRepository diseaseRepository, AnnotationSourceRepository annotationSourceRepository,
-                             MaxoAnnotationRepository maxoAnnotationRepository) {
+                             MaxoAnnotationRepository maxoAnnotationRepository, UserRepository userRepository,
+                             UserActivityRepository userActivityRepository) {
         this.publicationRepository = publicationRepository;
         this.diseaseRepository = diseaseRepository;
         this.annotationSourceRepository = annotationSourceRepository;
         this.maxoAnnotationRepository = maxoAnnotationRepository;
+        this.userRepository = userRepository;
+        this.userActivityRespository = userActivityRepository;
     }
 
     /**
-     * Create a rare annotation with a pending review status.
-     * enforcing business rules with the status of the annotation
+     * A function to get maxo annotations from the database by either both publication and  disease or just disease.
      *
-     * @param annotation - a rare annotation from the client
-     * @return created
+     * @param diseaseId a OMIM disease id
+     * @param publicationId a PubMed id
+     * @param sort a string composing of two parts both direction and field. TODO: Implement functionality
+     *
+     * @return a collection of maxo annotations or an empty list.
+     * @since 0.5.0
      */
-    public RareDiseaseAnnotation createRareDiseaseAnnotation(RareDiseaseAnnotation annotation) {
-        // Check fields / annotations format
-        // insert into annotation field
-        // link up annotation id in rare disease table
-        // get user
-        // update users activity table with annotation
-        return annotation;
-    }
-
-    public RareDiseaseAnnotation getRareDiseaseAnnotation(String disease){
-        return new RareDiseaseAnnotation();
-    }
-
     public List<MaxoAnnotation> getMaxoAnnotation(String diseaseId, String publicationId, String sort) {
             // If publication get source, then annotations for that source
             // Otherwise get all annotationSource
@@ -80,20 +83,33 @@ public class AnnotationService {
      * Create a MaXo annotation with a pending review status.
      * enforcing business rules with the status of the annotation
      *
-     * @param maxoRequest - a maxo request body
-     * @return boolean created
+     * @param maxoRequest a maxo request body
+     *
+     * @return a boolean whether the annotation was created or not.
      */
-    public boolean createMaxoAnnotation(MaxoRequest maxoRequest) {
+    public boolean createMaxoAnnotation(MaxoRequest maxoRequest, Authentication authentication) {
         // We have a valid publication and a valid disease, do we have an annotation source for them?
-        final AnnotationSource annotationSource = getAnnotationSource(maxoRequest.getPublicationId(),maxoRequest.getDiseaseId());
-        if(annotationSource != null){
-            final MaxoAnnotation annotation = new MaxoAnnotation(maxoRequest, annotationSource);
-            maxoAnnotationRepository.save(annotation);
-            return true;
+        if(maxoRequest != null){
+            final AnnotationSource annotationSource = getAnnotationSource(maxoRequest.getPublicationId(), maxoRequest.getDiseaseId());
+            if(annotationSource != null){
+                final MaxoAnnotation annotation = new MaxoAnnotation(maxoRequest, annotationSource);
+                maxoAnnotationRepository.save(annotation);
+                updateUserActivity(authentication, CurationAction.CREATE, annotation);
+                return true;
+            }
         }
         return false;
     }
 
+    /**
+     * A function to get an annotation source object.
+     *
+     * @param publicationId a PubMed id
+     * @param diseaseId a OMIM disease id
+     *
+     * @return an annotation source object  or null
+     * @since 0.5.0
+     */
     private AnnotationSource getAnnotationSource(String publicationId, String diseaseId){
         final Publication publication = publicationRepository.findByPublicationId(publicationId);
         final Disease disease = diseaseRepository.findDiseaseByDiseaseId(diseaseId);
@@ -103,13 +119,40 @@ public class AnnotationService {
         return null;
     }
 
+    /**
+     * A function to track user activity that happens when creating, editing or deleting annotations.
+     *
+     * @param authentication the spring authentication object.
+     * @param curationAction the action that a user is taking.
+     * @param annotation the annotation that is being modified.
+     *
+     * @since 0.5.0
+     */
+    private void updateUserActivity(Authentication authentication, CurationAction curationAction, Annotation annotation){
+          User user = userRepository.findDistinctByAuthId(authentication.getName());
+          if(user != null){
+              UserActivity userActivity = new UserActivity(user, curationAction, annotation);
+              userActivityRespository.save(userActivity);
+          } else {
+              // We got a sec leak
+              System.out.println("Rut Roh!");
+          }
+    }
 
-    /*public Publication createPublication(){
-        Publication publication = new Publication("27741350", "Measuring cancer evolution from the genome");
-        Publication publication1 = new Publication("3009398", "Confirming biology through biology.");
+
+    public void insertTestData(){
+        Publication publication = new Publication("PMID:31479590", "Encoding Clinical Data with the Human Phenotype Ontology for Computational Differential Diagnostics.", "2019 Sept", "Kohler S");
+        Publication publication2 = new Publication("PMID:30476213", "Expansion of the Human Phenotype Ontology (HPO) knowledge base and resources", "2019 Jan", "Kohler S");
+        Publication publication3 = new Publication("PMID:30323234", "Mikes future first author paper", "2020 Jan", "Gargano M");
         publicationRepository.save(publication);
-        publicationRepository.save(publication1);
-        return publication;
-    }*/
-
+        publicationRepository.save(publication2);
+        publicationRepository.save(publication3);
+        Disease disease = new Disease("OMIM:154700", "Marfan Syndrome");
+        Disease disease2 = new Disease("OMIM:300200", "Adrenal Hypoplasia, Congenital");
+        diseaseRepository.save(disease);
+        diseaseRepository.save(disease2);
+        annotationSourceRepository.save(new AnnotationSource(publication3, disease));
+        annotationSourceRepository.save(new AnnotationSource(publication, disease));
+        annotationSourceRepository.save(new AnnotationSource(publication2, disease));
+    }
 }

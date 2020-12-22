@@ -1,30 +1,11 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from "@auth0/auth0-angular";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { transition, trigger, useAnimation } from "@angular/animations";
 import { fadeIn } from "ng-animate";
 import { Router } from "@angular/router";
-export interface PeriodicElement {
-    name: string;
-    position: number;
-    weight: number;
-    symbol: string;
-  }
-
-  const ELEMENT_DATA: any[] = [
-    {category: 'MAXO', curator: 'Leigh', date: '11/2/2020', time: '11:23pm'},
-    {category: 'MAXO', curator: 'Peter', date: '11/2/2020', time: '11:26pm'},
-    {category: 'PHENOPACKET', curator: 'Mike', date: '11/1/2020', time: '2:00am'},
-    {category: 'MAXO', curator: 'Leigh', date: '11/1/2020', time: '9:00am'},
-    {category: 'MAXO', curator: 'Leigh', date: '11/1/2020', time: '8:00am'},
-    {category: 'PHENOPACKET', curator: 'Peter', date: '11/1/2020', time: '7:00am'},
-    {category: 'HPO', curator: 'Leigh', date:'11/1/2020', time: '3:30am'},
-    {category: 'PHENOPACKET', curator: 'Nicole', date: '11/1/2020', time: '4:00am'},
-    {category: 'HPO', curator: 'Seb', date: '11/1/2020', time: '3:05pm'},
-    {category: 'HPO', curator: 'Seb', date: '11/1/2020', time: '3:10pm'},
-  ];
-
+import { CurationService } from "../../shared/services/curation/curation.service";
 @Component({
   selector: 'app-portal-home',
   templateUrl: './portal-dashboard.component.html',
@@ -33,80 +14,63 @@ export interface PeriodicElement {
     trigger('fadeIn', [transition('* => *', useAnimation(fadeIn))])
   ]
 })
-export class PortalDashboardComponent implements OnInit, AfterViewInit {
+export class PortalDashboardComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   displayedColumns: string[] = ['category', 'curator', 'date', 'time', 'actions'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  dataSource;
   user: any;
-  pieData = [
-    {
-      "name": "Human Phenotype Ontology",
-      "value": 40
-    },
-    {
-      "name": "Medical Action Ontology",
-      "value": 120
-    },
-    {
-      "name": "Phenopackets",
-      "value": 30
-    }
-  ];
-
-  lineData = [
-    {
-      "name": "Annotations"
-      ,
-      "series": [
-        {
-          "name": "November 13",
-          "value": 10
-        },
-        {
-          "name": "November 14",
-          "value": 5
-        },
-        {
-          "name": "November 15",
-          "value": 20
-        },
-        {
-          "name": "November 16",
-          "value": 9
-        },
-        {
-          "name": "November 17",
-          "value": 2
-        },
-        {
-          "name": "November 18",
-          "value": 0
-        },
-        {
-          "name": "November 18",
-          "value": 12
-        }
-      ]
-    }
-  ];
-  constructor(public authService: AuthService, private router: Router) { }
+  pieData;
+  lineData;
+  constructor(public authService: AuthService, private router: Router, public curationService: CurationService) { }
 
   ngOnInit(): void {
     this.authService.user$.subscribe((user) => {
       this.user = user;
     });
-  }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
+    this.curationService.getUserActivity(true).subscribe((userActivity) => {
+      this.dataSource = new MatTableDataSource<any>(userActivity);
+      this.lineData = this.graphUserActivity(userActivity);
+      this.dataSource.paginator = this.paginator;
+    })
+
+    this.curationService.getUserContributions().subscribe((contributions) => {
+      if(contributions.every(obj => obj.value === 0)){
+        this.pieData = [];
+      } else {
+        this.pieData = contributions;
+      }
+    });
   }
 
   searchSelect(data){
-    console.log(data);
     if(data.type == 'disease'){
       this.router.navigate(['/portal/curate/' + data.id]);
     }
+  }
+
+  /*
+    Group by day
+   */
+  graphUserActivity(userActivity: any) {
+    let dates = userActivity.map((activity) => activity.date);
+    let counts = {};
+
+    for (let i = 0; i < dates.length; i++) {
+      let date = dates[i];
+      counts[date] = counts[date] && counts[date].value ? {name: date, value: counts[date].value + 1} : {
+        name: date,
+        value: 1
+      };
+    }
+
+    let graphSeries = Object.values(counts);
+
+    return [{
+      "name": "Annotations",
+      "series": graphSeries
+    }]
   }
 }

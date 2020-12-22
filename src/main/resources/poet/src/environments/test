@@ -1,0 +1,22 @@
+function(access_token, ctx, callback) {
+    var request = require('request');
+    request.get('https://api.github.com/user', {
+        'headers': {
+            'Authorization': 'Bearer ' + access_token,
+            'User-Agent': 'Auth0'
+        }
+    }, function (e, r, b) {
+        if (e) {
+            return callback(e);
+        }
+        if (r.statusCode !== 200) {
+            return callback(new Error('StatusCode:' + r.statusCode));
+        }
+        callback(null, JSON.parse(b));
+    });
+}
+
+
+vPEV0k
+
+curl -i -L -k -H 'Accept: application/json' --data 'client_id=APP-OESJW4MHSXUK42Z2&client_secret=178d17f5-7310-4ed8-85f6-1f3a504b097d&grant_type=authorization_code&redirect_uri=https://dev-poet.us.auth0.com/login/callback&code=vPEV0k' https://orcid.org/oauth/token

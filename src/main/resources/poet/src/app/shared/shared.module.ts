@@ -19,16 +19,15 @@ import { MonarchSearchComponent } from './monarch-search/monarch-search.componen
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
-import { ErrorSnackComponent } from './error-snack/error-snack.component';
 import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { MatTab, MatTabsModule } from "@angular/material/tabs";
+import { MatTabsModule } from "@angular/material/tabs";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatMenuModule } from "@angular/material/menu";
 import { NgxChartsModule } from "@swimlane/ngx-charts";
-import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
+import { MatPaginatorModule } from "@angular/material/paginator";
 
 @NgModule({
-  declarations: [SearchComponent, MonarchSearchComponent, ErrorSnackComponent],
+  declarations: [SearchComponent, MonarchSearchComponent],
   imports: [
     CommonModule,
     MatToolbarModule,

@@ -7,6 +7,7 @@ import org.monarchinitiative.poet.views.PublicationViews;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /***
@@ -48,12 +49,20 @@ public class Publication {
         this.firstAuthor = firstAuthor;
     }
 
+    public Publication(String publicationId, String publicationName, String date, String firstAuthor, List<AnnotationSource> annotationSources){
+        this.publicationId = publicationId;
+        this.publicationName = publicationName;
+        this.date = date;
+        this.firstAuthor = firstAuthor;
+        this.annotationSources = annotationSources;
+    }
+
     /**
      * Returns the PubMed Identifier.
      *
      * @return
      */
-    public String getPublicationIdentifier() {
+    public String getPublicationId() {
         return publicationId;
     }
 
@@ -76,5 +85,23 @@ public class Publication {
 
     public List<Disease> getDiseases(){
         return this.annotationSources.stream().map(AnnotationSource::getDisease).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Publication that = (Publication) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(publicationId, that.publicationId) &&
+                Objects.equals(publicationName, that.publicationName) &&
+                Objects.equals(annotationSources, that.annotationSources) &&
+                Objects.equals(date, that.date) &&
+                Objects.equals(firstAuthor, that.firstAuthor);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, publicationId, publicationName, annotationSources, date, firstAuthor);
     }
 }
