@@ -10,6 +10,14 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
+
+/**
+ * A spring service component created to provide business logic and functionality to manage annotations
+ * for poet entities.
+ *
+ * @author Michael Gargano
+ * @since 0.5.0
+ */
 @Service
 public class AnnotationService {
 
@@ -32,6 +40,16 @@ public class AnnotationService {
         this.userActivityRespository = userActivityRepository;
     }
 
+    /**
+     * A function to get maxo annotations from the database by either both publication and  disease or just disease.
+     *
+     * @param diseaseId a OMIM disease id
+     * @param publicationId a PubMed id
+     * @param sort a string composing of two parts both direction and field. TODO: Implement functionality
+     *
+     * @return a collection of maxo annotations or an empty list.
+     * @since 0.5.0
+     */
     public List<MaxoAnnotation> getMaxoAnnotation(String diseaseId, String publicationId, String sort) {
             // If publication get source, then annotations for that source
             // Otherwise get all annotationSource
@@ -65,8 +83,9 @@ public class AnnotationService {
      * Create a MaXo annotation with a pending review status.
      * enforcing business rules with the status of the annotation
      *
-     * @param maxoRequest - a maxo request body
-     * @return boolean created
+     * @param maxoRequest a maxo request body
+     *
+     * @return a boolean whether the annotation was created or not.
      */
     public boolean createMaxoAnnotation(MaxoRequest maxoRequest, Authentication authentication) {
         // We have a valid publication and a valid disease, do we have an annotation source for them?
@@ -82,6 +101,15 @@ public class AnnotationService {
         return false;
     }
 
+    /**
+     * A function to get an annotation source object.
+     *
+     * @param publicationId a PubMed id
+     * @param diseaseId a OMIM disease id
+     *
+     * @return an annotation source object  or null
+     * @since 0.5.0
+     */
     private AnnotationSource getAnnotationSource(String publicationId, String diseaseId){
         final Publication publication = publicationRepository.findByPublicationId(publicationId);
         final Disease disease = diseaseRepository.findDiseaseByDiseaseId(diseaseId);
@@ -91,6 +119,15 @@ public class AnnotationService {
         return null;
     }
 
+    /**
+     * A function to track user activity that happens when creating, editing or deleting annotations.
+     *
+     * @param authentication the spring authentication object.
+     * @param curationAction the action that a user is taking.
+     * @param annotation the annotation that is being modified.
+     *
+     * @since 0.5.0
+     */
     private void updateUserActivity(Authentication authentication, CurationAction curationAction, Annotation annotation){
           User user = userRepository.findDistinctByAuthId(authentication.getName());
           if(user != null){
@@ -101,6 +138,7 @@ public class AnnotationService {
               System.out.println("Rut Roh!");
           }
     }
+
 
     public void insertTestData(){
         Publication publication = new Publication("PMID:31479590", "Encoding Clinical Data with the Human Phenotype Ontology for Computational Differential Diagnostics.", "2019 Sept", "Kohler S");

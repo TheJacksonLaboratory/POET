@@ -6,6 +6,7 @@ import org.monarchinitiative.poet.views.UserActivityViews;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class UserActivity {
@@ -49,5 +50,22 @@ public class UserActivity {
 
     public LocalDateTime getLocalDateTime() {
         return localDateTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserActivity that = (UserActivity) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(user, that.user) &&
+                Objects.equals(annotation, that.annotation) &&
+                Objects.equals(localDateTime, that.localDateTime) &&
+                curationAction == that.curationAction;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, user, annotation, localDateTime, curationAction);
     }
 }

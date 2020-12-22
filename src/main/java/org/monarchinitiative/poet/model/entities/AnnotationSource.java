@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.views.AnnotationViews;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class AnnotationSource {
@@ -32,5 +33,20 @@ public class AnnotationSource {
 
     public Disease getDisease() {
         return disease;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AnnotationSource that = (AnnotationSource) o;
+        return id == that.id &&
+                Objects.equals(publication, that.publication) &&
+                Objects.equals(disease, that.disease);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, publication, disease);
     }
 }

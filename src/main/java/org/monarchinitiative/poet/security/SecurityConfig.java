@@ -9,6 +9,13 @@ import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
 
+/**
+ *
+ * A spring security config to validate auth0 tokens and lockdown endpoints
+ *
+ * @author Michael Gargano
+ * @since 0.5.0
+ */
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 

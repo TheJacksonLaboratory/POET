@@ -18,6 +18,12 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A spring service component created to provide business logic and functionality to manage main poet entities.
+ *
+ * @author Michael Gargano
+ * @since 0.5.0
+ */
 @Service
 public class EntityService {
     private final DiseaseRepository diseaseRepository;
@@ -34,14 +40,25 @@ public class EntityService {
     }
 
     /**
-     * Fetch a Disease object from the database with the supplied id.
-     * @param id - An OMIM identifier.
-     * @return Disease or null
+     * A function to get a disease from the disease repository implementation
+     *
+     * @param id a OMIM disease id
+     *
+     * @return a disease or nothing
+     * @since 0.5.0
      */
     public Disease getDisease(String id){
         return this.diseaseRepository.findDiseaseByDiseaseId(id);
     }
 
+    /**
+     * A function to get disease publications from the
+     *
+     * @param id a OMIM disease id
+     *
+     * @return a list of publications or an empty list
+     * @since 0.5.0
+     */
     public List<Publication> getDiseasePublications(String id){
         Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(id);
         if(disease != null){
@@ -51,10 +68,26 @@ public class EntityService {
         }
     }
 
+    /**
+     * A function to get a publication from the publication repository
+     *
+     * @param id a PubMed id
+     *
+     * @return a publication or nothing
+     * @since 0.5.0
+     */
     public Publication getPublication(String id){
         return this.publicationRepository.findByPublicationId(id);
     }
 
+    /**
+     * A function to get a diseases associated to a publication from the publication repository
+     *
+     * @param id a PubMed id
+     *
+     * @return a list of diseases or and empty list
+     * @since 0.5.0
+     */
     public List<Disease> getPublicationDiseases(String id){
         Publication publication = this.publicationRepository.findByPublicationId(id);
         if(publication != null) {
@@ -64,6 +97,13 @@ public class EntityService {
         }
     }
 
+    /**
+     * A function to save a publication annotation to a disease.
+     *
+     * @param request a publication request to save to a disease
+     * @param authentication a spring authentication object
+     * @return a boolean if save is successful or not
+     */
     public boolean savePublicationToDisease(PublicationRequest request, Authentication authentication){
         Publication publication = new Publication(request.getPublication());
         Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(request.getDisease().getDiseaseId());

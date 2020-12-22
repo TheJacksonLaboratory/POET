@@ -8,6 +8,7 @@ import org.monarchinitiative.poet.views.PublicationViews;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /***
@@ -93,5 +94,23 @@ public class Publication {
 
     public List<Disease> getDiseases(){
         return this.annotationSources.stream().map(AnnotationSource::getDisease).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Publication that = (Publication) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(publicationId, that.publicationId) &&
+                Objects.equals(publicationName, that.publicationName) &&
+                Objects.equals(annotationSources, that.annotationSources) &&
+                Objects.equals(date, that.date) &&
+                Objects.equals(firstAuthor, that.firstAuthor);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, publicationId, publicationName, annotationSources, date, firstAuthor);
     }
 }

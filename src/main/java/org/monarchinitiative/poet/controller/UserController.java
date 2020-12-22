@@ -2,6 +2,7 @@ package org.monarchinitiative.poet.controller;
 
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
 import org.monarchinitiative.poet.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -10,18 +11,39 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class is an implementation of Spring's Rest Controller. It provides RESTful API's to check users against
+ * our database.
+ *
+ * @author Michael Gargano
+ * @since 0.5.0
+ */
 @RestController
 @RequestMapping(value="/user")
 public class UserController {
 
     private UserService userService;
-    private final String nickname_claim = "https://poet.jax.org/nickname";
-    private final String email_claim = "https://poet.jax.org/email";
-    private final String role_claim = "https://poet.jax.org/role";
+
+    @Value( "${auth0.audience.nickname_claim}" )
+    private String nickname_claim;
+
+    @Value( "${auth0.audience.email_claim}" )
+    private String email_claim;
+
+    @Value( "${auth0.audience.role_claim}" )
+    private String role_claim;
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
+    /**
+     * The endpoint to check whether the authenticated auth0 user is in our database or not
+     * insert them if they are not.
+     *
+     * @return ok if we are able to save them or if they are found, otherwise return not found.
+     * @since 0.5.0
+     */
     @GetMapping(value = "/check", headers = "Accept=application/json")
     public ResponseEntity<?> checkUser(Authentication authentication) {
         final Jwt credentials = (Jwt) authentication.getCredentials();

@@ -10,6 +10,12 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A spring service component created to provide business logic and functionality to search the database
+ *
+ * @author Michael Gargano
+ * @since 0.5.0
+ */
 @Service
 public class SearchService {
 
@@ -22,6 +28,14 @@ public class SearchService {
         this.diseaseRepository = diseaseRepository;
     }
 
+    /**
+     * A function to search the disease and publication repositories for any records.
+     *
+     * @param query a string query to search for.
+     *
+     * @return a list of search response objects or an empty list
+     * @since 0.5.0
+     */
     public List<SearchResponse> searchPublicationAndDisease(String query){
         List<SearchResponse> responseList = new ArrayList<>();
         List<Publication> publications = publicationRepository.findByPublicationIdStartingWithOrPublicationNameContainingIgnoreCase(query, query);
