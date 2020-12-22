@@ -89,7 +89,7 @@ export class CurationService {
    * @param everyone
    */
   getUserActivity(everyone: boolean){
-    const params = new HttpParams().set("e", String(everyone));
+    const params = new HttpParams().set("all", String(everyone));
     return this.httpClient.get<UserActivityResponse[]>(environment.POET_API_STATISTICS_USERACTIVITY_URL, {params: params}).pipe(
       map((response: UserActivityResponse[]) => {
         return response.map((activity: UserActivityResponse) => {

@@ -8,6 +8,7 @@ import org.monarchinitiative.poet.views.AnnotationViews;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import java.util.Objects;
 
 @Entity
 @DiscriminatorValue("maxo")
@@ -100,5 +101,26 @@ public class MaxoAnnotation extends Annotation {
 
     public String getExtension() {
         return extension;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        MaxoAnnotation that = (MaxoAnnotation) o;
+        return Objects.equals(maxoId, that.maxoId) &&
+                Objects.equals(maxoName, that.maxoName) &&
+                Objects.equals(hpoName, that.hpoName) &&
+                Objects.equals(hpoId, that.hpoId) &&
+                Objects.equals(evidenceType, that.evidenceType) &&
+                Objects.equals(comment, that.comment) &&
+                Objects.equals(relation, that.relation) &&
+                Objects.equals(extension, that.extension);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), maxoId, maxoName, hpoName, hpoId, evidenceType, comment, relation, extension);
     }
 }

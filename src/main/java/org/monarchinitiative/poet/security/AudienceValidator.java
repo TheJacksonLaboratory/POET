@@ -5,6 +5,13 @@ import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+/**
+ *
+ * A class to validate the audience of a jwt token from auth0
+ *
+ * @author Michael Gargano
+ * @since 0.5.0
+ */
 class AudienceValidator implements OAuth2TokenValidator<Jwt> {
     private final String audience;
 
