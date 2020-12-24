@@ -5,6 +5,7 @@ import { CurationService } from "../../../shared/services/curation/curation.serv
 import { Observable } from "rxjs";
 import { animate, query, stagger, style, transition, trigger, useAnimation } from "@angular/animations";
 import { bounceInLeft } from "ng-animate";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-annotation-card',
@@ -19,6 +20,7 @@ import { bounceInLeft } from "ng-animate";
 export class AnnotationCardComponent implements OnInit {
 
   @Output('openForm') openAnnotationForm: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Input('role') userRole : string;
   disease: Disease;
   publication: Publication;
   ontology: string;
@@ -27,7 +29,7 @@ export class AnnotationCardComponent implements OnInit {
   triggerBounceIn: any;
   activeIndex: any;
 
-  constructor(public stateService: StateService, public curationService: CurationService) {
+  constructor(public stateService: StateService, public curationService: CurationService, private _snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
@@ -50,6 +52,10 @@ export class AnnotationCardComponent implements OnInit {
         this.updateAnnotations(null);
       }
     });
+
+    this.stateService.selectedAnnotationMode.subscribe((mode) => {
+      this.annotationMode = mode;
+    })
   }
 
   ontologyToDisplay() {
@@ -67,6 +73,10 @@ export class AnnotationCardComponent implements OnInit {
     }
     // Could get funky here
     if (this.ontology && this.disease) {
+      if(this.annotationMode == 'edit'){
+        this.activeIndex = -1;
+        this.annotationAction(null, 'create', -1)
+      }
       this.maxoAnnotations = this.curationService.getMaxoAnnotations(this.disease, this.publication, "");
     }
   }
@@ -77,12 +87,25 @@ export class AnnotationCardComponent implements OnInit {
 
   annotationAction(annotation: any, action: any, index: any) {
     this.activeIndex = index;
-    if (this.ontology == 'maxo') {
-      this.stateService.setSelectedTreatmentAnnotation(annotation);
+    if(action == 'delete'){
+      this.curationService.deleteMaxoAnnotation(annotation.id).subscribe(() => {
+        this._snackBar.open('Annotation Deleted!', 'Close', {
+          duration: 3000,
+        });
+        this.updateAnnotations(null);
+      });
     } else {
-      this.stateService.setSelectedPhenotypeAnnotation(annotation);
+      if (this.ontology == 'maxo' && action != 'delete') {
+        this.stateService.setSelectedTreatmentAnnotation(annotation);
+      } else {
+        this.stateService.setSelectedPhenotypeAnnotation(annotation);
+      }
+      this.stateService.setSelectedAnnotationMode(action);
+      this.openForm();
     }
-    this.stateService.setSelectedAnnotationMode(action);
-    this.openForm();
+  }
+
+  isElevatedCurator(){
+    return this.userRole === 'ELEVATED_CURATOR';
   }
 }

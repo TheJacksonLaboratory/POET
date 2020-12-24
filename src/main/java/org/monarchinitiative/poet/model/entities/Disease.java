@@ -1,6 +1,7 @@
 package org.monarchinitiative.poet.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.monarchinitiative.poet.views.AnnotationViews;
 import org.monarchinitiative.poet.views.DiseaseViews;
 import org.monarchinitiative.poet.views.PublicationViews;
 
@@ -15,11 +16,11 @@ public class Disease {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @JsonView(DiseaseViews.Simple.class)
+    @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class})
     @Column(nullable = false)
     private String diseaseId;
 
-    @JsonView(DiseaseViews.Simple.class)
+    @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class})
     private String diseaseName;
 
     @OneToMany(mappedBy = "disease")

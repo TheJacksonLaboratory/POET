@@ -18,6 +18,7 @@ public class AnnotationSource {
     private Publication publication;
 
     @ManyToOne
+    @JsonView(AnnotationViews.Simple.class)
     private Disease disease;
 
     public AnnotationSource(){}

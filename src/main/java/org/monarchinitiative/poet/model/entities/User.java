@@ -61,6 +61,10 @@ public class User {
         return curationRole;
     }
 
+    public void setCurationRole(CurationRole curationRole) {
+        this.curationRole = curationRole;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

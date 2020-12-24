@@ -21,7 +21,7 @@
   </div>
   <div class="curation-container" [fxLayout]="fxLayout" [fxLayoutAlign]="fxLayoutAlign" [@fadeIn]="selectedOntology">
     <app-annotation-card [fxFlex]="fxFlexAnnotations" [fxFlexOffset]="fxFlexAnnotationOffset" *ngIf="selectedDisease"
-                         (openForm)="displayForm()"></app-annotation-card>
+                         (openForm)="displayForm()" [role]="userRole"></app-annotation-card>
     <app-treatment-curation [fxFlex]="fxFlexForm"  [fxFlexOffset]="fxFlexFormOffset" [role]="userRole" *ngIf="shouldShowMaxoCard()">
     </app-treatment-curation>
     <app-hpo-curation [fxFlex]="fxFlexForm" [fxFlexOffset]="fxFlexFormOffset"  *ngIf="shouldShowHpoCard()">

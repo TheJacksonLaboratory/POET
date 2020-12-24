@@ -80,6 +80,19 @@ export class CurationService {
   }
 
   /**
+   * Update a maxo annotation to the database
+   * @param annotation - a maxo annotation from the maxo form
+   */
+  updateMaxoAnnotation(annotation: any) {
+    const annotationSource = this.stateService.getSelectedSource();
+    annotation.publicationId = annotationSource.publication.publicationId;
+    annotation.publicationName = annotationSource.publication.publicationName;
+    annotation.diseaseId = annotationSource.disease.diseaseId;
+    annotation.diseaseName = annotationSource.disease.diseaseName;
+    return this.httpClient.put(environment.POET_API_MAXO_ANNOTATION, annotation);
+  }
+
+  /**
    * Save a maxo annotation to the database
    * @param annotation - a maxo annotation from the maxo form
    */
@@ -90,6 +103,14 @@ export class CurationService {
     annotation.diseaseId = annotationSource.disease.diseaseId;
     annotation.diseaseName = annotationSource.disease.diseaseName;
     return this.httpClient.post(environment.POET_API_MAXO_ANNOTATION, annotation);
+  }
+
+  /**
+   * Save a maxo annotation to the database
+   * @param id - an annotation id
+   */
+  deleteMaxoAnnotation(id: string) {
+    return this.httpClient.delete(environment.POET_API_MAXO_ANNOTATION + id);
   }
 
   /**

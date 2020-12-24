@@ -2,7 +2,7 @@
   <mat-card-title>
     <span *ngIf="ontology == 'maxo'">Treatments</span>
     <span *ngIf="ontology == 'hpo'">Phenotypes</span>
-    <button class="new-annotation" mat-mini-fab color="primary" aria-label="Add Annotation" (click)="annotationAction(null, 'edit', -1)">
+    <button class="new-annotation" mat-mini-fab color="primary" aria-label="Add Annotation" (click)="annotationAction(null, 'create', -1)">
       <mat-icon>add</mat-icon>
     </button>
   </mat-card-title>
@@ -24,6 +24,10 @@
                 (click)="annotationAction(maxo, 'edit', i)">
           <mat-icon>create</mat-icon>
         </button>
+        <button mat-icon-button aria-label="Deleting MAxO annotation" *ngIf="isElevatedCurator()"
+                (click)="annotationAction(maxo, 'delete', i)">
+          <mat-icon>delete</mat-icon>
+        </button>
         <button mat-icon-button aria-label="Adding MAxO annotation"
                 (click)="annotationAction(maxo, 'view', i)">
           <mat-icon>launch</mat-icon>
@@ -33,15 +37,5 @@
   <div class="annotation-missing" *ngIf="(maxoAnnotations | async)?.length == 0">
         No {{ontologyToDisplay()}} Found.
   </div>
-
-<!--    <mat-selection-list #hpo [multiple]="false" (selectionChange)="onSelectedListItem($event.option.value)">-->
-<!--      <mat-list-option class="selection-wrapper" *ngFor="let publication of annotatedPublications$ | async" [value]="publication">-->
-<!--        <mat-icon matListIcon>library_books</mat-icon>-->
-<!--        <div class="selection-text">-->
-<!--          {{publication.publicationName}}-->
-<!--          <span class="selection-id">{{publication.publicationId}}</span>-->
-<!--        </div>-->
-<!--      </mat-list-option>-->
-<!--    </mat-selection-list>-->
   </mat-card-content>
 </mat-card>

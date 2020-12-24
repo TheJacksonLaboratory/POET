@@ -8,9 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * This class is an implementation of Spring's Rest Controller. It provides RESTful API's to check users against
  * our database.
@@ -24,13 +21,13 @@ public class UserController {
 
     private UserService userService;
 
-    @Value( "${auth0.audience.nickname_claim}" )
+    @Value( "${auth0.nickname}" )
     private String nickname_claim;
 
-    @Value( "${auth0.audience.email_claim}" )
+    @Value( "${auth0.email}" )
     private String email_claim;
 
-    @Value( "${auth0.audience.role_claim}" )
+    @Value( "${auth0.role}" )
     private String role_claim;
 
     public UserController(UserService userService) {
@@ -47,7 +44,7 @@ public class UserController {
     @GetMapping(value = "/check", headers = "Accept=application/json")
     public ResponseEntity<?> checkUser(Authentication authentication) {
         final Jwt credentials = (Jwt) authentication.getCredentials();
-        if(userService.saveNewUser(authentication.getName(),
+        if(userService.saveOrUpdateUser(authentication.getName(),
                 credentials.getClaim(nickname_claim),
                 credentials.getClaim(email_claim), "", CurationRole.valueOf(credentials.getClaim(role_claim)))){
             return ResponseEntity.ok().build();

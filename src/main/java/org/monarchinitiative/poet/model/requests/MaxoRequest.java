@@ -1,8 +1,11 @@
 package org.monarchinitiative.poet.model.requests;
 
+import java.util.Objects;
+
 public class MaxoRequest {
 
 
+    private Long id;
     private String maxoId;
     private String maxoName;
     private String hpoName;
@@ -19,7 +22,8 @@ public class MaxoRequest {
 
     MaxoRequest(){}
 
-    public MaxoRequest(String maxoId, String maxoName, String hpoName, String hpoId, String evidence, String comment, String relation, String extension, String publicationId, String publicationName, String diseaseId, String diseaseName) {
+    public MaxoRequest(Long id, String maxoId, String maxoName, String hpoName, String hpoId, String evidence, String comment, String relation, String extension, String publicationId, String publicationName, String diseaseId, String diseaseName) {
+        this.id = id;
         this.maxoId = maxoId;
         this.maxoName = maxoName;
         this.hpoName = hpoName;
@@ -32,6 +36,10 @@ public class MaxoRequest {
         this.publicationName = publicationName;
         this.diseaseId = diseaseId;
         this.diseaseName = diseaseName;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getMaxoId() {
@@ -80,5 +88,30 @@ public class MaxoRequest {
 
     public String getDiseaseName() {
         return diseaseName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MaxoRequest that = (MaxoRequest) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(maxoId, that.maxoId) &&
+                Objects.equals(maxoName, that.maxoName) &&
+                Objects.equals(hpoName, that.hpoName) &&
+                Objects.equals(hpoId, that.hpoId) &&
+                Objects.equals(evidence, that.evidence) &&
+                Objects.equals(comment, that.comment) &&
+                Objects.equals(relation, that.relation) &&
+                Objects.equals(extension, that.extension) &&
+                Objects.equals(publicationId, that.publicationId) &&
+                Objects.equals(publicationName, that.publicationName) &&
+                Objects.equals(diseaseId, that.diseaseId) &&
+                Objects.equals(diseaseName, that.diseaseName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extension, publicationId, publicationName, diseaseId, diseaseName);
     }
 }

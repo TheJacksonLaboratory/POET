@@ -24,7 +24,7 @@ export class TreatmentCurationComponent implements OnInit {
 
   selectedAnnotation: any;
   lockForm: boolean = false;
-
+  updating: boolean;
   selectedTreatment: MaxoTerm;
   selectedHpo: HpoTerm;
   maxoOptions: MaxoSearchResult[];
@@ -67,9 +67,13 @@ export class TreatmentCurationComponent implements OnInit {
     });
 
     this.stateService.selectedAnnotationMode.subscribe((mode) => {
-      if(mode != 'edit'){
+      if(mode == 'view'){
         this.lockForm = true;
         this.formControlGroup.disable();
+      } else if(mode == 'edit') {
+        this.updating = true;
+        this.lockForm = false;
+        this.formControlGroup.enable();
       } else {
         this.lockForm = false;
         this.formControlGroup.enable();
@@ -109,6 +113,7 @@ export class TreatmentCurationComponent implements OnInit {
 
   submitForm(): void {
     const maxoAnnotation = {
+      id: this.selectedAnnotation && this.selectedAnnotation.id ? this.selectedAnnotation.id : null,
       maxoId: this.formControlGroup.get('maxoFormControl').value.ontologyId.toString(),
       maxoName: this.formControlGroup.get('maxoFormControl').value.name,
       hpoId: this.formControlGroup.get('hpoFormControl').value.id,
@@ -118,11 +123,19 @@ export class TreatmentCurationComponent implements OnInit {
       comment: this.formControlGroup.get('commentFormControl').value,
     }
     this.savingAnnotation = true;
-    this.curationService.saveMaxoAnnotation(maxoAnnotation).subscribe(()=>{
-      this.onSuccessfulMaxoSave()
-    }, (err) => {
-      this.onErrorMaxoSave();
-    });
+    if(this.updating){
+      this.curationService.updateMaxoAnnotation(maxoAnnotation).subscribe(()=>{
+        this.onSuccessfulMaxo('Annotation Updated!')
+      }, (err) => {
+        this.onErrorMaxoSave();
+      });
+    } else {
+      this.curationService.saveMaxoAnnotation(maxoAnnotation).subscribe(()=>{
+        this.onSuccessfulMaxo('Annotation Saved!')
+      }, (err) => {
+        this.onErrorMaxoSave();
+      });
+    }
   }
 
   setFormValues(annotation: any){
@@ -132,23 +145,23 @@ export class TreatmentCurationComponent implements OnInit {
     this.formControlGroup.get('relationFormControl').setValue(annotation.relation);
     this.formControlGroup.get('extensionFormControl').setValue(annotation.extension);
     this.formControlGroup.get('commentFormControl').setValue(annotation.comment);
-    this.selectedPublications = [annotation.annotationSource.publication];
+    this.stateService.setSelectedSource(annotation.annotationSource);
 
   }
 
-  onSuccessfulMaxoSave(){
+  onSuccessfulMaxo(message: string){
     this.savingAnnotation = false;
     this.stateService.triggerAnnotationReload(true);
     this.resetMaxoForm();
     this._snackBar.open('Annotation Saved!', 'Close', {
-      duration: 5000,
+      duration: 3000,
     });
   }
   onErrorMaxoSave(){
     this.savingAnnotation = false;
     this.resetMaxoForm();
     this._snackBar.open('Error Saving Annotation!', 'Close', {
-      duration: 5000,
+      duration: 3000,
     });
   }
   selectPublication(){

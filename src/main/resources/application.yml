@@ -9,9 +9,11 @@ spring:
 server:
   servlet:
     context-path: /api/v1/
-
 auth0:
   audience: poet-api-audience
+  nickname: https://poet.jax.org/nickname
+  email: https://poet.jax.org/email
+  role: https://poet.jax.org/role
 ---
 spring:
   profiles: test
@@ -23,12 +25,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-
 auth0:
-  audience:
-    nickname_claim: https://poet.jax.org/nickname
-    email_claim: https://poet.jax.org/email
-    role_claim: https://poet.jax.org/role
+  audience: poet-api-audience
+  nickname: https://poet.jax.org/nickname
+  email: https://poet.jax.org/email
+  role: https://poet.jax.org/role
 ---
 spring:
   profiles: development
@@ -41,10 +42,10 @@ spring:
     hibernate:
       ddl-auto: create
 auth0:
-  audience:
-    nickname_claim: https://poet.jax.org/nickname
-    email_claim: https://poet.jax.org/email
-    role_claim: https://poet.jax.org/role
+  audience: poet-api-audience
+  nickname: https://poet.jax.org/nickname
+  email: https://poet.jax.org/email
+  role: https://poet.jax.org/role
 ---
 spring:
   profiles: production
@@ -57,7 +58,7 @@ spring:
     hibernate:
       ddl-auto: create
 auth0:
-  audience:
-    nickname_claim: https://poet.jax.org/nickname
-    email_claim: https://poet.jax.org/email
-    role_claim: https://poet.jax.org/role
+  audience: poet-api-audience
+  nickname: https://poet.jax.org/nickname
+  email: https://poet.jax.org/email
+  role: https://poet.jax.org/role

@@ -55,7 +55,7 @@
   }
 
   & .mode-icon {
-    float: right;
+    float: left;
 
     &.lock {
       color: indianred;
@@ -64,5 +64,9 @@
     &.unlock {
       color: lightgreen;
     }
+  }
+
+  & .help-icon {
+    float: right;
   }
 }

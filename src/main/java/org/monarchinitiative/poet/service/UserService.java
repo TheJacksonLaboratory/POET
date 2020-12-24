@@ -15,7 +15,7 @@ public class UserService {
     }
 
     /**
-     * A to save a new user
+     * A functon to save a new user if the user exist ensure we have the most updated curation role for them.
      *
      * @param authId the auth0 identifier
      * @param nickname the auth0 username
@@ -26,11 +26,16 @@ public class UserService {
      * @return a boolean if the user was created or not
      * @since 0.5.0
      */
-    public boolean saveNewUser(String authId, String nickname, String email, String orcid, CurationRole curationRole){
+    public boolean saveOrUpdateUser(String authId, String nickname, String email, String orcid, CurationRole curationRole){
         if(authId !=null && nickname !=null && email !=null){
             final User user = new User(authId, nickname, email, orcid, curationRole);
-
-            if (userRepository.findDistinctByAuthId(authId) != null) {
+            final User existing = userRepository.findDistinctByAuthId(authId);
+            if (existing != null) {
+                // Check to see if role changed
+                if(!existing.getCurationRole().equals(curationRole)){
+                    existing.setCurationRole(user.getCurationRole());
+                    userRepository.save(existing);
+                }
                 return true;
             }
             // Check for errors.

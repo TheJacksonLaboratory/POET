@@ -1,6 +1,5 @@
 <mat-card class="maxo-card">
   <mat-card-title>
-    New Treatment
     <mat-icon class="mode-icon lock" *ngIf="lockForm"
               matTooltip="View Mode Only"
               matTooltipPosition="below">
@@ -11,9 +10,14 @@
               matTooltipPosition="below">
       lock_open
     </mat-icon>
+    New Treatment
+    <mat-icon class="help-icon" matTooltip="View Previous Versions"
+              matTooltipPosition="below">history</mat-icon>
+    <mat-icon class="help-icon" matTooltip="Use Phenotypic Abnormality when annotating to the disease itself."
+              matTooltipPosition="below">help_outline</mat-icon>
   </mat-card-title>
   <mat-card-subtitle>
-    Medical Action Ontology [ MAxO ]<br><br>
+    Medical Action Ontology [ MAxO ] <br><br>
   </mat-card-subtitle>
   <mat-card-content>
     <button mat-raised-button color="primary" (click)="selectPublication()"
@@ -22,7 +26,7 @@
     <mat-list class="publication-list" aria-label="publication selection">
       <mat-list-item *ngFor="let publication of selectedPublications" [disabled]="lockForm">
         {{publication.publicationName}} {{publication.publicationId}}
-        <mat-icon (click)="remove(publication)" *ngIf="!lockForm">cancel</mat-icon>
+        <mat-icon (click)="remove(publication)" *ngIf="!lockForm && !updating">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
     <form [formGroup]="formControlGroup">
