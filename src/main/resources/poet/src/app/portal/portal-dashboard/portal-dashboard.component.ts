@@ -19,7 +19,7 @@ export class PortalDashboardComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   displayedColumns: string[] = ['category', 'curator', 'date', 'time', 'actions'];
-  dataSource;
+  dataSource: any;
   user: any;
   pieData;
   lineData;

@@ -1,6 +1,8 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+import { HttpMethod } from "@auth0/auth0-angular";
+
 const POET_BASE_URL = 'http://localhost:8080/api/v1';
 const MONARCH_BASE_URL = 'https://api.monarchinitiative.org/api';
 const PUBMED_BASE_URL = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
@@ -13,7 +15,31 @@ export const environment = {
     audience
   },
   httpInterceptor: {
-    allowedList: [POET_BASE_URL + "/*"]
+    allowedList: [
+      POET_BASE_URL + '/user/check',
+      POET_BASE_URL + '/statistics/user-activity/',
+      POET_BASE_URL + '/statistics/contributions/',
+      {
+        uri: POET_BASE_URL + '/publication',
+        httpMethod: HttpMethod.Post,
+      },
+      {
+        uri: POET_BASE_URL + '/publication',
+        httpMethod: HttpMethod.Post,
+      },
+      {
+        uri: POET_BASE_URL + '/annotation/maxo/*',
+        httpMethod: HttpMethod.Post,
+      },
+      {
+        uri: POET_BASE_URL + '/annotation/maxo/*',
+        httpMethod: HttpMethod.Put,
+      },
+      {
+        uri: POET_BASE_URL + '/annotation/maxo/*',
+        httpMethod: HttpMethod.Delete,
+      },
+    ]
   },
   production: false,
   POET_BASE_URL: POET_BASE_URL,

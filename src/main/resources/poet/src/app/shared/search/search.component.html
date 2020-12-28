@@ -1,6 +1,9 @@
 <div class="search">
   <mat-form-field>
-    <input matInput placeholder="Search Diseases or Publications" aria-label="State" [matAutocomplete]="auto" [formControl]="searchControl">
+    <input matInput placeholder="Search for a disease" aria-label="State" [matAutocomplete]="auto" [formControl]="searchControl">
+    <button mat-button *ngIf="searchControl.value != null" matSuffix mat-icon-button aria-label="Clear" (click)="resetSearchForm()">
+      <mat-icon>close</mat-icon>
+    </button>
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelection($event.option.value)" [displayWith]="displayFn.bind(this)">
       <mat-option *ngIf="isLoading" class="is-loading">Loading...</mat-option>
       <ng-container *ngIf="!isLoading">

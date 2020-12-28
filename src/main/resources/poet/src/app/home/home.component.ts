@@ -33,10 +33,14 @@ export class HomeComponent implements OnInit {
       dateAdded: "10/07/2020",
       link: "https://github.com/monarch-initiative/MAxO"
     }
-  ]
+  ];
+  user: any;
   constructor(public auth: AuthService) { }
 
   ngOnInit(): void {
+    this.auth.user$.subscribe((user) => {
+      this.user = user;
+    });
   }
 
   signupWithredirect(): void {

@@ -31,10 +31,10 @@ export class SearchComponent implements OnInit {
         tap(() => {
           this.errorMsg = "";
           this.filteredResponse = [];
-          this.isLoading = true;
         }),
         switchMap(value => {
           if (this.hasValidInput(value)) {
+            this.isLoading = true;
             return this.curationService.searchAll(value)
               .pipe(
                 finalize(() => {
@@ -50,7 +50,15 @@ export class SearchComponent implements OnInit {
         this.errorMsg = ""
         this.filteredResponse = data;
       }
+    }, ()=> {}, ()=> {
+        this.isLoading = false;
     });
+  }
+
+  resetSearchForm(){
+    this.searchControl.reset();
+    this.isLoading = false;
+    this.filteredResponse = [];
   }
 
   onSelection(result) {

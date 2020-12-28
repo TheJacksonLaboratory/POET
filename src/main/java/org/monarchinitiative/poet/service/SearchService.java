@@ -38,14 +38,14 @@ public class SearchService {
      */
     public List<SearchResponse> searchPublicationAndDisease(String query){
         List<SearchResponse> responseList = new ArrayList<>();
-        List<Publication> publications = publicationRepository.findByPublicationIdStartingWithOrPublicationNameContainingIgnoreCase(query, query);
+        // List<Publication> publications = publicationRepository.findByPublicationIdStartingWithOrPublicationNameContainingIgnoreCase(query, query);
         List<Disease> diseases =  diseaseRepository.findDiseaseByDiseaseNameContainingIgnoreCaseOrDiseaseIdContainingIgnoreCase(query, query);
-        if(publications.size() > 0){
+        /*if(publications.size() > 0){
             for (Publication publication : publications) {
                 responseList.add(new SearchResponse(publication.getPublicationId(),
                         publication.getPublicationName(), "publication"));
             }
-        }
+        }*/
 
         if(diseases.size() > 0){
             for (Disease disease : diseases) {

@@ -11,8 +11,8 @@
       lock_open
     </mat-icon>
     New Treatment
-    <mat-icon class="help-icon" matTooltip="View Previous Versions"
-              matTooltipPosition="below">history</mat-icon>
+    <!--<mat-icon class="help-icon" matTooltip="View Previous Versions"
+              matTooltipPosition="below">history</mat-icon>-->
     <mat-icon class="help-icon" matTooltip="Use Phenotypic Abnormality when annotating to the disease itself."
               matTooltipPosition="below">help_outline</mat-icon>
   </mat-card-title>
@@ -35,7 +35,7 @@
           <mat-label>HPO Term</mat-label>
           <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
                  [matAutocomplete]="hpo" [disabled]="lockForm">
-          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != ''" matSuffix mat-icon-button
+          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null" matSuffix mat-icon-button
                   aria-label="Clear" (click)="resetHpoTermSelect()">
             <mat-icon>close</mat-icon>
           </button>
@@ -58,7 +58,7 @@
           <mat-label>MAxO Term</mat-label>
           <input matInput placeholder="Search for a MAxO Term" formControlName="maxoFormControl" ngDefaultControl
                  [matAutocomplete]="maxoAuto" [disabled]="lockForm">
-          <button mat-button *ngIf="formControlGroup.get('maxoFormControl').value != ''"
+          <button mat-button *ngIf="formControlGroup.get('maxoFormControl').value != null"
                   matSuffix mat-icon-button aria-label="Clear" (click)="resetMaxoTermSelect()">
             <mat-icon>close</mat-icon>
           </button>

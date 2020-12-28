@@ -12,9 +12,8 @@ import { HttpClient } from "@angular/common/http";
 export class AppComponent {
   title = 'poet';
   portalActionItems =  [
-    {title: 'New Curation', route: '/portal/curate', icon: 'create', private: true},
-    {title: 'Edit Submissions', route: '/portal/submissions', icon: 'view_list', private: true},
-    {title: 'Curation Tutorial', route: '/portal/help', icon: 'help', private: false}
+    {title: 'Contact', route: '/portal/curate', icon: 'contact_support', private: false},
+    {title: 'FAQ', route: '/portal/submissions', icon: 'view_list', private: false}
   ];
 
   constructor(public auth: AuthService, @Inject(DOCUMENT) public document: Document, public router: Router

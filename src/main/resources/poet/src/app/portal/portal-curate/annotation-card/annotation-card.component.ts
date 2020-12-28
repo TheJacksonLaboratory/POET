@@ -105,6 +105,10 @@ export class AnnotationCardComponent implements OnInit {
     }
   }
 
+  isUser(){
+    return this.userRole != 'GUEST';
+  }
+
   isElevatedCurator(){
     return this.userRole === 'ELEVATED_CURATOR';
   }

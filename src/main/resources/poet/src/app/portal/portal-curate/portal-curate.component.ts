@@ -37,7 +37,7 @@ export class PortalCurateComponent implements OnInit {
     {value: 'hpo', display: 'Phenotypes', icon: 'assignment'},
     {value: 'maxo', display: 'Treatments', icon: 'healing'}
   ];
-  userRole: string = 'CURATOR';
+  userRole: string = 'GUEST';
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog,
               public curationService: CurationService, public stateService: StateService,

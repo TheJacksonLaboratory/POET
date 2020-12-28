@@ -1,5 +1,5 @@
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { AnnotationSource, Disease } from "../../models/models";
 
 @Injectable({
@@ -17,7 +17,7 @@ export class StateService implements OnInit {
   private reloadAnnotationsSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private selectedTreatmentAnnotationSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private selectedPhenotypeAnnotationSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  private selectedAnnotationModeSubject: BehaviorSubject<any> = new BehaviorSubject<any>("edit");
+  private selectedAnnotationModeSubject: BehaviorSubject<any> = new BehaviorSubject<any>("view");
 
   selectedAnnotationSource: Observable<AnnotationSource> = this.selectedAnnotationSourceSubject.asObservable();
   selectedOntology: Observable<string> = this.selectedOntologySubject.asObservable();

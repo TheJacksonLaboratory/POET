@@ -1,4 +1,10 @@
 spring:
+  profiles: development
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-poet.us.auth0.com/
   datasource:
     url: jdbc:h2:file:~/Develop/poet/poet
   h2:
@@ -7,11 +13,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://dev-poet.us.auth0.com/
 server:
   servlet:
     context-path: /api/v1/
