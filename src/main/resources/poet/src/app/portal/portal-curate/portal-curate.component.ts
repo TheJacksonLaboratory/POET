@@ -75,10 +75,16 @@ export class PortalCurateComponent implements OnInit {
    * Display Form
    */
 
-  displayForm() {
-    this.showForm = true;
-    this.fxFlexAnnotations = "42";
-    this.fxFlexAnnotationOffset = "5";
+  handleForm(value: boolean) {
+    if(value){
+      this.showForm = true;
+      this.fxFlexAnnotations = "42";
+      this.fxFlexAnnotationOffset = "5";
+    } else {
+      this.showForm = false;
+      this.fxFlexAnnotations = "50";
+      this.fxFlexAnnotationOffset = "25";
+    }
   }
 
   /**

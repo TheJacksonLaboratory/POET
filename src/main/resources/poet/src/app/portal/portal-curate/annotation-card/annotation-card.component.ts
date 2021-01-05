@@ -85,6 +85,10 @@ export class AnnotationCardComponent implements OnInit {
     this.openAnnotationForm.emit(true);
   }
 
+  closeForm(){
+    this.openAnnotationForm.emit(false);
+  }
+
   annotationAction(annotation: any, action: any, index: any) {
     this.activeIndex = index;
     if(action == 'delete'){
@@ -93,6 +97,7 @@ export class AnnotationCardComponent implements OnInit {
           duration: 3000,
         });
         this.updateAnnotations(null);
+        this.closeForm();
       });
     } else {
       if (this.ontology == 'maxo' && action != 'delete') {

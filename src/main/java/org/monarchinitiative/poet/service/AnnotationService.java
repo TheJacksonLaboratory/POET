@@ -116,12 +116,13 @@ public class AnnotationService {
         if(maxoRequest != null){
             // Retired the old annotation
             MaxoAnnotation oldAnnotation = maxoAnnotationRepository.findDistinctById(maxoRequest.getId());
-            oldAnnotation.setStatus(AnnotationStatus.RETIRED);
             // Create the new one with updated values
             final MaxoAnnotation annotation = new MaxoAnnotation(oldAnnotation.getAnnotationSource(),
-                    AnnotationStatus.OFFICIAL, maxoRequest.getMaxoId(), maxoRequest.getMaxoName(),
+                    oldAnnotation.getStatus(), maxoRequest.getMaxoId(), maxoRequest.getMaxoName(),
                     maxoRequest.getHpoName(), maxoRequest.getHpoId(), maxoRequest.getEvidence(),
-                    maxoRequest.getEvidence(), maxoRequest.getRelation(), maxoRequest.getExtension());
+                    maxoRequest.getComment(), maxoRequest.getRelation(), maxoRequest.getExtension());
+            maxoAnnotationRepository.save(oldAnnotation);
+            oldAnnotation.setStatus(AnnotationStatus.RETIRED);
             maxoAnnotationRepository.save(annotation);
             updateUserActivity(authentication, CurationAction.UPDATE, annotation, oldAnnotation);
             return true;
@@ -140,7 +141,7 @@ public class AnnotationService {
     public boolean deleteMaxoAnnotation(Long id, Authentication authentication) {
         if(id != null){
             MaxoAnnotation annotation = maxoAnnotationRepository.findDistinctById(id);
-            if(annotation != null && annotation.getStatus() != AnnotationStatus.OFFICIAL){
+            if(annotation != null){
                 annotation.setStatus(AnnotationStatus.RETIRED);
                 updateUserActivity(authentication, CurationAction.DELETE, annotation, null);
                 return true;

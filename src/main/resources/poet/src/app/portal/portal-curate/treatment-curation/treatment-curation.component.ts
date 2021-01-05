@@ -121,6 +121,7 @@ export class TreatmentCurationComponent implements OnInit {
       evidence: this.formControlGroup.get('evidenceFormControl').value,
       relation: this.formControlGroup.get('relationFormControl').value,
       comment: this.formControlGroup.get('commentFormControl').value,
+      extension: this.formControlGroup.get('extensionFormControl').value
     }
     this.savingAnnotation = true;
     if(this.updating){
@@ -153,15 +154,16 @@ export class TreatmentCurationComponent implements OnInit {
     this.savingAnnotation = false;
     this.stateService.triggerAnnotationReload(true);
     this.resetMaxoForm();
-    this._snackBar.open('Annotation Saved!', 'Close', {
+    this._snackBar.open(message, 'Close', {
       duration: 3000,
+      horizontalPosition: "left"
     });
   }
   onErrorMaxoSave(){
     this.savingAnnotation = false;
-    this.resetMaxoForm();
     this._snackBar.open('Error Saving Annotation!', 'Close', {
       duration: 3000,
+      horizontalPosition: "left"
     });
   }
   selectPublication(){

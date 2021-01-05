@@ -1,11 +1,13 @@
 <mat-card [@bounceInLeft]="triggerBounceIn" class="annotation-card">
-  <mat-card-title>
-    <span *ngIf="ontology == 'maxo'">Treatments</span>
-    <span *ngIf="ontology == 'hpo'">Phenotypes</span>
-    <button class="new-annotation" mat-mini-fab color="primary" aria-label="Add Annotation" *ngIf="isUser()"
+  <div class="top-actions">
+    <button mat-mini-fab color="primary" aria-label="Add Annotation" *ngIf="isUser()"
             (click)="annotationAction(null, 'create', -1)">
       <mat-icon>add</mat-icon>
     </button>
+  </div>
+  <mat-card-title>
+    <span *ngIf="ontology == 'maxo'">Treatments</span>
+    <span *ngIf="ontology == 'hpo'">Phenotypes</span>
   </mat-card-title>
   <mat-card-subtitle>
     <span *ngIf="ontology == 'maxo'">A list of curated medical actions for this disease.</span>
