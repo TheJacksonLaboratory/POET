@@ -7,10 +7,10 @@ import org.monarchinitiative.poet.model.entities.Publication;
 import org.monarchinitiative.poet.service.EntityService;
 import org.monarchinitiative.poet.views.DiseaseViews;
 import org.monarchinitiative.poet.views.PublicationViews;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,6 +21,7 @@ import java.util.List;
  * @author Michael Gargano
  * @since 0.5.0
  */
+@CrossOrigin
 @RestController
 @RequestMapping(value = "entity/disease/")
 public class DiseaseController {
@@ -61,5 +62,23 @@ public class DiseaseController {
     @GetMapping(value = "/{id}/publications", headers = "Accept=application/json")
     public List<Publication> getDiseasePublications(@PathVariable(value="id") String id){
         return this.entityService.getDiseasePublications(id);
+    }
+
+    /**
+     * The endpoint to retrieve a disease annotation by disease id.
+     *
+     * @return a disease object with fields annotated with DiseaseViews in the model.
+     *
+     * @throws DiseaseNotFoundException if a disease could not be found with the given id.
+     * @since 0.5.0
+     */
+    @JsonView(DiseaseViews.Simple.class)
+    @PutMapping(value = "/", headers = "Accept=application/json")
+    public ResponseEntity<?> newDisease(@RequestBody Disease disease, Authentication authentication){
+        if(!this.entityService.saveNewDisease(disease, authentication)){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } else {
+            return ResponseEntity.ok().build();
+        }
     }
 }

@@ -21,6 +21,7 @@ import java.util.List;
  * @author Michael Gargano
  * @since 0.5.0
  */
+@CrossOrigin
 @RestController
 @RequestMapping(value = "entity/publication")
 public class PublicationController {

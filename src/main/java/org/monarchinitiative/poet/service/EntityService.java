@@ -7,6 +7,7 @@ import org.monarchinitiative.poet.model.entities.Disease;
 import org.monarchinitiative.poet.model.entities.Publication;
 import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
+import org.monarchinitiative.poet.model.requests.DiseaseRequest;
 import org.monarchinitiative.poet.model.requests.PublicationRequest;
 import org.monarchinitiative.poet.repository.AnnotationSourceRepository;
 import org.monarchinitiative.poet.repository.DiseaseRepository;
@@ -67,6 +68,24 @@ public class EntityService {
             return Collections.emptyList();
         }
     }
+
+    /**
+     * A function to get a disease from the disease repository implementation
+     *
+     * @param disease a OMIM or MONDO disease id
+     *
+     * @return a disease or nothing
+     * @since 0.5.0
+     */
+    public boolean saveNewDisease(Disease disease, Authentication authentication){
+        User user = userRepository.findDistinctByAuthId(authentication.getName());
+        if(user != null && user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)){
+            this.diseaseRepository.save(disease);
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * A function to get a publication from the publication repository
