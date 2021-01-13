@@ -34,8 +34,8 @@ export class PortalCurateComponent implements OnInit {
   sourceAndOntologySelected: boolean = false;
   showForm: boolean = false;
   annotationItems = [
-    {value: 'hpo', display: 'Phenotypes', icon: 'assignment'},
-    {value: 'maxo', display: 'Treatments', icon: 'healing'}
+    {value: 'hpo', display: 'Phenotypes', icon: 'assignment', disabled: true},
+    {value: 'maxo', display: 'Treatments', icon: 'healing', disabled: false}
   ];
   userRole: string = 'GUEST';
 
@@ -93,7 +93,7 @@ export class PortalCurateComponent implements OnInit {
    */
   determineIdType(id: string): string {
     if (id) {
-      if (id.includes("OMIM")) {
+      if (id.includes("OMIM") || id.includes("MONDO")) {
         return "disease";
       } else if (id.includes("PMID")) {
         return "publication";
@@ -119,5 +119,11 @@ export class PortalCurateComponent implements OnInit {
 
   changeOntology(ontology: string) {
     this.stateService.setSelectedOntology(ontology);
+  }
+
+  navigateToPage(disease){
+    if(disease){
+      this.router.navigate(['portal/curate/' + disease.id]);
+    }
   }
 }

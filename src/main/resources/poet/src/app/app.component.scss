@@ -1,6 +1,7 @@
 .brand {
   margin-right: 1rem;
   cursor: pointer;
+  outline: 0;
 
   & .icon {
     height: 50px;
@@ -39,5 +40,13 @@
 .portal-actions {
   & .home {
     text-transform: uppercase;
+  }
+}
+
+.nickname {
+  cursor: pointer;
+  outline: 0;
+  &:hover {
+    opacity: 0.6;
   }
 }

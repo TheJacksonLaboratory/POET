@@ -35,7 +35,7 @@ export class MonarchSearchComponent implements OnInit {
         }),
         switchMap((value) => {
             if (this.hasValidInput(value)) {
-              return this.monarchService.searchDiseases(value)
+              return this.monarchService.getDisease(value)
                 .pipe(
                   finalize(() => {
                     this.isLoading = false

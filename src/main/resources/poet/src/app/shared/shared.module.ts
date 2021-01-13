@@ -26,9 +26,10 @@ import { MatMenuModule } from "@angular/material/menu";
 import { NgxChartsModule } from "@swimlane/ngx-charts";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { DialogDiseaseComponent } from './dialog-disease/dialog-disease.component';
 
 @NgModule({
-  declarations: [SearchComponent, MonarchSearchComponent],
+  declarations: [SearchComponent, MonarchSearchComponent, DialogDiseaseComponent],
   imports: [
     CommonModule,
     MatToolbarModule,

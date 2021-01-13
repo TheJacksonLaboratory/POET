@@ -31,6 +31,14 @@ export class CurationService {
     return this.httpClient.get<Disease>(environment.POET_API_DISEASE_ENTITY_URL + id);
   }
 
+  /***
+   * Get a disease by OMIM id
+   * @param diseaseRequest a monarch disease object
+   */
+  saveDisease(diseaseRequest: any): Observable<any>{
+    return this.httpClient.put(environment.POET_API_DISEASE_ENTITY_URL, diseaseRequest);
+  }
+
   /**
    * Get a list of publications associated with a disease OMIM
    * @param id

@@ -39,6 +39,10 @@ export const environment = {
         uri: POET_BASE_URL + '/annotation/maxo/*',
         httpMethod: HttpMethod.Delete,
       },
+      {
+        uri: POET_BASE_URL + '/entity/disease/',
+        httpMethod: HttpMethod.Put,
+      },
     ]
   },
   production: false,
@@ -53,6 +57,7 @@ export const environment = {
   HPO_API_HPO_SEARCH_URL: HPO_BASE_URL + 'hpo/search',
   HPO_API_MAXO_SEARCH_URL: HPO_BASE_URL + 'maxo/search/',
   MONARCH_SEARCH_URL: MONARCH_BASE_URL + '/search/entity/autocomplete/',
+  MONARCH_ENTITY_URL: MONARCH_BASE_URL + '/bioentity/',
   PUBMED_SUMMARY_URL: PUBMED_BASE_URL + 'esummary.fcgi',
   AUDIENCE_ROLE: "https://poet.jax.org/role"
 };

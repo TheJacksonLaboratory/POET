@@ -23,20 +23,22 @@
       </div>
     </div>
     <div class="new-curation" *ngIf="newPublication">
-        <mat-form-field appearance="outline">
-          <mat-label>Publication</mat-label>
-          <input matInput placeholder="PubMed Identifier" [formControl]="annotationSourceControl" [errorStateMatcher]="matcher" ngDefaultControl>
-          <button mat-button *ngIf="annotationSourceControl.value != ''" matSuffix mat-icon-button aria-label="Clear" (click)="resetForm()">
-            <mat-icon>close</mat-icon>
-          </button>
-          <mat-hint *ngIf="!selectedPublication">Try: 31479590</mat-hint>
-          <mat-error *ngIf="annotationSourceControl.hasError('required')">
-            PubMed Identifier is <strong>required</strong>. Try: 31479590
-          </mat-error>
-          <mat-error *ngIf="annotationSourceControl.hasError('notFound')">
-            Could not find data for this identifer. Please enter a full and valid PubMed Id.
-          </mat-error>
-        </mat-form-field>
+        <div class="publication-search">
+          <mat-form-field appearance="outline">
+            <mat-label>Publication</mat-label>
+            <input matInput placeholder="PubMed Identifier" [formControl]="annotationSourceControl" [errorStateMatcher]="matcher" ngDefaultControl>
+            <button mat-button *ngIf="annotationSourceControl.value != ''" matSuffix mat-icon-button aria-label="Clear" (click)="resetForm()">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-hint *ngIf="!selectedPublication">Try: 31479590</mat-hint>
+            <mat-error *ngIf="annotationSourceControl.hasError('required')">
+              PubMed Identifier is <strong>required</strong>. Try: 31479590
+            </mat-error>
+            <mat-error *ngIf="annotationSourceControl.hasError('notFound')">
+              Could not find data for this identifer. Please enter a full and valid PubMed Id.
+            </mat-error>
+          </mat-form-field>
+        </div>
         <mat-progress-bar *ngIf="searchingPubMed" mode="indeterminate"></mat-progress-bar>
         <div *ngIf="selectedPublication">
           <div class="pubmed-publication">
@@ -58,7 +60,7 @@
   </mat-dialog-content>
   <div class="dialog-spacer"></div>
   <mat-dialog-actions align="end">
-    <button mat-button *ngIf="dialogRequirementsMet() && !newPublication" (click)="closeDialog()" cdkFocusInitial>Submit</button>
-    <button mat-button *ngIf="newPublication && selectedPublication && allTasksCompleted()" (click)="saveNewPublication()" cdkFocusInitial>Save</button>
-    <button mat-button mat-dialog-close>Cancel</button>
-</mat-dialog-actions>
+      <button mat-button *ngIf="dialogRequirementsMet() && !newPublication" (click)="closeDialog()" cdkFocusInitial>Submit</button>
+      <button mat-button *ngIf="newPublication && selectedPublication && allTasksCompleted()" (click)="saveNewPublication()" cdkFocusInitial>Save</button>
+      <button mat-button mat-dialog-close>Cancel</button>
+  </mat-dialog-actions>

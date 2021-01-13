@@ -6,6 +6,9 @@ import { transition, trigger, useAnimation } from "@angular/animations";
 import { fadeIn } from "ng-animate";
 import { Router } from "@angular/router";
 import { CurationService } from "../../shared/services/curation/curation.service";
+import { MatDialog } from "@angular/material/dialog";
+import { DialogDiseaseComponent } from "../../shared/dialog-disease/dialog-disease.component";
+import { environment } from "../../../environments/environment";
 @Component({
   selector: 'app-portal-home',
   templateUrl: './portal-dashboard.component.html',
@@ -23,11 +26,14 @@ export class PortalDashboardComponent implements OnInit {
   user: any;
   pieData;
   lineData;
-  constructor(public authService: AuthService, private router: Router, public curationService: CurationService) { }
+  userRole: any;
+  constructor(public authService: AuthService, private router: Router,
+              public curationService: CurationService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.authService.user$.subscribe((user) => {
       this.user = user;
+      this.userRole = user[environment.AUDIENCE_ROLE];
     });
 
     this.curationService.getUserActivity(true).subscribe((userActivity) => {
@@ -37,18 +43,12 @@ export class PortalDashboardComponent implements OnInit {
     })
 
     this.curationService.getUserContributions().subscribe((contributions) => {
-      if(contributions.every(obj => obj.value === 0)){
+      if (contributions.every(obj => obj.value === 0)) {
         this.pieData = [];
       } else {
         this.pieData = contributions;
       }
     });
-  }
-
-  searchSelect(data){
-    if(data.type == 'disease'){
-      this.router.navigate(['/portal/curate/' + data.id]);
-    }
   }
 
   /*

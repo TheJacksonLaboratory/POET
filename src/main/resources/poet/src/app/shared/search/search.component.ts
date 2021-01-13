@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from "@angular/forms";
 import { debounceTime, finalize } from "rxjs/operators";
 import { tap } from "rxjs/internal/operators/tap";
@@ -6,6 +6,9 @@ import { switchMap } from "rxjs/internal/operators/switchMap";
 import { CurationService } from "../services/curation/curation.service";
 import { of } from "rxjs/internal/observable/of";
 import { SearchResult } from "../models/search-models";
+import { DialogDiseaseComponent } from "../dialog-disease/dialog-disease.component";
+import { MatDialog } from "@angular/material/dialog";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-search',
@@ -14,14 +17,13 @@ import { SearchResult } from "../models/search-models";
 })
 export class SearchComponent implements OnInit {
 
-  @Output()
-  onSearchSelect: EventEmitter<any> = new EventEmitter<any>();
+  @Input() role: string;
   searchControl = new FormControl();
   filteredResponse: any;
   isLoading = false;
   errorMsg: string;
 
-  constructor(private curationService: CurationService) {
+  constructor(private curationService: CurationService, private router: Router, public dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -45,12 +47,15 @@ export class SearchComponent implements OnInit {
             return of();
           }
         })
-      ).subscribe(data => {
-      if (data) {
-        this.errorMsg = ""
-        this.filteredResponse = data;
-      }
-    }, ()=> {}, ()=> {
+      ).subscribe((data: any[]) => {
+        if(this.isElevatedCurator()){
+          this.filteredResponse = [{name: "Create a New Disease", id:"Not finding what you're looking for?", type: "new" }];
+        }
+        if (data && data.length > 0) {
+          this.errorMsg = ""
+          this.filteredResponse.push.apply(this.filteredResponse, data); // flatten arrays
+        }
+    }, ()=> {
         this.isLoading = false;
     });
   }
@@ -62,7 +67,15 @@ export class SearchComponent implements OnInit {
   }
 
   onSelection(result) {
-    this.onSearchSelect.emit(result);
+    if(result.type == 'disease'){
+      this.router.navigate(['/portal/curate/' + result.id]);
+    } else if(result.type == 'new'){
+      // open new disease dialog
+      this.dialog.open(DialogDiseaseComponent, {
+        minWidth: 500,
+        maxWidth: 600
+      })
+    }
   }
 
   hasValidInput(val: string) {
@@ -72,8 +85,12 @@ export class SearchComponent implements OnInit {
   }
 
   displayFn(searchResult: SearchResult) {
-    if (searchResult) {
+    if (searchResult && searchResult.name != "Create a New Disease") {
       return searchResult.name;
     }
+  }
+
+  isElevatedCurator(){
+    return this.role === 'ELEVATED_CURATOR';
   }
 }

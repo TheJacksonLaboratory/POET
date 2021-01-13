@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
-import { map, pluck } from "rxjs/operators";
+import { filter, map, pluck } from "rxjs/operators";
 import { MaxoSearchResult, HpoMaxoSearchResult, HpoTerm } from "../../models/search-models";
 import { Observable } from "rxjs";
 
@@ -33,5 +33,16 @@ export class HpoService {
           };
         });
       }));
+  }
+
+  searchDiseases(query: string): any {
+    let parameters: HttpParams = new HttpParams().set('q', query);
+    return this.httpClient.get<any>(environment.HPO_API_HPO_SEARCH_URL, {params: parameters})
+      .pipe(pluck('diseases'),
+        map((items: any) => {
+          return items.filter((item) => {
+           return item.db == "OMIM";
+          });
+        }));
   }
 }

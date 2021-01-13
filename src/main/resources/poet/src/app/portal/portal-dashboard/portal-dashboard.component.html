@@ -9,7 +9,7 @@
       </mat-card-subtitle>
       <mat-card-content>
         <div class="search-wrapper">
-          <app-search (onSearchSelect)="searchSelect($event)"></app-search>
+          <app-search [role]="userRole"></app-search>
         </div>
       </mat-card-content>
     </mat-card>
