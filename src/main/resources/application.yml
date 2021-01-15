@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:file:~/Develop/poet/poet
+    url: jdbc:h2:file:./usr/local/svc-maxo/database/poet
   h2:
     console:
       enabled: true
