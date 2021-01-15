@@ -1,0 +1,111 @@
+<div class="dashboard">
+  <div class="flex-row" fxFlexLayout="row">
+    <mat-card class="search-card" fxFlex="75" fxFlexOffset="12">
+      <mat-card-title>
+        Curation Dashboard
+      </mat-card-title>
+      <mat-card-subtitle>
+        Get started curating by finding a disease.
+      </mat-card-subtitle>
+      <mat-card-content>
+        <div class="search-wrapper">
+          <app-search [role]="userRole"></app-search>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div fxflexlayout="row" class="flex-row">
+    <mat-card class="recently-curated-card" fxFlex="75" fxFlexOffset="12">
+      <mat-card-title>
+        Recently Curated
+      </mat-card-title>
+      <mat-card-content>
+        <mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+
+          <ng-container matColumnDef="category">
+            <mat-header-cell *matHeaderCellDef> Curation Type</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.category}} </mat-cell>
+          </ng-container>
+
+
+          <ng-container matColumnDef="curator">
+            <mat-header-cell *matHeaderCellDef> Curator</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.curator}} </mat-cell>
+          </ng-container>
+
+
+          <ng-container matColumnDef="date">
+            <mat-header-cell *matHeaderCellDef> Date</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.date}} </mat-cell>
+          </ng-container>
+
+
+          <ng-container matColumnDef="time">
+            <mat-header-cell *matHeaderCellDef> Time</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.time}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <button color="primary" mat-flat-button>View</button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <div class="curated-not-found" [hidden]="dataSource?.data.length == 0">
+          <h4>No recently curated items found.</h4>
+        </div>
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <!--<div fxflexlayout="row" class="flex-row">
+    <mat-card class="contribution-donut-card" fxFlex="40" fxFlexOffset="10">
+      <mat-card-title>
+        Contributions
+      </mat-card-title>
+      <mat-card-content>
+        <div class="chart-wrapper" *ngIf="pieData?.length > 0">
+          <ngx-charts-pie-chart
+            [results]="pieData"
+            legend="true"
+            legendTitle="Legend"
+            legendPosition="bottom"
+            explodeSlices="true"
+            gradient="true"
+            scheme="ocean"
+          >
+          </ngx-charts-pie-chart>
+        </div>
+        <div class="no-contributions" *ngIf="pieData?.length === 0">
+          <h4>No official contributions yet!</h4>
+          <button mat-raised-button color="accent">Get Started</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="contribution-overtime-card" fxFlex="40">
+      <mat-card-title>
+        Daily Activity
+      </mat-card-title>
+      <mat-card-content>
+        <div class="chart-wrapper">
+          <ngx-charts-line-chart
+            [results]="lineData"
+            [view]="[650, 300]"
+            xAxis="Day"
+            yAxis="Annotations"
+            showXAxisLabel="true"
+            showYAxisLabel="true"
+            gradient="true"
+            scheme="ocean"
+          >
+          </ngx-charts-line-chart>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>-->
+</div>

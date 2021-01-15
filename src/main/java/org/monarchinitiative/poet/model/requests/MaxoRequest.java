@@ -22,7 +22,9 @@ public class MaxoRequest {
 
     MaxoRequest(){}
 
-    public MaxoRequest(Long id, String maxoId, String maxoName, String hpoName, String hpoId, String evidence, String comment, String relation, String extension, String publicationId, String publicationName, String diseaseId, String diseaseName) {
+    public MaxoRequest(Long id, String maxoId, String maxoName, String hpoName, String hpoId, String evidence,
+                       String comment, String relation, String extension, String publicationId, String publicationName,
+                       String diseaseId, String diseaseName) {
         this.id = id;
         this.maxoId = maxoId;
         this.maxoName = maxoName;

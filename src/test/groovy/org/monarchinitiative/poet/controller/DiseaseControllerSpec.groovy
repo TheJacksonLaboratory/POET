@@ -44,7 +44,7 @@ class DiseaseControllerSpec extends Specification {
         inputDisease                                  | inputDiseaseId   | expectedResponse                                | desc
         new Disease("OMIM:154700", "Marfan Syndrome") | "OMIM:154700"    | MockMvcResultMatchers.status().isOk()           | "test get disease by id with pub"
         null                                          | "OMIM:0091920"   | MockMvcResultMatchers.status().isNotFound()     | "test get disease by id find nothing"
-        null                                            | ""               | MockMvcResultMatchers.status().isNotFound()     | "test get disease by nothing find nothing"
+        null                                            | ""               | MockMvcResultMatchers.status().isMethodNotAllowed()     | "test get disease by nothing find nothing"
     }
 
 

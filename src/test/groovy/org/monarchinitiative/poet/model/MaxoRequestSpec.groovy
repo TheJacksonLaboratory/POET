@@ -13,7 +13,7 @@ class MaxoRequestSpec extends Specification {
 
     void "test maxo request constructor"() {
         given:
-        def maxoRequest = new MaxoRequest(
+        def maxoRequest = new MaxoRequest(null,
                 maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extension, publicationId, publicationName, diseaseId, diseaseName
         ) {}
 

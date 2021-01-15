@@ -35,6 +35,6 @@ public class SearchController {
      */
     @GetMapping(value = "", headers = "Accept=application/json")
     public List<SearchResponse> searchPublicationsAndDiseases(@RequestParam String query) {
-        return searchService.searchPublicationAndDisease(query.trim());
+        return searchService.searchDisease(query.trim());
     }
 }

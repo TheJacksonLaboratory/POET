@@ -1,10 +1,8 @@
 package org.monarchinitiative.poet.service
 
 import org.monarchinitiative.poet.model.entities.Disease
-import org.monarchinitiative.poet.model.entities.Publication
 import org.monarchinitiative.poet.repository.AnnotationSourceRepository
 import org.monarchinitiative.poet.repository.DiseaseRepository
-import org.monarchinitiative.poet.repository.PublicationRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -20,9 +18,6 @@ class SearchServiceSpec extends Specification {
     DiseaseRepository diseaseStub;
 
     @Autowired
-    PublicationRepository publicationStub;
-
-    @Autowired
     AnnotationSourceRepository annotationStub;
 
     @Autowired
@@ -31,35 +26,23 @@ class SearchServiceSpec extends Specification {
 
     void "test search publication and disease #desc"() {
         given:
-        publicationStub.findByPublicationIdStartingWithOrPublicationNameContainingIgnoreCase(_, _) >> publicationResponse
-        diseaseStub.findDiseaseByDiseaseNameContainingIgnoreCaseOrDiseaseIdContainingIgnoreCase(_, _) >> diseaseResponse
-        def result = searchService.searchPublicationAndDisease(inputQuery)
+        diseaseStub.findDiseaseByDiseaseNameContainingIgnoreCaseOrDiseaseIdContainingIgnoreCase(_ as String, _ as String) >> diseaseResponse
+        def result = searchService.searchDisease(inputQuery)
         expect:
         result.size() == expectedSize
 
         where:
-        inputQuery | publicationResponse    | diseaseResponse    | expectedSize | desc
-        "ha"       | getFewPublications()   | getFewDiseases()   | 5            | "expect 5 response"
-        "meh"      | getSinglePublication() | getFewDiseases()   | 4            | "expect 4 response"
-        "pub"      | getSinglePublication() | getSingleDisease() | 2            | "expect 2 response"
-        "dise"     | getEmptyList()         | getSingleDisease() | 1            | "expect 1 response"
-        ""         | getEmptyList()         | getEmptyList()     | 0            | "expect 0 response"
+        inputQuery | diseaseResponse        | expectedSize | desc
+        "really"   | getFewDiseases()[1..2] | 2            | "expect 2 response"
+        "dise"     | getFewDiseases()       | 3            | "expect 3 response"
+        "bad"      | getSingleDisease()     | 1            | "expect 2 response"
+        "dise"     | getSingleDisease()     | 1            | "expect 1 response"
+        ""         | getEmptyList()         | 0            | "expect 0 response"
 
     }
 
     def getEmptyList() {
         return []
-    }
-
-    def getFewPublications() {
-        return [
-                new Publication("PMID:00923232", "My first publication", "12/19/2020", "Test User"),
-                new Publication("PMID:00923245", "My second publication", "12/20/2020", "Test User")
-        ]
-    }
-
-    def getSinglePublication() {
-        return [new Publication("PMID:00923232", "My first publication", "12/19/2020", "Test User")]
     }
 
     def getFewDiseases() {

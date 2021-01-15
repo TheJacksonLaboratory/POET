@@ -4,6 +4,7 @@ plugins {
 	id 'java'
 	id 'war'
 	id 'groovy'
+	id "com.github.node-gradle.node" version "2.2.4"
 }
 
 group = 'org.monarchinitiative.poet'
@@ -36,6 +37,44 @@ dependencies {
 }
 
 def profile = 'development'
+
+node {
+	version = '12.0.0'
+	npmVersion = '6.9.0'
+	download = true
+	nodeModulesDir = file("src/main/poet")
+
+}
+
+task buildClientProd(type: NpmTask, dependsOn: 'npmInstall') {
+	group = 'build'
+	description = 'Compile client side assets for production'
+	args = ['run', 'buildProd']
+}
+
+task clientTest(type: NpmTask, dependsOn: 'npmInstall') {
+	group = 'verification'
+	description = 'Executes client side unit tests'
+	args = ['run', 'test']
+}
+
+war {
+	 archiveFileName = System.getProperty("warName")
+}
+
+task shouldClientTest(){
+	// If warName uinclude client test
+	if(System.getProperty("warName")){
+		dependsOn(clientTest)
+	}
+}
+
+war.dependsOn(buildClientProd)
+test.dependsOn(shouldClientTest)
+
+clean {
+	delete fileTree(dir: "src/main/webapp/app")
+}
 
 bootRun {
 	systemProperty "spring.profiles.active", profile

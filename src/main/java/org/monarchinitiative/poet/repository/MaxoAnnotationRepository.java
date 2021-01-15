@@ -13,5 +13,4 @@ public interface MaxoAnnotationRepository extends CrudRepository<MaxoAnnotation,
     List<MaxoAnnotation> findDistinctByAnnotationSourceAndStatusNot(AnnotationSource source, AnnotationStatus status);
     List<MaxoAnnotation> findAllByAnnotationSourceDiseaseAndStatusNot(Disease disease, AnnotationStatus status);
     MaxoAnnotation findDistinctById(long id);
-
 }

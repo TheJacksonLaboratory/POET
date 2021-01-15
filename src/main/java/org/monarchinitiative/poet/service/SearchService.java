@@ -19,12 +19,9 @@ import java.util.List;
 @Service
 public class SearchService {
 
-    private PublicationRepository publicationRepository;
     private DiseaseRepository diseaseRepository;
 
-    SearchService(PublicationRepository publicationRepository,
-                  DiseaseRepository diseaseRepository){
-        this.publicationRepository = publicationRepository;
+    SearchService(DiseaseRepository diseaseRepository){
         this.diseaseRepository = diseaseRepository;
     }
 
@@ -36,16 +33,9 @@ public class SearchService {
      * @return a list of search response objects or an empty list
      * @since 0.5.0
      */
-    public List<SearchResponse> searchPublicationAndDisease(String query){
+    public List<SearchResponse> searchDisease(String query){
         List<SearchResponse> responseList = new ArrayList<>();
-        // List<Publication> publications = publicationRepository.findByPublicationIdStartingWithOrPublicationNameContainingIgnoreCase(query, query);
         List<Disease> diseases =  diseaseRepository.findDiseaseByDiseaseNameContainingIgnoreCaseOrDiseaseIdContainingIgnoreCase(query, query);
-        /*if(publications.size() > 0){
-            for (Publication publication : publications) {
-                responseList.add(new SearchResponse(publication.getPublicationId(),
-                        publication.getPublicationName(), "publication"));
-            }
-        }*/
 
         if(diseases.size() > 0){
             for (Disease disease : diseases) {
