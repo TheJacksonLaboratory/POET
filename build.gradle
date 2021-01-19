@@ -5,6 +5,7 @@ plugins {
 	id 'war'
 	id 'groovy'
 	id "com.github.node-gradle.node" version "2.2.4"
+	id "com.dorongold.task-tree" version "1.5"
 }
 
 group = 'org.monarchinitiative.poet'
@@ -32,8 +33,8 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	testCompile group: 'org.spockframework', name: 'spock-core', version: '1.3-groovy-2.4'
-	testCompile group: 'org.spockframework', name: 'spock-spring', version: '1.3-groovy-2.4'
+	testImplementation group: 'org.spockframework', name: 'spock-core', version: '1.3-groovy-2.4'
+	testImplementation group: 'org.spockframework', name: 'spock-spring', version: '1.3-groovy-2.4'
 }
 
 def profile = 'development'
@@ -58,22 +59,21 @@ task clientTest(type: NpmTask, dependsOn: 'npmInstall') {
 	args = ['run', 'test']
 }
 
-war {
-	 archiveFileName = System.getProperty("warName")
-}
-
 task shouldClientTest(){
 	// If warName uinclude client test
-	if(System.getProperty("warName")){
+	if(System.getProperty("clientTest")){
 		dependsOn(clientTest)
 	}
 }
 
-war.dependsOn(buildClientProd)
+bootWar.dependsOn {
+	buildClientProd
+}
+
 test.dependsOn(shouldClientTest)
 
 clean {
-	delete fileTree(dir: "src/main/webapp/app")
+	delete fileTree(dir: "src/main/resources/static")
 }
 
 bootRun {
