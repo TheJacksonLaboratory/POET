@@ -79,7 +79,10 @@ export class CurationService {
    * @param sort
    */
   getMaxoAnnotations(disease: Disease, publication: Publication, sort: string): Observable<MaxoAnnotation[]>{
-    const params = new HttpParams().set("sort", sort);
+    let params;
+    if(sort){
+      params = new HttpParams().set("sort", sort);
+    }
     if(publication != null){
       return this.httpClient.get<any>(environment.POET_API_MAXO_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
     } else {
@@ -130,12 +133,22 @@ export class CurationService {
     return this.httpClient.get<UserActivityResponse[]>(environment.POET_API_STATISTICS_USERACTIVITY_URL, {params: params}).pipe(
       map((response: UserActivityResponse[]) => {
         return response.map((activity: UserActivityResponse) => {
-          let newData = {};
-          newData["category"] = activity.annotation["annotationType"].toUpperCase();
-          newData["curationAction"] = activity.curationAction;
-          newData["curator"] = activity.user["nickname"];
-          newData["date"] = new Date(activity.localDateTime).toLocaleDateString();
-          newData["time"] = new Date(activity.localDateTime).toLocaleTimeString();
+          let newData = {
+            source: null,
+            category: null,
+            curationAction: null,
+            curator: null,
+            date: null,
+            time: null,
+            annotationId: null
+          };
+          newData.source = activity.annotation["annotationSource"];
+          newData.category = activity.annotation["annotationType"].toUpperCase();
+          newData.curationAction = activity.curationAction;
+          newData.curator = activity.user["nickname"];
+          newData.date = new Date(activity.localDateTime).toLocaleDateString();
+          newData.time = new Date(activity.localDateTime).toLocaleTimeString();
+          newData.annotationId = activity.annotation.id;
           return newData;
         })
       }));

@@ -2,6 +2,7 @@ package org.monarchinitiative.poet.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.views.AnnotationViews;
+import org.monarchinitiative.poet.views.UserActivityViews;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -18,7 +19,7 @@ public class AnnotationSource {
     private Publication publication;
 
     @ManyToOne
-    @JsonView(AnnotationViews.Simple.class)
+    @JsonView({AnnotationViews.Simple.class, UserActivityViews.Simple.class})
     private Disease disease;
 
     public AnnotationSource(){}

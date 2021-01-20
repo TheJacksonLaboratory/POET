@@ -53,6 +53,12 @@ export class PortalDashboardComponent implements OnInit {
     });
   }
 
+
+  navigateToAnnotation(element){
+    const diseaseId = element.source.disease.diseaseId;
+    this.router.navigate(['/portal/curate/' + diseaseId], {queryParams: {id:element.annotationId}});
+  }
+
   /*
     Group by day
    */

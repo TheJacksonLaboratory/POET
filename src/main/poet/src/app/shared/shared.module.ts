@@ -28,9 +28,11 @@ import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { DialogDiseaseComponent } from './dialog-disease/dialog-disease.component';
 import { FlexLayoutModule } from "@angular/flex-layout";
+import { FilterPipe } from './pipes/filter.pipe';
 
 @NgModule({
-  declarations: [SearchComponent, MonarchSearchComponent, DialogDiseaseComponent],
+  declarations: [SearchComponent, MonarchSearchComponent, DialogDiseaseComponent, FilterPipe],
+  providers: [FilterPipe],
   imports: [
     CommonModule,
     MatToolbarModule,
@@ -60,7 +62,8 @@ import { FlexLayoutModule } from "@angular/flex-layout";
     MatPaginatorModule,
     MatCheckboxModule,
     MatTooltipModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatCheckboxModule
   ],
   exports: [
     MatToolbarModule,
@@ -92,7 +95,9 @@ import { FlexLayoutModule } from "@angular/flex-layout";
     MatPaginatorModule,
     MatCheckboxModule,
     MatTooltipModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatCheckboxModule,
+    FilterPipe
   ]
 })
 export class SharedModule {
