@@ -39,7 +39,6 @@ export class AnnotationCardComponent implements OnInit {
 
   ngOnInit(): void {
 
-    const openAnnotation = 
     this.stateService.selectedOntology.subscribe((ontology) => {
       this.ontology = ontology;
     });
@@ -96,9 +95,7 @@ export class AnnotationCardComponent implements OnInit {
           const annotation = annotations[index];
           this.annotationAction(annotation,  'view', index)
         }
-      })), tap(() => {
-
-      }));
+      })));
     }
   }
 
