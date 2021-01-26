@@ -36,7 +36,7 @@ class SearchControllerSpec extends Specification{
 
 
         expect: "an annotation state"
-        mvc.perform(MockMvcRequestBuilders.get("/search").param("query", searchTerm)).andExpect((ResultMatcher) expectedResponse);
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/search").param("query", searchTerm)).andExpect((ResultMatcher) expectedResponse);
 
         where:
         serviceResponse      | searchTerm      | expectedResponse                            | desc

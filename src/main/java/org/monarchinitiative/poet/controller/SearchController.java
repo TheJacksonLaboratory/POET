@@ -17,7 +17,7 @@ import java.util.List;
  * @since 0.5.0
  */
 @RestController
-@RequestMapping(value = "/search")
+@RequestMapping(value = "${api.version}/search")
 public class SearchController {
 
     private final SearchService searchService;

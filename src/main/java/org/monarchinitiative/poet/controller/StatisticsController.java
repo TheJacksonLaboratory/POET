@@ -21,7 +21,7 @@ import java.util.List;
  * @since 0.5.0
  */
 @RestController
-@RequestMapping(value="/statistics")
+@RequestMapping(value="${api.version}/statistics")
 public class StatisticsController {
 
     private StatisticsService statisticsService;

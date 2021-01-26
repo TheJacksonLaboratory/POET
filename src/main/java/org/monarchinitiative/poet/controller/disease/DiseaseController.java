@@ -23,7 +23,7 @@ import java.util.List;
  */
 @CrossOrigin
 @RestController
-@RequestMapping(value = "entity/disease/")
+@RequestMapping(value = "${api.version}/entity/disease/")
 public class DiseaseController {
     private final EntityService entityService;
 

@@ -38,7 +38,7 @@ class DiseaseControllerSpec extends Specification {
 
 
         expect: "an annotation state"
-        mvc.perform(MockMvcRequestBuilders.get("/entity/disease/${inputDiseaseId}/")).andExpect((ResultMatcher) expectedResponse);
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/entity/disease/${inputDiseaseId}/")).andExpect((ResultMatcher) expectedResponse);
 
         where:
         inputDisease                                  | inputDiseaseId   | expectedResponse                                | desc
