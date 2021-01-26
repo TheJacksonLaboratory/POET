@@ -22,7 +22,7 @@ import java.util.List;
  */
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/annotation/maxo") // /annotation/<type>/<action>
+@RequestMapping(value = "${api.version}/annotation/maxo") // /annotation/<type>/<action>
 public class MaxoController {
 
     private AnnotationService annotationService;

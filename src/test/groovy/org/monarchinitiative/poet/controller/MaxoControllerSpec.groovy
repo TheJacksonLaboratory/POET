@@ -40,7 +40,7 @@ class MaxoControllerSpec extends Specification {
 
 
         expect: "an annotation state"
-        mvc.perform(MockMvcRequestBuilders.get("/annotation/maxo/${inputDiseaseId}/${inputPublicationId}")).andExpect((ResultMatcher) expectedResponse);
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/annotation/maxo/${inputDiseaseId}/${inputPublicationId}")).andExpect((ResultMatcher) expectedResponse);
 
         where:
         inputDiseaseId | inputPublicationId | inputSort | expectedResponse                               | desc
@@ -56,7 +56,7 @@ class MaxoControllerSpec extends Specification {
 
         expect: "an annotation state"
         mvc.perform(
-                MockMvcRequestBuilders.post("/annotation/maxo/", inputBody)
+                MockMvcRequestBuilders.post("/api/v1/annotation/maxo/", inputBody)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new JsonBuilder(inputBody).toPrettyString())
         ).andExpect((ResultMatcher) expectedResponse)

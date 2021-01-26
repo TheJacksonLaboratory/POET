@@ -23,7 +23,7 @@ import java.util.List;
  */
 @CrossOrigin
 @RestController
-@RequestMapping(value = "entity/publication")
+@RequestMapping(value = "${api.version}/entity/publication")
 public class PublicationController {
     private EntityService entityService;
 

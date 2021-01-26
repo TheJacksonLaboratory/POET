@@ -38,7 +38,7 @@ class PublicationControllerSpec extends Specification {
 
 
         expect: "an annotation state"
-        mvc.perform(MockMvcRequestBuilders.get("/entity/publication/${inputPublicationId}"))
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/entity/publication/${inputPublicationId}"))
                 .andExpect((ResultMatcher) expectedResponse)
 
         where:
