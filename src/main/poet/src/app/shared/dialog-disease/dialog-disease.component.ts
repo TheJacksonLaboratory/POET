@@ -64,7 +64,7 @@ export class DialogDiseaseComponent implements OnInit {
       this.selectedDisease = {
         description: diseaseData.description,
         diseaseId: disease.id,
-        diseaseName: disease.match
+        diseaseName: disease.label.length > 0 ? disease.label[0] : disease.match
       };
     });
   }

@@ -20,7 +20,6 @@ public class User {
     private String authId;
     private String email;
     @JsonView(UserActivityViews.Simple.class)
-    @Column(unique = true)
     private String orcId;
 
     @Enumerated(EnumType.ORDINAL)
