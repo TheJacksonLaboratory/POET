@@ -20,14 +20,6 @@ export const environment = {
       POET_BASE_URL + '/statistics/user-activity/',
       POET_BASE_URL + '/statistics/contributions/',
       {
-        uri: POET_BASE_URL + '/publication',
-        httpMethod: HttpMethod.Post,
-      },
-      {
-        uri: POET_BASE_URL + '/publication',
-        httpMethod: HttpMethod.Post,
-      },
-      {
         uri: POET_BASE_URL + '/annotation/maxo/*',
         httpMethod: HttpMethod.Post,
       },
@@ -42,6 +34,10 @@ export const environment = {
       {
         uri: POET_BASE_URL + '/entity/disease/',
         httpMethod: HttpMethod.Put,
+      },
+      {
+        uri: POET_BASE_URL + '/entity/publication/',
+        httpMethod: HttpMethod.Post,
       },
     ]
   },
