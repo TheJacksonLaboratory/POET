@@ -36,7 +36,7 @@ export interface MaxoAnnotation extends Annotation {
 }
 
 export interface UserActivityResponse {
-  annotation: object;
+  annotation: any;
   curationAction: string;
   localDateTime: string;
   user: object;

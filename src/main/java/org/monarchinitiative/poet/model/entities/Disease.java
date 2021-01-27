@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.views.AnnotationViews;
 import org.monarchinitiative.poet.views.DiseaseViews;
 import org.monarchinitiative.poet.views.PublicationViews;
+import org.monarchinitiative.poet.views.UserActivityViews;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,11 +17,11 @@ public class Disease {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class})
+    @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class, UserActivityViews.Simple.class})
     @Column(nullable = false)
     private String diseaseId;
 
-    @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class})
+    @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class, UserActivityViews.Simple.class})
     private String diseaseName;
 
     @OneToMany(mappedBy = "disease")

@@ -128,6 +128,7 @@
     <div class="right-actions">
       <button mat-stroked-button *ngIf="!formControlGroup.disabled">Save Draft</button>
       <button mat-stroked-button (click)="resetMaxoForm()" *ngIf="!formControlGroup.disabled">Clear</button>
+      <button mat-stroked-button (click)="closeForm()" *ngIf="formControlGroup.disabled">Close</button>
     </div>
   </mat-card-actions>
 </mat-card>

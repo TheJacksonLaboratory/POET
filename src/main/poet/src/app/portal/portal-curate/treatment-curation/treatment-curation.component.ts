@@ -21,6 +21,7 @@ export class TreatmentCurationComponent implements OnInit {
   @Input('selectedSource') annotationSource: AnnotationSource;
   @Input('role') userRole: string;
   @Output('onAnnotationSuccess') onAnnotationSuccess: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output('handleForm') handleFormEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   selectedAnnotation: any;
   updating: boolean;
@@ -203,5 +204,9 @@ export class TreatmentCurationComponent implements OnInit {
     if (index >= 0) {
       this.selectedPublications.splice(index, 1);
     }
+  }
+  
+  closeForm() {
+    this.handleFormEmitter.emit(false);
   }
 }

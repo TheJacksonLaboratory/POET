@@ -3,9 +3,12 @@ import { AnnotationSource, Disease, MaxoAnnotation, Publication } from "../../..
 import { StateService } from "../../../shared/services/state/state.service";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { Observable } from "rxjs";
+import { tap } from "rxjs/operators";
 import { transition, trigger, useAnimation } from "@angular/animations";
 import { bounceInLeft } from "ng-animate";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { Route } from '@angular/compiler/src/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-annotation-card',
@@ -28,8 +31,10 @@ export class AnnotationCardComponent implements OnInit {
   annotationMode: any;
   triggerBounceIn: any;
   activeIndex: any;
+  annotationStatuses: any[] = [];
+  selectedStatuses: any[] = [];
 
-  constructor(public stateService: StateService, public curationService: CurationService, private _snackBar: MatSnackBar) {
+  constructor(public stateService: StateService, public curationService: CurationService, private _snackBar: MatSnackBar, private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -41,7 +46,7 @@ export class AnnotationCardComponent implements OnInit {
     this.stateService.selectedDisease.subscribe((disease: Disease) => {
       if (this.ontology === 'maxo' && disease != null) {
         this.disease = disease;
-        this.maxoAnnotations = this.curationService.getMaxoAnnotations(this.disease, null, "")
+        this.updateAnnotations({disease: disease, publication: null});
       }
     });
 
@@ -77,7 +82,20 @@ export class AnnotationCardComponent implements OnInit {
         this.activeIndex = -1;
         this.annotationAction(null, 'create', -1)
       }
-      this.maxoAnnotations = this.curationService.getMaxoAnnotations(this.disease, this.publication, "");
+      this.maxoAnnotations = this.curationService.getMaxoAnnotations(this.disease, this.publication, "").pipe(
+        tap((annotations => {
+        annotations.forEach((annotation) => {
+          this.annotationStatuses.push(annotation.status);
+        });
+        this.annotationStatuses = [...new Set(this.annotationStatuses)].sort();
+        this.selectedStatuses = this.annotationStatuses;
+        const id = parseInt(this.route.snapshot.queryParams.id);
+        if(id){
+          const index = annotations.map((item) => item["id"]).indexOf(id);
+          const annotation = annotations[index];
+          this.annotationAction(annotation,  'view', index)
+        }
+      })));
     }
   }
 

@@ -6,6 +6,14 @@
     text-align: center;
   }
 
+  .mat-card-subtitle {
+    margin-bottom: 0;
+  }
+
+  .mat-checkbox {
+    margin-left: 1rem;
+  }
+
   & .mat-list-item {
     margin: 0 0 .5rem 0;
   }
@@ -52,6 +60,6 @@
 
   & .top-actions {
     text-align: right;
-    margin-right: 5rem;
+    margin-right: 1rem;
   }
 }

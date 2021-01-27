@@ -17,11 +17,11 @@ public class Annotation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(AnnotationViews.Simple.class)
+    @JsonView({AnnotationViews.Simple.class, UserActivityViews.Simple.class})
     private long id;
 
     @ManyToOne
-    @JsonView(AnnotationViews.Simple.class)
+    @JsonView({AnnotationViews.Simple.class, UserActivityViews.Simple.class})
     private AnnotationSource annotationSource;
 
     @Enumerated(EnumType.STRING)

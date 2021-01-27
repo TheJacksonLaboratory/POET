@@ -14,15 +14,24 @@
     <span *ngIf="ontology == 'hpo'">A list of curated phenotypes of this disease</span><br><br>
   </mat-card-subtitle>
   <mat-card-content>
+    <mat-form-field appearance="fill" *ngIf="(maxoAnnotations | async)?.length > 0">
+      <mat-label>Annotation Status</mat-label>
+      <mat-select multiple [(ngModel)]="selectedStatuses">
+        <mat-option *ngFor="let status of annotationStatuses" [value]="status">{{status}}</mat-option>
+      </mat-select>
+    </mat-form-field>
     <mat-list #maxo>
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': activeIndex == i}"
-                     *ngFor="let maxo of maxoAnnotations | async; let i = index">
+                     *ngFor="let maxo of maxoAnnotations | async | filter: selectedStatuses; let i = index">
         <mat-icon matListIcon>health_and_safety</mat-icon>
         <div class="selection-text">
-        <span class="selection-id">
-          {{maxo.maxoName}} &nbsp; {{maxo.relation}} &nbsp; {{maxo.hpoName}}
-        </span>
+          <span matLine class="selection-id">
+            {{maxo.maxoName}} &nbsp; {{maxo.relation}}
+          </span>
+          <span matLine class="selection-id">
+            {{maxo.hpoName}}
+          </span>
         </div>
         <div class="spacer"></div>
         <button mat-icon-button aria-label="Edit MAxO annotation" *ngIf="isUser()" [disabled]="!isUser()"
