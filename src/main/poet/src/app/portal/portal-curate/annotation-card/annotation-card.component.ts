@@ -7,11 +7,10 @@ import { tap } from "rxjs/operators";
 import { transition, trigger, useAnimation } from "@angular/animations";
 import { bounceInLeft } from "ng-animate";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { Route } from '@angular/compiler/src/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-annotation-card',
+  selector: 'poet-annotation-card',
   templateUrl: './annotation-card.component.html',
   styleUrls: ['./annotation-card.component.scss'],
   animations: [
@@ -82,20 +81,22 @@ export class AnnotationCardComponent implements OnInit {
         this.activeIndex = -1;
         this.annotationAction(null, 'create', -1)
       }
-      this.maxoAnnotations = this.curationService.getMaxoAnnotations(this.disease, this.publication, "").pipe(
-        tap((annotations => {
-        annotations.forEach((annotation) => {
-          this.annotationStatuses.push(annotation.status);
-        });
-        this.annotationStatuses = [...new Set(this.annotationStatuses)].sort();
-        this.selectedStatuses = this.annotationStatuses;
-        const id = parseInt(this.route.snapshot.queryParams.id);
-        if(id){
-          const index = annotations.map((item) => item["id"]).indexOf(id);
-          const annotation = annotations[index];
-          this.annotationAction(annotation,  'view', index)
-        }
-      })));
+      if(this.ontology === 'maxo'){
+        this.maxoAnnotations = this.curationService.getMaxoAnnotations(this.disease, this.publication, "").pipe(
+          tap((annotations => {
+          annotations.forEach((annotation) => {
+            this.annotationStatuses.push(annotation.status);
+          });
+          this.annotationStatuses = [...new Set(this.annotationStatuses)].sort();
+          this.selectedStatuses = this.annotationStatuses;
+          const id = parseInt(this.route.snapshot.queryParams.id);
+          if(id){
+            const index = annotations.map((item) => item["id"]).indexOf(id);
+            const annotation = annotations[index];
+            this.annotationAction(annotation,  'view', index)
+          }
+        })));
+      }
     }
   }
 

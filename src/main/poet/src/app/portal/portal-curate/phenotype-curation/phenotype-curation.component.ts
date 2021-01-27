@@ -9,14 +9,12 @@ import { StateService } from "../../../shared/services/state/state.service";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogSourceComponent } from "../dialog-source/dialog-source.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
-
 @Component({
-  selector: 'poet-treatment-curation',
-  templateUrl: './treatment-curation.component.html',
-  styleUrls: ['./treatment-curation.component.scss']
+  selector: 'poet-phenotype-curation',
+  templateUrl: './phenotype-curation.component.html',
+  styleUrls: ['./phenotype-curation.component.scss']
 })
-export class TreatmentCurationComponent implements OnInit {
-
+export class PhenotypeCurationComponent implements OnInit {
 
   @Input('selectedSource') annotationSource: AnnotationSource;
   @Input('role') userRole: string;
@@ -209,4 +207,5 @@ export class TreatmentCurationComponent implements OnInit {
   closeForm() {
     this.handleFormEmitter.emit(false);
   }
+
 }

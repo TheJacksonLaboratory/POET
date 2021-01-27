@@ -33,7 +33,7 @@ export class PortalCurateComponent implements OnInit {
   sourceAndOntologySelected: boolean = false;
   showForm: boolean = false;
   annotationItems = [
-    {value: 'hpo', display: 'Phenotypes', icon: 'assignment', disabled: true},
+    {value: 'hpo', display: 'Phenotypes', icon: 'assignment', disabled: false},
     {value: 'maxo', display: 'Treatments', icon: 'healing', disabled: false}
   ];
   userRole: string = 'GUEST';
