@@ -1,0 +1,46 @@
+.portal-curate {
+
+  & .spacer {
+    flex: 1 1 auto;
+  }
+
+  & .search-wrapper {
+    width: 20%;
+    padding-top: 2rem;
+    font-size: 1rem;
+  }
+
+  & .display-name {
+    font-size: 1.5rem;
+  }
+
+  & .display-id {
+    font-size: .8rem;
+  }
+
+  .mat-toolbar {
+    background: #2c3e4c;
+  }
+
+  & .mat-tab-label-active {
+    opacity: 1;
+    background-color: #393939;
+    color: white;
+  }
+
+  & .tab-toolbar {
+    align-items: flex-end;
+  }
+
+  & .nav-tab-container {
+    background-color: #2c3e4c;
+
+    & .mat-tab-nav-bar, .mat-tab-header {
+      border-bottom: unset !important;
+    }
+  }
+
+  & .curation-container {
+    margin: 1rem 0 0 0;
+  }
+}

@@ -55,13 +55,14 @@ class ServiceTestConfig {
 
     @Bean
     EntityService entityService(){
-        EntityService entityService = new EntityService(diseaseStub(), publicationStub())
+        EntityService entityService = new EntityService(diseaseStub(), publicationStub(), annotationSourceStub(),
+                userStub())
         return entityService
     }
 
     @Bean
     SearchService searchService(){
-        SearchService searchService = new SearchService(publicationStub(), diseaseStub())
+        SearchService searchService = new SearchService(diseaseStub())
         return searchService
     }
 

@@ -20,7 +20,6 @@ public class User {
     private String authId;
     private String email;
     @JsonView(UserActivityViews.Simple.class)
-    @Column(unique = true)
     private String orcId;
 
     @Enumerated(EnumType.ORDINAL)
@@ -54,6 +53,15 @@ public class User {
 
     public String getOrcId() {
         return orcId;
+    }
+
+
+    public CurationRole getCurationRole() {
+        return curationRole;
+    }
+
+    public void setCurationRole(CurationRole curationRole) {
+        this.curationRole = curationRole;
     }
 
     @Override

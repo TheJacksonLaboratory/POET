@@ -30,3 +30,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Auth ###
+src/main/poet/auth.config.json
+src/main/resources/webapp/*
+src/main/resources/static/*

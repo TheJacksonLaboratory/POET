@@ -45,11 +45,11 @@ class AnnotationServiceSpec extends Specification {
 
     void "test get maxo annotations #desc"() {
         given:
-        diseaseStub.findDiseaseByDiseaseId(_) >> diseaseResponse
-        maxoAnnotationStub.findDistinctByAnnotationSource(_) >> maxoAnnotationResponse
-        maxoAnnotationStub.findAllByAnnotationSourceDisease(_) >> maxoAnnotationResponse
-        publicationStub.findByPublicationId(_) >> publicationResponse
-        annotationStub.findByPublicationAndDisease(_, _) >> annotationSourceResponse
+        diseaseStub.findDiseaseByDiseaseId(_ as String) >> diseaseResponse
+        maxoAnnotationStub.findDistinctByAnnotationSourceAndStatusNot(_, _) >> maxoAnnotationResponse
+        maxoAnnotationStub.findAllByAnnotationSourceDiseaseAndStatusNot(_, _) >> maxoAnnotationResponse
+        publicationStub.findByPublicationId(_ as String) >> publicationResponse
+        annotationStub.findByPublicationAndDisease(_ as Publication, _ as Disease) >> annotationSourceResponse
         def result = annotationService.getMaxoAnnotation(inputParameters[0], inputParameters[1], inputParameters[2])
         expect:
         result == expectedResponse

@@ -22,6 +22,9 @@ public class UserActivity {
     @OneToOne
     private Annotation annotation;
 
+    @OneToOne
+    private Annotation oldAnnotation;
+
     @JsonView(UserActivityViews.Simple.class)
     @Column(name = "datetime", columnDefinition = "TIMESTAMP")
     private LocalDateTime localDateTime;
@@ -33,9 +36,10 @@ public class UserActivity {
     protected UserActivity() {
     }
 
-    public UserActivity(User user, CurationAction curationAction, Annotation annotation) {
+    public UserActivity(User user, CurationAction curationAction, Annotation annotation, Annotation oldAnnotation) {
         this.user = user;
         this.annotation = annotation;
+        this.oldAnnotation = oldAnnotation;
         this.curationAction = curationAction;
         this.localDateTime = LocalDateTime.now();
     }

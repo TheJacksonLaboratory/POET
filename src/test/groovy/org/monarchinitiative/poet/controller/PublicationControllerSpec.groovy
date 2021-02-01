@@ -38,7 +38,7 @@ class PublicationControllerSpec extends Specification {
 
 
         expect: "an annotation state"
-        mvc.perform(MockMvcRequestBuilders.get("/entity/publication/${inputPublicationId}/"))
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/entity/publication/${inputPublicationId}"))
                 .andExpect((ResultMatcher) expectedResponse)
 
         where:
@@ -46,8 +46,8 @@ class PublicationControllerSpec extends Specification {
         publicationGenerator("PMID:1337998") | "PMID:1337998"     | MockMvcResultMatchers.status().isOk()       | "test get publication by id with pub"
         publicationGenerator("PMID:9999990") | "PMID:9999990"     | MockMvcResultMatchers.status().isOk()       | "test get disease by id find nothing"
         publicationGenerator("PMID:9999990") | "PMID:9999990"     | MockMvcResultMatchers.status().isOk()       | "test get disease by id find nothing"
-        null                                 | ""                 | MockMvcResultMatchers.status().isNotFound() | "test get disease by nothing should fail"
-        ""                                   | ""                 | MockMvcResultMatchers.status().isNotFound() | "test get disease by nothing should fail"
+        null                                 | ""                 | MockMvcResultMatchers.status().isMethodNotAllowed() | "test get disease by nothing should fail"
+        ""                                   | ""                 | MockMvcResultMatchers.status().isMethodNotAllowed() | "test get disease by nothing should fail"
     }
 
     private static Publication publicationGenerator(publicationId) {

@@ -4,10 +4,12 @@ plugins {
 	id 'java'
 	id 'war'
 	id 'groovy'
+	id "com.github.node-gradle.node" version "2.2.4"
+	id "com.dorongold.task-tree" version "1.5"
 }
 
 group = 'org.monarchinitiative.poet'
-version = '0.0.1-SNAPSHOT'
+version = '0.5.0-SNAPSHOT'
 sourceCompatibility = '8'
 
 repositories {
@@ -31,6 +33,49 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	testCompile group: 'org.spockframework', name: 'spock-core', version: '1.3-groovy-2.4'
-	testCompile group: 'org.spockframework', name: 'spock-spring', version: '1.3-groovy-2.4'
+	testImplementation group: 'org.spockframework', name: 'spock-core', version: '1.3-groovy-2.4'
+	testImplementation group: 'org.spockframework', name: 'spock-spring', version: '1.3-groovy-2.4'
+}
+
+def profile = 'development'
+
+node {
+	version = '12.0.0'
+	npmVersion = '6.9.0'
+	download = true
+	nodeModulesDir = file("src/main/poet")
+
+}
+
+task buildClientProd(type: NpmTask, dependsOn: 'npmInstall') {
+	group = 'build'
+	description = 'Compile client side assets for production'
+	args = ['run', 'buildProd']
+}
+
+task clientTest(type: NpmTask, dependsOn: 'npmInstall') {
+	group = 'verification'
+	description = 'Executes client side unit tests'
+	args = ['run', 'test']
+}
+
+task shouldClientTest(){
+	// If warName uinclude client test
+	if(System.getProperty("clientTest")){
+		dependsOn(clientTest)
+	}
+}
+
+bootWar.dependsOn {
+	buildClientProd
+}
+
+test.dependsOn(shouldClientTest)
+
+clean {
+	delete fileTree(dir: "src/main/resources/static")
+}
+
+bootRun {
+	systemProperty "spring.profiles.active", profile
 }

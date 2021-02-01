@@ -1,0 +1,34 @@
+.mat-dialog-title {
+  text-align: center;
+}
+.mat-dialog-content {
+  max-height: unset;
+  min-height: 150px;
+}
+
+.mat-dialog-actions {
+  margin-bottom: 0;
+}
+
+.dialog-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-spacer {
+  flex-grow: 1;
+}
+.dialog-main-content{
+  margin: 0 auto;
+}
+
+.disease-autocomplete {
+  width: 100%;
+}
+
+.disease-information {
+  border: solid 1px gray;
+  border-radius: 0.25rem;
+  padding: 1rem;
+}

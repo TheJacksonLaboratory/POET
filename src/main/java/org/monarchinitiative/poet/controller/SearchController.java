@@ -17,7 +17,7 @@ import java.util.List;
  * @since 0.5.0
  */
 @RestController
-@RequestMapping(value = "/search")
+@RequestMapping(value = "${api.version}/search")
 public class SearchController {
 
     private final SearchService searchService;
@@ -35,6 +35,6 @@ public class SearchController {
      */
     @GetMapping(value = "", headers = "Accept=application/json")
     public List<SearchResponse> searchPublicationsAndDiseases(@RequestParam String query) {
-        return searchService.searchPublicationAndDisease(query.trim());
+        return searchService.searchDisease(query.trim());
     }
 }

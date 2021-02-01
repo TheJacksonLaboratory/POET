@@ -34,49 +34,50 @@ class StatisticsServiceSpec extends Specification {
         userActivityStub.findAll() >> repositoryResponse
         userActivityStub.findUserActivityByUserAuthId(_) >> repositoryResponse
         authentication.getName() >> "fakename"
-        def result = statisticsService.getUserActivity(inputWho, inputAuthentication)
+        def result = statisticsService.getUserActivity(all, inputAuthentication)
 
         expect:
         result.size() == expectedResultSize
 
         where:
-        inputWho  | inputAuthentication | repositoryResponse        | expectedResultSize | desc
-        "all"     | authentication      | getFakeUserActivity()     | 3                  | "all user activity no activity"
-        "all"     | authentication      | getEmptyList()            | 0                  | "all user activity and has nothing"
-        "current" | authentication      | getSpecificUserActivity() | 1                  | "current user and has one"
-        "bleh"    | authentication      | getEmptyList()            | 0                  | "not valid (even though impossible) and has none"
-        ""        | authentication      | getEmptyList()            | 0                  | "not valid (even though impossible) and has none"
+        all   | inputAuthentication | repositoryResponse        | expectedResultSize | desc
+        true  | authentication      | getFakeUserActivity()     | 3                  | "all user activity no activity"
+        true  | authentication      | getEmptyList()            | 0                  | "all user activity and has nothing"
+        false | authentication      | getSpecificUserActivity() | 1                  | "current user and has one"
+        false | authentication      | getEmptyList()            | 0                  | "not valid (even though impossible) and has none"
+        false | authentication      | getEmptyList()            | 0                  | "not valid (even though impossible) and has none"
 
     }
 
-    void "test that user contribution #desc"(){
+    void "test that user contribution #desc"() {
         given:
-        userActivityStub.countAllByAnnotation_AnnotationTypeAndUserAuthId(_,_) >> repositoryResponse
+        userActivityStub.countAllByAnnotation_AnnotationTypeAndUserAuthId(_, _) >> repositoryResponse
         def result = statisticsService.summarizeUserContributions(inputAuthentication)
         expect:
         result.getMaxo() == repositoryResponse
         result.getHpo() == 0
         result.getPhenopackets() == 0;
         where:
-        inputAuthentication |   repositoryResponse
-        authentication      |   20
-        authentication      |   0
-        authentication      |   1092
-        authentication      |   1337
+        inputAuthentication | repositoryResponse
+        authentication      | 20
+        authentication      | 0
+        authentication      | 1092
+        authentication      | 1337
     }
 
     def getFakeUserActivity() {
         return [new UserActivity(
                 new User(),
                 CurationAction.CREATE,
+                new Annotation(),
                 new Annotation()
         ), new UserActivity(
                 new User(),
                 CurationAction.DELETE,
-                new Annotation()), new UserActivity(
+                new Annotation(), new Annotation()), new UserActivity(
                 new User(),
                 CurationAction.UPDATE,
-                new Annotation())
+                new Annotation(), new Annotation())
         ]
     }
 
@@ -84,7 +85,7 @@ class StatisticsServiceSpec extends Specification {
         return [new UserActivity(
                 new User(),
                 CurationAction.CREATE,
-                new Annotation())
+                new Annotation(), new Annotation())
         ]
     }
 

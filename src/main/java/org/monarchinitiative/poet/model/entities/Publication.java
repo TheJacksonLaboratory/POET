@@ -2,6 +2,7 @@ package org.monarchinitiative.poet.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.entities.AnnotationSource;
+import org.monarchinitiative.poet.views.AnnotationViews;
 import org.monarchinitiative.poet.views.DiseaseViews;
 import org.monarchinitiative.poet.views.PublicationViews;
 
@@ -22,10 +23,10 @@ public class Publication {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @JsonView(PublicationViews.Simple.class)
+    @JsonView({PublicationViews.Simple.class, AnnotationViews.Simple.class})
     @Column(unique = true) private String publicationId;
 
-    @JsonView(PublicationViews.Simple.class)
+    @JsonView({PublicationViews.Simple.class, AnnotationViews.Simple.class})
     private String publicationName;
 
     @OneToMany(mappedBy = "publication")
@@ -47,6 +48,14 @@ public class Publication {
         this.publicationName = publicationName;
         this.date = date;
         this.firstAuthor = firstAuthor;
+    }
+
+    public Publication(Publication publication){
+        this.publicationId = publication.getPublicationId();
+        this.publicationName = publication.getPublicationName();
+        this.date = publication.getDate();
+        this.firstAuthor = publication.getFirstAuthor();
+
     }
 
     public Publication(String publicationId, String publicationName, String date, String firstAuthor, List<AnnotationSource> annotationSources){

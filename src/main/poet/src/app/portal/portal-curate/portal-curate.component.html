@@ -1,0 +1,32 @@
+<div class="portal-curate">
+  <mat-toolbar class="top-banner" *ngIf="selectedDisease && selectedDisease.diseaseId != null">
+    <mat-toolbar-row>
+      <h2 class="display-name">{{selectedDisease.diseaseName}} &nbsp; <span
+        class="display-id">{{selectedDisease.diseaseId}}</span></h2>
+      <span class="spacer"></span>
+      <div class="search-wrapper">
+        <app-search [role]="userRole"></app-search>
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <div class="nav-tab-container" *ngIf="selectedDisease && selectedDisease.diseaseId != null">
+    <nav mat-tab-nav-bar color="primary">
+      <a *ngFor="let annotation of annotationItems"
+         (click)="changeOntology(annotation.value)"
+         mat-tab-link
+         [active]="this.selectedOntology == annotation.value" [disabled]="annotation.disabled">
+        <mat-icon matListIcon> {{ annotation.icon }} </mat-icon>
+        &nbsp;{{annotation.display}}
+      </a>
+    </nav>
+  </div>
+  <div class="curation-container" [fxLayout]="fxLayout" [fxLayoutAlign]="fxLayoutAlign" [@fadeIn]="selectedOntology">
+    <app-annotation-card [fxFlex]="fxFlexAnnotations" [fxFlexOffset]="fxFlexAnnotationOffset" *ngIf="selectedDisease"
+                         (openForm)="handleForm($event)" [role]="userRole"></app-annotation-card>
+    <app-treatment-curation [fxFlex]="fxFlexForm" [fxFlexOffset]="fxFlexFormOffset" [role]="userRole" (handleForm)="handleForm($event)"
+                            *ngIf="shouldShowMaxoCard()">
+    </app-treatment-curation>
+    <app-hpo-curation [fxFlex]="fxFlexForm" [fxFlexOffset]="fxFlexFormOffset" *ngIf="shouldShowHpoCard()">
+    </app-hpo-curation>
+  </div>
+</div>

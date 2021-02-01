@@ -1,63 +1,27 @@
 spring:
-  profiles:
-    default: development
+  datasource:
+    url: jdbc:h2:file:./usr/local/svc-maxo/database/poet
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: https://dev-poet.us.auth0.com/
-server:
-  servlet:
-    context-path: /api/v1/
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
 auth0:
   audience: poet-api-audience
----
-spring:
-  profiles: test
-  datasource:
-    url: jdbc:h2:mem:poet
-  h2:
-    console:
-      enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: create
-
-auth0:
-  audience:
-    nickname_claim: https://poet.jax.org/nickname
-    email_claim: https://poet.jax.org/email
-    role_claim: https://poet.jax.org/role
----
-spring:
-  profiles: development
-  datasource:
-    url: jdbc:h2:file:~/Develop/poet/poet
-  h2:
-    console:
-      enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: create
-auth0:
-  audience:
-    nickname_claim: https://poet.jax.org/nickname
-    email_claim: https://poet.jax.org/email
-    role_claim: https://poet.jax.org/role
----
-spring:
-  profiles: production
-  datasource:
-    url: jdbc:h2:file:~/Develop/poet/poet
-  h2:
-    console:
-      enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: create
-auth0:
-  audience:
-    nickname_claim: https://poet.jax.org/nickname
-    email_claim: https://poet.jax.org/email
-    role_claim: https://poet.jax.org/role
+  nickname: https://poet.jax.org/nickname
+  email: https://poet.jax.org/email
+  role: https://poet.jax.org/role
+api:
+  version: /api/v1
+  client: /,/portal/**
