@@ -33,8 +33,8 @@ export class PortalCurateComponent implements OnInit {
   sourceAndOntologySelected: boolean = false;
   showForm: boolean = false;
   annotationItems = [
-    {value: 'hpo', display: 'Phenotypes', icon: 'assignment', disabled: true},
-    {value: 'maxo', display: 'Treatments', icon: 'healing', disabled: false}
+    {value: 'hpo', display: 'Phenotypes', icon: 'assignment', disabled: true, count: 0},
+    {value: 'maxo', display: 'Treatments', icon: 'healing', disabled: false, count: 0}
   ];
   userRole: string = 'GUEST';
 
@@ -54,6 +54,7 @@ export class PortalCurateComponent implements OnInit {
           ).subscribe((disease) => {
             this.selectedDisease = disease
             this.stateService.setSelectedDisease(disease);
+            this.getAnnotationCount();
           }, (error) => {
             this.router.navigate(['/portal/dashboard'], {state: {error: true, message: error.text}});
           });
@@ -67,7 +68,13 @@ export class PortalCurateComponent implements OnInit {
 
     this.authService.user$.subscribe((user) => {
       this.userRole = user[environment.AUDIENCE_ROLE];
-    })
+    });
+
+    this.stateService.triggerReloadAnnotationCounts.subscribe((reload) => {
+      if(reload){
+        this.getAnnotationCount();
+      }
+    });
   }
 
   /**
@@ -106,6 +113,18 @@ export class PortalCurateComponent implements OnInit {
    */
   doingWork(working: boolean) {
     this.showLoader = working;
+  }
+
+  getAnnotationCount(){
+      this.curationService.getAnnotationCounts(this.selectedDisease.diseaseId).subscribe((counts) => {
+        this.annotationItems.forEach((item) => {
+          if(item.value == 'hpo'){
+            item.count = counts.phenotypeCount;
+          } else if(item.value == 'maxo') {
+           item.count = counts.treatmentCount;
+          }
+        });
+      });
   }
 
   shouldShowMaxoCard() {

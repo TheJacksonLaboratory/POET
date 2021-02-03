@@ -20,7 +20,6 @@ export class TreatmentCurationComponent implements OnInit {
 
   @Input('selectedSource') annotationSource: AnnotationSource;
   @Input('role') userRole: string;
-  @Output('onAnnotationSuccess') onAnnotationSuccess: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output('handleForm') handleFormEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   selectedAnnotation: any;
@@ -37,7 +36,8 @@ export class TreatmentCurationComponent implements OnInit {
     hpoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     evidenceFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     relationFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    extensionFormControl: new FormControl({value: '', disabled: false}),
+    extensionIdFormControl: new FormControl({value: '', disabled: false}, Validators.pattern("^CHEBI:[0-9]{5}$")),
+    extensionLabelFormControl: new FormControl({value: '', disabled: false}),
     commentFormControl: new FormControl({value: '', disabled: false}),
   });
 
@@ -118,7 +118,8 @@ export class TreatmentCurationComponent implements OnInit {
       evidence: this.formControlGroup.get('evidenceFormControl').value,
       relation: this.formControlGroup.get('relationFormControl').value,
       comment: this.formControlGroup.get('commentFormControl').value,
-      extension: this.formControlGroup.get('extensionFormControl').value
+      extensionId: this.formControlGroup.get('extensionIdFormControl').value,
+      extensionLabel: this.formControlGroup.get('extensionLabelFormControl').value
     }
     this.savingAnnotation = true;
     if (this.updating) {
@@ -141,7 +142,8 @@ export class TreatmentCurationComponent implements OnInit {
     this.formControlGroup.get('hpoFormControl').setValue({id: annotation.hpoId, name: annotation.hpoName});
     this.formControlGroup.get('evidenceFormControl').setValue(annotation.evidenceType);
     this.formControlGroup.get('relationFormControl').setValue(annotation.relation);
-    this.formControlGroup.get('extensionFormControl').setValue(annotation.extension);
+    this.formControlGroup.get('extensionIdFormControl').setValue(annotation.extensionId);
+    this.formControlGroup.get('extensionLabelFormControl').setValue(annotation.extensionLabel);
     this.formControlGroup.get('commentFormControl').setValue(annotation.comment);
     this.stateService.setSelectedSource(annotation.annotationSource);
 
@@ -150,6 +152,7 @@ export class TreatmentCurationComponent implements OnInit {
   onSuccessfulMaxo(message: string) {
     this.savingAnnotation = false;
     this.stateService.triggerAnnotationReload(true);
+    this.stateService.triggerAnnotationCountsReload(true);
     this.resetMaxoForm();
     this._snackBar.open(message, 'Close', {
       duration: 3000,
@@ -205,8 +208,9 @@ export class TreatmentCurationComponent implements OnInit {
       this.selectedPublications.splice(index, 1);
     }
   }
-  
+
   closeForm() {
+    this.stateService.setSelectedTreatmentAnnotation(null);
     this.handleFormEmitter.emit(false);
   }
 }

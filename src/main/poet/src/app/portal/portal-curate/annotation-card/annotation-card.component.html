@@ -1,56 +1,64 @@
 <mat-card [@bounceInLeft]="triggerBounceIn" class="annotation-card">
-  <div class="top-actions">
-    <button mat-mini-fab color="primary" aria-label="Add Annotation" *ngIf="isUser()"
-            (click)="annotationAction(null, 'create', -1)">
-      <mat-icon>add</mat-icon>
-    </button>
-  </div>
   <mat-card-title>
     <span *ngIf="ontology == 'maxo'">Treatments</span>
     <span *ngIf="ontology == 'hpo'">Phenotypes</span>
+    <button class="add-annotation-btn-top" mat-mini-fab color="primary" aria-label="Add Annotation"
+            *ngIf="isUser() && (maxoAnnotations | async)?.length > 0"
+            (click)="annotationAction(null, 'create')">
+      <mat-icon>add</mat-icon>
+    </button>
   </mat-card-title>
   <mat-card-subtitle>
     <span *ngIf="ontology == 'maxo'">A list of curated medical actions for this disease.</span>
     <span *ngIf="ontology == 'hpo'">A list of curated phenotypes of this disease</span><br><br>
   </mat-card-subtitle>
   <mat-card-content>
-    <mat-form-field appearance="fill" *ngIf="(maxoAnnotations | async)?.length > 0">
+    <!--<mat-form-field appearance="fill" *ngIf="(maxoAnnotations | async)?.length > 0">
       <mat-label>Annotation Status</mat-label>
       <mat-select multiple [(ngModel)]="selectedStatuses">
         <mat-option *ngFor="let status of annotationStatuses" [value]="status">{{status}}</mat-option>
       </mat-select>
-    </mat-form-field>
+    </mat-form-field>-->
     <mat-list #maxo>
       <mat-list-item class="selection-wrapper mat-elevation-z3"
-                     [ngClass]="{'active': activeIndex == i}"
-                     *ngFor="let maxo of maxoAnnotations | async | filter: selectedStatuses; let i = index">
+                     [ngClass]="{'active': maxo == activeAnnotation}"
+                     *ngFor="let maxo of maxoAnnotations | async | slice: lowValue : highValue">
         <mat-icon matListIcon>health_and_safety</mat-icon>
         <div class="selection-text">
           <span matLine class="selection-id">
-            {{maxo.maxoName}} &nbsp; {{maxo.relation}}
+            <strong>{{maxo.maxoName}}</strong>
           </span>
           <span matLine class="selection-id">
-            {{maxo.hpoName}}
+            {{maxo.relation}} <strong>{{maxo.hpoName}}</strong>
           </span>
         </div>
         <div class="spacer"></div>
         <button mat-icon-button aria-label="Edit MAxO annotation" *ngIf="isUser()" [disabled]="!isUser()"
-                (click)="annotationAction(maxo, 'edit', i)">
+                (click)="annotationAction(maxo, 'edit')">
           <mat-icon>create</mat-icon>
         </button>
         <button mat-icon-button aria-label="Deleting MAxO annotation" *ngIf="isElevatedCurator() || isUser()"
                 [disabled]="!isUser()"
-                (click)="annotationAction(maxo, 'delete', i)">
+                (click)="annotationAction(maxo, 'delete')">
           <mat-icon>delete</mat-icon>
         </button>
         <button mat-icon-button aria-label="Adding MAxO annotation"
-                (click)="annotationAction(maxo, 'view', i)">
+                (click)="annotationAction(maxo, 'view')">
           <mat-icon>launch</mat-icon>
         </button>
       </mat-list-item>
     </mat-list>
+    <mat-paginator *ngIf="(maxoAnnotations | async)?.length > 0" [length]="(maxoAnnotations | async)?.length" pageSize=5
+                   (page)="getPaginatorData($event)"
+                   showFirstLastButtons="false">
+    </mat-paginator>
     <div class="annotation-missing" *ngIf="(maxoAnnotations | async)?.length == 0">
       No {{ontologyToDisplay()}} Found.
     </div>
+    <button class="add-annotation-btn" mat-mini-fab color="primary" aria-label="Add Annotation"
+            *ngIf="isUser() && (maxoAnnotations | async)?.length == 0"
+            (click)="annotationAction(null, 'create')">
+      <mat-icon>add</mat-icon>
+    </button>
   </mat-card-content>
 </mat-card>

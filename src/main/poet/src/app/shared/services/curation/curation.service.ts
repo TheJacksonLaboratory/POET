@@ -4,7 +4,7 @@ import { environment } from "../../../../environments/environment";
 import { Observable } from "rxjs";
 import {Disease, MaxoAnnotation, Publication, UserActivityResponse} from "../../models/models";
 import { StateService } from "../state/state.service";
-import {map} from "rxjs/operators";
+import { map, shareReplay } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +28,7 @@ export class CurationService {
    * @param id
    */
   getDisease(id: string): Observable<Disease>{
-    return this.httpClient.get<Disease>(environment.POET_API_DISEASE_ENTITY_URL + id);
+    return this.httpClient.get<any>(environment.POET_API_DISEASE_ENTITY_URL + id);
   }
 
   /***
@@ -86,7 +86,7 @@ export class CurationService {
     if(publication != null){
       return this.httpClient.get<any>(environment.POET_API_MAXO_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
     } else {
-      return this.httpClient.get<any>(environment.POET_API_MAXO_ANNOTATION + disease.diseaseId, {params: params});
+      return this.httpClient.get<any>(environment.POET_API_MAXO_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
     }
   }
 
@@ -166,5 +166,12 @@ export class CurationService {
           {"value": contributions["phenopackets"], "name": "PhenoPackets"}];
       })
     );
+  }
+
+  /**
+   * Get Annotation Counts by disease id or all if none
+   */
+  getAnnotationCounts(diseaseId: string): any{
+    return this.httpClient.get(environment.POET_API_STATISTICS_ANNOTATION_URL + diseaseId);
   }
 }

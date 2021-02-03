@@ -14,6 +14,10 @@
 
   .publication-list .mat-list-item {
     background-color: #2b3f4e;
+
+    .mat-list-icon {
+      order: 10;
+    }
   }
 
   .mat-card-content, .mat-card-actions {
@@ -27,6 +31,10 @@
 
     & .maxo-form {
       width: 100%;
+    }
+
+    & .chebi-id {
+      margin-right: .5rem;
     }
   }
 

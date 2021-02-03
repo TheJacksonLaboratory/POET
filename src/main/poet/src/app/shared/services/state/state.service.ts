@@ -15,6 +15,7 @@ export class StateService implements OnInit {
   private sourceAndOntologySelectedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private selectedDiseaseSubject: BehaviorSubject<Disease> = new BehaviorSubject<Disease>(null);
   private reloadAnnotationsSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private reloadAnnotationCountsSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private selectedTreatmentAnnotationSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private selectedPhenotypeAnnotationSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private selectedAnnotationModeSubject: BehaviorSubject<any> = new BehaviorSubject<any>("view");
@@ -27,6 +28,7 @@ export class StateService implements OnInit {
   selectedPhenotypeAnnotation: Observable<any> = this.selectedPhenotypeAnnotationSubject.asObservable();
   selectedAnnotationMode: Observable<any> = this.selectedAnnotationModeSubject.asObservable();
   triggerReloadAnnotations: Observable<any> = this.reloadAnnotationsSubject.asObservable();
+  triggerReloadAnnotationCounts: Observable<any> = this.reloadAnnotationCountsSubject.asObservable();
 
   constructor() {
 
@@ -64,6 +66,10 @@ export class StateService implements OnInit {
 
   triggerAnnotationReload(reload: boolean){
     this.reloadAnnotationsSubject.next(reload);
+  }
+
+  triggerAnnotationCountsReload(reload: boolean){
+    this.reloadAnnotationCountsSubject.next(reload);
   }
 
   setSelectedTreatmentAnnotation(annotation){
