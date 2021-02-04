@@ -1,19 +1,19 @@
 package org.monarchinitiative.poet.model
 
-import org.monarchinitiative.poet.model.requests.MaxoRequest
+import org.monarchinitiative.poet.model.requests.TreatmentRequest
 import org.springframework.test.context.ActiveProfiles
 import spock.lang.Specification
 import spock.lang.Unroll
 
 @Unroll
 @ActiveProfiles(value = "test")
-class MaxoRequestSpec extends Specification {
+class TreatmentRequestSpec extends Specification {
 
     def setup(){}
 
     void "test maxo request constructor"() {
         given:
-        def maxoRequest = new MaxoRequest(null,
+        def maxoRequest = new TreatmentRequest(null,
                 maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extension, publicationId, publicationName, diseaseId, diseaseName
         ) {}
 
@@ -25,7 +25,7 @@ class MaxoRequestSpec extends Specification {
         maxoRequest.getEvidence() == evidence
         maxoRequest.getComment() == comment
         maxoRequest.getRelation() == relation
-        maxoRequest.getExtension() == extension
+        maxoRequest.getExtensionId() == extension
         maxoRequest.getPublicationId() == publicationId
         maxoRequest.getPublicationName() == publicationName
         maxoRequest.getDiseaseName() == diseaseName

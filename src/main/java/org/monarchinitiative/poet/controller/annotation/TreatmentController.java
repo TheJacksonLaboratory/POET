@@ -2,7 +2,7 @@ package org.monarchinitiative.poet.controller.annotation;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.exceptions.AnnotationSourceException;
-import org.monarchinitiative.poet.model.requests.MaxoRequest;
+import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.model.entities.*;
 import org.monarchinitiative.poet.service.AnnotationService;
 import org.monarchinitiative.poet.views.AnnotationViews;
@@ -22,12 +22,12 @@ import java.util.List;
  */
 @CrossOrigin
 @RestController
-@RequestMapping(value = "${api.version}/annotation/maxo") // /annotation/<type>/<action>
-public class MaxoController {
+@RequestMapping(value = "${api.version}/annotation/treatments") // /annotation/<type>/<action>
+public class TreatmentController {
 
     private AnnotationService annotationService;
 
-    public MaxoController(AnnotationService annotationService) {
+    public TreatmentController(AnnotationService annotationService) {
         this.annotationService = annotationService;
     }
 
@@ -44,11 +44,11 @@ public class MaxoController {
      */
     @JsonView(AnnotationViews.Simple.class)
     @GetMapping(value = {"/{diseaseId}", "/{diseaseId}/{publicationId}"})
-    public List<MaxoAnnotation> getMaxoAnnotation(@PathVariable("diseaseId")  String diseaseId,
-                                                  @PathVariable(value = "publicationId", required = false) String publicationId,
-                                                  @RequestParam(defaultValue = "desc date") String sort){
+    public List<TreatmentAnnotation> getTreatmentAnnotation(@PathVariable("diseaseId")  String diseaseId,
+                                                            @PathVariable(value = "publicationId", required = false) String publicationId,
+                                                            @RequestParam(defaultValue = "desc date") String sort){
 
-        final List<MaxoAnnotation> annotations = this.annotationService.getMaxoAnnotation(diseaseId, publicationId, sort);
+        final List<TreatmentAnnotation> annotations = this.annotationService.getTreatmentAnnotations(diseaseId, publicationId, sort);
         if(annotations != null){
             return annotations;
         } else {
@@ -59,14 +59,14 @@ public class MaxoController {
     /**
      * The endpoint to create a maxo annotation
      *
-     * @param maxoRequest a json object in the form of {@link org.monarchinitiative.poet.model.requests.MaxoRequest}
+     * @param treatmentRequest a json object in the form of {@link TreatmentRequest}
      * @return a response entity either created or a server error if we failed to create the maxo annotation.
      * TODO: Add better error handling here.
      * @since 0.5.0
      */
     @PostMapping(value = "/", headers = "Accept=application/json")
-    public ResponseEntity<?> createMaxoAnnotation(@RequestBody MaxoRequest maxoRequest, Authentication authentication) {
-        if(annotationService.createMaxoAnnotation(maxoRequest, authentication)){
+    public ResponseEntity<?> createTreatmentAnnotation(@RequestBody TreatmentRequest treatmentRequest, Authentication authentication) {
+        if(annotationService.createTreatmentAnnotation(treatmentRequest, authentication)){
             return new ResponseEntity(HttpStatus.CREATED);
         } else {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -76,14 +76,14 @@ public class MaxoController {
     /**
      * The endpoint to update a maxo annotation
      *
-     * @param maxoRequest a json object in the form of {@link org.monarchinitiative.poet.model.requests.MaxoRequest}
+     * @param treatmentRequest a json object in the form of {@link TreatmentRequest}
      * @return a response entity either created or a server error if we failed to create the maxo annotation.
      * TODO: Add better error handling here.
      * @since 0.5.0
      */
     @PutMapping(value = "/", headers = "Accept=application/json")
-    public ResponseEntity<?> updateMaxoAnnotation(@RequestBody MaxoRequest maxoRequest, Authentication authentication) {
-        if(annotationService.updateMaxoAnnotation(maxoRequest, authentication)){
+    public ResponseEntity<?> updateTreatmentAnnotation(@RequestBody TreatmentRequest treatmentRequest, Authentication authentication) {
+        if(annotationService.updateTreatmentAnnotation(treatmentRequest, authentication)){
             return new ResponseEntity(HttpStatus.CREATED);
         } else {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -99,8 +99,8 @@ public class MaxoController {
      * @since 0.5.0
      */
     @DeleteMapping(value = "/{id}", headers = "Accept=application/json")
-    public ResponseEntity<?> deleteMaxoAnnotation(@PathVariable Long id, Authentication authentication) {
-        if(annotationService.deleteMaxoAnnotation(id, authentication)){
+    public ResponseEntity<?> deleteTreatmentAnnotation(@PathVariable Long id, Authentication authentication) {
+        if(annotationService.deleteTreatmentAnnotation(id, authentication)){
             return new ResponseEntity(HttpStatus.OK);
         } else {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);

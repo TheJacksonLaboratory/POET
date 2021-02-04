@@ -1,15 +1,13 @@
 package org.monarchinitiative.poet.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import org.monarchinitiative.poet.model.Contribution;
+import org.monarchinitiative.poet.model.response.AnnotationCount;
+import org.monarchinitiative.poet.model.response.Contribution;
 import org.monarchinitiative.poet.model.entities.UserActivity;
 import org.monarchinitiative.poet.service.StatisticsService;
 import org.monarchinitiative.poet.views.UserActivityViews;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -53,5 +51,10 @@ public class StatisticsController {
     @GetMapping(value = "/contributions", headers = "Accept=application/json")
     public Contribution getCurrentUserContributions(Authentication authentication){
         return statisticsService.summarizeUserContributions(authentication);
+    }
+
+    @GetMapping(value = "/annotation/{diseaseId}")
+    public AnnotationCount getAnnotationStatistics(@PathVariable(value = "diseaseId", required = false)  String diseaseId){
+        return this.statisticsService.summarizeAnnotations(diseaseId);
     }
 }

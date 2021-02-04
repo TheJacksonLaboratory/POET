@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
-public class RareDiseaseAnnotation {
+public class PhenotypeAnnotation {
     private @Id @GeneratedValue Long id;
     private String diseaseId;
     private String diseaseName;
@@ -20,12 +20,12 @@ public class RareDiseaseAnnotation {
     private String source;
     private String biocurator;
 
-    public RareDiseaseAnnotation(){
+    public PhenotypeAnnotation(){
     }
 
-    public RareDiseaseAnnotation(String diseaseId, String diseaseName, String hpoId, String hpoName, String ageOfOnset,
-                                 String evidence, String modifier, String description, String aspect, String source,
-                                 String biocurator) {
+    public PhenotypeAnnotation(String diseaseId, String diseaseName, String hpoId, String hpoName, String ageOfOnset,
+                               String evidence, String modifier, String description, String aspect, String source,
+                               String biocurator) {
         this.diseaseId = diseaseId;
         this.diseaseName = diseaseName;
         this.hpoId = hpoId;
@@ -139,7 +139,7 @@ public class RareDiseaseAnnotation {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        RareDiseaseAnnotation that = (RareDiseaseAnnotation) o;
+        PhenotypeAnnotation that = (PhenotypeAnnotation) o;
         return Objects.equals(id, that.id) && Objects.equals(diseaseId, that.diseaseId) && Objects.equals(diseaseName, that.diseaseName) && Objects.equals(hpoId, that.hpoId) && Objects.equals(hpoName, that.hpoName) && Objects.equals(ageOfOnset, that.ageOfOnset) && Objects.equals(evidence, that.evidence) && Objects.equals(modifier, that.modifier) && Objects.equals(description, that.description) && Objects.equals(aspect, that.aspect) && Objects.equals(source, that.source) && Objects.equals(biocurator, that.biocurator);
     }
 

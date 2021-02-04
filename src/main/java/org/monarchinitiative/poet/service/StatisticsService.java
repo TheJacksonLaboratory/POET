@@ -1,13 +1,17 @@
 package org.monarchinitiative.poet.service;
 
-import org.monarchinitiative.poet.model.Contribution;
+import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
+import org.monarchinitiative.poet.model.response.AnnotationCount;
+import org.monarchinitiative.poet.model.response.Contribution;
+import org.monarchinitiative.poet.model.entities.Disease;
 import org.monarchinitiative.poet.model.entities.UserActivity;
+import org.monarchinitiative.poet.repository.DiseaseRepository;
+import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository;
 import org.monarchinitiative.poet.repository.UserActivityRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * A spring service component created to provide business logic and functionality to get user activity
@@ -19,9 +23,15 @@ import java.util.List;
 public class StatisticsService {
 
     private UserActivityRepository userActivityRepository;
+    private TreatmentAnnotationRepository treatmentAnnotationRepository;
+    private DiseaseRepository diseaseRepository;
 
-    public StatisticsService(UserActivityRepository userActivityRepository){
+    public StatisticsService(UserActivityRepository userActivityRepository,
+                             TreatmentAnnotationRepository treatmentAnnotationRepository,
+                             DiseaseRepository diseaseRepository){
         this.userActivityRepository = userActivityRepository;
+        this.treatmentAnnotationRepository = treatmentAnnotationRepository;
+        this.diseaseRepository = diseaseRepository;
     }
 
     /**
@@ -48,9 +58,23 @@ public class StatisticsService {
      * @since 0.5.0
      */
     public Contribution summarizeUserContributions(Authentication authentication){
-        final Integer maxo = userActivityRepository.countAllByAnnotation_AnnotationTypeAndUserAuthId("maxo", authentication.getName());
-        final Integer hpo = 0;
-        final Integer phenopackets = 0;
+        final int maxo = userActivityRepository.countAllByAnnotation_AnnotationTypeAndUserAuthId("maxo", authentication.getName());
+        final int hpo = 0;
+        final int phenopackets = 0;
         return new Contribution(maxo, hpo, phenopackets);
+    }
+
+    public AnnotationCount summarizeAnnotations(String diseaseId){
+        int treatmentCount = 0;
+        int phenotypeCount = 0;
+        if(diseaseId != null){
+            treatmentCount = this.treatmentAnnotationRepository.countAllByAnnotationSourceDiseaseAndStatusNot(
+                    this.diseaseRepository.findDiseaseByDiseaseId(diseaseId), AnnotationStatus.RETIRED
+            );
+        } else {
+            treatmentCount = (int) this.treatmentAnnotationRepository.countAllByStatusNot(AnnotationStatus.RETIRED);
+        }
+
+        return new AnnotationCount(0, treatmentCount);
     }
 }

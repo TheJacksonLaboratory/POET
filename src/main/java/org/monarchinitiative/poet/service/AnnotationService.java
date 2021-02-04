@@ -1,7 +1,7 @@
 package org.monarchinitiative.poet.service;
 
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
-import org.monarchinitiative.poet.model.requests.MaxoRequest;
+import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.model.entities.*;
 import org.monarchinitiative.poet.model.enumeration.CurationAction;
 import org.monarchinitiative.poet.repository.*;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -26,18 +25,18 @@ public class AnnotationService {
     private PublicationRepository publicationRepository;
     private DiseaseRepository diseaseRepository;
     private AnnotationSourceRepository annotationSourceRepository;
-    private MaxoAnnotationRepository maxoAnnotationRepository;
+    private TreatmentAnnotationRepository treatmentAnnotationRepository;
     private UserRepository userRepository;
     private UserActivityRepository userActivityRespository;
 
     public AnnotationService(PublicationRepository publicationRepository,
                              DiseaseRepository diseaseRepository, AnnotationSourceRepository annotationSourceRepository,
-                             MaxoAnnotationRepository maxoAnnotationRepository, UserRepository userRepository,
+                             TreatmentAnnotationRepository treatmentAnnotationRepository, UserRepository userRepository,
                              UserActivityRepository userActivityRepository) {
         this.publicationRepository = publicationRepository;
         this.diseaseRepository = diseaseRepository;
         this.annotationSourceRepository = annotationSourceRepository;
-        this.maxoAnnotationRepository = maxoAnnotationRepository;
+        this.treatmentAnnotationRepository = treatmentAnnotationRepository;
         this.userRepository = userRepository;
         this.userActivityRespository = userActivityRepository;
     }
@@ -52,13 +51,13 @@ public class AnnotationService {
      * @return a collection of maxo annotations or an empty list.
      * @since 0.5.0
      */
-    public List<MaxoAnnotation> getMaxoAnnotation(String diseaseId, String publicationId, String sort) {
+    public List<TreatmentAnnotation> getTreatmentAnnotations(String diseaseId, String publicationId, String sort) {
             // If publication get source, then annotations for that source
             // Otherwise get all annotationSource
             if(publicationId != null){
                 final AnnotationSource annotationSource = getAnnotationSource(publicationId, diseaseId);
                 if(annotationSource != null){
-                    List<MaxoAnnotation> annotations = this.maxoAnnotationRepository.findDistinctByAnnotationSourceAndStatusNot(annotationSource, AnnotationStatus.RETIRED);
+                    List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findDistinctByAnnotationSourceAndStatusNot(annotationSource, AnnotationStatus.RETIRED);
                     if(annotations.size() > 0){
                         return annotations;
                     } else {
@@ -68,7 +67,7 @@ public class AnnotationService {
             } else {
                 Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
                 if(disease != null) {
-                    List<MaxoAnnotation> annotations = this.maxoAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNot(disease, AnnotationStatus.RETIRED);
+                    List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNot(disease, AnnotationStatus.RETIRED);
                     if(annotations.size() > 0){
                         return annotations;
                     } else {
@@ -85,17 +84,17 @@ public class AnnotationService {
      * Create a MaXo annotation with a pending review status.
      * enforcing business rules with the status of the annotation
      *
-     * @param maxoRequest a maxo request body
+     * @param treatmentRequest a maxo request body
      *
      * @return a boolean whether the annotation was created or not.
      */
-    public boolean createMaxoAnnotation(MaxoRequest maxoRequest, Authentication authentication) {
+    public boolean createTreatmentAnnotation(TreatmentRequest treatmentRequest, Authentication authentication) {
         // We have a valid publication and a valid disease, do we have an annotation source for them?
-        if(maxoRequest != null){
-            final AnnotationSource annotationSource = getAnnotationSource(maxoRequest.getPublicationId(), maxoRequest.getDiseaseId());
+        if(treatmentRequest != null){
+            final AnnotationSource annotationSource = getAnnotationSource(treatmentRequest.getPublicationId(), treatmentRequest.getDiseaseId());
             if(annotationSource != null){
-                final MaxoAnnotation annotation = new MaxoAnnotation(maxoRequest, annotationSource);
-                maxoAnnotationRepository.save(annotation);
+                final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, annotationSource);
+                treatmentAnnotationRepository.save(annotation);
                 updateUserActivity(authentication, CurationAction.CREATE, annotation, null);
                 return true;
             }
@@ -106,24 +105,24 @@ public class AnnotationService {
     /**
      * Update a MaXo annotation enforcing business rules with the status of the annotation
      *
-     * @param maxoRequest a maxo request body
+     * @param treatmentRequest a maxo request body
      *
      * @return a boolean whether the annotation was created or not.
      */
-    public boolean updateMaxoAnnotation(MaxoRequest maxoRequest, Authentication authentication) {
+    public boolean updateTreatmentAnnotation(TreatmentRequest treatmentRequest, Authentication authentication) {
         // We have a valid publication and a valid disease, do we have an annotation source for them?
         // Validate that who is updating owns the annotation or is super elevated curator
-        if(maxoRequest != null){
+        if(treatmentRequest != null){
             // Retired the old annotation
-            MaxoAnnotation oldAnnotation = maxoAnnotationRepository.findDistinctById(maxoRequest.getId());
+            TreatmentAnnotation oldAnnotation = treatmentAnnotationRepository.findDistinctById(treatmentRequest.getId());
             // Create the new one with updated values
-            final MaxoAnnotation annotation = new MaxoAnnotation(oldAnnotation.getAnnotationSource(),
-                    oldAnnotation.getStatus(), maxoRequest.getMaxoId(), maxoRequest.getMaxoName(),
-                    maxoRequest.getHpoName(), maxoRequest.getHpoId(), maxoRequest.getEvidence(),
-                    maxoRequest.getComment(), maxoRequest.getRelation(), maxoRequest.getExtension());
-            maxoAnnotationRepository.save(oldAnnotation);
+            final TreatmentAnnotation annotation = new TreatmentAnnotation(oldAnnotation.getAnnotationSource(),
+                    oldAnnotation.getStatus(), treatmentRequest.getMaxoId(), treatmentRequest.getMaxoName(),
+                    treatmentRequest.getHpoName(), treatmentRequest.getHpoId(), treatmentRequest.getEvidence(),
+                    treatmentRequest.getComment(), treatmentRequest.getRelation(), treatmentRequest.getExtensionId(), treatmentRequest.getExtensionLabel());
+            treatmentAnnotationRepository.save(oldAnnotation);
             oldAnnotation.setStatus(AnnotationStatus.RETIRED);
-            maxoAnnotationRepository.save(annotation);
+            treatmentAnnotationRepository.save(annotation);
             updateUserActivity(authentication, CurationAction.UPDATE, annotation, oldAnnotation);
             return true;
         }
@@ -138,9 +137,9 @@ public class AnnotationService {
      *
      * @return a boolean whether the annotation was created or not.
      */
-    public boolean deleteMaxoAnnotation(Long id, Authentication authentication) {
+    public boolean deleteTreatmentAnnotation(Long id, Authentication authentication) {
         if(id != null){
-            MaxoAnnotation annotation = maxoAnnotationRepository.findDistinctById(id);
+            TreatmentAnnotation annotation = treatmentAnnotationRepository.findDistinctById(id);
             if(annotation != null){
                 annotation.setStatus(AnnotationStatus.RETIRED);
                 updateUserActivity(authentication, CurationAction.DELETE, annotation, null);
@@ -178,7 +177,7 @@ public class AnnotationService {
      * @since 0.5.0
      */
     private void updateUserActivity(Authentication authentication, CurationAction curationAction,
-                                    MaxoAnnotation annotation, MaxoAnnotation oldAnnotation){
+                                    TreatmentAnnotation annotation, TreatmentAnnotation oldAnnotation){
           User user = userRepository.findDistinctByAuthId(authentication.getName());
           if(user != null){
               UserActivity userActivity = new UserActivity(user, curationAction, annotation, oldAnnotation);

@@ -18,7 +18,7 @@ public class Disease {
     private Long id;
 
     @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class, UserActivityViews.Simple.class})
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String diseaseId;
 
     @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class, UserActivityViews.Simple.class})
