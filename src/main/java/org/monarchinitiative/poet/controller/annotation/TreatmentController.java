@@ -25,7 +25,7 @@ import java.util.List;
 @RequestMapping(value = "${api.version}/annotation/treatments") // /annotation/<type>/<action>
 public class TreatmentController {
 
-    private AnnotationService annotationService;
+    private final AnnotationService annotationService;
 
     public TreatmentController(AnnotationService annotationService) {
         this.annotationService = annotationService;
@@ -66,11 +66,8 @@ public class TreatmentController {
      */
     @PostMapping(value = "/", headers = "Accept=application/json")
     public ResponseEntity<?> createTreatmentAnnotation(@RequestBody TreatmentRequest treatmentRequest, Authentication authentication) {
-        if(annotationService.createTreatmentAnnotation(treatmentRequest, authentication)){
-            return new ResponseEntity(HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        annotationService.createTreatmentAnnotation(treatmentRequest, authentication);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**
@@ -83,11 +80,8 @@ public class TreatmentController {
      */
     @PutMapping(value = "/", headers = "Accept=application/json")
     public ResponseEntity<?> updateTreatmentAnnotation(@RequestBody TreatmentRequest treatmentRequest, Authentication authentication) {
-        if(annotationService.updateTreatmentAnnotation(treatmentRequest, authentication)){
-            return new ResponseEntity(HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        annotationService.updateTreatmentAnnotation(treatmentRequest, authentication);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**
@@ -101,9 +95,9 @@ public class TreatmentController {
     @DeleteMapping(value = "/{id}", headers = "Accept=application/json")
     public ResponseEntity<?> deleteTreatmentAnnotation(@PathVariable Long id, Authentication authentication) {
         if(annotationService.deleteTreatmentAnnotation(id, authentication)){
-            return new ResponseEntity(HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.OK).build();
         } else {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

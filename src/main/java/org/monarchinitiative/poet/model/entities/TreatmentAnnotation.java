@@ -1,19 +1,18 @@
 package org.monarchinitiative.poet.model.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.views.AnnotationViews;
 
 import javax.persistence.*;
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 
-@Table(uniqueConstraints=
-        @UniqueConstraint(columnNames={"maxoId", "hpoId", "evidenceType", "relation", "extensionId"})
-)
-@Entity()
-@DiscriminatorValue("maxo")
+@Entity
+@DiscriminatorValue("treatment")
 public class TreatmentAnnotation extends Annotation {
 
     @JsonView(AnnotationViews.Simple.class)
@@ -34,6 +33,12 @@ public class TreatmentAnnotation extends Annotation {
     private String extensionLabel;
     @JsonView(AnnotationViews.Simple.class)
     private String comment;
+
+    @Transient
+    @JsonInclude()
+    @JsonView(AnnotationViews.Simple.class)
+    private Date lastUpdatedDate;
+
 
     public TreatmentAnnotation(){}
 
@@ -78,6 +83,19 @@ public class TreatmentAnnotation extends Annotation {
         this.extensionLabel = treatmentRequest.getExtensionLabel();
     }
 
+    public TreatmentAnnotation(String maxoId, String maxoName, String hpoId, String hpoName, String evidenceType, String relation, String extensionId, String extensionLabel, String comment, Date lastUpdatedDate) {
+        this.maxoId = maxoId;
+        this.maxoName = maxoName;
+        this.hpoId = hpoId;
+        this.hpoName = hpoName;
+        this.evidenceType = evidenceType;
+        this.relation = relation;
+        this.extensionId = extensionId;
+        this.extensionLabel = extensionLabel;
+        this.comment = comment;
+        this.lastUpdatedDate = lastUpdatedDate;
+    }
+
     public String getMaxoId() {
         return maxoId;
     }
@@ -114,25 +132,11 @@ public class TreatmentAnnotation extends Annotation {
         return extensionLabel;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        TreatmentAnnotation that = (TreatmentAnnotation) o;
-        return Objects.equals(maxoId, that.maxoId) &&
-                Objects.equals(maxoName, that.maxoName) &&
-                Objects.equals(hpoId, that.hpoId) &&
-                Objects.equals(hpoName, that.hpoName) &&
-                Objects.equals(evidenceType, that.evidenceType) &&
-                Objects.equals(relation, that.relation) &&
-                Objects.equals(extensionId, that.extensionId) &&
-                Objects.equals(extensionLabel, that.extensionLabel) &&
-                Objects.equals(comment, that.comment);
+    public Date getLastUpdatedDate() {
+        return lastUpdatedDate;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), maxoId, maxoName, hpoName, hpoId, evidenceType, comment, relation, extensionId, extensionLabel);
+    public void setLastUpdatedDate(Date lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
     }
 }
