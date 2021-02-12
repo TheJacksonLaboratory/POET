@@ -27,6 +27,7 @@ export class PortalDashboardComponent implements OnInit {
   pieData;
   lineData;
   userRole: any;
+  recentActivity: any;
 
   constructor(public authService: AuthService, private router: Router,
               public curationService: CurationService, public dialog: MatDialog) {
@@ -38,11 +39,15 @@ export class PortalDashboardComponent implements OnInit {
       this.userRole = user[environment.AUDIENCE_ROLE];
     });
 
-    this.curationService.getUserActivity(true).subscribe((userActivity) => {
+   /* this.curationService.getActivity(true).subscribe((userActivity) => {
       this.dataSource = new MatTableDataSource<any>(userActivity);
       this.lineData = this.graphUserActivity(userActivity);
       this.dataSource.paginator = this.paginator;
-    })
+    });*/
+
+    this.curationService.getGroupActivityFeed(true, 1).subscribe((recentActivity) => {
+      this.recentActivity = recentActivity;
+    });
 
     this.curationService.getUserContributions().subscribe((contributions) => {
       if (contributions.every(obj => obj.value === 0)) {

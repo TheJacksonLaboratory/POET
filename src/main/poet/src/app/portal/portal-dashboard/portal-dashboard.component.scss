@@ -115,5 +115,18 @@
       margin: 2rem;
       text-align: center;
     }
+
+    .activity-item {
+      & h3 {
+        margin: 0;
+      }
+      opacity: 0.8;
+      &:hover {
+        opacity: 1;
+        background-color: #4e4e4e;
+        cursor: pointer;
+      }
+      outline: 0;
+    }
   }
 }
