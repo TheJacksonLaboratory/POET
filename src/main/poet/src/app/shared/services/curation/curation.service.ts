@@ -188,7 +188,7 @@ export class CurationService {
 
     Object.keys(dayMap).forEach(daysFromNow => {
 
-      dayMap[daysFromNow].reduce(function (r, a) {
+      dayMap[daysFromNow] = dayMap[daysFromNow].reduce(function (r, a) {
         let disease = a.annotation.annotationSource.disease.diseaseId + "~" +
           a.annotation.annotationSource.disease.diseaseName;
           r[disease] = r[disease] || [];
@@ -202,13 +202,13 @@ export class CurationService {
 
         if(parseInt(daysFromNow) == 0){
           // Today
-          dayMap[daysFromNow] = dayMap[daysFromNow].reduce(function (r, a) {
+          dayMap[daysFromNow][diseaseJoined] = dayMap[daysFromNow][diseaseJoined].reduce(function (r, a) {
             r[a.user.nickname] = r[a.user.nickname] || [];
             r[a.user.nickname].push(a);
             return r;
           }, Object.create(null));
 
-          Object.keys(dayMap[daysFromNow]).forEach(user => {
+          Object.keys(dayMap[daysFromNow][diseaseJoined]).forEach(user => {
             dayMap[daysFromNow][diseaseJoined][user] = dayMap[daysFromNow][diseaseJoined][user].reduce(function (r, a) {
               r[a.annotation.annotationType] = r[a.annotation.annotationType] || [];
               r[a.annotation.annotationType].push(a);
@@ -216,10 +216,10 @@ export class CurationService {
             }, Object.create(null));
 
 
-            Object.keys([daysFromNow][diseaseJoined][user]).forEach(type => {
-              // Group by hours from now 
-              dayMap[daysFromNow][diseaseJoined][user][type].reduce(function (r, a) {
-                // Group by hours from now 
+            Object.keys(dayMap[daysFromNow][diseaseJoined][user]).forEach(type => {
+              // Group by hours from now
+              dayMap[daysFromNow][diseaseJoined][user][type] = dayMap[daysFromNow][diseaseJoined][user][type].reduce(function (r, a) {
+                // Group by hours from now
                 let date = new Date(a.localDateTime);
                 const hourDifference = that.hoursFromNow(date);
                 r[hourDifference] = r[hourDifference] || [];
@@ -230,15 +230,15 @@ export class CurationService {
               Object.keys(dayMap[daysFromNow][diseaseJoined][user][type]).forEach(hour => {
                 const hoursFromNow = parseInt(hour);
                 if(hoursFromNow == 0){
-                  dayMap[daysFromNow][diseaseJoined][user][type][hour].reduce(function (r, a) {
+                  dayMap[daysFromNow][diseaseJoined][user][type][hour] = dayMap[daysFromNow][diseaseJoined][user][type][hour].reduce(function (r, a) {
                     r[a.curationAction] = r[a.curationAction] || [];
                     r[a.curationAction].push(a);
                     return r;
                   }, Object.create(null));
 
                   Object.keys(dayMap[daysFromNow][diseaseJoined][user][type][hour]).forEach(action => {
-                    const count = dayMap[daysFromNow][user][diseaseJoined][hour][type][action].length;
-                    const mostRecent = this.getMostRecentDate(dayMap[daysFromNow][user][diseaseJoined][hour][type][action]);
+                    const count = dayMap[daysFromNow][diseaseJoined][user][type][hour][action].length;
+                    const mostRecent = this.getMostRecentDate(dayMap[daysFromNow][diseaseJoined][user][type][hour][action]);
                     const minutesFromNow = this.minutesFromNow(mostRecent);
                     const actionFriendly = this.actionLookup(action);
                     const annotationGrammar = this.annotationGrammar(count);
@@ -254,7 +254,7 @@ export class CurationService {
                       "date": mostRecent,
                     });
                   });
-                  
+
                 } else if(hoursFromNow > 0){
                   const count = dayMap[daysFromNow][diseaseJoined][user][type][hoursFromNow].length;
                   const mostRecent = this.getMostRecentDate(dayMap[daysFromNow][diseaseJoined][user][type][hoursFromNow]);
@@ -275,15 +275,15 @@ export class CurationService {
 
             });
           });
-  
+
         } else if(parseInt(daysFromNow) > 0){
           // Days Ago Up to a week
           const mostRecent = this.getMostRecentDate(dayMap[daysFromNow][diseaseJoined]);
           const count = dayMap[daysFromNow][diseaseJoined].length;
           const annotationGrammar = this.annotationGrammar(count);
-          const userList = dayMap[daysFromNow][diseaseJoined].map(item => {
+          const userList = [...new Set(dayMap[daysFromNow][diseaseJoined].map(item => {
             return item.user.nickname;
-          }).unique().join(",");
+          }))].join(",");
           let view;
           if(parseInt(daysFromNow) == 1){
             view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName} yesterday.`;
@@ -298,7 +298,7 @@ export class CurationService {
         }
       });
     });
-    return activities.sort((a:any, b:any) => (b.date - a.date)); 
+    return activities.sort((a:any, b:any) => (b.date - a.date));
   }
 
   private getMostRecentDate(annotations){
@@ -314,7 +314,7 @@ export class CurationService {
 
   private daysFromNow(dateToCheck: Date): number {
     const today = new Date();
-    return Math.round((dateToCheck.getTime() - today.getTime())/(24*3600*1000));
+    return Math.round((today.getTime() - dateToCheck.getTime())/(24*3600*1000));
   }
 
   private roundToHour(dateToRound): number {
