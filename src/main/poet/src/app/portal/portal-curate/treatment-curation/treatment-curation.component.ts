@@ -3,7 +3,7 @@ import { HpoService } from "../../../shared/services/external/hpo.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { HpoTerm, MaxoSearchResult, MaxoTerm } from "../../../shared/models/search-models";
-import { AnnotationSource, Publication } from "../../../shared/models/models";
+import { AnnotationSource, Publication, TreatmentAnnotation } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { StateService } from "../../../shared/services/state/state.service";
 import { MatDialog } from "@angular/material/dialog";
@@ -22,7 +22,7 @@ export class TreatmentCurationComponent implements OnInit {
   @Input('role') userRole: string;
   @Output('handleForm') handleFormEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  selectedAnnotation: any;
+  selectedAnnotation: TreatmentAnnotation;
   updating: boolean;
   selectedTreatment: MaxoTerm;
   selectedHpo: HpoTerm;
@@ -109,7 +109,7 @@ export class TreatmentCurationComponent implements OnInit {
   }
 
   submitForm(): void {
-    const maxoAnnotation = {
+    const treatmentAnnotation = {
       id: this.selectedAnnotation && this.selectedAnnotation.id ? this.selectedAnnotation.id : null,
       maxoId: this.formControlGroup.get('maxoFormControl').value.ontologyId.toString(),
       maxoName: this.formControlGroup.get('maxoFormControl').value.name,
@@ -123,13 +123,13 @@ export class TreatmentCurationComponent implements OnInit {
     }
     this.savingAnnotation = true;
     if (this.updating) {
-      this.curationService.updateMaxoAnnotation(maxoAnnotation).subscribe(() => {
+      this.curationService.updateTreatmentAnnotation(treatmentAnnotation).subscribe(() => {
         this.onSuccessfulMaxo('Annotation Updated!')
       }, (err) => {
         this.onErrorMaxoSave();
       });
     } else {
-      this.curationService.saveMaxoAnnotation(maxoAnnotation).subscribe(() => {
+      this.curationService.saveTreatmentAnnotation(treatmentAnnotation).subscribe(() => {
         this.onSuccessfulMaxo('Annotation Saved!')
       }, (err) => {
         this.onErrorMaxoSave();
