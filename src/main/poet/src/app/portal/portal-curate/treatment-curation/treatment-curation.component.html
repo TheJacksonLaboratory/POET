@@ -124,6 +124,8 @@
         </mat-form-field>
       </div>
     </form>
+    <p class="extra-information left" *ngIf="selectedAnnotation?.owner">Owner: {{selectedAnnotation.owner}} </p>
+    <p class="extra-information right" *ngIf="selectedAnnotation?.lastUpdatedDate">Last Updated: {{selectedAnnotation.lastUpdatedDate}} </p>
   </mat-card-content>
 
   <mat-card-actions>
@@ -133,7 +135,6 @@
     </div>
     <div class="right-actions">
       <button mat-stroked-button (click)="resetMaxoForm()" *ngIf="!formControlGroup.disabled">Clear</button>
-      <button mat-stroked-button (click)="closeForm()" *ngIf="formControlGroup.disabled">Close</button>
     </div>
   </mat-card-actions>
 </mat-card>

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AnnotationSource, Disease, MaxoAnnotation, Publication } from "../../../shared/models/models";
+import { AnnotationSource, Disease, TreatmentAnnotation, Publication } from "../../../shared/models/models";
 import { StateService } from "../../../shared/services/state/state.service";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { Observable } from "rxjs";
@@ -28,7 +28,7 @@ export class AnnotationCardComponent implements OnInit {
   disease: Disease;
   publication: Publication;
   ontology: string;
-  maxoAnnotations: Observable<MaxoAnnotation[]>;
+  treatmentAnnotations: Observable<TreatmentAnnotation[]>;
   annotationMode: any;
   triggerBounceIn: any;
   activeAnnotation: any;
@@ -95,7 +95,7 @@ export class AnnotationCardComponent implements OnInit {
         this.activeAnnotation = null;
         this.annotationAction(null, 'create')
       }
-      this.maxoAnnotations = this.curationService.getMaxoAnnotations(this.disease, this.publication, "").pipe(
+      this.treatmentAnnotations = this.curationService.getTreatmentAnnotations(this.disease, this.publication, "").pipe(
         tap((annotations => {
         annotations.forEach((annotation) => {
           this.annotationStatuses.push(annotation.status);
@@ -117,7 +117,7 @@ export class AnnotationCardComponent implements OnInit {
   annotationAction(annotation: any, action: any) {
     this.activeAnnotation = annotation;
     if (action == 'delete') {
-      this.curationService.deleteMaxoAnnotation(annotation.id).subscribe(() => {
+      this.curationService.deleteTreatmentAnnotation(annotation.id).subscribe(() => {
         this._snackBar.open('Annotation Deleted!', 'Close', {
           duration: 3000,
         });

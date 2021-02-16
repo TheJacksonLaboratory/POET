@@ -57,7 +57,7 @@
       display: inline-flex;
     }
   }
-
+    font-size: 11px;
   & .relation {
     margin-left: 1rem;
   }
@@ -76,5 +76,10 @@
 
   & .help-icon {
     float: right;
+  }
+
+  .extra-information {
+    font-size: 11px;
+    margin-bottom: 0;
   }
 }

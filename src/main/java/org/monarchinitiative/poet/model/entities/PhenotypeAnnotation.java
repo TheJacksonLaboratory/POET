@@ -47,10 +47,6 @@ public class PhenotypeAnnotation extends Annotation {
         this.aspect = aspect;
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public String getHpoId() {
         return hpoId;
     }

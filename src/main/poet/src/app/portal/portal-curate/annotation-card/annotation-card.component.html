@@ -3,7 +3,7 @@
     <span *ngIf="ontology == 'maxo'">Treatments</span>
     <span *ngIf="ontology == 'hpo'">Phenotypes</span>
     <button class="add-annotation-btn-top" mat-mini-fab color="primary" aria-label="Add Annotation"
-            *ngIf="isUser() && (maxoAnnotations | async)?.length > 0"
+            *ngIf="isUser() && (treatmentAnnotations | async)?.length > 0"
             (click)="annotationAction(null, 'create')">
       <mat-icon>add</mat-icon>
     </button>
@@ -22,7 +22,7 @@
     <mat-list #maxo>
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': maxo == activeAnnotation}"
-                     *ngFor="let maxo of maxoAnnotations | async | slice: lowValue : highValue">
+                     *ngFor="let maxo of treatmentAnnotations | async | slice: lowValue : highValue">
         <mat-icon matListIcon>health_and_safety</mat-icon>
         <div class="selection-text">
           <span matLine class="selection-id">
@@ -48,15 +48,15 @@
         </button>
       </mat-list-item>
     </mat-list>
-    <mat-paginator *ngIf="(maxoAnnotations | async)?.length > 0" [length]="(maxoAnnotations | async)?.length" pageSize=5
+    <mat-paginator *ngIf="(treatmentAnnotations | async)?.length > 0" [length]="(treatmentAnnotations | async)?.length" pageSize=5
                    (page)="getPaginatorData($event)"
                    showFirstLastButtons="false">
     </mat-paginator>
-    <div class="annotation-missing" *ngIf="(maxoAnnotations | async)?.length == 0">
+    <div class="annotation-missing" *ngIf="(treatmentAnnotations | async)?.length == 0">
       No {{ontologyToDisplay()}} Found.
     </div>
     <button class="add-annotation-btn" mat-mini-fab color="primary" aria-label="Add Annotation"
-            *ngIf="isUser() && (maxoAnnotations | async)?.length == 0"
+            *ngIf="isUser() && (treatmentAnnotations | async)?.length == 0"
             (click)="annotationAction(null, 'create')">
       <mat-icon>add</mat-icon>
     </button>
