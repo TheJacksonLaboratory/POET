@@ -1,6 +1,12 @@
 .dashboard {
   padding: 1rem .5rem;
 
+  & .mat-card-title {
+    padding: 15px;
+    background: #296a7ca1;
+    border-bottom: #8c8c8c solid 1px;
+  }
+
   & .mat-card:not(:first-child) {
     margin: 0 0 0 1rem;
   }
@@ -10,11 +16,14 @@
   }
 
   & .search-card {
-    text-align: center;
-
+    padding: 0;
     & .search-wrapper {
       margin: 0 auto;
-      width: 30%;
+      width: 40%;
+    }
+
+    & .mat-card-content {
+      padding: .5rem;
     }
   }
 
@@ -45,6 +54,10 @@
 
     & .mat-card-subtitle {
       text-align: center;
+    }
+
+    & .mat-card-content {
+      padding: .5rem;
     }
   }
 
@@ -103,12 +116,11 @@
   }
 
   & .recently-curated-card {
-    & .mat-card-title {
-      text-align: center;
-    }
+    padding: 0;
 
     & .mat-card-content {
       margin: .5rem 0 0 0;
+      padding: .5rem;
     }
 
     & .curated-not-found {
@@ -122,8 +134,6 @@
       }
       opacity: 0.8;
       &:hover {
-        opacity: 1;
-        background-color: #4e4e4e;
         cursor: pointer;
       }
       outline: 0;

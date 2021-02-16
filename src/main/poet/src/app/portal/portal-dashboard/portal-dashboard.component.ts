@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from "@auth0/auth0-angular";
-import { MatPaginator } from "@angular/material/paginator";
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { transition, trigger, useAnimation } from "@angular/animations";
 import { fadeIn } from "ng-animate";
@@ -28,6 +28,8 @@ export class PortalDashboardComponent implements OnInit {
   lineData;
   userRole: any;
   recentActivity: any;
+  lowValue: number = 0;
+  highValue: number = 5;
 
   constructor(public authService: AuthService, private router: Router,
               public curationService: CurationService, public dialog: MatDialog) {
@@ -85,5 +87,11 @@ export class PortalDashboardComponent implements OnInit {
       "name": "Annotations",
       "series": graphSeries
     }]
+  }
+
+  getPaginatorData(event: PageEvent): PageEvent {
+    this.lowValue = event.pageIndex * event.pageSize;
+    this.highValue = this.lowValue + event.pageSize;
+    return event;
   }
 }

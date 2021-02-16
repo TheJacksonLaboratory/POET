@@ -1,12 +1,9 @@
 <div class="dashboard">
   <div class="flex-row" fxFlexLayout="row">
-    <mat-card class="search-card" fxFlex="70" fxFlexOffset="15">
+    <mat-card class="search-card" fxFlex="60" fxFlexOffset="20">
       <mat-card-title>
-        Curation Dashboard
+        Disease Curation
       </mat-card-title>
-      <mat-card-subtitle>
-        Get started curating by finding a disease.
-      </mat-card-subtitle>
       <mat-card-content>
         <div class="search-wrapper">
           <app-search [role]="userRole"></app-search>
@@ -16,7 +13,7 @@
   </div>
 
   <div fxflexlayout="row" class="flex-row">
-    <mat-card class="recently-curated-card" fxFlex="70" fxFlexOffset="15">
+    <mat-card class="recently-curated-card" fxFlex="60" fxFlexOffset="20">
       <mat-card-title>
         Recent Activity
       </mat-card-title>
@@ -25,11 +22,14 @@
           <mat-list-item [routerLink]="'/curate/' + recent.diseaseId" class="activity-item">
             <h3>{{recent.view}}</h3>
             <span class="spacer"></span>
-            <button mat-icon-button aria-label="Open to disease">
-              <mat-icon>open_in_new</mat-icon>
-            </button>
+            <button mat-stroked-button>View Disease</button>
           </mat-list-item>
         </mat-list>
+        <p *ngIf="recentActivity?.length == 0">No Activity Since Last Week.</p>
+        <mat-paginator *ngIf="recentActivity?.length > 0" [length]="recentActivity?.length" pageSize=5
+                       (page)="getPaginatorData($event)"
+                       showFirstLastButtons="false">
+        </mat-paginator>
       </mat-card-content>
     </mat-card>
   </div>
