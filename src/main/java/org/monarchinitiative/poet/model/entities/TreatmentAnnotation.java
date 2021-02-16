@@ -8,8 +8,7 @@ import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.views.AnnotationViews;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @DiscriminatorValue("treatment")
@@ -33,11 +32,6 @@ public class TreatmentAnnotation extends Annotation {
     private String extensionLabel;
     @JsonView(AnnotationViews.Simple.class)
     private String comment;
-
-    @Transient
-    @JsonInclude()
-    @JsonView(AnnotationViews.Simple.class)
-    private Date lastUpdatedDate;
 
 
     public TreatmentAnnotation(){}
@@ -83,19 +77,6 @@ public class TreatmentAnnotation extends Annotation {
         this.extensionLabel = treatmentRequest.getExtensionLabel();
     }
 
-    public TreatmentAnnotation(String maxoId, String maxoName, String hpoId, String hpoName, String evidenceType, String relation, String extensionId, String extensionLabel, String comment, Date lastUpdatedDate) {
-        this.maxoId = maxoId;
-        this.maxoName = maxoName;
-        this.hpoId = hpoId;
-        this.hpoName = hpoName;
-        this.evidenceType = evidenceType;
-        this.relation = relation;
-        this.extensionId = extensionId;
-        this.extensionLabel = extensionLabel;
-        this.comment = comment;
-        this.lastUpdatedDate = lastUpdatedDate;
-    }
-
     public String getMaxoId() {
         return maxoId;
     }
@@ -130,13 +111,5 @@ public class TreatmentAnnotation extends Annotation {
 
     public String getExtensionLabel() {
         return extensionLabel;
-    }
-
-    public Date getLastUpdatedDate() {
-        return lastUpdatedDate;
-    }
-
-    public void setLastUpdatedDate(Date lastUpdatedDate) {
-        this.lastUpdatedDate = lastUpdatedDate;
     }
 }

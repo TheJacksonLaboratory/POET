@@ -11,7 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -61,11 +63,11 @@ public class AnnotationService {
                 if(annotationSource != null){
                     List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findDistinctByAnnotationSourceAndStatusNot(annotationSource, AnnotationStatus.RETIRED);
                     if(annotations.size() > 0){
-                        // For each annotation
-                        // we want to get all activity for it
-                        // and put the date for created annotation created
-                        // and if activity for d
-                        return annotations;
+                        return annotations.stream().peek(annotation -> {
+                            UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
+                            annotation.setLastUpdatedDate(activity.getLocalDateTime());
+                            annotation.setOwner(activity.getUser().getNickname());
+                        }).sorted(Comparator.comparing(TreatmentAnnotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
                     } else {
                         return Collections.emptyList();
                     }
@@ -75,7 +77,11 @@ public class AnnotationService {
                 if(disease != null) {
                     List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNot(disease, AnnotationStatus.RETIRED);
                     if(annotations.size() > 0){
-                        return annotations;
+                        return annotations.stream().peek(annotation -> {
+                            UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
+                            annotation.setLastUpdatedDate(activity.getLocalDateTime());
+                            annotation.setOwner(activity.getUser().getNickname());
+                        }).sorted(Comparator.comparing(TreatmentAnnotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
                     } else {
                         return Collections.emptyList();
                     }
