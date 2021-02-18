@@ -1,6 +1,6 @@
 package org.monarchinitiative.poet.controller;
 
-import org.monarchinitiative.poet.model.SearchResponse;
+import org.monarchinitiative.poet.model.response.SearchResponse;
 import org.monarchinitiative.poet.service.SearchService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

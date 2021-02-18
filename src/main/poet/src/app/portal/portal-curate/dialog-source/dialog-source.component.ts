@@ -56,10 +56,9 @@ export class DialogSourceComponent implements OnInit {
     this.annotationSourceControl.valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(id => {
-        // Make request to pubmed
         if (id) {
           this.searchingPubMed = true;
-          this.pubmedService.findPublication(id).subscribe((data) => {
+          this.pubmedService.findPublication(id.trim()).subscribe((data) => {
             if (!data) {
               this.annotationSourceControl.setErrors({notFound: true});
             }
@@ -90,19 +89,20 @@ export class DialogSourceComponent implements OnInit {
   }
 
   saveNewPublication() {
-    this.curationService.savePublication(
-      {
-        disease: this.selectedDisease,
-        publication: {
-          "publicationId": "PMID:" + this.selectedPublication.uid,
-          "publicationName": this.selectedPublication.title,
-          "date": this.selectedPublication.pubdate,
-          "firstAuthor": this.selectedPublication.sortfirstauthor
-        }
+    let source = {
+      disease: this.selectedDisease,
+      publication: {
+        "publicationId": "PMID:" + this.selectedPublication.uid,
+        "publicationName": this.selectedPublication.title,
+        "date": this.selectedPublication.pubdate,
+        "firstAuthor": this.selectedPublication.sortfirstauthor
       }
-    ).subscribe(() => {
+    };
+    this.curationService.savePublication(source).subscribe(() => {
       this.annotatedPublications$ = this.curationService.getDiseasePublications(this.selectedDisease.diseaseId);
       this.newPublication = false;
+      this.selectedPublication = source.publication;
+      this.closeDialog();
     }, error => {
       const message = this.getErrorMessage(error);
       this._snackBar.open(message, 'Close', {

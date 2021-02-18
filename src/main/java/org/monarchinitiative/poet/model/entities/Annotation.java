@@ -1,12 +1,14 @@
 package org.monarchinitiative.poet.model.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.views.AnnotationViews;
 import org.monarchinitiative.poet.views.UserActivityViews;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -29,6 +31,16 @@ public class Annotation {
 
     @Column(name="annotation_type", insertable = false, updatable = false)
     protected String annotationType;
+
+    @Transient
+    @JsonInclude()
+    @JsonView(AnnotationViews.Simple.class)
+    private LocalDateTime lastUpdatedDate;
+
+    @Transient
+    @JsonInclude()
+    @JsonView(AnnotationViews.Simple.class)
+    private String owner;
 
     public Annotation(){}
 
@@ -57,6 +69,26 @@ public class Annotation {
     @JsonView(UserActivityViews.Simple.class)
     public String getAnnotationType() {
         return annotationType;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public LocalDateTime getLastUpdatedDate() {
+        return lastUpdatedDate;
+    }
+
+    public void setLastUpdatedDate(LocalDateTime lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     @Override

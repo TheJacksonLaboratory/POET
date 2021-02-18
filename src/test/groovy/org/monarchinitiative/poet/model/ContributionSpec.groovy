@@ -1,5 +1,6 @@
 package org.monarchinitiative.poet.model
 
+import org.monarchinitiative.poet.model.response.Contribution
 import org.springframework.test.context.ActiveProfiles
 import spock.lang.Specification
 import spock.lang.Unroll

@@ -2,7 +2,7 @@ package org.monarchinitiative.poet.model.requests;
 
 import java.util.Objects;
 
-public class MaxoRequest {
+public class TreatmentRequest {
 
 
     private Long id;
@@ -13,18 +13,19 @@ public class MaxoRequest {
     private String evidence;
     private String comment;
     private String relation;
-    private String extension;
+    private String extensionId;
+    private String extensionLabel;
     private String publicationId;
     private String publicationName;
     private String diseaseId;
     private String diseaseName;
 
 
-    MaxoRequest(){}
+    TreatmentRequest(){}
 
-    public MaxoRequest(Long id, String maxoId, String maxoName, String hpoName, String hpoId, String evidence,
-                       String comment, String relation, String extension, String publicationId, String publicationName,
-                       String diseaseId, String diseaseName) {
+    public TreatmentRequest(Long id, String maxoId, String maxoName, String hpoName, String hpoId, String evidence,
+                            String comment, String relation, String extensionId, String extensionLabel, String publicationId, String publicationName,
+                            String diseaseId, String diseaseName) {
         this.id = id;
         this.maxoId = maxoId;
         this.maxoName = maxoName;
@@ -33,7 +34,8 @@ public class MaxoRequest {
         this.evidence = evidence;
         this.comment = comment;
         this.relation = relation;
-        this.extension = extension;
+        this.extensionId = extensionId;
+        this.extensionLabel = extensionLabel;
         this.publicationId = publicationId;
         this.publicationName = publicationName;
         this.diseaseId = diseaseId;
@@ -72,9 +74,11 @@ public class MaxoRequest {
         return relation;
     }
 
-    public String getExtension() {
-        return extension;
+    public String getExtensionId() {
+        return extensionId;
     }
+
+    public String getExtensionLabel() { return extensionLabel;}
 
     public String getPublicationId() {
         return publicationId;
@@ -96,7 +100,7 @@ public class MaxoRequest {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MaxoRequest that = (MaxoRequest) o;
+        TreatmentRequest that = (TreatmentRequest) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(maxoId, that.maxoId) &&
                 Objects.equals(maxoName, that.maxoName) &&
@@ -105,7 +109,7 @@ public class MaxoRequest {
                 Objects.equals(evidence, that.evidence) &&
                 Objects.equals(comment, that.comment) &&
                 Objects.equals(relation, that.relation) &&
-                Objects.equals(extension, that.extension) &&
+                Objects.equals(extensionId, that.extensionId) &&
                 Objects.equals(publicationId, that.publicationId) &&
                 Objects.equals(publicationName, that.publicationName) &&
                 Objects.equals(diseaseId, that.diseaseId) &&
@@ -114,6 +118,8 @@ public class MaxoRequest {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extension, publicationId, publicationName, diseaseId, diseaseName);
+        return Objects.hash(id, maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extensionId, publicationId, publicationName, diseaseId, diseaseName);
     }
+
+
 }

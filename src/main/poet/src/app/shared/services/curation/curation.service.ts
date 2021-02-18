@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import { Observable } from "rxjs";
-import {Disease, MaxoAnnotation, Publication, UserActivityResponse} from "../../models/models";
+import {Disease, TreatmentAnnotation, Publication, UserActivityResponse} from "../../models/models";
 import { StateService } from "../state/state.service";
-import {map} from "rxjs/operators";
+import { map, shareReplay } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +28,7 @@ export class CurationService {
    * @param id
    */
   getDisease(id: string): Observable<Disease>{
-    return this.httpClient.get<Disease>(environment.POET_API_DISEASE_ENTITY_URL + id);
+    return this.httpClient.get<any>(environment.POET_API_DISEASE_ENTITY_URL + id);
   }
 
   /***
@@ -78,7 +78,7 @@ export class CurationService {
    * @param ontology
    * @param sort
    */
-  getMaxoAnnotations(disease: Disease, publication: Publication, sort: string): Observable<MaxoAnnotation[]>{
+  getTreatmentAnnotations(disease: Disease, publication: Publication, sort: string): Observable<TreatmentAnnotation[]>{
     let params;
     if(sort){
       params = new HttpParams().set("sort", sort);
@@ -86,7 +86,7 @@ export class CurationService {
     if(publication != null){
       return this.httpClient.get<any>(environment.POET_API_MAXO_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
     } else {
-      return this.httpClient.get<any>(environment.POET_API_MAXO_ANNOTATION + disease.diseaseId, {params: params});
+      return this.httpClient.get<any>(environment.POET_API_MAXO_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
     }
   }
 
@@ -94,7 +94,7 @@ export class CurationService {
    * Update a maxo annotation to the database
    * @param annotation - a maxo annotation from the maxo form
    */
-  updateMaxoAnnotation(annotation: any) {
+  updateTreatmentAnnotation(annotation: any) {
     const annotationSource = this.stateService.getSelectedSource();
     annotation.publicationId = annotationSource.publication.publicationId;
     annotation.publicationName = annotationSource.publication.publicationName;
@@ -107,7 +107,7 @@ export class CurationService {
    * Save a maxo annotation to the database
    * @param annotation - a maxo annotation from the maxo form
    */
-  saveMaxoAnnotation(annotation: any) {
+  saveTreatmentAnnotation(annotation: any) {
     const annotationSource = this.stateService.getSelectedSource();
     annotation.publicationId = annotationSource.publication.publicationId;
     annotation.publicationName = annotationSource.publication.publicationName;
@@ -120,7 +120,7 @@ export class CurationService {
    * Save a maxo annotation to the database
    * @param id - an annotation id
    */
-  deleteMaxoAnnotation(id: string) {
+  deleteTreatmentAnnotation(id: string) {
     return this.httpClient.delete(environment.POET_API_MAXO_ANNOTATION + id);
   }
 
@@ -166,5 +166,12 @@ export class CurationService {
           {"value": contributions["phenopackets"], "name": "PhenoPackets"}];
       })
     );
+  }
+
+  /**
+   * Get Annotation Counts by disease id or all if none
+   */
+  getAnnotationCounts(diseaseId: string): any{
+    return this.httpClient.get(environment.POET_API_STATISTICS_ANNOTATION_URL + diseaseId);
   }
 }

@@ -1,7 +1,7 @@
 package org.monarchinitiative.poet.controller
 
 import groovy.json.JsonBuilder
-import org.monarchinitiative.poet.controller.annotation.MaxoController
+import org.monarchinitiative.poet.controller.annotation.TreatmentController
 import org.monarchinitiative.poet.service.AnnotationService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,10 +19,10 @@ import spock.lang.Unroll
 
 
 @AutoConfigureMockMvc
-@WebMvcTest(MaxoController.class)
+@WebMvcTest(TreatmentController.class)
 @ContextConfiguration
 @ActiveProfiles(value = "test")
-class MaxoControllerSpec extends Specification {
+class TreatmentControllerSpec extends Specification {
 
     @Autowired
     private MockMvc mvc
@@ -36,7 +36,7 @@ class MaxoControllerSpec extends Specification {
     @Unroll
     def "when we test get maxo annotations"(){
         given:
-        annotationService.getMaxoAnnotation(_,_,_) >> Collections.emptyList()
+        annotationService.getTreatmentAnnotations(_,_,_) >> Collections.emptyList()
 
 
         expect: "an annotation state"
@@ -52,7 +52,7 @@ class MaxoControllerSpec extends Specification {
     @Unroll
     def "when we test create maxo annotations"(){
         given:
-        annotationService.createMaxoAnnotation(_,_) >> inputServiceResult
+        annotationService.createTreatmentAnnotation(_,_) >> inputServiceResult
 
         expect: "an annotation state"
         mvc.perform(

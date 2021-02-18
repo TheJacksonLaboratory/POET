@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AnnotationSource, Disease, MaxoAnnotation, Publication } from "../../../shared/models/models";
+import { AnnotationSource, Disease, TreatmentAnnotation, Publication } from "../../../shared/models/models";
 import { StateService } from "../../../shared/services/state/state.service";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { Observable } from "rxjs";
@@ -9,6 +9,7 @@ import { bounceInLeft } from "ng-animate";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Route } from '@angular/compiler/src/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PageEvent } from "@angular/material/paginator";
 
 @Component({
   selector: 'app-annotation-card',
@@ -27,12 +28,14 @@ export class AnnotationCardComponent implements OnInit {
   disease: Disease;
   publication: Publication;
   ontology: string;
-  maxoAnnotations: Observable<MaxoAnnotation[]>;
+  treatmentAnnotations: Observable<TreatmentAnnotation[]>;
   annotationMode: any;
   triggerBounceIn: any;
-  activeIndex: any;
+  activeAnnotation: any;
   annotationStatuses: any[] = [];
   selectedStatuses: any[] = [];
+  lowValue: number = 0;
+  highValue: number = 5;
 
   constructor(public stateService: StateService, public curationService: CurationService, private _snackBar: MatSnackBar, private route: ActivatedRoute) {
   }
@@ -51,7 +54,6 @@ export class AnnotationCardComponent implements OnInit {
     });
 
     this.stateService.triggerReloadAnnotations.subscribe((reload) => {
-      // Reload if submission is successful for now.
       // TODO: Polling in the future.
       if (reload) {
         this.updateAnnotations(null);
@@ -60,7 +62,19 @@ export class AnnotationCardComponent implements OnInit {
 
     this.stateService.selectedAnnotationMode.subscribe((mode) => {
       this.annotationMode = mode;
-    })
+    });
+
+    this.stateService.selectedPhenotypeAnnotation.subscribe((annotation) => {
+      if(!annotation){
+        this.activeAnnotation = null;
+      }
+    });
+
+    this.stateService.selectedTreatmentAnnotation.subscribe((annotation) => {
+      if(!annotation){
+        this.activeAnnotation = null;
+      }
+    });
   }
 
   ontologyToDisplay() {
@@ -76,25 +90,18 @@ export class AnnotationCardComponent implements OnInit {
       this.publication = source.publication;
       this.disease = source.disease;
     }
-    // Could get funky here
     if (this.ontology && this.disease) {
       if (this.annotationMode == 'edit') {
-        this.activeIndex = -1;
-        this.annotationAction(null, 'create', -1)
+        this.activeAnnotation = null;
+        this.annotationAction(null, 'create')
       }
-      this.maxoAnnotations = this.curationService.getMaxoAnnotations(this.disease, this.publication, "").pipe(
+      this.treatmentAnnotations = this.curationService.getTreatmentAnnotations(this.disease, this.publication, "").pipe(
         tap((annotations => {
         annotations.forEach((annotation) => {
           this.annotationStatuses.push(annotation.status);
         });
         this.annotationStatuses = [...new Set(this.annotationStatuses)].sort();
         this.selectedStatuses = this.annotationStatuses;
-        const id = parseInt(this.route.snapshot.queryParams.id);
-        if(id){
-          const index = annotations.map((item) => item["id"]).indexOf(id);
-          const annotation = annotations[index];
-          this.annotationAction(annotation,  'view', index)
-        }
       })));
     }
   }
@@ -107,14 +114,15 @@ export class AnnotationCardComponent implements OnInit {
     this.openAnnotationForm.emit(false);
   }
 
-  annotationAction(annotation: any, action: any, index: any) {
-    this.activeIndex = index;
+  annotationAction(annotation: any, action: any) {
+    this.activeAnnotation = annotation;
     if (action == 'delete') {
-      this.curationService.deleteMaxoAnnotation(annotation.id).subscribe(() => {
+      this.curationService.deleteTreatmentAnnotation(annotation.id).subscribe(() => {
         this._snackBar.open('Annotation Deleted!', 'Close', {
           duration: 3000,
         });
         this.updateAnnotations(null);
+        this.stateService.triggerAnnotationCountsReload(true);
         this.closeForm();
       });
     } else {
@@ -134,5 +142,11 @@ export class AnnotationCardComponent implements OnInit {
 
   isElevatedCurator() {
     return this.userRole === 'ELEVATED_CURATOR';
+  }
+
+  getPaginatorData(event: PageEvent): PageEvent {
+    this.lowValue = event.pageIndex * event.pageSize;
+    this.highValue = this.lowValue + event.pageSize;
+    return event;
   }
 }

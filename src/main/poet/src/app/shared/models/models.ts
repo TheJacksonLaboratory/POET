@@ -1,4 +1,5 @@
 export interface Annotation {
+  id?: string;
   type: string;
   status: string;
   annotationSource: AnnotationSource;
@@ -24,7 +25,7 @@ export interface Disease {
   diseaseName: string;
 }
 
-export interface MaxoAnnotation extends Annotation {
+export interface TreatmentAnnotation extends Annotation {
   maxoId: string;
   maxoName: string;
   hpoName: string;
@@ -33,6 +34,8 @@ export interface MaxoAnnotation extends Annotation {
   comment: string;
   relation: string;
   extension: string;
+  lastUpdatedDate: string;
+  owner: string;
 }
 
 export interface UserActivityResponse {
