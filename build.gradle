@@ -70,7 +70,9 @@ bootWar.dependsOn {
 	buildClientProd
 }
 
-test.dependsOn(shouldClientTest)
+task testApp {
+	dependsOn(bootRun.dependsOn(buildClientProd))
+}
 
 clean {
 	delete fileTree(dir: "src/main/resources/static")
