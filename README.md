@@ -13,16 +13,39 @@ Intellij
 
 # Running
 
-`
+####Development (2 tabs)
+
+Requirements
+- Node
+- Npm
+
+In root directory: 
+` 
 ./gradlew bootRun
 `
 
-Endpoints will be served at http://localhost:8080/api/v1/
+In src/main/poet
+`
+npm run start
+`
+
+Navigate to http://localhost:4200/, endpoints will be served at http://localhost:8080/api/v1/
+
+#### Testing
+
+To test the app under a singular url
+
+`
+./gradlew testApp
+`
+
+Navigate to http://localhost:8080/
+
 
 # Building for deployment
 
 `
-./gradlew war
+./gradlew war -DclientTest=true
 `
 
 # Contributors
