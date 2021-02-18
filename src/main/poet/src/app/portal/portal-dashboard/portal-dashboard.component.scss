@@ -19,7 +19,7 @@
     padding: 0;
     & .search-wrapper {
       margin: 0 auto;
-      width: 40%;
+      width: 30%;
     }
 
     & .mat-card-content {
@@ -132,11 +132,17 @@
       & h3 {
         margin: 0;
       }
-      opacity: 0.8;
+      opacity: .8;
       &:hover {
         cursor: pointer;
       }
       outline: 0;
+    }
+
+    .no-activity {
+      text-align: center;
+      font-weight: bold;
+      padding: .5rem;
     }
   }
 }

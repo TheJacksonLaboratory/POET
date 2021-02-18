@@ -25,7 +25,7 @@
             <button mat-stroked-button>View Disease</button>
           </mat-list-item>
         </mat-list>
-        <p *ngIf="recentActivity?.length == 0">No Activity Since Last Week.</p>
+        <p class="no-activity" *ngIf="recentActivity?.length == 0">No Activity Since Last Week.</p>
         <mat-paginator *ngIf="recentActivity?.length > 0" [length]="recentActivity?.length" pageSize=5
                        (page)="getPaginatorData($event)"
                        showFirstLastButtons="false">

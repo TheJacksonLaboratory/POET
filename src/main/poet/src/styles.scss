@@ -353,6 +353,10 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
     color: white !important;
 }
 
+.search-wrapper .mat-form-field-label {
+  text-align: center;
+}
+
 .spacer {
   flex: 1;
 }
@@ -363,4 +367,18 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 
 .right {
   float: right;
+}
+
+.mat-option.new-disease {
+  text-align: center;
+  color: #43b9da;
+  height: 30px;
+
+  & .mat-option-text {
+    padding: .5rem 0 0 0;
+
+    & .result-name {
+      float: unset !important;
+    }
+  }
 }

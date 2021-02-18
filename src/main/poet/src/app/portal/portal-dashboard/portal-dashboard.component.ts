@@ -41,12 +41,6 @@ export class PortalDashboardComponent implements OnInit {
       this.userRole = user[environment.AUDIENCE_ROLE];
     });
 
-   /* this.curationService.getActivity(true).subscribe((userActivity) => {
-      this.dataSource = new MatTableDataSource<any>(userActivity);
-      this.lineData = this.graphUserActivity(userActivity);
-      this.dataSource.paginator = this.paginator;
-    });*/
-
     this.curationService.getGroupActivityFeed(true, 1).subscribe((recentActivity) => {
       this.recentActivity = recentActivity;
     });
@@ -60,15 +54,6 @@ export class PortalDashboardComponent implements OnInit {
     });
   }
 
-
-  navigateToAnnotation(element){
-    const diseaseId = element.source.disease.diseaseId;
-    this.router.navigate(['/portal/curate/' + diseaseId], {queryParams: {id:element.annotationId}});
-  }
-
-  /*
-    Group by day
-   */
   graphUserActivity(userActivity: any) {
     let dates = userActivity.map((activity) => activity.date);
     let counts = {};

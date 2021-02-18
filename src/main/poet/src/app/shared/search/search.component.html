@@ -1,15 +1,17 @@
 <div class="search">
   <mat-form-field>
-    <input matInput placeholder="Search for a disease" aria-label="State" [matAutocomplete]="auto" [formControl]="searchControl">
+    <input matInput placeholder="Search for a disease" aria-label="State" [matAutocomplete]="auto"
+           [formControl]="searchControl" #search (focusin)="showCreate()">
     <button mat-button *ngIf="searchControl.value != null" matSuffix mat-icon-button aria-label="Clear" (click)="resetSearchForm()">
       <mat-icon>close</mat-icon>
     </button>
-    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelection($event.option.value)" [displayWith]="displayFn.bind(this)">
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelection($event.option.value)"
+                      [displayWith]="displayFn.bind(this)">
       <mat-option *ngIf="isLoading" class="is-loading">Loading...</mat-option>
       <ng-container *ngIf="!isLoading">
-        <mat-option *ngFor="let response of filteredResponse" [value]="response">
-          <span class="result-name"><b>{{response.name}}</b></span>&nbsp;
-          <span class="result-id">{{response.id}}</span>
+        <mat-option *ngFor="let response of filteredResponse" [value]="response" [ngClass]="{'new-disease': response.type == 'new'}">
+          <div class="result-name"><b>{{response.name}}</b></div>&nbsp;
+          <div class="result-id">{{response.id}}</div>
         </mat-option>
       </ng-container>
     </mat-autocomplete>
