@@ -2,7 +2,7 @@ package org.monarchinitiative.poet.service
 
 import org.monarchinitiative.poet.repository.AnnotationSourceRepository
 import org.monarchinitiative.poet.repository.DiseaseRepository
-import org.monarchinitiative.poet.repository.MaxoAnnotationRepository
+import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository
 import org.monarchinitiative.poet.repository.PublicationRepository
 import org.monarchinitiative.poet.repository.UserActivityRepository
 import org.monarchinitiative.poet.repository.UserRepository
@@ -40,8 +40,8 @@ class ServiceTestConfig {
     }
 
     @Bean
-    MaxoAnnotationRepository maxoAnnotationStub(){
-        return mockFactory.Stub(MaxoAnnotationRepository)
+    TreatmentAnnotationRepository maxoAnnotationStub(){
+        return mockFactory.Stub(TreatmentAnnotationRepository)
     }
 
     @Bean

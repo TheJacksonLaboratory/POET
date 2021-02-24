@@ -13,9 +13,7 @@
     New Treatment
     <!--<mat-icon class="help-icon" matTooltip="View Previous Versions"
               matTooltipPosition="below">history</mat-icon>-->
-    <mat-icon class="help-icon" matTooltip="Use Phenotypic Abnormality when annotating to the disease itself."
-              matTooltipPosition="below">help_outline
-    </mat-icon>
+    <mat-icon class="help-icon" (click)="closeForm()">cancel</mat-icon>
   </mat-card-title>
   <mat-card-subtitle>
     Medical Action Ontology [ MAxO ] <br><br>
@@ -26,8 +24,8 @@
     </button>
     <mat-list class="publication-list" aria-label="publication selection">
       <mat-list-item *ngFor="let publication of selectedPublications">
-        {{publication.publicationName}} {{publication.publicationId}}
-        <mat-icon (click)="remove(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
+          {{publication.publicationName}} {{publication.publicationId}}
+        <mat-icon matListIcon (click)="remove(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
     <form [formGroup]="formControlGroup">
@@ -82,7 +80,6 @@
           <mat-label>Evidence</mat-label>
           <mat-select formControlName="evidenceFormControl">
             <mat-option [value]="'TAS'">TAS</mat-option>
-            <mat-option [value]="'IEA'">IEA</mat-option>
             <mat-option [value]="'PCS'">PCS</mat-option>
           </mat-select>
         </mat-form-field>
@@ -96,18 +93,27 @@
         </mat-form-field>
       </div>
       <div class="form-content-section">
-        <mat-form-field class="maxo-form">
-          <mat-label>CHEBI Extension</mat-label>
-          <input matInput type="text" formControlName="extensionFormControl">
-          <button mat-button *ngIf="formControlGroup.get('extensionFormControl').value != ''" matSuffix mat-icon-button
+        <mat-form-field class="chebi-id" appearance="fill">
+          <mat-label>CHEBI Identifier</mat-label>
+          <input matInput type="text" formControlName="extensionIdFormControl">
+          <button mat-button *ngIf="formControlGroup.get('extensionIdFormControl').value != ''" matSuffix mat-icon-button
                   aria-label="Clear"
-                  (click)="formControlGroup.get('extensionFormControl').reset()">
+                  (click)="formControlGroup.get('extensionIdFormControl').reset()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>CHEBI Label</mat-label>
+          <input matInput type="text" formControlName="extensionLabelFormControl">
+          <button mat-button *ngIf="formControlGroup.get('extensionLabelFormControl').value != ''" matSuffix mat-icon-button
+                  aria-label="Clear"
+                  (click)="formControlGroup.get('extensionLabelFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
       </div>
       <div class="form-content-section">
-        <mat-form-field class="maxo-form">
+        <mat-form-field class="maxo-form" appearance="fill">
           <mat-label>Additional Annotation Comment</mat-label>
           <input matInput type="text" formControlName="commentFormControl">
           <button mat-button *ngIf="formControlGroup.get('commentFormControl').value != ''" matSuffix mat-icon-button
@@ -118,6 +124,8 @@
         </mat-form-field>
       </div>
     </form>
+    <p class="extra-information left" *ngIf="selectedAnnotation?.owner">Owner: {{selectedAnnotation.owner}} </p>
+    <p class="extra-information right" *ngIf="selectedAnnotation?.lastUpdatedDate">Last Updated: {{selectedAnnotation.lastUpdatedDate}} </p>
   </mat-card-content>
 
   <mat-card-actions>
@@ -126,9 +134,7 @@
       <mat-spinner color="accent" [diameter]="20" mode="indeterminate" *ngIf="savingAnnotation"></mat-spinner>
     </div>
     <div class="right-actions">
-      <button mat-stroked-button *ngIf="!formControlGroup.disabled">Save Draft</button>
       <button mat-stroked-button (click)="resetMaxoForm()" *ngIf="!formControlGroup.disabled">Clear</button>
-      <button mat-stroked-button (click)="closeForm()" *ngIf="formControlGroup.disabled">Close</button>
     </div>
   </mat-card-actions>
 </mat-card>

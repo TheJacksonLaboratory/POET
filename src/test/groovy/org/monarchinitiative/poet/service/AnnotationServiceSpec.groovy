@@ -2,11 +2,11 @@ package org.monarchinitiative.poet.service
 
 import org.monarchinitiative.poet.model.entities.AnnotationSource
 import org.monarchinitiative.poet.model.entities.Disease
-import org.monarchinitiative.poet.model.entities.MaxoAnnotation
+import org.monarchinitiative.poet.model.entities.TreatmentAnnotation
 import org.monarchinitiative.poet.model.entities.Publication
 import org.monarchinitiative.poet.repository.AnnotationSourceRepository
 import org.monarchinitiative.poet.repository.DiseaseRepository
-import org.monarchinitiative.poet.repository.MaxoAnnotationRepository
+import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository
 import org.monarchinitiative.poet.repository.PublicationRepository
 import org.monarchinitiative.poet.repository.UserActivityRepository
 import org.monarchinitiative.poet.repository.UserRepository
@@ -32,7 +32,7 @@ class AnnotationServiceSpec extends Specification {
     AnnotationSourceRepository annotationStub
 
     @Autowired
-    MaxoAnnotationRepository maxoAnnotationStub
+    TreatmentAnnotationRepository maxoAnnotationStub
 
     @Autowired
     UserActivityRepository userActivityStub
@@ -50,7 +50,7 @@ class AnnotationServiceSpec extends Specification {
         maxoAnnotationStub.findAllByAnnotationSourceDiseaseAndStatusNot(_, _) >> maxoAnnotationResponse
         publicationStub.findByPublicationId(_ as String) >> publicationResponse
         annotationStub.findByPublicationAndDisease(_ as Publication, _ as Disease) >> annotationSourceResponse
-        def result = annotationService.getMaxoAnnotation(inputParameters[0], inputParameters[1], inputParameters[2])
+        def result = annotationService.getTreatmentAnnotations(inputParameters[0], inputParameters[1], inputParameters[2])
         expect:
         result == expectedResponse
 
@@ -66,8 +66,8 @@ class AnnotationServiceSpec extends Specification {
 
     def getMaxoAnnotations() {
         return [
-                new MaxoAnnotation("MAXO:0919323", "Surgical Procedure", "arachnodayctly", "HP:0992334", "some evidence", "some comment", "some relation", "some extension"),
-                new MaxoAnnotation("MAXO:8882029", "Therapeutic Procedure", "some hp name", "HP:0222222", "some evidence", "some comment", "some relation", "some extension")
+                new TreatmentAnnotation("MAXO:0919323", "Surgical Procedure", "arachnodayctly", "HP:0992334", "some evidence", "some comment", "some relation", "some extension"),
+                new TreatmentAnnotation("MAXO:8882029", "Therapeutic Procedure", "some hp name", "HP:0222222", "some evidence", "some comment", "some relation", "some extension")
         ]
     }
 
