@@ -60,7 +60,6 @@ task clientTest(type: NpmTask, dependsOn: 'npmInstall') {
 }
 
 task shouldClientTest(){
-	// If warName uinclude client test
 	if(System.getProperty("clientTest")){
 		dependsOn(clientTest)
 	}
