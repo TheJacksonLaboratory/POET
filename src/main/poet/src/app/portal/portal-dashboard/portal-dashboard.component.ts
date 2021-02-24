@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from "@auth0/auth0-angular";
-import { MatPaginator } from "@angular/material/paginator";
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { transition, trigger, useAnimation } from "@angular/animations";
 import { fadeIn } from "ng-animate";
@@ -27,6 +27,9 @@ export class PortalDashboardComponent implements OnInit {
   pieData;
   lineData;
   userRole: any;
+  recentActivity: any;
+  lowValue: number = 0;
+  highValue: number = 5;
 
   constructor(public authService: AuthService, private router: Router,
               public curationService: CurationService, public dialog: MatDialog) {
@@ -38,11 +41,9 @@ export class PortalDashboardComponent implements OnInit {
       this.userRole = user[environment.AUDIENCE_ROLE];
     });
 
-    this.curationService.getUserActivity(true).subscribe((userActivity) => {
-      this.dataSource = new MatTableDataSource<any>(userActivity);
-      this.lineData = this.graphUserActivity(userActivity);
-      this.dataSource.paginator = this.paginator;
-    })
+    this.curationService.getGroupActivityFeed(true, 1).subscribe((recentActivity) => {
+      this.recentActivity = recentActivity;
+    });
 
     this.curationService.getUserContributions().subscribe((contributions) => {
       if (contributions.every(obj => obj.value === 0)) {
@@ -53,15 +54,6 @@ export class PortalDashboardComponent implements OnInit {
     });
   }
 
-
-  navigateToAnnotation(element){
-    const diseaseId = element.source.disease.diseaseId;
-    this.router.navigate(['/portal/curate/' + diseaseId], {queryParams: {id:element.annotationId}});
-  }
-
-  /*
-    Group by day
-   */
   graphUserActivity(userActivity: any) {
     let dates = userActivity.map((activity) => activity.date);
     let counts = {};
@@ -80,5 +72,11 @@ export class PortalDashboardComponent implements OnInit {
       "name": "Annotations",
       "series": graphSeries
     }]
+  }
+
+  getPaginatorData(event: PageEvent): PageEvent {
+    this.lowValue = event.pageIndex * event.pageSize;
+    this.highValue = this.lowValue + event.pageSize;
+    return event;
   }
 }

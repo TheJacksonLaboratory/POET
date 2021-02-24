@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from "@angular/forms";
 import { debounceTime, finalize } from "rxjs/operators";
 import { tap } from "rxjs/internal/operators/tap";
@@ -9,6 +9,7 @@ import { SearchResult } from "../models/search-models";
 import { DialogDiseaseComponent } from "../dialog-disease/dialog-disease.component";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
+import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
 
 @Component({
   selector: 'app-search',
@@ -18,6 +19,7 @@ import { Router } from "@angular/router";
 export class SearchComponent implements OnInit {
 
   @Input() role: string;
+  @ViewChild(MatAutocompleteTrigger, {read: MatAutocompleteTrigger}) searchBar: MatAutocompleteTrigger;
   searchControl = new FormControl();
   filteredResponse: any;
   isLoading = false;
@@ -49,7 +51,7 @@ export class SearchComponent implements OnInit {
         })
       ).subscribe((data: any[]) => {
         if(this.isElevatedCurator()){
-          this.filteredResponse = [{name: "Create a New Disease", id:"Not finding what you're looking for?", type: "new" }];
+          this.filteredResponse = [{name: "Create a New Disease", type: "new" }];
         }
         if (data && data.length > 0) {
           this.errorMsg = ""
@@ -58,6 +60,13 @@ export class SearchComponent implements OnInit {
     }, ()=> {
         this.isLoading = false;
     });
+  }
+
+  showCreate(){
+    if(!this.searchBar.panelOpen && !this.searchControl.value && this.isElevatedCurator()){
+      this.filteredResponse = [{name: "Create a New Disease", type: "new" }];
+      this.searchBar.openPanel();
+    }
   }
 
   resetSearchForm(){
