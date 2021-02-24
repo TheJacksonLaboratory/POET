@@ -1,16 +1,17 @@
 package org.monarchinitiative.poet.service;
 
+
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.model.response.AnnotationCount;
 import org.monarchinitiative.poet.model.response.Contribution;
-import org.monarchinitiative.poet.model.entities.Disease;
 import org.monarchinitiative.poet.model.entities.UserActivity;
 import org.monarchinitiative.poet.repository.DiseaseRepository;
 import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository;
 import org.monarchinitiative.poet.repository.UserActivityRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -42,11 +43,21 @@ public class StatisticsService {
      * @return a list of search response objects or an empty list
      * @since 0.5.0
      */
-    public List<UserActivity> getUserActivity(boolean all, Authentication authentication){
+    public List<UserActivity> getUserActivity(boolean all, int weeks, Authentication authentication){
+        long DAY_IN_MS = 1000 * 60 * 60 * 24;
+        LocalDateTime compare = new Date(System.currentTimeMillis() - ((7 * weeks) * DAY_IN_MS)).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         if(all){
-            return (List<UserActivity>) this.userActivityRepository.findAll();
+            if(weeks == 0){
+                return (List<UserActivity>) this.userActivityRepository.findAll();
+            } else {
+                return this.userActivityRepository.findUserActivityByLocalDateTimeAfter(compare);
+            }
         } else {
-            return this.userActivityRepository.findUserActivityByUserAuthId(authentication.getName());
+            if(weeks == 0){
+                return this.userActivityRepository.findUserActivityByUserAuthId(authentication.getName());
+            } else {
+                return this.userActivityRepository.findUserActivityByLocalDateTimeAfterAndUserAuthId(compare, authentication.getName());
+            }
         }
     }
 

@@ -9,7 +9,9 @@ import org.monarchinitiative.poet.views.UserActivityViews;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class is an implementation of Spring's Rest Controller. It provides RESTful API's to get useful
@@ -36,10 +38,11 @@ public class StatisticsController {
      * @since 0.5.0
      */
     @JsonView(UserActivityViews.Simple.class)
-    @GetMapping(value = "/user-activity", headers = "Accept=application/json")
+    @GetMapping(value = "/activity", headers = "Accept=application/json")
     public List<UserActivity> getUserActivity(@RequestParam(value = "all", defaultValue = "true") boolean all,
+                                              @RequestParam(value = "weeks", defaultValue = "0") int weeks,
                                               Authentication authentication){
-        return statisticsService.getUserActivity(all, authentication);
+        return statisticsService.getUserActivity(all, weeks, authentication);
     }
 
     /**
