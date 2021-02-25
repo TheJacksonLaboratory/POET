@@ -1,0 +1,76 @@
+.annotation-card {
+  box-shadow: none !important;
+  background-color: #393939;
+
+  .mat-card-title, .mat-card-subtitle {
+    text-align: center;
+  }
+
+  .mat-card-subtitle {
+    margin-bottom: 0;
+  }
+
+  .mat-checkbox {
+    margin-left: 1rem;
+  }
+
+  & .mat-list-item {
+    margin: 0 0 .5rem 0;
+  }
+
+  .source-subtitle {
+    .mat-icon {
+      vertical-align: bottom;
+    }
+
+    .title-id {
+      font-weight: 500;
+      margin: 1rem;
+    }
+  }
+
+  & .selection-wrapper {
+    background: #2c3e4c;
+
+    & .selection-id {
+      font-size: 1rem;
+      text-transform: capitalize;
+    }
+  }
+
+  & .add-annotation-btn {
+    color: white;
+    display: block;
+    margin: 1rem auto;
+    text-align: center;
+  }
+
+  & .add-annotation-btn-top {
+    float: right;
+  }
+
+  & .annotation-missing {
+    text-align: center;
+  }
+
+  & .new-annotation {
+    float: right;
+  }
+
+  & .spacer {
+    flex: 1;
+  }
+
+  & .active {
+    box-shadow: -3px -3px 3px -1px rgba(255, 255, 255, 0.2), 0px 3px 4px 1px rgba(255, 255, 255, 0.14), 0px 0px 8px 0px rgba(0, 0, 0, 0.12);
+  }
+
+  & .top-actions {
+    text-align: right;
+    margin-right: 1rem;
+  }
+
+  .selection-text {
+    margin-left: 1rem;
+  }
+}

@@ -1,0 +1,85 @@
+.maxo-card {
+  box-shadow: none !important;
+  background-color: #393939;
+  margin-left: 5px;
+  border: 1px solid gray;
+
+  & .mat-card-title, .mat-card-subtitle {
+    text-align: center;
+  }
+
+  & .mat-card-subtitle {
+    margin-bottom: 0;
+  }
+
+  .publication-list .mat-list-item {
+    background-color: #2b3f4e;
+
+    .mat-list-icon {
+      order: 10;
+    }
+  }
+
+  .mat-card-content, .mat-card-actions {
+    min-width: 300px;
+    margin: 0 auto 0 auto;
+  }
+
+  & .form-content-section {
+    min-width: 300px;
+    margin: 1.25rem auto 0 auto;
+
+    & .maxo-form {
+      width: 100%;
+    }
+
+    & .chebi-id {
+      margin-right: .5rem;
+    }
+  }
+
+  & .mat-card-actions {
+    margin: 1.25rem auto 1.25rem auto;
+    min-width: 300px;
+
+
+    & .left-actions {
+      display: inline-flex;
+
+      & .mat-progress-spinner {
+        margin-left: 1rem;
+        margin-top: .5rem;
+      }
+    }
+
+    & .right-actions {
+      float: right;
+      display: inline-flex;
+    }
+  }
+    font-size: 11px;
+  & .relation {
+    margin-left: 1rem;
+  }
+
+  & .mode-icon {
+    float: left;
+
+    &.lock {
+      color: indianred;
+    }
+
+    &.unlock {
+      color: lightgreen;
+    }
+  }
+
+  & .help-icon {
+    float: right;
+  }
+
+  .extra-information {
+    font-size: 11px;
+    margin-bottom: 0;
+  }
+}

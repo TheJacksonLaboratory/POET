@@ -1,0 +1,62 @@
+.home {
+  background: linear-gradient(to bottom, #275467 3%, #29657c 10%, #275669 55%, #275467 65%, #2b3f4e 85%, #2e3844);
+  height: 100%;
+  
+  .call-to-action {
+    color: white;
+    text-align: center;
+
+    & .title {
+      font-size: 3.5rem;
+    }
+
+    & .logo-title {
+      height: 175px;
+      margin-bottom: 3.5rem;
+    }
+
+    & .sub-title {
+      padding: 2.5rem;
+    }
+
+    & .first-btn {
+      margin-right: 1rem;
+      background-color: #393939 !important;
+    }
+
+    @media screen and (max-width: 1023px){
+      & .title {
+        font-size: 2.5rem;
+      }
+
+      & .sub-title {
+        padding: 1rem;
+      }
+    }
+  }
+
+  & .banner-supported {
+    width: 100%;
+    & .icon-wrapper {
+      padding: 0 2.5rem;
+
+      &:hover {
+        opacity: 0.65;
+        cursor: pointer;
+      }
+      & .icon {
+        height: 100px;
+        width: 100px;
+      }
+    }
+  }
+  @media screen and (max-width: 767px){
+    & .banner-supported {
+      margin: 2rem 0 0 0;
+      & .icon-wrapper{
+        padding: 0 0 2.5rem 0;
+      }
+    }
+  }
+}
+

@@ -1,0 +1,50 @@
+<mat-toolbar class="mat-elevation-z2 navbar" color="primary">
+  <mat-toolbar-row>
+    <div class="brand" routerLink="/">
+      <img class="icon" src="assets/poet-logo_white-icon-only.png"/>
+    </div>
+    <button mat-button class="primary nav-btn">Learn</button>
+    <button mat-button class="primary nav-btn" (click)="testApi()">Connect</button>
+    <div fxFlex class="toolbar-spacer"></div>
+    <div class="nickname" *ngIf="auth.user$ | async as user;" [routerLink]="['/portal/dashboard']">
+          <span *ngIf="user.nickname">{{user.nickname}}</span>
+          <span *ngIf="!user.nickname">GUEST</span>
+    </div>
+    <div class="portal-actions" *ngIf="isPortalPage()">
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item *ngFor="let item of portalActionItems"
+                [routerLink]="[item.route]"
+                [disabled]="!(auth.isAuthenticated$ | async) && item.private"
+                routerLinkActive="list-item-active"
+                [routerLinkActiveOptions]="{exact:true}"
+                class="primary nav-btn" >
+          <mat-icon matListIcon> {{ item.icon }} </mat-icon>
+          {{item.title}}
+        </button>
+      </mat-menu>
+    </div>
+    <ng-container *ngIf="isHomePage() && (auth.isLoading$ | async); else loggedIn">
+      <mat-spinner diameter="25" color="warn"></mat-spinner>
+    </ng-container>
+    <ng-template #loggedIn>
+      <ng-container *ngIf="auth.isAuthenticated$ | async; else loggedOut">
+        <button mat-icon-button class="primary nav-btn" (click)="auth.logout({ returnTo: document.location.origin })"
+                matTooltip="Logout">
+          <mat-icon>exit_to_app</mat-icon>
+        </button>
+      </ng-container>
+    </ng-template>
+    <ng-template #loggedOut>
+      <ng-container>
+        <button *ngIf="!(auth.isLoading$ | async)" mat-button class="primary nav-btn" (click)="loginWithRedirect()">Login</button>
+      </ng-container>
+    </ng-template>
+  </mat-toolbar-row>
+</mat-toolbar>
+<div [ngClass]="{'content': true, 'curate': isCuratePage()}">
+  <router-outlet></router-outlet>
+</div>
+
