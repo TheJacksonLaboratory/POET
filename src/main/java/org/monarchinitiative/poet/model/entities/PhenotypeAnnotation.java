@@ -11,11 +11,10 @@ import java.util.Objects;
 @Entity
 @DiscriminatorValue("phenotype")
 public class PhenotypeAnnotation extends Annotation {
-    private @Id @GeneratedValue Long id;
     private String hpoId;
     private String hpoName;
     private String ageOfOnset;
-    private String evidence;
+    private String evidenceType;
     private String modifier;
     private String description;
     private String aspect;
@@ -24,11 +23,11 @@ public class PhenotypeAnnotation extends Annotation {
     }
 
     public PhenotypeAnnotation(String hpoId, String hpoName, String ageOfOnset,
-                               String evidence, String modifier, String description, String aspect) {
+                               String evidenceType, String modifier, String description, String aspect) {
         this.hpoId = hpoId;
         this.hpoName = hpoName;
         this.ageOfOnset = ageOfOnset;
-        this.evidence = evidence;
+        this.evidenceType = evidenceType;
         this.modifier = modifier;
         this.description = description;
         this.aspect = aspect;
@@ -36,12 +35,12 @@ public class PhenotypeAnnotation extends Annotation {
 
     public PhenotypeAnnotation(AnnotationSource source, AnnotationStatus status,
                                String hpoId, String hpoName, String ageOfOnset,
-                               String evidence, String modifier, String description, String aspect){
+                               String evidenceType, String modifier, String description, String aspect){
         super(source, status);
         this.hpoId = hpoId;
         this.hpoName = hpoName;
         this.ageOfOnset = ageOfOnset;
-        this.evidence = evidence;
+        this.evidenceType = evidenceType;
         this.modifier = modifier;
         this.description = description;
         this.aspect = aspect;
@@ -59,8 +58,8 @@ public class PhenotypeAnnotation extends Annotation {
         return ageOfOnset;
     }
 
-    public String getEvidence() {
-        return evidence;
+    public String getEvidenceType() {
+        return evidenceType;
     }
 
     public String getModifier() {
@@ -81,11 +80,10 @@ public class PhenotypeAnnotation extends Annotation {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         PhenotypeAnnotation that = (PhenotypeAnnotation) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(hpoId, that.hpoId) &&
+        return  Objects.equals(hpoId, that.hpoId) &&
                 Objects.equals(hpoName, that.hpoName) &&
                 Objects.equals(ageOfOnset, that.ageOfOnset) &&
-                Objects.equals(evidence, that.evidence) &&
+                Objects.equals(evidenceType, that.evidenceType) &&
                 Objects.equals(modifier, that.modifier) &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(aspect, that.aspect);
@@ -93,17 +91,16 @@ public class PhenotypeAnnotation extends Annotation {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, hpoId, hpoName, ageOfOnset, evidence, modifier, description, aspect);
+        return Objects.hash(super.hashCode(), hpoId, hpoName, ageOfOnset, evidenceType, modifier, description, aspect);
     }
 
     @Override
     public String toString() {
         return "PhenotypeAnnotation{" +
-                "id=" + id +
                 ", hpoId='" + hpoId + '\'' +
                 ", hpoName='" + hpoName + '\'' +
                 ", ageOfOnset='" + ageOfOnset + '\'' +
-                ", evidence='" + evidence + '\'' +
+                ", evidence='" + evidenceType + '\'' +
                 ", modifier='" + modifier + '\'' +
                 ", description='" + description + '\'' +
                 ", aspect='" + aspect + '\'' +

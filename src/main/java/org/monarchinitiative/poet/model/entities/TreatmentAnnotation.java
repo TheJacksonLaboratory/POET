@@ -8,7 +8,6 @@ import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.views.AnnotationViews;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @DiscriminatorValue("treatment")

@@ -21,7 +21,7 @@ import { environment } from "../../../environments/environment";
 export class PortalCurateComponent implements OnInit {
 
   selectionType: string;
-  selectedOntology: string;
+  selectedCategory: string;
   selectedDisease: Disease;
   showLoader: boolean = false;
   fxLayout: string = "row";
@@ -33,8 +33,8 @@ export class PortalCurateComponent implements OnInit {
   sourceAndOntologySelected: boolean = false;
   showForm: boolean = false;
   annotationItems = [
-    {value: 'hpo', display: 'Phenotypes', icon: 'assignment', disabled: true, count: 0},
-    {value: 'maxo', display: 'Treatments', icon: 'healing', disabled: false, count: 0}
+    {value: 'phenotype', display: 'Phenotypes', icon: 'assignment', disabled: false, count: 0},
+    {value: 'treatment', display: 'Treatments', icon: 'healing', disabled: false, count: 0}
   ];
   userRole: string = 'GUEST';
 
@@ -64,7 +64,7 @@ export class PortalCurateComponent implements OnInit {
       }
     });
 
-    this.stateService.selectedOntology.subscribe((ontology) => this.selectedOntology = ontology);
+    this.stateService.selectedCategory.subscribe((category) => this.selectedCategory = category);
 
     this.authService.user$.subscribe((user) => {
       this.userRole = user[environment.AUDIENCE_ROLE];
@@ -76,10 +76,6 @@ export class PortalCurateComponent implements OnInit {
       }
     });
   }
-
-  /**
-   * Display Form
-   */
 
   handleForm(value: boolean) {
     if (value) {
@@ -118,25 +114,25 @@ export class PortalCurateComponent implements OnInit {
   getAnnotationCount(){
       this.curationService.getAnnotationCounts(this.selectedDisease.diseaseId).subscribe((counts) => {
         this.annotationItems.forEach((item) => {
-          if(item.value == 'hpo'){
+          if(item.value == 'phenotype'){
             item.count = counts.phenotypeCount;
-          } else if(item.value == 'maxo') {
+          } else if(item.value == 'treatment') {
            item.count = counts.treatmentCount;
           }
         });
       });
   }
 
-  shouldShowMaxoCard() {
-    return this.selectedDisease && this.selectedOntology === 'maxo' && this.showForm;
+  shouldShowTreatmentCard() {
+    return this.selectedDisease && this.selectedCategory === 'treatment' && this.showForm;
   }
 
-  shouldShowHpoCard() {
-    return this.selectedDisease && this.selectedOntology === 'hpo' && this.showForm;
+  shouldShowPhenotypeCard() {
+    return this.selectedDisease && this.selectedCategory === 'phenotype' && this.showForm;
   }
 
-  changeOntology(ontology: string) {
-    this.stateService.setSelectedOntology(ontology);
+  changeCategory(ontology: string) {
+    this.stateService.setSelectedCategory(ontology);
   }
 
   navigateToPage(disease) {

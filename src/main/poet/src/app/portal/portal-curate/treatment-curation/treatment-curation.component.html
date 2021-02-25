@@ -1,4 +1,4 @@
-<mat-card class="treatment-card">
+<mat-card class="treatment-card form-card">
   <mat-card-title>
     <mat-icon class="mode-icon lock" *ngIf="formControlGroup.disabled"
               matTooltip="View Mode Only"
@@ -25,12 +25,13 @@
     <mat-list class="publication-list" aria-label="publication selection">
       <mat-list-item *ngFor="let publication of selectedPublications">
           {{publication.publicationName}} {{publication.publicationId}}
-        <mat-icon matListIcon (click)="remove(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
+        <span class="spacer"></span>
+        <mat-icon class="remove-icon" matListIcon (click)="remove(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
     <form [formGroup]="formControlGroup">
       <div class="form-content-section">
-        <mat-form-field class="maxo-form" appearance="fill">
+        <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>HPO Term</mat-label>
           <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
                  [matAutocomplete]="hpo">
@@ -53,7 +54,7 @@
         </mat-form-field>
       </div>
       <div class="form-content-section">
-        <mat-form-field class="maxo-form" appearance="fill">
+        <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>MAxO Term</mat-label>
           <input matInput placeholder="Search for a MAxO Term" formControlName="maxoFormControl" ngDefaultControl
                  [matAutocomplete]="maxoAuto">
@@ -113,7 +114,7 @@
         </mat-form-field>
       </div>
       <div class="form-content-section">
-        <mat-form-field class="maxo-form" appearance="fill">
+        <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>Additional Annotation Comment</mat-label>
           <input matInput type="text" formControlName="commentFormControl">
           <button mat-button *ngIf="formControlGroup.get('commentFormControl').value != ''" matSuffix mat-icon-button

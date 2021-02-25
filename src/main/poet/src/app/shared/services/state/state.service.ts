@@ -11,7 +11,7 @@ export class StateService implements OnInit {
     disease: null
   });
 
-  private selectedOntologySubject: BehaviorSubject<string> = new BehaviorSubject<string>('maxo');
+  private selectedCategorySubject: BehaviorSubject<string> = new BehaviorSubject<string>('treatment');
   private sourceAndOntologySelectedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private selectedDiseaseSubject: BehaviorSubject<Disease> = new BehaviorSubject<Disease>(null);
   private reloadAnnotationsSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -21,7 +21,7 @@ export class StateService implements OnInit {
   private selectedAnnotationModeSubject: BehaviorSubject<any> = new BehaviorSubject<any>("view");
 
   selectedAnnotationSource: Observable<AnnotationSource> = this.selectedAnnotationSourceSubject.asObservable();
-  selectedOntology: Observable<string> = this.selectedOntologySubject.asObservable();
+  selectedCategory: Observable<string> = this.selectedCategorySubject.asObservable();
   sourceAndOntologySelected: Observable<boolean> = this.sourceAndOntologySelectedSubject.asObservable();
   selectedDisease: Observable<Disease> = this.selectedDiseaseSubject.asObservable();
   selectedTreatmentAnnotation: Observable<any> = this.selectedTreatmentAnnotationSubject.asObservable();
@@ -37,21 +37,21 @@ export class StateService implements OnInit {
   ngOnInit(){
   }
 
-  setSelectedOntology(ontology: string): void {
-    this.selectedOntologySubject.next(ontology);
+  setSelectedCategory(ontology: string): void {
+    this.selectedCategorySubject.next(ontology);
     if(this.selectedAnnotationSourceSubject.getValue().publication != null &&
       this.selectedAnnotationSourceSubject.getValue().disease != null){
       this.sourceAndOntologySelectedSubject.next(true);
     }
   }
 
-  getSelectedOntology() {
-    return this.selectedOntologySubject.getValue();
+  getSelectedCategory() {
+    return this.selectedCategorySubject.getValue();
   }
 
   setSelectedSource(annotationSource: AnnotationSource): void {
     this.selectedAnnotationSourceSubject.next(annotationSource);
-    if(this.selectedOntologySubject.getValue() != ''){
+    if(this.selectedCategorySubject.getValue() != ''){
       this.sourceAndOntologySelectedSubject.next(true);
     }
   }

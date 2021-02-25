@@ -50,7 +50,7 @@ export class DialogSourceComponent implements OnInit {
         this.annotatedPublications$ = this.curationService.getDiseasePublications(disease.diseaseId);
       }
     });
-    this.stateService.selectedOntology.subscribe((ontology) => {
+    this.stateService.selectedCategory.subscribe((ontology) => {
       this.selectedOntology = ontology;
     })
     this.annotationSourceControl.valueChanges

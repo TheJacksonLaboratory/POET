@@ -1,4 +1,4 @@
-<mat-card class="phenotype-card">
+<mat-card class="phenotype-card form-card">
   <mat-card-title>
     <mat-icon class="mode-icon lock" *ngIf="formControlGroup.disabled"
               matTooltip="View Mode Only"
@@ -10,9 +10,7 @@
               matTooltipPosition="below">
       lock_open
     </mat-icon>
-    New Treatment
-    <!--<mat-icon class="help-icon" matTooltip="View Previous Versions"
-              matTooltipPosition="below">history</mat-icon>-->
+    New Phenotype
     <mat-icon class="help-icon" matTooltip="Use Phenotypic Abnormality when annotating to the disease itself."
               matTooltipPosition="below">help_outline
     </mat-icon>
@@ -27,12 +25,13 @@
     <mat-list class="publication-list" aria-label="publication selection">
       <mat-list-item *ngFor="let publication of selectedPublications">
         {{publication.publicationName}} {{publication.publicationId}}
-        <mat-icon (click)="remove(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
+        <span class="spacer"></span>
+        <mat-icon class="remove-icon" (click)="remove(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
     <form [formGroup]="formControlGroup">
       <div class="form-content-section">
-        <mat-form-field class="maxo-form" appearance="fill">
+        <mat-form-field class="phenotype-form" appearance="fill">
           <mat-label>HPO Term</mat-label>
           <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
                  [matAutocomplete]="hpo">
@@ -50,29 +49,6 @@
               <span class="option-name">{{option.name}}</span>
               &nbsp;
               <span class="option-id">{{option.id}}</span>
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-      </div>
-      <div class="form-content-section">
-        <mat-form-field class="maxo-form" appearance="fill">
-          <mat-label>MAxO Term</mat-label>
-          <input matInput placeholder="Search for a MAxO Term" formControlName="maxoFormControl" ngDefaultControl
-                 [matAutocomplete]="maxoAuto">
-          <button mat-button *ngIf="formControlGroup.get('maxoFormControl').value != null"
-                  matSuffix mat-icon-button aria-label="Clear" (click)="resetMaxoTermSelect()">
-            <mat-icon>close</mat-icon>
-          </button>
-          <mat-hint *ngIf="!selectedTreatment">Try: cognitive therapy</mat-hint>
-          <mat-error *ngIf="formControlGroup.get('maxoFormControl').hasError('notFound')">
-            Looks like there was an error with the MAxO API.
-          </mat-error>
-          <mat-autocomplete #maxoAuto="matAutocomplete" (optionSelected)="selectedTreatment = $event.option.value"
-                            [displayWith]="displayMaxoFn">
-            <mat-option class="auto-complete-option" *ngFor="let option of maxoOptions" [value]="option">
-              <span class="option-name">{{option.name}}</span>
-              &nbsp;
-              <span class="option-id">{{option.ontologyId}}</span>
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
@@ -96,7 +72,7 @@
         </mat-form-field>
       </div>
       <div class="form-content-section">
-        <mat-form-field class="maxo-form">
+        <mat-form-field class="phenotype-form">
           <mat-label>CHEBI Extension</mat-label>
           <input matInput type="text" formControlName="extensionFormControl">
           <button mat-button *ngIf="formControlGroup.get('extensionFormControl').value != ''" matSuffix mat-icon-button
@@ -107,7 +83,7 @@
         </mat-form-field>
       </div>
       <div class="form-content-section">
-        <mat-form-field class="maxo-form">
+        <mat-form-field class="phenotype-form">
           <mat-label>Additional Annotation Comment</mat-label>
           <input matInput type="text" formControlName="commentFormControl">
           <button mat-button *ngIf="formControlGroup.get('commentFormControl').value != ''" matSuffix mat-icon-button

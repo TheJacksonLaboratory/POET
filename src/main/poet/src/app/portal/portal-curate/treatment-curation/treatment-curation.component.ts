@@ -123,13 +123,13 @@ export class TreatmentCurationComponent implements OnInit {
     }
     this.savingAnnotation = true;
     if (this.updating) {
-      this.curationService.updateTreatmentAnnotation(treatmentAnnotation).subscribe(() => {
+      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment').subscribe(() => {
         this.onSuccessfulMaxo('Annotation Updated!')
       }, (err) => {
         this.onErrorMaxoSave();
       });
     } else {
-      this.curationService.saveTreatmentAnnotation(treatmentAnnotation).subscribe(() => {
+      this.curationService.saveAnnotation(treatmentAnnotation, 'treatment').subscribe(() => {
         this.onSuccessfulMaxo('Annotation Saved!')
       }, (err) => {
         this.onErrorMaxoSave();

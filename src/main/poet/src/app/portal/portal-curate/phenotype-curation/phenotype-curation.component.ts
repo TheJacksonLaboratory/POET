@@ -9,6 +9,7 @@ import { StateService } from "../../../shared/services/state/state.service";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogSourceComponent } from "../dialog-source/dialog-source.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
+
 @Component({
   selector: 'poet-phenotype-curation',
   templateUrl: './phenotype-curation.component.html',
@@ -47,14 +48,13 @@ export class PhenotypeCurationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.stateService.selectedAnnotationSource.subscribe(source => {
       if (source?.publication) {
         this.selectedPublications = [source.publication];
       }
     });
 
-    this.stateService.selectedTreatmentAnnotation.subscribe((annotation) => {
+    this.stateService.selectedPhenotypeAnnotation.subscribe((annotation) => {
       if (!annotation) {
         this.selectedPublications = [];
         this.resetMaxoForm();
@@ -74,21 +74,6 @@ export class PhenotypeCurationComponent implements OnInit {
         this.formControlGroup.enable();
       }
     });
-
-    this.formControlGroup.get("maxoFormControl").valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe(query => {
-        if (query && query.length >= 3 && !this.formControlGroup.disabled) {
-          this.hpoService.searchMaxoTerms(query).subscribe((data) => {
-            if (!data) {
-              this.formControlGroup.get("maxoFormControl").setErrors({notFound: true});
-            }
-            this.maxoOptions = data;
-          }, (err) => {
-            this.formControlGroup.get("maxoFormControl").setErrors({notFound: true});
-          });
-        }
-      });
 
     this.formControlGroup.get("hpoFormControl").valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
@@ -120,22 +105,21 @@ export class PhenotypeCurationComponent implements OnInit {
     }
     this.savingAnnotation = true;
     if (this.updating) {
-      this.curationService.updateMaxoAnnotation(maxoAnnotation).subscribe(() => {
-        this.onSuccessfulMaxo('Annotation Updated!')
+      this.curationService.updateAnnotation(maxoAnnotation, 'phenotype').subscribe(() => {
+        this.onSuccessfulPhenotype('Annotation Updated!')
       }, (err) => {
-        this.onErrorMaxoSave();
+        this.onErrorPhenotypeSave();
       });
     } else {
-      this.curationService.saveMaxoAnnotation(maxoAnnotation).subscribe(() => {
-        this.onSuccessfulMaxo('Annotation Saved!')
+      this.curationService.updateAnnotation(maxoAnnotation, 'phenotype').subscribe(() => {
+        this.onSuccessfulPhenotype('Annotation Saved!')
       }, (err) => {
-        this.onErrorMaxoSave();
+        this.onErrorPhenotypeSave();
       });
     }
   }
 
   setFormValues(annotation: any) {
-    this.formControlGroup.get('maxoFormControl').setValue({ontologyId: annotation.maxoId, name: annotation.maxoName});
     this.formControlGroup.get('hpoFormControl').setValue({id: annotation.hpoId, name: annotation.hpoName});
     this.formControlGroup.get('evidenceFormControl').setValue(annotation.evidenceType);
     this.formControlGroup.get('relationFormControl').setValue(annotation.relation);
@@ -145,7 +129,7 @@ export class PhenotypeCurationComponent implements OnInit {
 
   }
 
-  onSuccessfulMaxo(message: string) {
+  onSuccessfulPhenotype(message: string) {
     this.savingAnnotation = false;
     this.stateService.triggerAnnotationReload(true);
     this.resetMaxoForm();
@@ -155,7 +139,7 @@ export class PhenotypeCurationComponent implements OnInit {
     });
   }
 
-  onErrorMaxoSave() {
+  onErrorPhenotypeSave() {
     this.savingAnnotation = false;
     this._snackBar.open('Error Saving Annotation!', 'Close', {
       duration: 3000,
@@ -203,7 +187,7 @@ export class PhenotypeCurationComponent implements OnInit {
       this.selectedPublications.splice(index, 1);
     }
   }
-  
+
   closeForm() {
     this.handleFormEmitter.emit(false);
   }
