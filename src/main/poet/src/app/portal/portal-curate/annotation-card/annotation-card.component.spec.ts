@@ -5,6 +5,8 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { SharedModule } from "../../../shared/shared.module";
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('AnnotationCardComponent', () => {
   let component: AnnotationCardComponent;
@@ -19,6 +21,12 @@ describe('AnnotationCardComponent', () => {
           provide: MatSnackBar,
           useValue: {}
         },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of()
+          }
+        }
       ]
     })
       .compileComponents();

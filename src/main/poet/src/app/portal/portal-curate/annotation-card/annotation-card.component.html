@@ -48,7 +48,8 @@
         </button>
       </mat-list-item>
     </mat-list>
-    <mat-paginator *ngIf="(treatmentAnnotations | async)?.length > 0" [length]="(treatmentAnnotations | async)?.length" pageSize=5
+    <mat-paginator *ngIf="(treatmentAnnotations | async)?.length > 0" [length]="(treatmentAnnotations | async)?.length"
+                   pageSize=5
                    (page)="getPaginatorData($event)"
                    showFirstLastButtons="false">
     </mat-paginator>
