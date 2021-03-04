@@ -18,6 +18,7 @@ export interface Publication {
   date: string;
   doi: string;
   firstAuthor: string;
+  url?: string;
 }
 
 export interface Disease {

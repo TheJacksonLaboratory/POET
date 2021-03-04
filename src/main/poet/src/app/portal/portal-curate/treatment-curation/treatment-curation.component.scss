@@ -12,12 +12,21 @@
     margin-bottom: 0;
   }
 
-  .publication-list .mat-list-item {
+  & .publication-list .mat-list-item {
     background-color: #2b3f4e;
 
-    .mat-list-icon {
+    & .mat-list-icon {
       order: 10;
     }
+      & .publication a {
+        color: unset;
+      }
+  }
+
+  .select-publication {
+    display: inline-block;
+    margin-left: 1rem;
+    color: indianred;
   }
 
   .mat-card-content, .mat-card-actions {
@@ -58,7 +67,7 @@
     }
   }
     font-size: 11px;
-  & .relation {
+  & .evidence {
     margin-left: 1rem;
   }
 

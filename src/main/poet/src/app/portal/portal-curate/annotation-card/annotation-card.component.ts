@@ -10,6 +10,8 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { Route } from '@angular/compiler/src/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageEvent } from "@angular/material/paginator";
+import { MatBottomSheet } from "@angular/material/bottom-sheet";
+import { DeleteSheetComponent } from "./delete-sheet/delete-sheet.component";
 
 @Component({
   selector: 'app-annotation-card',
@@ -25,6 +27,7 @@ export class AnnotationCardComponent implements OnInit {
 
   @Output('openForm') openAnnotationForm: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Input('role') userRole: string;
+  @Input('formOpen') formOpen: boolean = false;
   disease: Disease;
   publication: Publication;
   ontology: string;
@@ -37,7 +40,9 @@ export class AnnotationCardComponent implements OnInit {
   lowValue: number = 0;
   highValue: number = 5;
 
-  constructor(public stateService: StateService, public curationService: CurationService, private _snackBar: MatSnackBar, private route: ActivatedRoute) {
+
+  constructor(public stateService: StateService, public curationService: CurationService,
+              private _snackBar: MatSnackBar, private route: ActivatedRoute, private _bottomSheet: MatBottomSheet) {
   }
 
   ngOnInit(): void {
@@ -115,23 +120,32 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   annotationAction(annotation: any, action: any) {
-    this.activeAnnotation = annotation;
     if (action == 'delete') {
-      this.curationService.deleteTreatmentAnnotation(annotation.id).subscribe(() => {
-        this._snackBar.open('Annotation Deleted!', 'Close', {
-          duration: 3000,
-        });
-        this.updateAnnotations(null);
-        this.stateService.triggerAnnotationCountsReload(true);
-        this.closeForm();
+      this._bottomSheet.open(DeleteSheetComponent, {
+        restoreFocus: false,
+        disableClose: true
+      }).afterDismissed().subscribe(shouldDelete => {
+        if(shouldDelete){
+          this.curationService.deleteTreatmentAnnotation(annotation.id).subscribe(() => {
+            this._snackBar.open('Annotation Deleted!', 'Close', {
+              duration: 3000,
+            });
+            this.updateAnnotations(null);
+            this.stateService.triggerAnnotationCountsReload(true);
+            this.formOpen = false;
+            this.closeForm();
+          });
+        }
       });
     } else {
+      this.activeAnnotation = annotation;
       if (this.ontology == 'maxo' && action != 'delete') {
         this.stateService.setSelectedTreatmentAnnotation(annotation);
       } else {
         this.stateService.setSelectedPhenotypeAnnotation(annotation);
       }
       this.stateService.setSelectedAnnotationMode(action);
+      this.formOpen = true;
       this.openForm();
     }
   }
