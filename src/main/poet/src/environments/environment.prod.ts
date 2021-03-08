@@ -8,9 +8,9 @@ import { domain, clientId, audience } from '../../auth.config.json';
 export const environment = {
   production: true,
   auth: {
-    domain,
-    clientId,
-    audience
+    domain: "dev-poet.us.auth0.com",
+    clientId: "zAquxh5T1sPsoqBmSd8R7UasuFCcl9LY",
+    audience: "poet-api-audience"
   },
   httpInterceptor: {
     allowedList: [
