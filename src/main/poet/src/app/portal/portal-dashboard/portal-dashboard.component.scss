@@ -2,9 +2,9 @@
   padding: 1rem .5rem;
 
   & .mat-card-title {
-    padding: 15px;
-    background: #296a7ca1;
-    border-bottom: #8c8c8c solid 1px;
+    text-align: center;
+    font-weight: 400;
+    padding: 1rem;
   }
 
   & .mat-card:not(:first-child) {
@@ -15,15 +15,36 @@
     margin: 1rem 0 0 0;
   }
 
-  & .search-card {
+  & .dash-card {
     padding: 0;
     & .search-wrapper {
       margin: 0 auto;
       width: 30%;
+      padding: 0 1rem 1rem 1rem;
     }
 
     & .mat-card-content {
       padding: .5rem;
+    }
+
+    & .card-row {
+      margin-top: 1rem;
+    }
+
+    h3 {
+      margin-bottom: 0;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    h4 {
+      margin-bottom: 0;
+      font-weight: 300;
+    }
+
+    & .subcard-bottom-border {
+      opacity: .5;
+      width: 60%;
     }
   }
 
