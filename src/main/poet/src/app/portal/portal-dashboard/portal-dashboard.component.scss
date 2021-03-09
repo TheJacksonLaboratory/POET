@@ -1,10 +1,15 @@
-.dashboard {
+.dashboard-wrapper {
   padding: 1rem .5rem;
+  height: calc(100% - 64px);
+
+  & .dashboard {
+    height: 100%;
+  }
 
   & .mat-card-title {
     text-align: center;
     font-weight: 400;
-    padding: 1rem;
+    padding: 1.5rem;
   }
 
   & .mat-card:not(:first-child) {
@@ -17,6 +22,7 @@
 
   & .dash-card {
     padding: 0;
+    height: 100%;
     & .search-wrapper {
       margin: 0 auto;
       width: 30%;
@@ -45,6 +51,12 @@
     & .subcard-bottom-border {
       opacity: .5;
       width: 60%;
+    }
+
+    & .no-activity {
+      text-align: center;
+      font-weight: bold;
+      padding: .5rem;
     }
   }
 
@@ -158,12 +170,6 @@
         cursor: pointer;
       }
       outline: 0;
-    }
-
-    .no-activity {
-      text-align: center;
-      font-weight: bold;
-      padding: .5rem;
     }
   }
 }
