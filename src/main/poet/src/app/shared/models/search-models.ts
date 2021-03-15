@@ -37,3 +37,7 @@ export interface MaxoSearchResult extends MaxoTerm{
   synonymMatched: boolean;
 }
 
+export interface AnchorSearchResult {
+  ontologyId: string;
+  name: string;
+}

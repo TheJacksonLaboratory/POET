@@ -35,7 +35,7 @@ export class TreatmentCurationComponent implements OnInit {
     maxoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     hpoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     evidenceFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    relationFormControl: new FormControl({value: '', disabled: false}, Validators.required),
+    negationFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     extensionIdFormControl: new FormControl({value: '', disabled: false}, Validators.pattern("^CHEBI:[0-9]{5}$")),
     extensionLabelFormControl: new FormControl({value: '', disabled: false}),
     commentFormControl: new FormControl({value: '', disabled: false}),
@@ -183,14 +183,6 @@ export class TreatmentCurationComponent implements OnInit {
 
   resetMaxoForm() {
     this.formControlGroup.reset();
-  }
-
-  resetMaxoTermSelect() {
-    this.formControlGroup.get("maxoFormControl").reset();
-  }
-
-  resetHpoTermSelect() {
-    this.formControlGroup.get("hpoFormControl").reset();
   }
 
   displayMaxoFn(option) {

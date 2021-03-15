@@ -20,7 +20,7 @@
   </mat-card-subtitle>
   <mat-card-content>
     <button mat-raised-button color="primary" (click)="selectPublication()"
-            *ngIf="selectedPublications.length === 0">Select Publication
+            *ngIf="selectedPublications.length === 0">Select Source
     </button>
     <mat-list class="publication-list" aria-label="publication selection">
       <mat-list-item *ngFor="let publication of selectedPublications">
@@ -36,7 +36,7 @@
           <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
                  [matAutocomplete]="hpo">
           <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null" matSuffix mat-icon-button
-                  aria-label="Clear" (click)="resetHpoTermSelect()">
+                  aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
           <mat-hint *ngIf="!selectedHpo">Try: arachnodactyly</mat-hint>
@@ -59,7 +59,7 @@
           <input matInput placeholder="Search for a MAxO Term" formControlName="maxoFormControl" ngDefaultControl
                  [matAutocomplete]="maxoAuto">
           <button mat-button *ngIf="formControlGroup.get('maxoFormControl').value != null"
-                  matSuffix mat-icon-button aria-label="Clear" (click)="resetMaxoTermSelect()">
+                  matSuffix mat-icon-button aria-label="Clear" (click)="formControlGroup.get('maxoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
           <mat-hint *ngIf="!selectedTreatment">Try: cognitive therapy</mat-hint>

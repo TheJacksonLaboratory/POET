@@ -20,13 +20,13 @@
   </mat-card-subtitle>
   <mat-card-content>
     <button mat-raised-button color="primary" (click)="selectPublication()"
-            *ngIf="selectedPublications.length === 0">Select Publication
+            *ngIf="selectedPublications.length === 0">Select Source
     </button>
     <mat-list class="publication-list" aria-label="publication selection">
       <mat-list-item *ngFor="let publication of selectedPublications">
         {{publication.publicationName}} {{publication.publicationId}}
         <span class="spacer"></span>
-        <mat-icon class="remove-icon" (click)="remove(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
+        <mat-icon class="remove-icon" (click)="removePublication(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
     <form [formGroup]="formControlGroup">
@@ -36,7 +36,7 @@
           <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
                  [matAutocomplete]="hpo">
           <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null" matSuffix mat-icon-button
-                  aria-label="Clear" (click)="resetHpoTermSelect()">
+                  aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
           <mat-hint *ngIf="!selectedHpo">Try: arachnodactyly</mat-hint>
@@ -54,7 +54,64 @@
         </mat-form-field>
       </div>
       <div class="form-content-section">
+        <mat-form-field class="phenotype-form" appearance="fill">
+          <mat-label>HPO Clinical Modifiers</mat-label>
+          <mat-chip-list #chipList aria-label="Modifier Selection">
+            <mat-chip
+              *ngFor="let modifier of selectedModifiers"
+              [removable]="true"
+              (removed)="removeModifiers(modifier)">
+              {{modifier}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input
+              placeholder="Add HPO Modifier"
+              #modifierInput
+              formControlName="modifierFormControl"
+              [matAutocomplete]="auto"
+              [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+          </mat-chip-list>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <mat-option *ngFor="let modifier of modifierOptions" [value]="modifier">
+              {{modifier.name}} {{modifier.ontologyId}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="form-content-section">
         <mat-form-field appearance="fill">
+          <mat-label>HPO Age Of Onset</mat-label>
+          <input matInput placeholder="Search for an HPO Age of Onset" formControlName="onsetFormControl" ngDefaultControl
+                 [matAutocomplete]="hpo">
+          <button mat-button *ngIf="formControlGroup.get('onsetFormControl').value != null" matSuffix mat-icon-button
+                  aria-label="Clear" (click)="formControlGroup.get('onsetFormControl').reset()">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-hint *ngIf="!selectedHpo">Try: Childhood onset</mat-hint>
+          <mat-error *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound')">
+            Looks like there was an error with the HPO API.
+          </mat-error>
+          <mat-autocomplete #hpo="matAutocomplete" (optionSelected)="selectedHpo = $event.option.value"
+                            [displayWith]="displayHpoFn">
+            <mat-option class="auto-complete-option" *ngFor="let option of onsetOptions" [value]="option">
+              <span class="option-name">{{option.name}}</span>
+              &nbsp;
+              <span class="option-id">{{option.ontologyId}}</span>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field class="ml1" appearance="fill">
+          <mat-label>Frequency</mat-label>
+          <input matInput type="text" formControlName="frequencyFormControl"  (keydown.enter)="$event.preventDefault()">
+          <mat-hint>N / M observations</mat-hint>
+          <button mat-button *ngIf="formControlGroup.get('frequencyFormControl').value != ''" matSuffix mat-icon-button
+                  aria-label="Clear"
+                  (click)="formControlGroup.get('frequencyFormControl').reset()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+        <mat-form-field class="ml1" appearance="fill">
           <mat-label>Evidence</mat-label>
           <mat-select formControlName="evidenceFormControl">
             <mat-option [value]="'TAS'">TAS</mat-option>
@@ -62,29 +119,17 @@
             <mat-option [value]="'PCS'">PCS</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="fill" class="relation">
-          <mat-label>Relation</mat-label>
-          <mat-select formControlName="relationFormControl">
-            <mat-option [value]="'TREATS'">TREATS</mat-option>
-            <mat-option [value]="'PREVENTS'">PREVENTS</mat-option>
-            <mat-option [value]="'INVESTIGATES'">INVESTIGATES</mat-option>
-          </mat-select>
-        </mat-form-field>
+      </div>
+      <div class="form-content-section">
+        <label id="example-radio-group-label">Sex: </label>
+        <mat-radio-group aria-label="Select a gender" formControlName="sexFormControl">
+          <mat-radio-button checked="true" value="FEMALE">FEMALE</mat-radio-button>
+          <mat-radio-button value="MALE">MALE</mat-radio-button>
+        </mat-radio-group>
       </div>
       <div class="form-content-section">
         <mat-form-field class="phenotype-form">
-          <mat-label>CHEBI Extension</mat-label>
-          <input matInput type="text" formControlName="extensionFormControl">
-          <button mat-button *ngIf="formControlGroup.get('extensionFormControl').value != ''" matSuffix mat-icon-button
-                  aria-label="Clear"
-                  (click)="formControlGroup.get('extensionFormControl').reset()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
-      </div>
-      <div class="form-content-section">
-        <mat-form-field class="phenotype-form">
-          <mat-label>Additional Annotation Comment</mat-label>
+          <mat-label>Additional Annotation Description</mat-label>
           <input matInput type="text" formControlName="commentFormControl">
           <button mat-button *ngIf="formControlGroup.get('commentFormControl').value != ''" matSuffix mat-icon-button
                   aria-label="Clear"
@@ -103,7 +148,7 @@
     </div>
     <div class="right-actions">
       <button mat-stroked-button *ngIf="!formControlGroup.disabled">Save Draft</button>
-      <button mat-stroked-button (click)="resetMaxoForm()" *ngIf="!formControlGroup.disabled">Clear</button>
+      <button mat-stroked-button (click)="resetPhenotypeForm()" *ngIf="!formControlGroup.disabled">Clear</button>
       <button mat-stroked-button (click)="closeForm()" *ngIf="formControlGroup.disabled">Close</button>
     </div>
   </mat-card-actions>
