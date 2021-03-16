@@ -2,7 +2,7 @@ package org.monarchinitiative.poet.model.enumeration;
 
 public enum AnnotationStatus {
     OFFICIAL,
-    UNOFFICIAL,
+    ACCEPTED,
     UNDER_REVIEW,
     RETIRED
 }

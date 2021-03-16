@@ -1,6 +1,7 @@
 package org.monarchinitiative.poet.model.entities;
 
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
+import org.monarchinitiative.poet.model.requests.PhenotypeRequest;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -11,39 +12,57 @@ import java.util.Objects;
 @Entity
 @DiscriminatorValue("phenotype")
 public class PhenotypeAnnotation extends Annotation {
+
     private String hpoId;
     private String hpoName;
     private String ageOfOnset;
     private String evidenceType;
     private String modifier;
+    private String frequency;
     private String description;
-    private String aspect;
+    private String sex;
+    private String biocurator;
 
     public PhenotypeAnnotation(){
     }
 
-    public PhenotypeAnnotation(String hpoId, String hpoName, String ageOfOnset,
-                               String evidenceType, String modifier, String description, String aspect) {
+    public PhenotypeAnnotation(String hpoId, String hpoName, String ageOfOnset, String evidenceType,
+                               String modifier, String frequency, String description, String sex) {
         this.hpoId = hpoId;
         this.hpoName = hpoName;
         this.ageOfOnset = ageOfOnset;
         this.evidenceType = evidenceType;
         this.modifier = modifier;
+        this.frequency = frequency;
         this.description = description;
-        this.aspect = aspect;
+        this.sex = sex;
     }
 
-    public PhenotypeAnnotation(AnnotationSource source, AnnotationStatus status,
-                               String hpoId, String hpoName, String ageOfOnset,
-                               String evidenceType, String modifier, String description, String aspect){
-        super(source, status);
+    public PhenotypeAnnotation(AnnotationSource annotationSource, AnnotationStatus status, String hpoId,
+                               String hpoName, String ageOfOnset, String evidenceType, String modifier,
+                               String frequency, String description, String sex) {
+        super(annotationSource, status);
         this.hpoId = hpoId;
         this.hpoName = hpoName;
         this.ageOfOnset = ageOfOnset;
         this.evidenceType = evidenceType;
         this.modifier = modifier;
+        this.frequency = frequency;
         this.description = description;
-        this.aspect = aspect;
+        this.sex = sex;
+    }
+
+    public PhenotypeAnnotation(PhenotypeRequest phenotypeRequest, AnnotationSource annotationSource,
+                               AnnotationStatus status) {
+        super(annotationSource, status);
+        this.hpoId = phenotypeRequest.getHpoId();
+        this.hpoName = phenotypeRequest.getHpoName();
+        this.ageOfOnset = phenotypeRequest.getAgeOfOnset();
+        this.evidenceType = phenotypeRequest.getEvidenceType();
+        this.modifier = phenotypeRequest.getModifiers();
+        this.frequency = phenotypeRequest.getFrequency();
+        this.description = phenotypeRequest.getDescription();
+        this.sex = phenotypeRequest.getSex();
     }
 
     public String getHpoId() {
@@ -70,40 +89,10 @@ public class PhenotypeAnnotation extends Annotation {
         return description;
     }
 
-    public String getAspect() {
-        return aspect;
+    public String getSex() { return sex; }
+
+    public void setBiocurator(String biocurator) {
+        this.biocurator = biocurator;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        PhenotypeAnnotation that = (PhenotypeAnnotation) o;
-        return  Objects.equals(hpoId, that.hpoId) &&
-                Objects.equals(hpoName, that.hpoName) &&
-                Objects.equals(ageOfOnset, that.ageOfOnset) &&
-                Objects.equals(evidenceType, that.evidenceType) &&
-                Objects.equals(modifier, that.modifier) &&
-                Objects.equals(description, that.description) &&
-                Objects.equals(aspect, that.aspect);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), hpoId, hpoName, ageOfOnset, evidenceType, modifier, description, aspect);
-    }
-
-    @Override
-    public String toString() {
-        return "PhenotypeAnnotation{" +
-                ", hpoId='" + hpoId + '\'' +
-                ", hpoName='" + hpoName + '\'' +
-                ", ageOfOnset='" + ageOfOnset + '\'' +
-                ", evidence='" + evidenceType + '\'' +
-                ", modifier='" + modifier + '\'' +
-                ", description='" + description + '\'' +
-                ", aspect='" + aspect + '\'' +
-                '}';
-    }
 }
