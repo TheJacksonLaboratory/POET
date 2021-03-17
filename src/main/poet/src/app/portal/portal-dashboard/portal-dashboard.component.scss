@@ -48,15 +48,16 @@
       font-weight: 300;
     }
 
-    & .subcard-bottom-border {
-      opacity: .5;
-      width: 60%;
-    }
-
     & .no-activity {
       text-align: center;
       font-weight: bold;
       padding: .5rem;
+    }
+
+    & .mat-tab-label-active {
+      background: #296a7c;
+      color: white;
+      opacity: 1;
     }
   }
 

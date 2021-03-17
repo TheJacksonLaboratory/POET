@@ -54,8 +54,8 @@ class StatisticsServiceSpec extends Specification {
         userActivityStub.countAllByAnnotation_AnnotationTypeAndUserAuthId(_, _) >> repositoryResponse
         def result = statisticsService.summarizeUserContributions(inputAuthentication)
         expect:
-        result.getMaxo() == repositoryResponse
-        result.getHpo() == 0
+        result.getTreatment() == repositoryResponse
+        result.getPhenotype() == 0
         result.getPhenopackets() == 0;
         where:
         inputAuthentication | repositoryResponse

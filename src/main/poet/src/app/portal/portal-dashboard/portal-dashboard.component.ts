@@ -23,7 +23,7 @@ export class PortalDashboardComponent implements OnInit {
   displayedColumns: string[] = ['category', 'curator', 'date', 'time', 'actions'];
   dataSource: any;
   user: any;
-  pieData;
+  pieData = [];
   userRole: any;
   recentActivity: any;
   lowValue: number = 0;
@@ -76,5 +76,9 @@ export class PortalDashboardComponent implements OnInit {
     this.lowValue = event.pageIndex * event.pageSize;
     this.highValue = this.lowValue + event.pageSize;
     return event;
+  }
+
+  noContributions(){
+    return this.pieData?.length == 0;
   }
 }

@@ -382,3 +382,15 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
     }
   }
 }
+
+.dash-card {
+  & .mat-tab-label-active {
+    background: #296a7c;
+    color: white;
+    opacity: 1;
+  }
+
+  & .mat-tab-body-wrapper {
+    margin: 1.5rem;
+  }
+}

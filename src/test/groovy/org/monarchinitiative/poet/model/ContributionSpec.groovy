@@ -16,8 +16,8 @@ class ContributionSpec extends Specification {
         def contribution = new Contribution(inputMaxoCount, inputHpoCount, inputPhenopacketCount);
 
         expect:
-        contribution.getMaxo() == expectedCounts[0]
-        contribution.getHpo() == expectedCounts[1]
+        contribution.getTreatment() == expectedCounts[0]
+        contribution.getPhenotype() == expectedCounts[1]
         contribution.getPhenopackets() == expectedCounts[2]
 
         where:
