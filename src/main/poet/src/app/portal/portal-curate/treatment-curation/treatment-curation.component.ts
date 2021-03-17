@@ -52,6 +52,8 @@ export class TreatmentCurationComponent implements OnInit {
 
     this.stateService.selectedAnnotationSource.subscribe(source => {
       if (source?.publication) {
+        const id = source.publication.publicationId.split(":")[1];
+        source.publication.url = `https://pubmed.ncbi.nlm.nih.gov/${id}/`;
         this.selectedPublications = [source.publication];
       }
     });
@@ -186,11 +188,11 @@ export class TreatmentCurationComponent implements OnInit {
   }
 
   resetMaxoTermSelect() {
-    this.formControlGroup.get("maxoFormControl").reset();
+    this.formControlGroup.get('maxoFormControl').reset();
   }
 
   resetHpoTermSelect() {
-    this.formControlGroup.get("hpoFormControl").reset();
+    this.formControlGroup.get('hpoFormControl').reset();
   }
 
   displayMaxoFn(option) {

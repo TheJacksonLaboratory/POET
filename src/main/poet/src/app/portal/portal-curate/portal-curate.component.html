@@ -22,7 +22,7 @@
   </div>
   <div class="curation-container" [fxLayout]="fxLayout" [fxLayoutAlign]="fxLayoutAlign" [@fadeIn]="selectedOntology">
     <app-annotation-card [fxFlex]="fxFlexAnnotations" [fxFlexOffset]="fxFlexAnnotationOffset" *ngIf="selectedDisease"
-                         (openForm)="handleForm($event)" [role]="userRole">
+                         (openForm)="handleForm($event)" [formOpen]="showForm" [role]="userRole">
 
     </app-annotation-card>
     <app-treatment-curation [fxFlex]="fxFlexForm" [fxFlexOffset]="fxFlexFormOffset" [role]="userRole"

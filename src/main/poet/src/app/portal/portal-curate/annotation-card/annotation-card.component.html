@@ -21,15 +21,20 @@
     </mat-form-field>-->
     <mat-list #maxo>
       <mat-list-item class="selection-wrapper mat-elevation-z3"
-                     [ngClass]="{'active': maxo == activeAnnotation}"
+                     [ngClass]="{'active': maxo == activeAnnotation, 'sm': !formOpen}"
                      *ngFor="let maxo of treatmentAnnotations | async | slice: lowValue : highValue">
         <mat-icon matListIcon>health_and_safety</mat-icon>
-        <div class="selection-text">
+        <div class="selection-text" *ngIf="formOpen">
           <span matLine class="selection-id">
             <strong>{{maxo.maxoName}}</strong>
           </span>
           <span matLine class="selection-id">
             {{maxo.relation}} <strong>{{maxo.hpoName}}</strong>
+          </span>
+        </div>
+        <div class="selection-text" *ngIf="!formOpen">
+          <span matLine class="selection-id">
+            <strong>{{maxo.maxoName}}</strong> {{maxo.relation}} <strong>{{maxo.hpoName}}</strong>
           </span>
         </div>
         <div class="spacer"></div>
@@ -49,7 +54,8 @@
       </mat-list-item>
     </mat-list>
     <mat-paginator *ngIf="(treatmentAnnotations | async)?.length > 0" [length]="(treatmentAnnotations | async)?.length"
-                   pageSize=5
+                   [pageSize]="5"
+                   [pageSizeOptions]="[5, 10, 25]"
                    (page)="getPaginatorData($event)"
                    showFirstLastButtons="false">
     </mat-paginator>
