@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from "@auth0/auth0-angular";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
-import { MatTableDataSource } from "@angular/material/table";
 import { transition, trigger, useAnimation } from "@angular/animations";
 import { fadeIn } from "ng-animate";
 import { Router } from "@angular/router";
@@ -24,8 +23,7 @@ export class PortalDashboardComponent implements OnInit {
   displayedColumns: string[] = ['category', 'curator', 'date', 'time', 'actions'];
   dataSource: any;
   user: any;
-  pieData;
-  lineData;
+  pieData = [];
   userRole: any;
   recentActivity: any;
   lowValue: number = 0;
@@ -78,5 +76,9 @@ export class PortalDashboardComponent implements OnInit {
     this.lowValue = event.pageIndex * event.pageSize;
     this.highValue = this.lowValue + event.pageSize;
     return event;
+  }
+
+  noContributions(){
+    return this.pieData?.length == 0;
   }
 }

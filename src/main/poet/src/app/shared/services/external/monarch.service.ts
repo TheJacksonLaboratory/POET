@@ -16,7 +16,10 @@ export class MonarchService {
     return this.httpClient.get(environment.MONARCH_ENTITY_URL + query);
   }
 
-  // Search diseases only return ones with OMIM xref.
+  /**
+   * Searches BIOLINK API with encoded prefix disease.
+   * @param query
+   */
   searchDisease(query: string) {
     let parameters = new HttpParams().append("prefix", "MONDO").append("category", "disease");
     return this.httpClient.get(environment.MONARCH_SEARCH_URL + query, {params: parameters}).pipe(

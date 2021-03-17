@@ -19,8 +19,9 @@
 }
 
 .content {
-  height: 100%;
+  height: calc(100% - 64px);
   overflow: auto;
+  padding-top: 64px;
 
   &.curate {
     background: #393939;

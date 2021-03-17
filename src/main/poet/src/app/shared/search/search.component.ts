@@ -1,15 +1,15 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from "@angular/forms";
 import { debounceTime, finalize } from "rxjs/operators";
 import { tap } from "rxjs/internal/operators/tap";
 import { switchMap } from "rxjs/internal/operators/switchMap";
 import { CurationService } from "../services/curation/curation.service";
 import { of } from "rxjs/internal/observable/of";
-import { SearchResult } from "../models/search-models";
-import { DialogDiseaseComponent } from "../dialog-disease/dialog-disease.component";
-import { MatDialog } from "@angular/material/dialog";
+import { MonarchSearchResult } from "../models/search-models";
 import { Router } from "@angular/router";
 import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
+import { MonarchService } from "../services/external/monarch.service";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-search',
@@ -21,11 +21,12 @@ export class SearchComponent implements OnInit {
   @Input() role: string;
   @ViewChild(MatAutocompleteTrigger, {read: MatAutocompleteTrigger}) searchBar: MatAutocompleteTrigger;
   searchControl = new FormControl();
-  filteredResponse: any;
+  diseaseOptions: any;
   isLoading = false;
   errorMsg: string;
 
-  constructor(private curationService: CurationService, private router: Router, public dialog: MatDialog) {
+  constructor(private curationService: CurationService, private monarchService: MonarchService,
+              private router: Router, private _snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
@@ -34,12 +35,12 @@ export class SearchComponent implements OnInit {
         debounceTime(500),
         tap(() => {
           this.errorMsg = "";
-          this.filteredResponse = [];
+          this.diseaseOptions = [];
         }),
         switchMap(value => {
           if (this.hasValidInput(value)) {
             this.isLoading = true;
-            return this.curationService.searchAll(value)
+            return this.monarchService.searchDisease(value)
               .pipe(
                 finalize(() => {
                   this.isLoading = false
@@ -48,43 +49,44 @@ export class SearchComponent implements OnInit {
           } else {
             return of();
           }
-        })
-      ).subscribe((data: any[]) => {
-        if(this.isElevatedCurator()){
-          this.filteredResponse = [{name: "Create a New Disease", type: "new" }];
-        }
-        if (data && data.length > 0) {
-          this.errorMsg = ""
-          this.filteredResponse.push.apply(this.filteredResponse, data); // flatten arrays
-        }
-    }, ()=> {
-        this.isLoading = false;
-    });
-  }
-
-  showCreate(){
-    if(!this.searchBar.panelOpen && !this.searchControl.value && this.isElevatedCurator()){
-      this.filteredResponse = [{name: "Create a New Disease", type: "new" }];
-      this.searchBar.openPanel();
-    }
+        })).subscribe(data => {
+            if (!data) {
+              this.searchControl.setErrors({notFound: true});
+            }
+            this.diseaseOptions = data;
+          }, (err) => {
+            this.searchControl.setErrors({notFound: true});
+        });
   }
 
   resetSearchForm(){
     this.searchControl.reset();
     this.isLoading = false;
-    this.filteredResponse = [];
+    this.diseaseOptions = [];
   }
 
-  onSelection(result) {
-    if(result.type == 'disease'){
-      this.router.navigate(['/portal/curate/' + result.id]);
-    } else if(result.type == 'new'){
-      // open new disease dialog
-      this.dialog.open(DialogDiseaseComponent, {
-        minWidth: 500,
-        maxWidth: 600
-      })
-    }
+  onSelection(monarchSearchResult: MonarchSearchResult) {
+    this.curationService.getDisease(monarchSearchResult.id).subscribe( result => {
+      this.router.navigate(['/portal/curate/' + result.diseaseId]);
+      }, error => {
+       if(error.status == 404){
+         this.monarchService.getDisease(monarchSearchResult.id).subscribe((diseaseData: any) => {
+           const diseaseToSave = {
+             description: diseaseData.description,
+             diseaseId: diseaseData.id,
+             diseaseName: diseaseData.label
+           };
+           this.curationService.saveDisease(diseaseToSave).subscribe(() => {
+             this.router.navigate(['/portal/curate/' + diseaseToSave.diseaseId]);
+           }, () => {
+             this._snackBar.open('Error Saving New Disease!', 'Close', {
+               duration: 3000,
+               horizontalPosition: "left"
+             });
+           })
+         });
+       }
+    });
   }
 
   hasValidInput(val: string) {
@@ -93,9 +95,9 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  displayFn(searchResult: SearchResult) {
-    if (searchResult && searchResult.name != "Create a New Disease") {
-      return searchResult.name;
+  displayFn(monarchSearchResult: MonarchSearchResult) {
+    if (monarchSearchResult) {
+      return monarchSearchResult.match;
     }
   }
 

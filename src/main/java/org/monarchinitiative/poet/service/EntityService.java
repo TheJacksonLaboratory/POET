@@ -77,13 +77,9 @@ public class EntityService {
      * @return a disease or nothing
      * @since 0.5.0
      */
-    public boolean saveNewDisease(Disease disease, Authentication authentication){
-        User user = userRepository.findDistinctByAuthId(authentication.getName());
-        if(user != null && user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)){
-            this.diseaseRepository.save(disease);
-            return true;
-        }
-        return false;
+    public boolean saveNewDisease(Disease disease){
+        this.diseaseRepository.save(disease);
+        return true;
     }
 
 

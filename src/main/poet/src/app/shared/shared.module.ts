@@ -15,7 +15,6 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
-import { MonarchSearchComponent } from './monarch-search/monarch-search.component';
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
@@ -26,14 +25,13 @@ import { MatMenuModule } from "@angular/material/menu";
 import { NgxChartsModule } from "@swimlane/ngx-charts";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatCheckboxModule } from "@angular/material/checkbox";
-import { DialogDiseaseComponent } from './dialog-disease/dialog-disease.component';
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { FilterPipe } from './pipes/filter.pipe';
 import { MatChipsModule } from "@angular/material/chips";
 import { MatRadioModule } from "@angular/material/radio";
 
 @NgModule({
-  declarations: [SearchComponent, MonarchSearchComponent, DialogDiseaseComponent, FilterPipe],
+  declarations: [SearchComponent, FilterPipe],
   providers: [FilterPipe],
   imports: [
     CommonModule,
@@ -91,7 +89,6 @@ import { MatRadioModule } from "@angular/material/radio";
     MatProgressSpinnerModule,
     MatBottomSheetModule,
     MatSnackBarModule,
-    MonarchSearchComponent,
     MatTabsModule,
     MatTooltipModule,
     MatMenuModule,
