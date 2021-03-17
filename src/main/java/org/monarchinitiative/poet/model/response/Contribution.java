@@ -1,22 +1,22 @@
 package org.monarchinitiative.poet.model.response;
 
 public class Contribution {
-    Integer maxo;
-    Integer hpo;
+    Integer treatment;
+    Integer phenotype;
     Integer phenopackets;
 
-    public Contribution(Integer maxo, Integer hpo, Integer phenopackets) {
-        this.maxo = maxo == null ? 0 : maxo;
-        this.hpo = hpo == null ? 0 : hpo;
+    public Contribution(Integer treatment, Integer phenotype, Integer phenopackets) {
+        this.treatment = treatment == null ? 0 : treatment;
+        this.phenotype = phenotype == null ? 0 : phenotype;
         this.phenopackets = phenopackets == null ? 0 : phenopackets;
     }
 
-    public Integer getMaxo() {
-        return maxo;
+    public Integer getTreatment() {
+        return treatment;
     }
 
-    public Integer getHpo() {
-        return hpo;
+    public Integer getPhenotype() {
+        return phenotype;
     }
 
     public Integer getPhenopackets() {

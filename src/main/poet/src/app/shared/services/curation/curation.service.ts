@@ -337,8 +337,8 @@ export class CurationService {
   getUserContributions() {
     return this.httpClient.get(environment.POET_API_STATISTICS_CONTRIBUTION_URL).pipe(
       map((contributions) => {
-        return [{"value": contributions["maxo"], "name": "Medical Action Ontology"},
-          {"value": contributions["hpo"], "name": "Human Phenotype Ontology"},
+        return [{"value": contributions["treatment"], "name": "Medical Action Ontology"},
+          {"value": contributions["phenotype"], "name": "Human Phenotype Ontology"},
           {"value": contributions["phenopackets"], "name": "PhenoPackets"}];
       })
     );

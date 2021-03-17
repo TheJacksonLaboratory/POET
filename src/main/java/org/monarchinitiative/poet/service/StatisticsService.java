@@ -69,10 +69,10 @@ public class StatisticsService {
      * @since 0.5.0
      */
     public Contribution summarizeUserContributions(Authentication authentication){
-        final int maxo = userActivityRepository.countAllByAnnotation_AnnotationTypeAndUserAuthId("maxo", authentication.getName());
-        final int hpo = 0;
+        final int treatment = userActivityRepository.countAllByAnnotation_AnnotationTypeAndUserAuthId("maxo", authentication.getName());
+        final int phenotype = 0;
         final int phenopackets = 0;
-        return new Contribution(maxo, hpo, phenopackets);
+        return new Contribution(treatment, phenotype, phenopackets);
     }
 
     public AnnotationCount summarizeAnnotations(String diseaseId){
@@ -86,6 +86,6 @@ public class StatisticsService {
             treatmentCount = (int) this.treatmentAnnotationRepository.countAllByStatusNot(AnnotationStatus.RETIRED);
         }
 
-        return new AnnotationCount(0, treatmentCount);
+        return new AnnotationCount(phenotypeCount, treatmentCount);
     }
 }

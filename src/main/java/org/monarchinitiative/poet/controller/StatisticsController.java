@@ -56,6 +56,11 @@ public class StatisticsController {
         return statisticsService.summarizeUserContributions(authentication);
     }
 
+    /**
+     * The endpoint to get annotation summary statistics by type.
+     * @param diseaseId a disease id
+     * @return
+     */
     @GetMapping(value = "/annotation/{diseaseId}")
     public AnnotationCount getAnnotationStatistics(@PathVariable(value = "diseaseId", required = false)  String diseaseId){
         return this.statisticsService.summarizeAnnotations(diseaseId);
