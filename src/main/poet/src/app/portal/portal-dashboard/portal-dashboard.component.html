@@ -1,35 +1,31 @@
-<div class="dashboard">
-  <div class="flex-row" fxFlexLayout="row">
-    <mat-card class="search-card" fxFlex="60" fxFlexOffset="20">
-      <mat-card-title>
-        Disease Curation
-      </mat-card-title>
+<div class="dashboard-wrapper">
+  <div class="flex-row dashboard" fxflexlayout="row wrap">
+    <mat-card class="dash-card" fxFlex="90" fxFlexOffset="5">
+      <mat-card-title>Phenomic Observation Explication Tool</mat-card-title>
       <mat-card-content>
-        <div class="search-wrapper">
-          <app-search [role]="userRole"></app-search>
+        <div fxflexlayout="row">
+          <div class="search-wrapper">
+            <app-search [role]="userRole"></app-search>
+          </div>
         </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-  <div fxflexlayout="row" class="flex-row">
-    <mat-card class="recently-curated-card" fxFlex="60" fxFlexOffset="20">
-      <mat-card-title>
-        Recent Activity
-      </mat-card-title>
-      <mat-card-content>
-        <mat-list *ngFor="let recent of recentActivity">
-          <mat-list-item [routerLink]="'/curate/' + recent.diseaseId" class="activity-item">
-            <h3>{{recent.view}}</h3>
-            <span class="spacer"></span>
-            <button mat-stroked-button>View Disease</button>
-          </mat-list-item>
-        </mat-list>
-        <p class="no-activity" *ngIf="recentActivity?.length == 0">No Activity Since Last Week.</p>
-        <mat-paginator *ngIf="recentActivity?.length > 0" [length]="recentActivity?.length" pageSize=5
-                       (page)="getPaginatorData($event)"
-                       showFirstLastButtons="false">
-        </mat-paginator>
+        <div class="card-row" fxflexlayout="row">
+          <div fxFlex="45" fxFlexOffset="5">
+            <h3 class="center">Recent Activity</h3>
+            <hr class="subcard-bottom-border">
+            <mat-list *ngFor="let recent of recentActivity">
+              <mat-list-item [routerLink]="'/curate/' + recent.diseaseId" class="activity-item">
+                <h4>{{recent.view}}</h4>
+                <span class="spacer"></span>
+                <button mat-stroked-button>View Disease</button>
+              </mat-list-item>
+            </mat-list>
+            <p class="no-activity" *ngIf="recentActivity?.length == 0 || !recentActivity">No Activity Since Last Week.</p>
+            <mat-paginator *ngIf="recentActivity?.length > 0" [length]="recentActivity?.length" pageSize=5
+                           (page)="getPaginatorData($event)"
+                           showFirstLastButtons="false">
+            </mat-paginator>
+          </div>
+        </div>
       </mat-card-content>
     </mat-card>
   </div>

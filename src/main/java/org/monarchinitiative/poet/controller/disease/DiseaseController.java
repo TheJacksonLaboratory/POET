@@ -74,8 +74,8 @@ public class DiseaseController {
      */
     @JsonView(DiseaseViews.Simple.class)
     @PutMapping(value = "/", headers = "Accept=application/json")
-    public ResponseEntity<?> newDisease(@RequestBody Disease disease, Authentication authentication){
-        if(!this.entityService.saveNewDisease(disease, authentication)){
+    public ResponseEntity<?> newDisease(@RequestBody Disease disease){
+        if(!this.entityService.saveNewDisease(disease)){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } else {
             return ResponseEntity.ok().build();
