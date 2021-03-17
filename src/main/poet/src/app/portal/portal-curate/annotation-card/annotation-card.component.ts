@@ -15,6 +15,8 @@ import { bounceInLeft } from "ng-animate";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageEvent } from "@angular/material/paginator";
+import { MatBottomSheet } from "@angular/material/bottom-sheet";
+import { DeleteSheetComponent } from "./delete-sheet/delete-sheet.component";
 
 @Component({
   selector: 'poet-annotation-card',
@@ -30,6 +32,7 @@ export class AnnotationCardComponent implements OnInit {
 
   @Output('openForm') openAnnotationForm: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Input('role') userRole: string;
+  @Input('formOpen') formOpen: boolean = false;
   disease: Disease;
   publication: Publication;
   category: string;
@@ -43,7 +46,9 @@ export class AnnotationCardComponent implements OnInit {
   lowValue: number = 0;
   highValue: number = 5;
 
-  constructor(public stateService: StateService, public curationService: CurationService, private _snackBar: MatSnackBar, private route: ActivatedRoute) {
+
+  constructor(public stateService: StateService, public curationService: CurationService,
+              private _snackBar: MatSnackBar, private route: ActivatedRoute, private _bottomSheet: MatBottomSheet) {
   }
 
   ngOnInit(): void {
@@ -133,7 +138,6 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   annotationAction(annotation: any, action: any) {
-    this.activeAnnotation = annotation;
     if (action == 'delete') {
       if(this.category == 'treatment'){
         this.curationService.deleteAnnotation(annotation.id, this.category).subscribe(() => {
@@ -161,6 +165,7 @@ export class AnnotationCardComponent implements OnInit {
         this.stateService.setSelectedPhenotypeAnnotation(annotation);
       }
       this.stateService.setSelectedAnnotationMode(action);
+      this.formOpen = true;
       this.openForm();
     }
   }

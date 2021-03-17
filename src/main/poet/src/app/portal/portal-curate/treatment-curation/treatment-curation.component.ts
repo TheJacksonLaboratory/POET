@@ -52,6 +52,8 @@ export class TreatmentCurationComponent implements OnInit {
 
     this.stateService.selectedAnnotationSource.subscribe(source => {
       if (source?.publication) {
+        const id = source.publication.publicationId.split(":")[1];
+        source.publication.url = `https://pubmed.ncbi.nlm.nih.gov/${id}/`;
         this.selectedPublications = [source.publication];
       }
     });

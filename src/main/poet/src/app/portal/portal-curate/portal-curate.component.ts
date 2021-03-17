@@ -26,10 +26,10 @@ export class PortalCurateComponent implements OnInit {
   showLoader: boolean = false;
   fxLayout: string = "row";
   fxLayoutAlign: string = "start stretch";
-  fxFlexAnnotations: string = "50";
+  fxFlexAnnotations: string = "60";
+  fxFlexAnnotationOffset: string = "20";
   fxFlexForm: string = "42";
   fxFlexFormOffset: string = "5"
-  fxFlexAnnotationOffset: string = "25";
   sourceAndOntologySelected: boolean = false;
   showForm: boolean = false;
   annotationItems = [

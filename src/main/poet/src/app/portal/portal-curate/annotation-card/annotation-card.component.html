@@ -24,12 +24,17 @@
                      [ngClass]="{'active': treatment == activeAnnotation}"
                      *ngFor="let treatment of treatmentAnnotations | async | slice: lowValue : highValue">
         <mat-icon matListIcon>health_and_safety</mat-icon>
-        <div class="selection-text">
+        <div class="selection-text" *ngIf="formOpen">
           <span matLine class="selection-id">
             <strong>{{treatment.maxoName}}</strong>
           </span>
           <span matLine class="selection-id">
             {{treatment.relation}} <strong>{{treatment.hpoName}}</strong>
+          </span>
+        </div>
+        <div class="selection-text" *ngIf="!formOpen">
+          <span matLine class="selection-id">
+            <strong>{{treatment.maxoName}}</strong> {{treatment.relation}} <strong>{{treatment.hpoName}}</strong>
           </span>
         </div>
         <div class="spacer"></div>
@@ -74,8 +79,9 @@
         </button>
       </mat-list-item>
     </mat-list>
-    <mat-paginator *ngIf="(treatmentAnnotations | async)?.length > 0 && category === 'treatment'" [length]="(treatmentAnnotations | async)?.length"
-                   pageSize=5
+    <mat-paginator *ngIf="(treatmentAnnotations | async)?.length > 0" [length]="(treatmentAnnotations | async)?.length"
+                   [pageSize]="5"
+                   [pageSizeOptions]="[5, 10, 25]"
                    (page)="getPaginatorData($event)"
                    showFirstLastButtons="false">
     </mat-paginator>
