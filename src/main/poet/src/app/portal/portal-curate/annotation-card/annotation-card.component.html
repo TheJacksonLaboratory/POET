@@ -3,7 +3,7 @@
     <span *ngIf="category == 'treatment'">Treatments</span>
     <span *ngIf="category == 'phenotype'">Phenotypes</span>
     <button class="add-annotation-btn-top" mat-mini-fab color="primary" aria-label="Add Annotation"
-            *ngIf="isUser() && (treatmentAnnotations | async)?.length > 0"
+            *ngIf="isUser() && ((treatmentAnnotations | async)?.length > 0 || (phenotypeAnnotations | async)?.length > 0)"
             (click)="annotationAction(null, 'create')">
       <mat-icon>add</mat-icon>
     </button>

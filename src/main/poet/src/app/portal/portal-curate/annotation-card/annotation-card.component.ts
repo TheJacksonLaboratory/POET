@@ -53,17 +53,18 @@ export class AnnotationCardComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.stateService.selectedDisease.subscribe((disease: Disease) => {
+      if (disease != null) {
+        this.disease = disease;
+        this.updateAnnotations({disease: disease, publication: null});
+      }
+    });
+
     this.stateService.selectedCategory.subscribe((category) => {
       this.category = category;
       this.updateAnnotations(null);
     });
 
-    this.stateService.selectedDisease.subscribe((disease: Disease) => {
-      if (this.category === 'treatment' && disease != null) {
-        this.disease = disease;
-        this.updateAnnotations({disease: disease, publication: null});
-      }
-    });
 
     this.stateService.triggerReloadAnnotations.subscribe((reload) => {
       // TODO: Polling in the future.

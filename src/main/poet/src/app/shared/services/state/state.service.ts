@@ -11,7 +11,7 @@ export class StateService implements OnInit {
     disease: null
   });
 
-  private selectedCategorySubject: BehaviorSubject<string> = new BehaviorSubject<string>('treatment');
+  private selectedCategorySubject: BehaviorSubject<string> = new BehaviorSubject<string>('phenotype');
   private sourceAndOntologySelectedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private selectedDiseaseSubject: BehaviorSubject<Disease> = new BehaviorSubject<Disease>(null);
   private reloadAnnotationsSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);

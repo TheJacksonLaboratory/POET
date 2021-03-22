@@ -454,8 +454,7 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   }
 
   & .form-content-section {
-    min-width: 300px;
-    margin: 1.25rem auto 0 auto;
+    margin: 1.25rem 0 .5rem 0;
 
     & .treatment-form, .phenotype-form {
       width: 100%;

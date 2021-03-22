@@ -31,7 +31,8 @@ export class PhenotypeCurationComponent implements OnInit {
   modifierOptions: AnchorSearchResult[];
   onsetOptions: AnchorSearchResult[];
   selectedPublications: Publication[] = [];
-  selectedModifiers: string[];
+  selectedModifiers: string[] = [];
+  selectedOnset: any;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   savingAnnotation: boolean = false;

@@ -29,8 +29,8 @@
         <mat-icon class="remove-icon" (click)="removePublication(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
-    <form [formGroup]="formControlGroup">
-      <div class="form-content-section">
+    <form [formGroup]="formControlGroup" fxLayout="column" fxLayoutAlign="start stretch">
+      <div class="form-content-section" fxFlex="100">
         <mat-form-field class="phenotype-form" appearance="fill">
           <mat-label>HPO Term</mat-label>
           <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
@@ -39,7 +39,7 @@
                   aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
-          <mat-hint *ngIf="!selectedHpo">Try: arachnodactyly</mat-hint>
+          <mat-hint *ngIf="!selectedHpo">e.g. arachnodactyly</mat-hint>
           <mat-error *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound')">
             Looks like there was an error with the HPO API.
           </mat-error>
@@ -53,9 +53,10 @@
           </mat-autocomplete>
         </mat-form-field>
       </div>
-      <div class="form-content-section">
+      <div class="form-content-section" fxFlex="100">
         <mat-form-field class="phenotype-form" appearance="fill">
           <mat-label>HPO Clinical Modifiers</mat-label>
+          <mat-hint>The speed of progression, triggering factors, location or severity.</mat-hint>
           <mat-chip-list #chipList aria-label="Modifier Selection">
             <mat-chip
               *ngFor="let modifier of selectedModifiers"
@@ -68,13 +69,15 @@
               placeholder="Add HPO Modifier"
               #modifierInput
               formControlName="modifierFormControl"
-              [matAutocomplete]="auto"
+              [matAutocomplete]="modifier"
               [matChipInputFor]="chipList"
               [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
           </mat-chip-list>
-          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          <mat-autocomplete #modifier="matAutocomplete" (optionSelected)="selected($event)">
             <mat-option *ngFor="let modifier of modifierOptions" [value]="modifier">
-              {{modifier.name}} {{modifier.ontologyId}}
+              <span class="option-name">{{modifier.name}}</span>
+              &nbsp;
+              <span class="option-id">{{modifier.ontologyId}}</span>
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
@@ -83,16 +86,16 @@
         <mat-form-field appearance="fill">
           <mat-label>HPO Age Of Onset</mat-label>
           <input matInput placeholder="Search for an HPO Age of Onset" formControlName="onsetFormControl" ngDefaultControl
-                 [matAutocomplete]="hpo">
+                 [matAutocomplete]="onset">
           <button mat-button *ngIf="formControlGroup.get('onsetFormControl').value != null" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('onsetFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
-          <mat-hint *ngIf="!selectedHpo">Try: Childhood onset</mat-hint>
+          <mat-hint *ngIf="!selectedHpo">e.g. Childhood onset</mat-hint>
           <mat-error *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound')">
             Looks like there was an error with the HPO API.
           </mat-error>
-          <mat-autocomplete #hpo="matAutocomplete" (optionSelected)="selectedHpo = $event.option.value"
+          <mat-autocomplete #onset="matAutocomplete" (optionSelected)="selectedOnset = $event.option.value"
                             [displayWith]="displayHpoFn">
             <mat-option class="auto-complete-option" *ngFor="let option of onsetOptions" [value]="option">
               <span class="option-name">{{option.name}}</span>

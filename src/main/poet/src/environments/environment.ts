@@ -53,7 +53,7 @@ export const environment = {
   POET_API_STATISTICS_ANNOTATION_URL: POET_BASE_URL + "/statistics/annotation/",
   HPO_API_HPO_SEARCH_URL: HPO_BASE_URL + 'hpo/search',
   HPO_API_MAXO_SEARCH_URL: HPO_BASE_URL + 'maxo/search/',
-  HPO_API_HPO_SEARCH_DESCENDANTS_URL: HPO_BASE_URL + 'hpo/descendant',
+  HPO_API_HPO_SEARCH_DESCENDANTS_URL: HPO_BASE_URL + 'hpo/search/descendants/',
   MONARCH_SEARCH_URL: MONARCH_BASE_URL + '/search/entity/autocomplete/',
   MONARCH_ENTITY_URL: MONARCH_BASE_URL + '/bioentity/',
   PUBMED_SUMMARY_URL: PUBMED_BASE_URL + 'esummary.fcgi',

@@ -28,8 +28,8 @@ export class PortalCurateComponent implements OnInit {
   fxLayoutAlign: string = "start stretch";
   fxFlexAnnotations: string = "60";
   fxFlexAnnotationOffset: string = "20";
-  fxFlexForm: string = "42";
-  fxFlexFormOffset: string = "5"
+  fxFlexForm: string = "45";
+  fxFlexFormOffset: string = "2.5"
   sourceAndOntologySelected: boolean = false;
   showForm: boolean = false;
   annotationItems = [
@@ -80,8 +80,8 @@ export class PortalCurateComponent implements OnInit {
   handleForm(value: boolean) {
     if (value) {
       this.showForm = true;
-      this.fxFlexAnnotations = "42";
-      this.fxFlexAnnotationOffset = "5";
+      this.fxFlexAnnotations = "45";
+      this.fxFlexAnnotationOffset = "2.5";
     } else {
       this.showForm = false;
       this.fxFlexAnnotations = "50";

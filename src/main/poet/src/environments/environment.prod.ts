@@ -4,7 +4,6 @@ const POET_BASE_URL = 'https://ctmaxo01ld.jax.org/api/v1';
 const MONARCH_BASE_URL = 'https://api.monarchinitiative.org/api';
 const PUBMED_BASE_URL = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
 const HPO_BASE_URL = 'https://hpo.jax.org/api/';
-import { domain, clientId, audience } from '../../auth.config.json';
 export const environment = {
   production: true,
   auth: {
@@ -49,6 +48,7 @@ export const environment = {
   POET_API_STATISTICS_CONTRIBUTION_URL: POET_BASE_URL + "/statistics/contributions/",
   POET_API_STATISTICS_ANNOTATION_URL: POET_BASE_URL + "/statistics/annotation/",
   HPO_API_HPO_SEARCH_URL: HPO_BASE_URL + 'hpo/search',
+  HPO_API_HPO_SEARCH_DESCENDANTS: HPO_BASE_URL + 'hpo/search/descendants/',
   HPO_API_MAXO_SEARCH_URL: HPO_BASE_URL + 'maxo/search/',
   MONARCH_SEARCH_URL: MONARCH_BASE_URL + '/search/entity/autocomplete/',
   MONARCH_ENTITY_URL: MONARCH_BASE_URL + '/bioentity/',
