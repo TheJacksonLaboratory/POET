@@ -3,7 +3,7 @@ import { HpoService } from "../../../shared/services/external/hpo.service";
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { AnchorSearchResult, HpoTerm } from "../../../shared/models/search-models";
-import { AnnotationSource, Publication } from "../../../shared/models/models";
+import {AnnotationSource, PhenotypeAnnotation, Publication} from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { StateService } from "../../../shared/services/state/state.service";
 import { MatDialog } from "@angular/material/dialog";
@@ -33,19 +33,20 @@ export class PhenotypeCurationComponent implements OnInit {
   selectedPublications: Publication[] = [];
   selectedModifiers: string[] = [];
   selectedOnset: any;
+  selectedSex: any;
+  selectedQualifier: any;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   savingAnnotation: boolean = false;
   formControlGroup: FormGroup = new FormGroup({
     hpoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    onsetFormControl: new FormControl({value: '', disabled: false}, Validators.required),
+    onsetFormControl: new FormControl({value: '', disabled: false}),
     modifierFormControl: new FormControl({value: '', disabled: false}),
     evidenceFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    negationFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    sexFormControl: new FormControl({value: '', disabled: false}),
+    qualifierFormControl: new FormControl({value: '', disabled: false}),
+    sexFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     frequencyFormControl: new FormControl({value: '', disabled: false}, this.nGreaterThanM()),
-    extensionFormControl: new FormControl({value: '', disabled: false}),
-    commentFormControl: new FormControl({value: '', disabled: false}),
+    descriptionFormControl: new FormControl({value: '', disabled: false}),
   });
 
   constructor(public hpoService: HpoService,
@@ -135,9 +136,12 @@ export class PhenotypeCurationComponent implements OnInit {
       hpoId: this.formControlGroup.get('hpoFormControl').value.id,
       hpoName: this.formControlGroup.get('hpoFormControl').value.name,
       evidence: this.formControlGroup.get('evidenceFormControl').value,
-      relation: this.formControlGroup.get('relationFormControl').value,
-      comment: this.formControlGroup.get('commentFormControl').value,
-      extension: this.formControlGroup.get('extensionFormControl').value
+      description: this.formControlGroup.get('descriptionFormControl').value,
+      sex: this.selectedSex,
+      qualifier: this.selectedQualifier == true ? "NOT" : '',
+      frequency: this.formControlGroup.get('frequencyFormControl').value,
+      modifiers: this.selectedModifiers.join(";"),
+      onset: this.formControlGroup.get('onsetFormControl').value?.ontologyId
     }
     this.savingAnnotation = true;
     if (this.updating) {
@@ -155,14 +159,15 @@ export class PhenotypeCurationComponent implements OnInit {
     }
   }
 
-  setFormValues(annotation: any) {
+  setFormValues(annotation: PhenotypeAnnotation) {
     this.formControlGroup.get('hpoFormControl').setValue({id: annotation.hpoId, name: annotation.hpoName});
-    this.formControlGroup.get('evidenceFormControl').setValue(annotation.evidenceType);
-    this.formControlGroup.get('relationFormControl').setValue(annotation.relation);
-    this.formControlGroup.get('extensionFormControl').setValue(annotation.extension);
-    this.formControlGroup.get('commentFormControl').setValue(annotation.comment);
+    this.formControlGroup.get('evidenceFormControl').setValue(annotation.evidence);
+    this.formControlGroup.get('descriptionFormControl').setValue(annotation.description);
+    this.formControlGroup.get('frequencyFormControl').setValue(annotation.frequency);
+    this.selectedModifiers = annotation.modifiers.split(";");
+    this.selectedSex = annotation.sex ? annotation.sex : '';
+    this.selectedQualifier = annotation.qualifier == "NOT";
     this.stateService.setSelectedSource(annotation.annotationSource);
-
   }
 
   onSuccessfulPhenotype(message: string) {
@@ -205,7 +210,7 @@ export class PhenotypeCurationComponent implements OnInit {
   }
 
   displayHpoFn(option) {
-    return option && option.name ? `${option.name} ${option.id}` : '';
+    return option && option.name ? `${option.name} ${option.ontologyId}` : '';
   }
 
   removePublication(publication: Publication): void {
@@ -244,7 +249,7 @@ export class PhenotypeCurationComponent implements OnInit {
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedModifiers.push(event.option.viewValue);
+    this.selectedModifiers.push(event.option.value);
     this.modifierInput.nativeElement.value = '';
     this.formControlGroup.get("modifierFormControl").setValue(null);
   }

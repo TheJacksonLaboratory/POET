@@ -385,6 +385,7 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 
 .remove-icon {
   cursor: pointer;
+  padding: .25rem;
 }
 
 
@@ -454,7 +455,7 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   }
 
   & .form-content-section {
-    margin: 1.25rem 0 .5rem 0;
+    margin: .5rem 0 .5rem 0;
 
     & .treatment-form, .phenotype-form {
       width: 100%;

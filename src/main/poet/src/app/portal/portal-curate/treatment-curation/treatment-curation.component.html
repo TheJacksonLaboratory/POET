@@ -96,31 +96,6 @@
         </mat-form-field>
       </div>
       <div class="form-content-section">
-        <mat-form-field class="maxo-form" appearance="fill">
-          <mat-label>HPO Term</mat-label>
-          <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
-                 [matAutocomplete]="hpo">
-          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null" matSuffix mat-icon-button
-                  aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
-            <mat-icon>close</mat-icon>
-          </button>
-          <mat-hint *ngIf="!selectedHpo">
-            Try: Hypercalcemia
-          </mat-hint>
-          <mat-error *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound')">
-            Looks like there was an error with the HPO API.
-          </mat-error>
-          <mat-autocomplete #hpo="matAutocomplete" (optionSelected)="selectedHpo = $event.option.value"
-                            [displayWith]="displayHpoFn">
-            <mat-option class="auto-complete-option" *ngFor="let option of hpoOptions" [value]="option">
-              <span class="option-name">{{option.name}}</span>
-              &nbsp;
-              <span class="option-id">{{option.id}}</span>
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-      </div>
-      <div class="form-content-section">
         <mat-form-field class="chebi-id" appearance="fill">
           <mat-label>CHEBI Identifier</mat-label>
           <input matInput type="text" formControlName="extensionIdFormControl">
@@ -160,7 +135,7 @@
       <mat-spinner color="accent" [diameter]="20" mode="indeterminate" *ngIf="savingAnnotation"></mat-spinner>
     </div>
     <div class="right-actions">
-      <button mat-stroked-button (click)="resetMaxoForm()" *ngIf="!formControlGroup.disabled">Clear</button>
+      <button mat-stroked-button (click)="resetTreatmentForm()" *ngIf="!formControlGroup.disabled">Clear</button>
     </div>
   </mat-card-actions>
 </mat-card>

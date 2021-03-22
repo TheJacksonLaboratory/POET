@@ -29,9 +29,12 @@ export interface Disease {
 export interface PhenotypeAnnotation extends Annotation {
   hpoName: string;
   hpoId: string;
-  ageOfOnset: string;
+  onset: string;
   evidence: string;
-  modifier: string;
+  modifiers: string;
+  qualifier: string;
+  frequency: string;
+  sex: string;
   description: string;
 }
 

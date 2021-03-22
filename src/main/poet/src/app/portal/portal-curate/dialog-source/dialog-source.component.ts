@@ -19,7 +19,7 @@ export class DialogSourceComponent implements OnInit {
 
   annotationSourceControl = new FormControl('', [
     Validators.required]);
-  selectedOntology: string;
+  selectedCategory: string;
   selectedPublication: any;
   selectedDisease: any = {diseaseName: "", diseaseId: ""};
   selectedType: string;
@@ -50,8 +50,8 @@ export class DialogSourceComponent implements OnInit {
         this.annotatedPublications$ = this.curationService.getDiseasePublications(disease.diseaseId);
       }
     });
-    this.stateService.selectedCategory.subscribe((ontology) => {
-      this.selectedOntology = ontology;
+    this.stateService.selectedCategory.subscribe((category) => {
+      this.selectedCategory = category;
     })
     this.annotationSourceControl.valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
@@ -133,6 +133,7 @@ export class DialogSourceComponent implements OnInit {
       this.newPublication = true;
     } else {
       this.selectedPublication = publication;
+      this.closeDialog();
     }
   }
 
@@ -141,7 +142,7 @@ export class DialogSourceComponent implements OnInit {
   }
 
   getSecondAffirmation() {
-    if (this.selectedOntology == 'maxo') {
+    if (this.selectedCategory == 'treatment') {
       return 'I have affirmed that this publication describes medical actions for ' + this.selectedDisease.diseaseName;
     }
     return 'I have affirmed that this publication describes phenotypes for ' + this.selectedDisease.diseaseName;

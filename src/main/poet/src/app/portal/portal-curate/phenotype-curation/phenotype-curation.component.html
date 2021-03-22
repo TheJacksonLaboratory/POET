@@ -52,6 +52,16 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
+        <div [ngClass]="{'qualifier': formControlGroup.get('hpoFormControl').value == null, 'fr': true}">
+          <mat-checkbox aria-label="Is Qualified?" formControlName="qualifierFormControl"
+                        [(ngModel)]="selectedQualifier">
+            NOT CHARACTERIZED <span class="form-field-help-icon material-icons"
+                                    matTooltip="Is this disorder characterized by the hpo feature?"
+                                    matTooltipPosition="below">
+              help_outline
+            </span>
+          </mat-checkbox>
+        </div>
       </div>
       <div class="form-content-section" fxFlex="100">
         <mat-form-field class="phenotype-form" appearance="fill">
@@ -74,7 +84,7 @@
               [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
           </mat-chip-list>
           <mat-autocomplete #modifier="matAutocomplete" (optionSelected)="selected($event)">
-            <mat-option *ngFor="let modifier of modifierOptions" [value]="modifier">
+            <mat-option *ngFor="let modifier of modifierOptions" [value]="modifier.ontologyId">
               <span class="option-name">{{modifier.name}}</span>
               &nbsp;
               <span class="option-id">{{modifier.ontologyId}}</span>
@@ -85,7 +95,7 @@
       <div class="form-content-section">
         <mat-form-field appearance="fill">
           <mat-label>HPO Age Of Onset</mat-label>
-          <input matInput placeholder="Search for an HPO Age of Onset" formControlName="onsetFormControl" ngDefaultControl
+          <input matInput placeholder="Type something..." formControlName="onsetFormControl" ngDefaultControl
                  [matAutocomplete]="onset">
           <button mat-button *ngIf="formControlGroup.get('onsetFormControl').value != null" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('onsetFormControl').reset()">
@@ -124,19 +134,19 @@
         </mat-form-field>
       </div>
       <div class="form-content-section">
-        <label id="example-radio-group-label">Sex: </label>
-        <mat-radio-group aria-label="Select a gender" formControlName="sexFormControl">
-          <mat-radio-button checked="true" value="FEMALE">FEMALE</mat-radio-button>
-          <mat-radio-button value="MALE">MALE</mat-radio-button>
-        </mat-radio-group>
+          <label>Sex: </label>
+          <mat-radio-group aria-label="Select a gender" formControlName="sexFormControl" [(ngModel)]="selectedSex">
+            <mat-radio-button value="FEMALE">FEMALE</mat-radio-button>
+            <mat-radio-button value="MALE">MALE</mat-radio-button>
+          </mat-radio-group>
       </div>
       <div class="form-content-section">
         <mat-form-field class="phenotype-form">
           <mat-label>Additional Annotation Description</mat-label>
-          <input matInput type="text" formControlName="commentFormControl">
-          <button mat-button *ngIf="formControlGroup.get('commentFormControl').value != ''" matSuffix mat-icon-button
+          <input matInput type="text" formControlName="descriptionFormControl">
+          <button mat-button *ngIf="formControlGroup.get('descriptionFormControl').value != ''" matSuffix mat-icon-button
                   aria-label="Clear"
-                  (click)="formControlGroup.get('commentFormControl').reset()">
+                  (click)="formControlGroup.get('descriptionFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>

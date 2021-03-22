@@ -61,7 +61,7 @@ export class TreatmentCurationComponent implements OnInit {
     this.stateService.selectedTreatmentAnnotation.subscribe((annotation) => {
       if (!annotation) {
         this.selectedPublications = [];
-        this.resetMaxoForm();
+        this.resetTreatmentForm();
       } else {
         this.selectedAnnotation = annotation;
         this.setFormValues(annotation);
@@ -126,15 +126,15 @@ export class TreatmentCurationComponent implements OnInit {
     this.savingAnnotation = true;
     if (this.updating) {
       this.curationService.updateAnnotation(treatmentAnnotation, 'treatment').subscribe(() => {
-        this.onSuccessfulMaxo('Annotation Updated!')
+        this.onSuccessfulTreatment('Annotation Updated!')
       }, (err) => {
-        this.onErrorMaxoSave();
+        this.onErrorTreatmentSave();
       });
     } else {
       this.curationService.saveAnnotation(treatmentAnnotation, 'treatment').subscribe(() => {
-        this.onSuccessfulMaxo('Annotation Saved!')
+        this.onSuccessfulTreatment('Annotation Saved!')
       }, (err) => {
-        this.onErrorMaxoSave();
+        this.onErrorTreatmentSave();
       });
     }
   }
@@ -151,18 +151,18 @@ export class TreatmentCurationComponent implements OnInit {
 
   }
 
-  onSuccessfulMaxo(message: string) {
+  onSuccessfulTreatment(message: string) {
     this.savingAnnotation = false;
     this.stateService.triggerAnnotationReload(true);
     this.stateService.triggerAnnotationCountsReload(true);
-    this.resetMaxoForm();
+    this.resetTreatmentForm();
     this._snackBar.open(message, 'Close', {
       duration: 3000,
       horizontalPosition: "left"
     });
   }
 
-  onErrorMaxoSave() {
+  onErrorTreatmentSave() {
     this.savingAnnotation = false;
     this._snackBar.open('Error Saving Annotation!', 'Close', {
       duration: 3000,
@@ -183,7 +183,7 @@ export class TreatmentCurationComponent implements OnInit {
     return this.formControlGroup.valid && this.selectedPublications.length > 0 && !this.formControlGroup.disabled;
   }
 
-  resetMaxoForm() {
+  resetTreatmentForm() {
     this.formControlGroup.reset();
   }
 
