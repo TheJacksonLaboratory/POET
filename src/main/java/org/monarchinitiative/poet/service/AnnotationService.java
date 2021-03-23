@@ -11,6 +11,7 @@ import org.monarchinitiative.poet.repository.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -82,14 +83,15 @@ public class AnnotationService {
      * @param phenotypeRequest a phenotype request body
      * @param authentication a spring authentication object
      */
+    @Transactional()
     public void createPhenotypeAnnotation(PhenotypeRequest phenotypeRequest, Authentication authentication) throws DuplicateAnnotationException {
         final AnnotationSource annotationSource = getAnnotationSource(phenotypeRequest.getPublicationId(), phenotypeRequest.getDiseaseId());
         if(annotationSource != null){
             final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, annotationSource,
                     AnnotationStatus.UNDER_REVIEW);
-            if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceTypeAndAgeOfOnsetAndModifier(
+            if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndModifier(
                     annotation.getAnnotationSource(), annotation.getHpoId(), annotation.getSex(),
-                    annotation.getEvidenceType(), annotation.getAgeOfOnset(), annotation.getModifier())){
+                    annotation.getEvidence(), annotation.getOnset(), annotation.getModifier())){
                 throw new DuplicateAnnotationException("phenotype", annotation.getAnnotationSource().getDisease().getDiseaseName());
             }
             phenotypeAnnotationRepository.save(annotation);
@@ -111,9 +113,9 @@ public class AnnotationService {
                 oldAnnotation.getStatus());
 
         // See if we already have an annotation like this.
-        if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceTypeAndAgeOfOnsetAndModifierAndStatusNot(
+        if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndModifierAndStatusNot(
                 annotation.getAnnotationSource(), annotation.getHpoId(), annotation.getSex(),
-                annotation.getEvidenceType(), annotation.getAgeOfOnset(), annotation.getModifier(), AnnotationStatus.RETIRED)){
+                annotation.getEvidence(), annotation.getOnset(), annotation.getModifier(), AnnotationStatus.RETIRED)){
             throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseName());
         }
         phenotypeAnnotationRepository.save(oldAnnotation);
@@ -197,6 +199,7 @@ public class AnnotationService {
      *
      * @return a boolean whether the annotation was created or not.
      */
+    @Transactional()
     public void createTreatmentAnnotation(TreatmentRequest treatmentRequest, Authentication authentication) throws DuplicateAnnotationException {
         // We have a valid publication and a valid disease, do we have an annotation source for them?
         final AnnotationSource annotationSource = getAnnotationSource(treatmentRequest.getPublicationId(), treatmentRequest.getDiseaseId());
@@ -204,8 +207,8 @@ public class AnnotationService {
             final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, annotationSource);
             // Check if we have a duplicate annotation, if so throw an error
             // See if we already have an annotation like this.
-            if(treatmentAnnotationRepository.existsByAnnotationSourceAndAnnotationTypeAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceTypeAndRelationAndStatusNot(
-                    annotation.getAnnotationSource(), "treatment", annotation.getMaxoId(), annotation.getHpoId(), annotation.getExtensionId(), annotation.getEvidenceType(), annotation.getRelation(), AnnotationStatus.RETIRED)){
+            if(treatmentAnnotationRepository.existsByAnnotationSourceAndAnnotationTypeAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
+                    annotation.getAnnotationSource(), "treatment", annotation.getMaxoId(), annotation.getHpoId(), annotation.getExtensionId(), annotation.getEvidence(), annotation.getRelation(), AnnotationStatus.RETIRED)){
                 throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseName());
             }
             treatmentAnnotationRepository.save(annotation);
@@ -232,8 +235,8 @@ public class AnnotationService {
                     treatmentRequest.getComment(), treatmentRequest.getRelation(), treatmentRequest.getExtensionId(), treatmentRequest.getExtensionLabel());
 
             // See if we already have an annotation like this.
-            if(treatmentAnnotationRepository.existsByAnnotationSourceAndAnnotationTypeAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceTypeAndRelationAndStatusNot(
-                    annotation.getAnnotationSource(), "treatment", annotation.getMaxoId(), annotation.getHpoId(), annotation.getExtensionId(), annotation.getEvidenceType(), annotation.getRelation(), AnnotationStatus.RETIRED)){
+            if(treatmentAnnotationRepository.existsByAnnotationSourceAndAnnotationTypeAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
+                    annotation.getAnnotationSource(), "treatment", annotation.getMaxoId(), annotation.getHpoId(), annotation.getExtensionId(), annotation.getEvidence(), annotation.getRelation(), AnnotationStatus.RETIRED)){
                 throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseName());
             }
             treatmentAnnotationRepository.save(oldAnnotation);

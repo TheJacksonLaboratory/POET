@@ -19,15 +19,15 @@ export const environment = {
       POET_BASE_URL + '/statistics/activity/',
       POET_BASE_URL + '/statistics/contributions/',
       {
-        uri: POET_BASE_URL + '/annotation/treatments/*',
+        uri: POET_BASE_URL + '/annotation/*',
         httpMethod: HttpMethod.Post,
       },
       {
-        uri: POET_BASE_URL + '/annotation/treatments/*',
+        uri: POET_BASE_URL + '/annotation/*',
         httpMethod: HttpMethod.Put,
       },
       {
-        uri: POET_BASE_URL + '/annotation/treatments/*',
+        uri: POET_BASE_URL + '/annotation/*',
         httpMethod: HttpMethod.Delete,
       },
       {

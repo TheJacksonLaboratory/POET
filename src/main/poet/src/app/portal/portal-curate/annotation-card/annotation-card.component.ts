@@ -141,22 +141,37 @@ export class AnnotationCardComponent implements OnInit {
   annotationAction(annotation: any, action: any) {
     if (action == 'delete') {
       if(this.category == 'treatment'){
-        this.curationService.deleteAnnotation(annotation.id, this.category).subscribe(() => {
-          this._snackBar.open('Annotation Deleted!', 'Close', {
-            duration: 3000,
-          });
-          this.updateAnnotations(null);
-          this.stateService.triggerAnnotationCountsReload(true);
-          this.closeForm();
+        this._bottomSheet.open(DeleteSheetComponent, {
+          restoreFocus: false,
+          disableClose: true
+        }).afterDismissed().subscribe(shouldDelete => {
+          if(shouldDelete){
+            this.curationService.deleteAnnotation(annotation.id, 'treatment').subscribe(() => {
+              this._snackBar.open('Annotation Deleted!', 'Close', {
+                duration: 3000,
+              });
+              this.updateAnnotations(null);
+              this.stateService.triggerAnnotationCountsReload(true);
+              this.formOpen = false;
+              this.closeForm();
+            });
+        }
         });
       } else {
-        this.curationService.deleteAnnotation(annotation.id, this.category).subscribe(() => {
-          this._snackBar.open('Annotation Deleted!', 'Close', {
-            duration: 3000,
-          });
-          this.updateAnnotations(null);
-          this.stateService.triggerAnnotationCountsReload(true);
-          this.closeForm();
+        this._bottomSheet.open(DeleteSheetComponent, {
+          restoreFocus: false,
+          disableClose: true
+        }).afterDismissed().subscribe(shouldDelete => {
+          if(shouldDelete){
+            this.curationService.deleteAnnotation(annotation.id, this.category).subscribe(() => {
+              this._snackBar.open('Annotation Deleted!', 'Close', {
+                duration: 3000,
+              });
+              this.updateAnnotations(null);
+              this.stateService.triggerAnnotationCountsReload(true);
+              this.closeForm();
+            });
+          }
         });
       }
     } else {

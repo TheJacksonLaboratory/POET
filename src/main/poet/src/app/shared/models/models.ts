@@ -31,7 +31,7 @@ export interface PhenotypeAnnotation extends Annotation {
   hpoId: string;
   onset: string;
   evidence: string;
-  modifiers: string;
+  modifier: string;
   qualifier: string;
   frequency: string;
   sex: string;

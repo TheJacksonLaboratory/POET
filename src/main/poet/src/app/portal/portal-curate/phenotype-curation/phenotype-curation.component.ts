@@ -3,7 +3,7 @@ import { HpoService } from "../../../shared/services/external/hpo.service";
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { AnchorSearchResult, HpoTerm } from "../../../shared/models/search-models";
-import {AnnotationSource, PhenotypeAnnotation, Publication} from "../../../shared/models/models";
+import { AnnotationSource, PhenotypeAnnotation, Publication } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { StateService } from "../../../shared/services/state/state.service";
 import { MatDialog } from "@angular/material/dialog";
@@ -151,7 +151,7 @@ export class PhenotypeCurationComponent implements OnInit {
         this.onErrorPhenotypeSave();
       });
     } else {
-      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype').subscribe(() => {
+      this.curationService.saveAnnotation(phenotypeAnnotation, 'phenotype').subscribe(() => {
         this.onSuccessfulPhenotype('Annotation Saved!')
       }, (err) => {
         this.onErrorPhenotypeSave();
@@ -160,12 +160,13 @@ export class PhenotypeCurationComponent implements OnInit {
   }
 
   setFormValues(annotation: PhenotypeAnnotation) {
-    this.formControlGroup.get('hpoFormControl').setValue({id: annotation.hpoId, name: annotation.hpoName});
+    this.formControlGroup.get('hpoFormControl').setValue({ontologyId: annotation.hpoId, name: annotation.hpoName});
     this.formControlGroup.get('evidenceFormControl').setValue(annotation.evidence);
     this.formControlGroup.get('descriptionFormControl').setValue(annotation.description);
     this.formControlGroup.get('frequencyFormControl').setValue(annotation.frequency);
-    this.selectedModifiers = annotation.modifiers.split(";");
-    this.selectedSex = annotation.sex ? annotation.sex : '';
+    this.formControlGroup.get('onsetFormControl').setValue({ontologyId: annotation.onset, name: ""});
+    this.selectedModifiers = annotation.modifier.length > 0 ?  annotation.modifier.split(";") : [annotation.modifier]
+    this.selectedSex = annotation.sex;
     this.selectedQualifier = annotation.qualifier == "NOT";
     this.stateService.setSelectedSource(annotation.annotationSource);
   }
@@ -203,6 +204,9 @@ export class PhenotypeCurationComponent implements OnInit {
 
   resetPhenotypeForm() {
     this.formControlGroup.reset();
+    this.selectedQualifier = false;
+    this.selectedModifiers = [];
+    this.selectedOnset = [];
   }
 
   displayMaxoFn(option) {
@@ -213,6 +217,10 @@ export class PhenotypeCurationComponent implements OnInit {
     return option && option.name ? `${option.name} ${option.ontologyId}` : '';
   }
 
+  displayIdFn(option) {
+    return option && option.ontologyId ? `${option.name} ${option.ontologyId}` : '';
+  }
+
   removePublication(publication: Publication): void {
     const index = this.selectedPublications.indexOf(publication);
 
@@ -221,16 +229,12 @@ export class PhenotypeCurationComponent implements OnInit {
     }
   }
 
-  closeForm() {
-    this.handleFormEmitter.emit(false);
-  }
-
   nGreaterThanM(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       if(control.value){
         if(control.value && control.value.includes("/") && new RegExp("\\d+\\/\\d+").test(control.value)){
           const nums = control.value.split("/");
-          return nums[0].trim() > nums[1].trim() ? {notValid: {value: "M Greater than M"}} : null;
+          return parseFloat(nums[0].trim()) > parseFloat(nums[1].trim()) ? { notValid: {value: "M Greater than M"}} : null;
         } else {
           return {notValid: {value: "M Greater than M"}};
         }
@@ -252,5 +256,10 @@ export class PhenotypeCurationComponent implements OnInit {
     this.selectedModifiers.push(event.option.value);
     this.modifierInput.nativeElement.value = '';
     this.formControlGroup.get("modifierFormControl").setValue(null);
+  }
+
+  closeForm() {
+    this.stateService.setSelectedPhenotypeAnnotation(null);
+    this.handleFormEmitter.emit(false);
   }
 }

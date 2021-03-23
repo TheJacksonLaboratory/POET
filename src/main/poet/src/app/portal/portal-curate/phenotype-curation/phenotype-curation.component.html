@@ -11,9 +11,7 @@
       lock_open
     </mat-icon>
     New Phenotype
-    <mat-icon class="help-icon" matTooltip="Use Phenotypic Abnormality when annotating to the disease itself."
-              matTooltipPosition="below">help_outline
-    </mat-icon>
+    <mat-icon class="help-icon" (click)="closeForm()">cancel</mat-icon>
   </mat-card-title>
   <mat-card-subtitle>
     Human Phenotype Ontology [ HPO ] <br><br>
@@ -67,7 +65,7 @@
         <mat-form-field class="phenotype-form" appearance="fill">
           <mat-label>HPO Clinical Modifiers</mat-label>
           <mat-hint>The speed of progression, triggering factors, location or severity.</mat-hint>
-          <mat-chip-list #chipList aria-label="Modifier Selection">
+          <mat-chip-list #chipList aria-label="Modifier Selection" [disabled]="formControlGroup.get('modifierFormControl').disabled">
             <mat-chip
               *ngFor="let modifier of selectedModifiers"
               [removable]="true"
@@ -106,7 +104,7 @@
             Looks like there was an error with the HPO API.
           </mat-error>
           <mat-autocomplete #onset="matAutocomplete" (optionSelected)="selectedOnset = $event.option.value"
-                            [displayWith]="displayHpoFn">
+                            [displayWith]="displayIdFn">
             <mat-option class="auto-complete-option" *ngFor="let option of onsetOptions" [value]="option">
               <span class="option-name">{{option.name}}</span>
               &nbsp;
@@ -162,7 +160,6 @@
     <div class="right-actions">
       <button mat-stroked-button *ngIf="!formControlGroup.disabled">Save Draft</button>
       <button mat-stroked-button (click)="resetPhenotypeForm()" *ngIf="!formControlGroup.disabled">Clear</button>
-      <button mat-stroked-button (click)="closeForm()" *ngIf="formControlGroup.disabled">Close</button>
     </div>
   </mat-card-actions>
 </mat-card>

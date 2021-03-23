@@ -1,53 +1,63 @@
 package org.monarchinitiative.poet.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.model.requests.PhenotypeRequest;
+import org.monarchinitiative.poet.views.AnnotationViews;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Objects;
 
 @Entity
 @DiscriminatorValue("phenotype")
 public class PhenotypeAnnotation extends Annotation {
 
+    @JsonView(AnnotationViews.Simple.class)
     private String hpoId;
+    @JsonView(AnnotationViews.Simple.class)
     private String hpoName;
-    private String ageOfOnset;
-    private String evidenceType;
+    @JsonView(AnnotationViews.Simple.class)
+    private String onset;
+    @JsonView(AnnotationViews.Simple.class)
+    private String evidence;
+    @JsonView(AnnotationViews.Simple.class)
     private String modifier;
+    @JsonView(AnnotationViews.Simple.class)
     private String frequency;
+    @JsonView(AnnotationViews.Simple.class)
+    private String qualifier;
+    @JsonView(AnnotationViews.Simple.class)
     private String description;
+    @JsonView(AnnotationViews.Simple.class)
     private String sex;
-    private String biocurator;
 
     public PhenotypeAnnotation(){
     }
 
-    public PhenotypeAnnotation(String hpoId, String hpoName, String ageOfOnset, String evidenceType,
-                               String modifier, String frequency, String description, String sex) {
+    public PhenotypeAnnotation(String hpoId, String hpoName, String onset, String evidence,
+                               String modifier, String frequency, String qualifier, String description, String sex) {
         this.hpoId = hpoId;
         this.hpoName = hpoName;
-        this.ageOfOnset = ageOfOnset;
-        this.evidenceType = evidenceType;
+        this.onset = onset;
+        this.evidence = evidence;
         this.modifier = modifier;
         this.frequency = frequency;
         this.description = description;
+        this.qualifier = qualifier;
         this.sex = sex;
     }
 
     public PhenotypeAnnotation(AnnotationSource annotationSource, AnnotationStatus status, String hpoId,
-                               String hpoName, String ageOfOnset, String evidenceType, String modifier,
-                               String frequency, String description, String sex) {
+                               String hpoName, String onset, String evidence, String modifier,
+                               String frequency, String qualifier, String description, String sex) {
         super(annotationSource, status);
         this.hpoId = hpoId;
         this.hpoName = hpoName;
-        this.ageOfOnset = ageOfOnset;
-        this.evidenceType = evidenceType;
+        this.onset = onset;
+        this.evidence = evidence;
         this.modifier = modifier;
         this.frequency = frequency;
+        this.qualifier = qualifier;
         this.description = description;
         this.sex = sex;
     }
@@ -57,10 +67,11 @@ public class PhenotypeAnnotation extends Annotation {
         super(annotationSource, status);
         this.hpoId = phenotypeRequest.getHpoId();
         this.hpoName = phenotypeRequest.getHpoName();
-        this.ageOfOnset = phenotypeRequest.getAgeOfOnset();
-        this.evidenceType = phenotypeRequest.getEvidenceType();
+        this.onset = phenotypeRequest.getOnset();
+        this.evidence = phenotypeRequest.getEvidence();
         this.modifier = phenotypeRequest.getModifiers();
         this.frequency = phenotypeRequest.getFrequency();
+        this.qualifier = phenotypeRequest.getQualifier();
         this.description = phenotypeRequest.getDescription();
         this.sex = phenotypeRequest.getSex();
     }
@@ -73,12 +84,12 @@ public class PhenotypeAnnotation extends Annotation {
         return hpoName;
     }
 
-    public String getAgeOfOnset() {
-        return ageOfOnset;
+    public String getOnset() {
+        return onset;
     }
 
-    public String getEvidenceType() {
-        return evidenceType;
+    public String getEvidence() {
+        return evidence;
     }
 
     public String getModifier() {
@@ -91,8 +102,8 @@ public class PhenotypeAnnotation extends Annotation {
 
     public String getSex() { return sex; }
 
-    public void setBiocurator(String biocurator) {
-        this.biocurator = biocurator;
-    }
+    public String getFrequency() { return frequency; }
+
+    public String getQualifier() { return qualifier; }
 
 }

@@ -27,7 +27,8 @@
                              (handleForm)="handleForm($event)"
                             *ngIf="shouldShowTreatmentCard()">
     </poet-treatment-curation>
-    <poet-phenotype-curation [fxFlex]="fxFlexForm" [fxFlexOffset]="fxFlexFormOffset" [role]="userRole" *ngIf="shouldShowPhenotypeCard()">
+    <poet-phenotype-curation [fxFlex]="fxFlexForm" [fxFlexOffset]="fxFlexFormOffset"
+                             [role]="userRole" (handleForm)="handleForm($event)" *ngIf="shouldShowPhenotypeCard()">
     </poet-phenotype-curation>
   </div>
 </div>

@@ -3,7 +3,8 @@
     <span *ngIf="category == 'treatment'">Treatments</span>
     <span *ngIf="category == 'phenotype'">Phenotypes</span>
     <button class="add-annotation-btn-top" mat-mini-fab color="primary" aria-label="Add Annotation"
-            *ngIf="isUser() && ((treatmentAnnotations | async)?.length > 0 || (phenotypeAnnotations | async)?.length > 0)"
+            *ngIf="isUser() && ((treatmentAnnotations | async)?.length > 0 && this.category == 'treatment') ||
+            ((phenotypeAnnotations | async)?.length > 0 && this.category == 'phenotype')"
             (click)="annotationAction(null, 'create')">
       <mat-icon>add</mat-icon>
     </button>
@@ -57,10 +58,15 @@
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': phenotype == activeAnnotation}"
                      *ngFor="let phenotype of phenotypeAnnotations | async | slice: lowValue : highValue">
-        <mat-icon matListIcon>health_and_safety</mat-icon>
-        <div class="selection-text">
+        <mat-icon matListIcon>attribution</mat-icon>
+        <div class="selection-text" *ngIf="formOpen">
           <span matLine class="selection-id">
-            <strong>{{phenotype.hpoName}}</strong>
+            <strong>{{phenotype.hpoName}} {{phenotype.hpoId}}</strong>
+          </span>
+        </div>
+        <div class="selection-text" *ngIf="!formOpen">
+          <span matLine class="selection-id">
+            <strong>{{phenotype.hpoName}} {{phenotype.hpoId}}</strong>
           </span>
         </div>
         <div class="spacer"></div>

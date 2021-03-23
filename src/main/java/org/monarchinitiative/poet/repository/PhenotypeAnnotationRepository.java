@@ -11,6 +11,6 @@ import java.util.List;
 public interface PhenotypeAnnotationRepository extends CrudRepository<PhenotypeAnnotation, Long> {
     List<PhenotypeAnnotation> findAllByAnnotationSourceDiseaseAndStatusNot(Disease disease, AnnotationStatus status);
     PhenotypeAnnotation findDistinctById(long id);
-    boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceTypeAndAgeOfOnsetAndModifier(AnnotationSource source, String hpoId, String sex, String evidenceType, String ageOfOnset, String modifier);
-    boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceTypeAndAgeOfOnsetAndModifierAndStatusNot(AnnotationSource source, String hpoId, String sex, String evidenceType, String ageOfOnset, String modifier, AnnotationStatus status);
+    boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndModifier(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String modifier);
+    boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndModifierAndStatusNot(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String modifier, AnnotationStatus status);
 }

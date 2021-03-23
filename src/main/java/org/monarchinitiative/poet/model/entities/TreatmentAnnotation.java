@@ -1,7 +1,6 @@
 package org.monarchinitiative.poet.model.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.model.requests.TreatmentRequest;
@@ -22,7 +21,7 @@ public class TreatmentAnnotation extends Annotation {
     @JsonView(AnnotationViews.Simple.class)
     private String hpoName;
     @JsonView(AnnotationViews.Simple.class)
-    private String evidenceType;
+    private String evidence;
     @JsonView(AnnotationViews.Simple.class)
     private String relation;
     @JsonView(AnnotationViews.Simple.class)
@@ -36,27 +35,27 @@ public class TreatmentAnnotation extends Annotation {
     public TreatmentAnnotation(){}
 
     public TreatmentAnnotation(AnnotationSource annotationSource, AnnotationStatus status, String maxoId,
-                               String maxoName, String hpoName, String hpoId, String evidenceType, String comment, String relation,
+                               String maxoName, String hpoName, String hpoId, String evidence, String comment, String relation,
                                String extensionId, String extensionLabel) {
         super(annotationSource, status);
         this.maxoId = maxoId;
         this.maxoName = maxoName;
         this.hpoName = hpoName;
         this.hpoId = hpoId;
-        this.evidenceType = evidenceType;
+        this.evidence = evidence;
         this.comment = comment;
         this.relation = relation;
         this.extensionId = extensionId;
         this.extensionLabel = extensionLabel;
     }
 
-    public TreatmentAnnotation(String maxoId, String maxoName, String hpoName, String hpoId, String evidenceType,
+    public TreatmentAnnotation(String maxoId, String maxoName, String hpoName, String hpoId, String evidence,
                                String comment, String relation, String extensionId, String extensionLabel) {
         this.maxoId = maxoId;
         this.maxoName = maxoName;
         this.hpoName = hpoName;
         this.hpoId = hpoId;
-        this.evidenceType = evidenceType;
+        this.evidence = evidence;
         this.comment = comment;
         this.relation = relation;
         this.extensionId = extensionId;
@@ -69,7 +68,7 @@ public class TreatmentAnnotation extends Annotation {
         this.maxoName = treatmentRequest.getMaxoName();
         this.hpoId = treatmentRequest.getHpoId();
         this.hpoName = treatmentRequest.getHpoName();
-        this.evidenceType = treatmentRequest.getEvidence();
+        this.evidence = treatmentRequest.getEvidence();
         this.comment = treatmentRequest.getComment();
         this.relation = treatmentRequest.getRelation();
         this.extensionId = treatmentRequest.getExtensionId();
@@ -92,8 +91,8 @@ public class TreatmentAnnotation extends Annotation {
         return hpoId;
     }
 
-    public String getEvidenceType() {
-        return evidenceType;
+    public String getEvidence() {
+        return evidence;
     }
 
     public String getComment() {
