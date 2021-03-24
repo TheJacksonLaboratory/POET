@@ -95,11 +95,13 @@
                    (page)="getPaginatorData($event)"
                    showFirstLastButtons="false">
     </mat-paginator>
-    <div class="annotation-missing" *ngIf="(treatmentAnnotations | async)?.length == 0 || (phenotypeAnnotations | async)?.length == 0">
+    <div class="annotation-missing" *ngIf="((treatmentAnnotations | async)?.length == 0 && this.category == 'treatment')
+    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype')">
       No {{categoryToDisplay()}} Found.
     </div>
     <button class="add-annotation-btn" mat-mini-fab color="primary" aria-label="Add Annotation"
-            *ngIf="isUser() && ((treatmentAnnotations | async)?.length == 0 || (phenotypeAnnotations | async)?.length == 0)"
+            *ngIf="isUser() && ((treatmentAnnotations | async)?.length == 0 && this.category == 'treatment')
+    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype')"
             (click)="annotationAction(null, 'create')">
       <mat-icon>add</mat-icon>
     </button>
