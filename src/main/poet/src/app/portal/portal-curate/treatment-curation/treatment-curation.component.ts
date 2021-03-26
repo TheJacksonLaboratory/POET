@@ -36,7 +36,7 @@ export class TreatmentCurationComponent implements OnInit {
     hpoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     evidenceFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     relationFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    extensionIdFormControl: new FormControl({value: '', disabled: false}, Validators.pattern("^CHEBI:[0-9]{5}$")),
+    extensionIdFormControl: new FormControl({value: '', disabled: false}, Validators.pattern("^CHEBI:[0-9]{5,8}")),
     extensionLabelFormControl: new FormControl({value: '', disabled: false}),
     commentFormControl: new FormControl({value: '', disabled: false}),
   });

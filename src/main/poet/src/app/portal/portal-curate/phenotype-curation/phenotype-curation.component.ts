@@ -234,9 +234,9 @@ export class PhenotypeCurationComponent implements OnInit {
       if(control.value){
         if(control.value && control.value.includes("/") && new RegExp("\\d+\\/\\d+").test(control.value)){
           const nums = control.value.split("/");
-          return parseFloat(nums[0].trim()) > parseFloat(nums[1].trim()) ? { notValid: {value: "M Greater than M"}} : null;
+          return parseFloat(nums[0].trim()) > parseFloat(nums[1].trim()) ? { notValid: {value: "N Greater than M"}} : null;
         } else {
-          return {notValid: {value: "M Greater than M"}};
+          return {notValid: {value: "N Greater than M"}};
         }
       } else {
         return null;
