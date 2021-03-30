@@ -41,6 +41,14 @@
     }
   }
 
+  & .phenotype-list {
+    & .selection-id {
+      font-size: .8rem;
+      color: lightgray;
+      text-transform: capitalize;
+    }
+  }
+
   & .add-annotation-btn {
     color: white;
     display: block;

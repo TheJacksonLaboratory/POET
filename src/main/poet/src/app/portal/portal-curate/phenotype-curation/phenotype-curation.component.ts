@@ -30,11 +30,12 @@ export class PhenotypeCurationComponent implements OnInit {
   hpoOptions: HpoTerm[];
   modifierOptions: AnchorSearchResult[];
   onsetOptions: AnchorSearchResult[];
+  frequencyOptions: AnchorSearchResult[];
   selectedPublications: Publication[] = [];
   selectedModifiers: string[] = [];
   selectedOnset: any;
-  selectedSex: any;
   selectedQualifier: any;
+  selectedFrequency: any;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   savingAnnotation: boolean = false;
@@ -44,8 +45,8 @@ export class PhenotypeCurationComponent implements OnInit {
     modifierFormControl: new FormControl({value: '', disabled: false}),
     evidenceFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     qualifierFormControl: new FormControl({value: '', disabled: false}),
-    sexFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    frequencyFormControl: new FormControl({value: '', disabled: false}, this.nGreaterThanM()),
+    sexFormControl: new FormControl({value: '', disabled: false}),
+    frequencyFormControl: new FormControl({value: '', disabled: false}, this.frequencyValdiation()),
     descriptionFormControl: new FormControl({value: '', disabled: false}),
   });
 
@@ -87,7 +88,7 @@ export class PhenotypeCurationComponent implements OnInit {
     this.formControlGroup.get("hpoFormControl").valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
-        if (query && query.length > 3 && !this.formControlGroup.disabled) {
+        if (query && query.length >= 3 && !this.formControlGroup.disabled) {
           this.hpoService.searchHPOTerms(query).subscribe((data) => {
             if (!data) {
               this.formControlGroup.get("hpoFormControl").setErrors({notFound: true});
@@ -102,7 +103,7 @@ export class PhenotypeCurationComponent implements OnInit {
     this.formControlGroup.get("modifierFormControl").valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
-        if (query && query.length > 3 && !this.formControlGroup.disabled) {
+        if (query && query.length >= 3 && !this.formControlGroup.disabled) {
           this.hpoService.searchDescendants(query, 'HP:0012823').subscribe((data) => {
             if (!data) {
               this.formControlGroup.get("hpoFormControl").setErrors({notFound: true});
@@ -128,6 +129,20 @@ export class PhenotypeCurationComponent implements OnInit {
           });
         }
       });
+
+    this.formControlGroup.get("frequencyFormControl").valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe(query => {
+        if (query && query.length >= 3 && !this.formControlGroup.disabled && isNaN(query)) {
+          this.hpoService.searchDescendants(query, 'HP:0040279').subscribe((data) => {
+            if (!data) {
+              this.formControlGroup.get("frequencyFormControl").setErrors({notFound: true});
+            }
+            this.frequencyOptions = data;
+          }, (err) => {
+            this.formControlGroup.get("frequencyFormControl").setErrors({notFound: true});
+          });
+        }
+      });
   }
 
   submitForm(): void {
@@ -137,7 +152,7 @@ export class PhenotypeCurationComponent implements OnInit {
       hpoName: this.formControlGroup.get('hpoFormControl').value.name,
       evidence: this.formControlGroup.get('evidenceFormControl').value,
       description: this.formControlGroup.get('descriptionFormControl').value,
-      sex: this.selectedSex,
+      sex: this.formControlGroup.get('sexFormControl').value,
       qualifier: this.selectedQualifier == true ? "NOT" : '',
       frequency: this.formControlGroup.get('frequencyFormControl').value,
       modifiers: this.selectedModifiers.join(";"),
@@ -166,7 +181,7 @@ export class PhenotypeCurationComponent implements OnInit {
     this.formControlGroup.get('frequencyFormControl').setValue(annotation.frequency);
     this.formControlGroup.get('onsetFormControl').setValue({ontologyId: annotation.onset, name: ""});
     this.selectedModifiers = annotation.modifier.length > 0 ?  annotation.modifier.split(";") : [annotation.modifier]
-    this.selectedSex = annotation.sex;
+    this.formControlGroup.get('sexFormControl').setValue(annotation.sex);
     this.selectedQualifier = annotation.qualifier == "NOT";
     this.stateService.setSelectedSource(annotation.annotationSource);
   }
@@ -223,30 +238,41 @@ export class PhenotypeCurationComponent implements OnInit {
 
   removePublication(publication: Publication): void {
     const index = this.selectedPublications.indexOf(publication);
-
     if (index >= 0) {
       this.selectedPublications.splice(index, 1);
     }
   }
 
-  nGreaterThanM(): ValidatorFn {
+  /**
+   * Validates either
+   * N / M
+   * NNN%
+   * or an hpo term
+   */
+  frequencyValdiation(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      if(control.value){
-        if(control.value && control.value.includes("/") && new RegExp("\\d+\\/\\d+").test(control.value)){
+      if(control.value && typeof control.value !== 'object'){
+        if(control.value.includes("/") && new RegExp("\\d+\\/\\d+").test(control.value)){
           const nums = control.value.split("/");
           return parseFloat(nums[0].trim()) > parseFloat(nums[1].trim()) ? { notValid: {value: "M Greater than M"}} : null;
+        } else if(new RegExp("\d{0,3}%").test(control.value)) {
+          let number = parseInt(control.value.split("%")[0]);
+          if(number <= 100){
+            return null;
+          } else {
+            return {notValid: {value: "Percentage greater than 100%"}};
+          }
         } else {
-          return {notValid: {value: "M Greater than M"}};
+          return {notValid: {value: "Not a valid frequency"}};
         }
-      } else {
+      } else if(!this.selectedFrequency) {
         return null;
       }
-    };
+    }
   }
 
   removeModifiers(modifier: string): void {
     const index = this.selectedModifiers.indexOf(modifier);
-
     if (index >= 0) {
       this.selectedModifiers.splice(index, 1);
     }
