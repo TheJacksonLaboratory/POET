@@ -93,14 +93,14 @@
       <div class="form-content-section">
         <mat-form-field appearance="fill">
           <mat-label>HPO Age Of Onset</mat-label>
-          <input matInput placeholder="Type something..." formControlName="onsetFormControl" ngDefaultControl
+          <input matInput placeholder="..." formControlName="onsetFormControl" ngDefaultControl
                  [matAutocomplete]="onset">
           <button mat-button *ngIf="formControlGroup.get('onsetFormControl').value != null" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('onsetFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
           <mat-hint *ngIf="!selectedHpo">e.g. Childhood onset</mat-hint>
-          <mat-error *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound')">
+          <mat-error *ngIf="formControlGroup.get('onsetFormControl').hasError('notFound')">
             Looks like there was an error with the HPO API.
           </mat-error>
           <mat-autocomplete #onset="matAutocomplete" (optionSelected)="selectedOnset = $event.option.value"
@@ -112,17 +112,41 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-        <mat-form-field class="ml1" appearance="fill">
-          <mat-label>Frequency</mat-label>
-          <input matInput type="text" formControlName="frequencyFormControl"  (keydown.enter)="$event.preventDefault()">
-          <mat-hint>N / M observations</mat-hint>
-          <button mat-button *ngIf="formControlGroup.get('frequencyFormControl').value != ''" matSuffix mat-icon-button
-                  aria-label="Clear"
-                  (click)="formControlGroup.get('frequencyFormControl').reset()">
+        <mat-form-field appearance="fill" class="ml1">
+          <mat-label>HPO Frequency</mat-label>
+          <input matInput placeholder="..." formControlName="frequencyFormControl" ngDefaultControl
+                 [matAutocomplete]="frequency">
+          <button mat-button *ngIf="formControlGroup.get('frequencyFormControl').value != null" matSuffix mat-icon-button
+                  aria-label="Clear" (click)="formControlGroup.get('frequencyFormControl').reset(); frequencyOptions = []">
             <mat-icon>close</mat-icon>
           </button>
+          <mat-hint *ngIf="formControlGroup.get('frequencyFormControl').value != null">e.g. 10/20, 50% or Frequent</mat-hint>
+          <mat-error *ngIf="formControlGroup.get('frequencyFormControl').hasError('notFound')">
+            Looks like there was an error with the HPO API.
+          </mat-error>
+          <mat-autocomplete #frequency="matAutocomplete" (optionSelected)="selectedFrequency = $event.option.value"
+                            [displayWith]="displayIdFn">
+            <mat-option class="auto-complete-option" *ngFor="let option of frequencyOptions" [value]="option">
+              <span class="option-name">{{option.name}}</span>
+              &nbsp;
+              <span class="option-id">{{option.ontologyId}}</span>
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
-        <mat-form-field class="ml1" appearance="fill">
+        <mat-form-field appearance="fill" class="ml1" formControlName="sexFormControl">
+          <mat-label>Sex</mat-label>
+          <mat-select>
+            <mat-option value="FEMALE">
+              FEMALE
+            </mat-option>
+            <mat-option value="MALE">
+              MALE
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-content-section">
+        <mat-form-field appearance="fill">
           <mat-label>Evidence</mat-label>
           <mat-select formControlName="evidenceFormControl">
             <mat-option [value]="'TAS'">TAS</mat-option>
@@ -130,13 +154,6 @@
             <mat-option [value]="'PCS'">PCS</mat-option>
           </mat-select>
         </mat-form-field>
-      </div>
-      <div class="form-content-section">
-          <label>Sex: </label>
-          <mat-radio-group aria-label="Select a gender" formControlName="sexFormControl" [(ngModel)]="selectedSex">
-            <mat-radio-button value="FEMALE">FEMALE</mat-radio-button>
-            <mat-radio-button value="MALE">MALE</mat-radio-button>
-          </mat-radio-group>
       </div>
       <div class="form-content-section">
         <mat-form-field class="phenotype-form">
@@ -158,7 +175,6 @@
       <mat-spinner color="accent" [diameter]="20" mode="indeterminate" *ngIf="savingAnnotation"></mat-spinner>
     </div>
     <div class="right-actions">
-      <button mat-stroked-button *ngIf="!formControlGroup.disabled">Save Draft</button>
       <button mat-stroked-button (click)="resetPhenotypeForm()" *ngIf="!formControlGroup.disabled">Clear</button>
     </div>
   </mat-card-actions>
