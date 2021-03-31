@@ -54,19 +54,21 @@
         </button>
       </mat-list-item>
     </mat-list>
-    <mat-list #phenotype *ngIf="category === 'phenotype'">
+    <mat-list #phenotype *ngIf="category === 'phenotype'" class="phenotype-list">
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': phenotype == activeAnnotation}"
                      *ngFor="let phenotype of phenotypeAnnotations | async | slice: lowValue : highValue">
         <mat-icon matListIcon>attribution</mat-icon>
-        <div class="selection-text" *ngIf="formOpen">
-          <span matLine class="selection-id">
-            <strong>{{phenotype.hpoName}} {{phenotype.hpoId}}</strong>
+        <div matLine class="selection-text" *ngIf="formOpen">
+          <strong>{{phenotype.hpoName}}</strong>
+          <span class="selection-id">
+             {{phenotype.hpoId}}
           </span>
         </div>
-        <div class="selection-text" *ngIf="!formOpen">
-          <span matLine class="selection-id">
-            <strong>{{phenotype.hpoName}} {{phenotype.hpoId}}</strong>
+        <div matLine class="selection-text" *ngIf="!formOpen">
+          <strong>{{phenotype.hpoName}}</strong>
+          <span class="selection-id">
+            {{phenotype.hpoId}}
           </span>
         </div>
         <div class="spacer"></div>
