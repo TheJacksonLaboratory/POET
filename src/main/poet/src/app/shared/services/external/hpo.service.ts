@@ -47,7 +47,7 @@ export class HpoService {
    * @param start where to start finding descendants from
    */
   searchDescendants(query: string, start: string): Observable<AnchorSearchResult[]> {
-    let parameters: HttpParams = new HttpParams().set('query', query).set('start', start)
+    let parameters: HttpParams = new HttpParams().set('q', query).set('s', start)
     return this.httpClient.get<any>(environment.HPO_API_HPO_SEARCH_DESCENDANTS_URL, {params: parameters});
   }
 
