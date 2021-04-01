@@ -6,6 +6,7 @@ export interface SearchResult {
 
 export interface MonarchSearchResult {
   match: string;
+  label: string[];
   id: string;
 }
 

@@ -175,7 +175,7 @@ export class PhenotypeCurationComponent implements OnInit {
   }
 
   setFormValues(annotation: PhenotypeAnnotation) {
-    this.formControlGroup.get('hpoFormControl').setValue({ontologyId: annotation.hpoId, name: annotation.hpoName});
+    this.formControlGroup.get('hpoFormControl').setValue({id: annotation.hpoId, name: annotation.hpoName});
     this.formControlGroup.get('evidenceFormControl').setValue(annotation.evidence);
     this.formControlGroup.get('descriptionFormControl').setValue(annotation.description);
     this.formControlGroup.get('frequencyFormControl').setValue(annotation.frequency);
@@ -184,6 +184,7 @@ export class PhenotypeCurationComponent implements OnInit {
     this.formControlGroup.get('sexFormControl').setValue(annotation.sex);
     this.selectedQualifier = annotation.qualifier == "NOT";
     this.stateService.setSelectedSource(annotation.annotationSource);
+    this.formControlGroup.markAsPristine();
   }
 
   onSuccessfulPhenotype(message: string) {
@@ -214,7 +215,7 @@ export class PhenotypeCurationComponent implements OnInit {
   }
 
   everythingValid() {
-    return this.formControlGroup.valid && this.selectedPublications.length > 0 && !this.formControlGroup.disabled;
+    return this.formControlGroup.valid && this.selectedPublications.length > 0 && !this.formControlGroup.disabled && this.formControlGroup.dirty
   }
 
   resetPhenotypeForm() {
@@ -229,7 +230,7 @@ export class PhenotypeCurationComponent implements OnInit {
   }
 
   displayHpoFn(option) {
-    return option && option.name ? `${option.name} ${option.ontologyId}` : '';
+    return option && option.name ? `${option.name} ${option.id}` : '';
   }
 
   displayIdFn(option) {

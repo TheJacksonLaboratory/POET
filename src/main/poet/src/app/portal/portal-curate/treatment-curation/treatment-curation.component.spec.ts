@@ -5,6 +5,7 @@ import { HpoService } from "../../../shared/services/external/hpo.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { SharedModule } from "../../../shared/shared.module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { MonarchService } from "../../../shared/services/external/monarch.service";
 
 describe('MaxoCurationComponent', () => {
   let component: TreatmentCurationComponent;
@@ -13,7 +14,7 @@ describe('MaxoCurationComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TreatmentCurationComponent],
-      providers: [HpoService],
+      providers: [HpoService, MonarchService],
       imports: [HttpClientTestingModule, SharedModule, NoopAnimationsModule]
     })
       .compileComponents();

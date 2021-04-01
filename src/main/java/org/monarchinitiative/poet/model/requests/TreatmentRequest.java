@@ -24,8 +24,8 @@ public class TreatmentRequest {
     TreatmentRequest(){}
 
     public TreatmentRequest(Long id, String maxoId, String maxoName, String hpoName, String hpoId, String evidence,
-                            String comment, String relation, String extensionId, String extensionLabel, String publicationId, String publicationName,
-                            String diseaseId, String diseaseName) {
+                            String comment, String relation, String extensionId, String extensionLabel,
+                            String publicationId, String publicationName, String diseaseId, String diseaseName) {
         this.id = id;
         this.maxoId = maxoId;
         this.maxoName = maxoName;

@@ -96,9 +96,30 @@
         </mat-form-field>
       </div>
       <div class="form-content-section">
-        <mat-form-field class="chebi-id" appearance="fill">
+        <mat-form-field class="treatment-form" appearance="fill">
+          <mat-label>CHEBI Extension</mat-label>
+          <input matInput placeholder="..." formControlName="extensionFormControl" ngDefaultControl
+                 [matAutocomplete]="extensionAuto">
+          <button mat-button *ngIf="formControlGroup.get('extensionFormControl').value != null"
+                  matSuffix mat-icon-button aria-label="Clear" (click)="formControlGroup.get('extensionFormControl').reset()">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-hint *ngIf="!selectedTreatment">Try: CHEBI:27732</mat-hint>
+          <mat-error *ngIf="formControlGroup.get('extensionFormControl').hasError('notFound')">
+            Looks like there was an error with the MAxO API.
+          </mat-error>
+          <mat-autocomplete #extensionAuto="matAutocomplete"
+                            [displayWith]="displayMonarchSearchFn.bind(this)">
+            <mat-option class="auto-complete-option" *ngFor="let option of chebiOptions" [value]="option">
+              <span class="option-name">{{option.label[0]}}</span>
+              &nbsp;
+              <span class="option-id">{{option.id}}</span>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <!--<mat-form-field class="chebi-id" appearance="fill">
           <mat-label>CHEBI Identifier</mat-label>
-          <input matInput type="text" formControlName="extensionIdFormControl">
+          <input matInput type="text" formControlName="extensionFormCtn">
           <button mat-button *ngIf="formControlGroup.get('extensionIdFormControl').value != ''" matSuffix mat-icon-button
                   aria-label="Clear"
                   (click)="formControlGroup.get('extensionIdFormControl').reset()">
@@ -113,7 +134,7 @@
                   (click)="formControlGroup.get('extensionLabelFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
-        </mat-form-field>
+        </mat-form-field>-->
       </div>
       <div class="form-content-section">
         <mat-form-field class="treatment-form" appearance="fill">

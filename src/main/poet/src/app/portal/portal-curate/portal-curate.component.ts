@@ -133,6 +133,7 @@ export class PortalCurateComponent implements OnInit {
 
   changeCategory(ontology: string) {
     this.stateService.setSelectedCategory(ontology);
+    this.handleForm(false);
   }
 
   navigateToPage(disease) {

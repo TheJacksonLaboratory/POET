@@ -14,7 +14,7 @@
     <mat-icon class="help-icon" (click)="closeForm()">cancel</mat-icon>
   </mat-card-title>
   <mat-card-subtitle>
-    Human Phenotype Ontology [ HPO ] <br><br>
+    Human Phenotype Ontology [ HPO ]
   </mat-card-subtitle>
   <mat-card-content>
     <button mat-raised-button color="primary" (click)="selectPublication()"
@@ -133,9 +133,9 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-        <mat-form-field appearance="fill" class="ml1" formControlName="sexFormControl">
+        <mat-form-field appearance="fill" class="ml1" >
           <mat-label>Sex</mat-label>
-          <mat-select>
+          <mat-select formControlName="sexFormControl">
             <mat-option value="FEMALE">
               FEMALE
             </mat-option>

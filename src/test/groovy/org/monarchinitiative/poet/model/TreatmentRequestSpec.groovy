@@ -13,26 +13,27 @@ class TreatmentRequestSpec extends Specification {
 
     void "test maxo request constructor"() {
         given:
-        def maxoRequest = new TreatmentRequest(null,
-                maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extension, publicationId, publicationName, diseaseId, diseaseName
+        def treatmentRequest = new TreatmentRequest(null,
+                maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extensionId, extensionLabel, publicationId, publicationName, diseaseId, diseaseName
         ) {}
 
         expect:
-        maxoRequest.getMaxoId() == maxoId
-        maxoRequest.getMaxoName() == maxoName
-        maxoRequest.getHpoName() == hpoName
-        maxoRequest.getHpoId() == hpoId
-        maxoRequest.getEvidence() == evidence
-        maxoRequest.getComment() == comment
-        maxoRequest.getRelation() == relation
-        maxoRequest.getExtensionId() == extension
-        maxoRequest.getPublicationId() == publicationId
-        maxoRequest.getPublicationName() == publicationName
-        maxoRequest.getDiseaseName() == diseaseName
-        maxoRequest.getDiseaseId() == diseaseId
+        treatmentRequest.getMaxoId() == maxoId
+        treatmentRequest.getMaxoName() == maxoName
+        treatmentRequest.getHpoName() == hpoName
+        treatmentRequest.getHpoId() == hpoId
+        treatmentRequest.getEvidence() == evidence
+        treatmentRequest.getComment() == comment
+        treatmentRequest.getRelation() == relation
+        treatmentRequest.getExtensionId() == extensionId
+        treatmentRequest.getExtensionLabel() == extensionLabel
+        treatmentRequest.getPublicationId() == publicationId
+        treatmentRequest.getPublicationName() == publicationName
+        treatmentRequest.getDiseaseName() == diseaseName
+        treatmentRequest.getDiseaseId() == diseaseId
 
         where:
-        maxoId | maxoName | hpoName | hpoId | evidence | comment | relation | extension | publicationId | publicationName | diseaseId | diseaseName
-        "MAXO:9999001" | "surgical procedure" | "arachnodactyl" | "HP:0019193" | "fake evidence" | "some comment" | "some relation" | "some extension" | "PMID:02923" | "the best publication" | "very serious disease" | "OMIM: 029223"
+        maxoId | maxoName | hpoName | hpoId | evidence | comment | relation | extensionId | extensionLabel | publicationId | publicationName | diseaseId | diseaseName
+        "MAXO:9999001" | "surgical procedure" | "arachnodactyl" | "HP:0019193" | "fake evidence" | "some comment" | "some relation" | "some extension id" |  "some extension label" | "PMID:02923" | "the best publication" | "very serious disease" | "OMIM: 029223"
     }
 }

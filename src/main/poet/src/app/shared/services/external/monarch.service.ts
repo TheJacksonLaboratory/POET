@@ -19,9 +19,10 @@ export class MonarchService {
   /**
    * Searches BIOLINK API with encoded prefix disease.
    * @param query
+   * @param prefix
    */
-  searchDisease(query: string) {
-    let parameters = new HttpParams().append("prefix", "MONDO").append("category", "disease");
+  searchMonarch(query: string, prefix: string) {
+    let parameters = new HttpParams().append("prefix", prefix);
     return this.httpClient.get(environment.MONARCH_SEARCH_URL + query, {params: parameters}).pipe(
       pluck("docs")
     );

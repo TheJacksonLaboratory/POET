@@ -34,7 +34,7 @@ class StatisticsServiceSpec extends Specification {
         userActivityStub.findAll() >> repositoryResponse
         userActivityStub.findUserActivityByUserAuthId(_) >> repositoryResponse
         authentication.getName() >> "fakename"
-        def result = statisticsService.getUserActivity(all, inputAuthentication)
+        def result = statisticsService.getUserActivity(all, 0, inputAuthentication)
 
         expect:
         result.size() == expectedResultSize

@@ -6,6 +6,7 @@ import org.monarchinitiative.poet.model.response.AnnotationCount;
 import org.monarchinitiative.poet.model.response.Contribution;
 import org.monarchinitiative.poet.model.entities.UserActivity;
 import org.monarchinitiative.poet.repository.DiseaseRepository;
+import org.monarchinitiative.poet.repository.PhenotypeAnnotationRepository;
 import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository;
 import org.monarchinitiative.poet.repository.UserActivityRepository;
 import org.springframework.security.core.Authentication;
@@ -25,14 +26,16 @@ public class StatisticsService {
 
     private UserActivityRepository userActivityRepository;
     private TreatmentAnnotationRepository treatmentAnnotationRepository;
+    private PhenotypeAnnotationRepository phenotypeAnnotationRepository;
     private DiseaseRepository diseaseRepository;
 
     public StatisticsService(UserActivityRepository userActivityRepository,
                              TreatmentAnnotationRepository treatmentAnnotationRepository,
-                             DiseaseRepository diseaseRepository){
+                             DiseaseRepository diseaseRepository, PhenotypeAnnotationRepository phenotypeAnnotationRepository ){
         this.userActivityRepository = userActivityRepository;
         this.treatmentAnnotationRepository = treatmentAnnotationRepository;
         this.diseaseRepository = diseaseRepository;
+        this.phenotypeAnnotationRepository = phenotypeAnnotationRepository;
     }
 
     /**
@@ -82,8 +85,12 @@ public class StatisticsService {
             treatmentCount = this.treatmentAnnotationRepository.countAllByAnnotationSourceDiseaseAndStatusNot(
                     this.diseaseRepository.findDiseaseByDiseaseId(diseaseId), AnnotationStatus.RETIRED
             );
+            phenotypeCount = this.phenotypeAnnotationRepository.countAllByAnnotationSourceDiseaseAndStatusNot(
+                    this.diseaseRepository.findDiseaseByDiseaseId(diseaseId), AnnotationStatus.RETIRED
+            );
         } else {
-            treatmentCount = (int) this.treatmentAnnotationRepository.countAllByStatusNot(AnnotationStatus.RETIRED);
+            treatmentCount = this.treatmentAnnotationRepository.countAllByStatusNot(AnnotationStatus.RETIRED);
+            phenotypeCount = this.phenotypeAnnotationRepository.countAllByStatusNot(AnnotationStatus.RETIRED);
         }
 
         return new AnnotationCount(phenotypeCount, treatmentCount);
