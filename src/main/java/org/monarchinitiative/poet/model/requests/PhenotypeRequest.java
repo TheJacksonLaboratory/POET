@@ -1,20 +1,32 @@
 package org.monarchinitiative.poet.model.requests;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 public class PhenotypeRequest {
 
     private final Long id;
+    @NotNull
     private final String hpoName;
+    @NotNull
+    @Pattern(regexp = "HP:[0-9]{7}$", message = "hpoId should be a valid identifier from human phenotype ontology")
     private final String hpoId;
+    @NotNull
     private final String evidence;
     private final String description;
+    @Pattern(regexp = "HP:[0-9]{7}$", message = "hpoId should be a valid identifier from human phenotype ontology")
     private final String onset;
+    @Pattern(regexp = "PMID:[0-9]{8}", message = "publicationID should be a valid identifier from PubMed")
     private final String publicationId;
     private final String publicationName;
+    @Pattern(regexp = "MONDO:[0-9]{7}", message = "diseaseId should be a valid identifier from mondo disease ontology")
     private final String diseaseId;
     private final String diseaseName;
     private final String modifiers;
     private final String qualifier;
+    @Pattern(regexp = "\\d+\\/\\d+", message = "frequency must be N / M where N is greater than M.")
     private final String frequency;
+    @Pattern(regexp = "MALE|FEMALE", message = "sex be one of (MALE, FEMALE)")
     private final String sex;
 
     public PhenotypeRequest(Long id, String hpoName, String hpoId, String evidence, String description,

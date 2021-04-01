@@ -1,22 +1,35 @@
 package org.monarchinitiative.poet.model.requests;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 public class TreatmentRequest {
 
 
     private Long id;
+    @NotNull
+    @Pattern(regexp = "MAXO:[0-9]{7}$", message = "maxoId should be a valid identifier from medical action ontology")
     private String maxoId;
+    @NotNull
     private String maxoName;
+    @NotNull
     private String hpoName;
+    @NotNull
+    @Pattern(regexp = "HP:[0-9]{7}$", message = "hpoId should be a valid identifier from human phenotype ontology")
     private String hpoId;
+    @NotNull
     private String evidence;
     private String comment;
+    @NotNull
     private String relation;
+    @Pattern(regexp = "CHEBI:[0-9]{5,8}", message = "extensionId should be a valid identifier from chemical entities of biological interest")
     private String extensionId;
     private String extensionLabel;
+    @Pattern(regexp = "PMID:[0-9]{8}", message = "publicationID should be a valid identifier from PubMed")
     private String publicationId;
     private String publicationName;
+    @Pattern(regexp = "MONDO:[0-9]{7}", message = "diseaseId should be a valid identifier from mondo disease ontology")
     private String diseaseId;
     private String diseaseName;
 

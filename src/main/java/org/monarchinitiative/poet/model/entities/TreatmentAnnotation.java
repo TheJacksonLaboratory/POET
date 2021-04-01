@@ -7,22 +7,30 @@ import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.views.AnnotationViews;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @DiscriminatorValue("treatment")
 public class TreatmentAnnotation extends Annotation {
 
     @JsonView(AnnotationViews.Simple.class)
+    @NotNull
     private String maxoId;
     @JsonView(AnnotationViews.Simple.class)
+    @NotNull
     private String maxoName;
     @JsonView(AnnotationViews.Simple.class)
+    @NotNull
     private String hpoId;
     @JsonView(AnnotationViews.Simple.class)
+    @NotNull
     private String hpoName;
     @JsonView(AnnotationViews.Simple.class)
+    @NotNull
     private String evidence;
     @JsonView(AnnotationViews.Simple.class)
+    @NotNull
     private String relation;
     @JsonView(AnnotationViews.Simple.class)
     private String extensionId;
