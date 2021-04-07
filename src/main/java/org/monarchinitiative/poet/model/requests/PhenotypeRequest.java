@@ -24,7 +24,6 @@ public class PhenotypeRequest {
     private final String diseaseName;
     private final String modifiers;
     private final String qualifier;
-    @Pattern(regexp = "\\d+\\/\\d+", message = "frequency must be N / M where N is greater than M.")
     private final String frequency;
     @Pattern(regexp = "MALE|FEMALE", message = "sex be one of (MALE, FEMALE)")
     private final String sex;

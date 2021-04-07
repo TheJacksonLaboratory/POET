@@ -15,7 +15,7 @@ class TreatmentRequestSpec extends Specification {
         given:
         def treatmentRequest = new TreatmentRequest(null,
                 maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extensionId, extensionLabel, publicationId, publicationName, diseaseId, diseaseName
-        ) {}
+        )
 
         expect:
         treatmentRequest.getMaxoId() == maxoId

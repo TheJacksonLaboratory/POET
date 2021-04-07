@@ -52,12 +52,15 @@ class TreatmentControllerSpec extends Specification {
 
     @Unroll
     def "when we test create treatment annotations they pass"() {
+        given:
+        annotationService.createTreatmentAnnotation(_,_) >> inputServiceResult
+
         expect: "an annotation state"
-        mvc.perform(
+        def result = mvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/annotation/treatments/", inputBody)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new JsonBuilder(inputBody).toPrettyString())
-        ).andExpect((ResultMatcher) expectedResponse)
+                        .content(new JsonBuilder(inputBody).toPrettyString()))
+        result.andExpect((ResultMatcher) expectedResponse)
 
         where:
         inputBody                    | inputServiceResult | expectedResponse
@@ -65,21 +68,19 @@ class TreatmentControllerSpec extends Specification {
     }
 
     @Unroll
-    def "when we test create treatment annotations they fail"() {
+    def "when we test create treatment annotations they fail validation"() {
         given:
-        annotationService.createTreatmentAnnotation(_,_) >> {throw new Exception()}
+        annotationService.createTreatmentAnnotation(_,_) >> null
 
-        then:
+        expect:
         mvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/annotation/treatments/", inputBody)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new JsonBuilder(inputBody).toPrettyString()))
-        thrown(Exception)
+                        .content(new JsonBuilder(inputBody).toPrettyString())).andExpect((ResultMatcher) expectedResponse)
 
         where:
         inputBody                    | expectedResponse
-        generateFakeTreatment(true)  | MockMvcResultMatchers.status().isInternalServerError()
-        [:]                          | MockMvcResultMatchers.status().isInternalServerError()
+        generateFakeTreatment(true)  | MockMvcResultMatchers.status().isBadRequest()
     }
 
     private static generateFakeTreatment(incompleteTreatmentAnnotation) {
@@ -91,10 +92,10 @@ class TreatmentControllerSpec extends Specification {
                     hpoId      : "HP:0002138"]
         } else {
             return new TreatmentRequest(null, "MAXO:0000004", "surgical procedure",
-                    "Subarachnoid hemorrhage", "HP:0002138", "IEA", "daf", "PREVENTS", "CHEBI:1039", "caffeine",
+                    "Subarachnoid hemorrhage", "HP:0002138", "IEA", "daf", "PREVENTS", "CHEBI:1039000", "caffeine",
                     "PMID:31479590",
                     "Encoding Clinical Data with the Human Phenotype Ontology for Computational Differential Diagnostics.",
-                    "OMIM:154700", "Marfan Syndrome")
+                    "MONDO:1547000", "Marfan Syndrome")
         }
     }
 }
