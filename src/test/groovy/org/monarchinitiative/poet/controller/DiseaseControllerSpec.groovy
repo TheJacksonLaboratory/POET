@@ -1,6 +1,5 @@
 package org.monarchinitiative.poet.controller
 
-import org.monarchinitiative.poet.controller.disease.DiseaseController
 import org.monarchinitiative.poet.model.entities.Disease
 import org.monarchinitiative.poet.service.EntityService
 import org.spockframework.spring.SpringBean

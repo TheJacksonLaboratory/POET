@@ -1,4 +1,4 @@
-package org.monarchinitiative.poet.model
+package org.monarchinitiative.poet.model.entities
 
 import org.monarchinitiative.poet.model.entities.Disease
 import org.springframework.test.context.ActiveProfiles

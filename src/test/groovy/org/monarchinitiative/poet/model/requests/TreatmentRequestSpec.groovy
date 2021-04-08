@@ -1,6 +1,5 @@
-package org.monarchinitiative.poet.model
+package org.monarchinitiative.poet.model.requests
 
-import org.monarchinitiative.poet.model.requests.TreatmentRequest
 import org.springframework.test.context.ActiveProfiles
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -11,7 +10,7 @@ class TreatmentRequestSpec extends Specification {
 
     def setup(){}
 
-    void "test maxo request constructor"() {
+    void "test treatment request constructor"() {
         given:
         def treatmentRequest = new TreatmentRequest(null,
                 maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extensionId, extensionLabel, publicationId, publicationName, diseaseId, diseaseName
@@ -35,5 +34,9 @@ class TreatmentRequestSpec extends Specification {
         where:
         maxoId | maxoName | hpoName | hpoId | evidence | comment | relation | extensionId | extensionLabel | publicationId | publicationName | diseaseId | diseaseName
         "MAXO:9999001" | "surgical procedure" | "arachnodactyl" | "HP:0019193" | "fake evidence" | "some comment" | "some relation" | "some extension id" |  "some extension label" | "PMID:02923" | "the best publication" | "very serious disease" | "OMIM: 029223"
+    }
+
+    void "test treatment request equals, hashcode"(){
+
     }
 }

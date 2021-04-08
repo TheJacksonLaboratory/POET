@@ -1,4 +1,4 @@
-package org.monarchinitiative.poet.controller
+package org.monarchinitiative.poet.controller.annotation
 
 import groovy.json.JsonBuilder
 import org.monarchinitiative.poet.controller.annotation.PhenotypeController

@@ -1,4 +1,4 @@
-package org.monarchinitiative.poet.model
+package org.monarchinitiative.poet.model.requests
 
 import org.monarchinitiative.poet.model.requests.PhenotypeRequest
 import org.monarchinitiative.poet.model.requests.TreatmentRequest

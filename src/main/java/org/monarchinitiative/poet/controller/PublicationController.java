@@ -1,4 +1,4 @@
-package org.monarchinitiative.poet.controller.publication;
+package org.monarchinitiative.poet.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.entities.Disease;

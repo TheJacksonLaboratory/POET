@@ -6,8 +6,8 @@ public class AnnotationCount {
     private final Integer treatmentCount;
 
     public AnnotationCount(Integer phenotypeCount, Integer treatmentCount) {
-        this.phenotypeCount = phenotypeCount;
-        this.treatmentCount = treatmentCount;
+        this.phenotypeCount = phenotypeCount == null ? 0: phenotypeCount;
+        this.treatmentCount = treatmentCount == null ? 0: treatmentCount;
     }
 
     public Integer getPhenotypeCount() {

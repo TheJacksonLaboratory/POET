@@ -1,4 +1,4 @@
-package org.monarchinitiative.poet.controller.disease;
+package org.monarchinitiative.poet.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.exceptions.DiseaseNotFoundException;

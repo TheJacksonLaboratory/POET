@@ -1,4 +1,4 @@
-package org.monarchinitiative.poet.model
+package org.monarchinitiative.poet.model.response
 
 import org.monarchinitiative.poet.model.response.Contribution
 import org.springframework.test.context.ActiveProfiles
