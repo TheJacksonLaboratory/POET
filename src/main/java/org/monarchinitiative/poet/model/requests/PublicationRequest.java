@@ -5,6 +5,9 @@ import org.monarchinitiative.poet.model.entities.Publication;
 
 import java.util.Objects;
 
+/**
+ * The model for the JSON requests for publication endpoints with validation
+ */
 public class PublicationRequest {
 
     private Publication publication;

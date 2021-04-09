@@ -4,6 +4,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
+/**
+ * The model for the JSON requests for treatment endpoints with validation
+ */
 public class TreatmentRequest {
 
 

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.exceptions.AnnotationSourceException;
 import org.monarchinitiative.poet.model.entities.PhenotypeAnnotation;
 import org.monarchinitiative.poet.model.requests.PhenotypeRequest;
-import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.service.AnnotationService;
 import org.monarchinitiative.poet.views.AnnotationViews;
 import org.springframework.http.HttpStatus;
@@ -26,6 +25,13 @@ public class PhenotypeController {
         this.annotationService = annotationService;
     }
 
+    /**
+     * The endpoint to get phenotype annotations
+     * @param diseaseId the diseaseId for the creation
+     * @param publicationId the publicationId for the creation
+     * @param sort the way to sort the response
+     * @return a list of phenotype annotations
+     */
     @JsonView(AnnotationViews.Simple.class)
     @GetMapping(value = {"/{diseaseId}", "/{diseaseId}/{publicationId}"})
     public List<PhenotypeAnnotation> getPhenotypeAnnotation(@PathVariable("diseaseId")  String diseaseId,
