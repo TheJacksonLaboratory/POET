@@ -1,7 +1,5 @@
 package org.monarchinitiative.poet.model.requests
 
-import org.monarchinitiative.poet.model.requests.PhenotypeRequest
-import org.monarchinitiative.poet.model.requests.TreatmentRequest
 import org.springframework.test.context.ActiveProfiles
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -14,8 +12,10 @@ class PhenotypeRequestSpec extends Specification {
 
     void "test phenotype request constructor"() {
         given:
-        def phenotypeRequest = new PhenotypeRequest(null, hpoName, hpoId, evidence, description, onset, publicationId,
-                publicationName, diseaseId, diseaseName, modifiers, frequency, qualifier, sex)
+            def phenotypeRequest = new PhenotypeRequest(null, hpoName, hpoId, evidence, description, onset, publicationId,
+                    publicationName, diseaseId, diseaseName, modifiers, frequency, qualifier, sex)
+            def phenotypeRequest2 = new PhenotypeRequest(null, hpoName, hpoId, evidence, description, onset, publicationId,
+                    publicationName, diseaseId, diseaseName, modifiers, frequency, qualifier, sex)
 
         expect:
             phenotypeRequest.getHpoName() == hpoName
@@ -31,6 +31,8 @@ class PhenotypeRequestSpec extends Specification {
             phenotypeRequest.getFrequency() == frequency
             phenotypeRequest.getQualifier() == qualifier
             phenotypeRequest.getSex() == sex
+            phenotypeRequest.equals(phenotypeRequest2)
+            phenotypeRequest.hashCode() == phenotypeRequest2.hashCode()
 
         where:
         maxoId | maxoName | hpoName | hpoId | evidence | description | onset | publicationId | publicationName | diseaseId | diseaseName | modifiers | frequency | qualifier | sex

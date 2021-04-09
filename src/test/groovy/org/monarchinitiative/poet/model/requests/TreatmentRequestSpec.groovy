@@ -15,6 +15,9 @@ class TreatmentRequestSpec extends Specification {
         def treatmentRequest = new TreatmentRequest(null,
                 maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extensionId, extensionLabel, publicationId, publicationName, diseaseId, diseaseName
         )
+        def treatmentRequest2 = new TreatmentRequest(null,
+                maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extensionId, extensionLabel, publicationId, publicationName, diseaseId, diseaseName
+        )
 
         expect:
         treatmentRequest.getMaxoId() == maxoId
@@ -30,6 +33,8 @@ class TreatmentRequestSpec extends Specification {
         treatmentRequest.getPublicationName() == publicationName
         treatmentRequest.getDiseaseName() == diseaseName
         treatmentRequest.getDiseaseId() == diseaseId
+        treatmentRequest.equals(treatmentRequest2)
+        treatmentRequest.hashCode() == treatmentRequest.hashCode()
 
         where:
         maxoId | maxoName | hpoName | hpoId | evidence | comment | relation | extensionId | extensionLabel | publicationId | publicationName | diseaseId | diseaseName

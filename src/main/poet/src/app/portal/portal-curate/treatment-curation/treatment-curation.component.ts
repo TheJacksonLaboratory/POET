@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HpoService } from "../../../shared/services/external/hpo.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
-import {HpoTerm, MaxoSearchResult, MaxoTerm, MonarchSearchResult} from "../../../shared/models/search-models";
+import { HpoTerm, MaxoSearchResult, MaxoTerm, MonarchSearchResult } from "../../../shared/models/search-models";
 import { AnnotationSource, Publication, TreatmentAnnotation } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { StateService } from "../../../shared/services/state/state.service";

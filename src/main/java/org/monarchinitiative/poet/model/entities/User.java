@@ -61,7 +61,7 @@ public class User {
     }
 
     public void setCurationRole(CurationRole curationRole) {
-        this.curationRole = curationRole;
+        this.curationRole = curationRole == null ? CurationRole.CURATOR : curationRole;
     }
 
     @Override

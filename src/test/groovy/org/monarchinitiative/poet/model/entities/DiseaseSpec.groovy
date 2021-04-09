@@ -1,6 +1,5 @@
 package org.monarchinitiative.poet.model.entities
 
-import org.monarchinitiative.poet.model.entities.Disease
 import org.springframework.test.context.ActiveProfiles
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -12,9 +11,13 @@ class DiseaseSpec extends Specification {
     void "test disease spec constructor"(){
         given:
             def disease = new Disease(diseaseId, diseaseName)
+            def disease2 = new Disease(diseaseId, diseaseName)
         expect:
             disease.getDiseaseName() == diseaseName
             disease.getDiseaseId() == diseaseId
+            disease.equals(disease2)
+            disease.hashCode() == disease2.hashCode()
+
         where:
             diseaseId   |  diseaseName
             "MONDO:0910392" | "Marfan Syndrome"

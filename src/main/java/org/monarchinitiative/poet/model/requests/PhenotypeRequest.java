@@ -2,6 +2,7 @@ package org.monarchinitiative.poet.model.requests;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.Objects;
 
 public class PhenotypeRequest {
 
@@ -102,5 +103,31 @@ public class PhenotypeRequest {
 
     public String getSex() {
         return sex;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PhenotypeRequest that = (PhenotypeRequest) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(hpoName, that.hpoName) &&
+                Objects.equals(hpoId, that.hpoId) &&
+                Objects.equals(evidence, that.evidence) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(onset, that.onset) &&
+                Objects.equals(publicationId, that.publicationId) &&
+                Objects.equals(publicationName, that.publicationName) &&
+                Objects.equals(diseaseId, that.diseaseId) &&
+                Objects.equals(diseaseName, that.diseaseName) &&
+                Objects.equals(modifiers, that.modifiers) &&
+                Objects.equals(qualifier, that.qualifier) &&
+                Objects.equals(frequency, that.frequency) &&
+                Objects.equals(sex, that.sex);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, hpoName, hpoId, evidence, description, onset, publicationId, publicationName, diseaseId, diseaseName, modifiers, qualifier, frequency, sex);
     }
 }
