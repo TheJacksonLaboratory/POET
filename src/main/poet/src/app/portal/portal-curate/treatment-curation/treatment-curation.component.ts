@@ -2,16 +2,17 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HpoService } from "../../../shared/services/external/hpo.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
-import { HpoTerm, MaxoSearchResult, MaxoTerm } from "../../../shared/models/search-models";
+import { HpoTerm, MaxoSearchResult, MaxoTerm, MonarchSearchResult } from "../../../shared/models/search-models";
 import { AnnotationSource, Publication, TreatmentAnnotation } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { StateService } from "../../../shared/services/state/state.service";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogSourceComponent } from "../dialog-source/dialog-source.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { MonarchService } from "../../../shared/services/external/monarch.service";
 
 @Component({
-  selector: 'app-treatment-curation',
+  selector: 'poet-treatment-curation',
   templateUrl: './treatment-curation.component.html',
   styleUrls: ['./treatment-curation.component.scss']
 })
@@ -28,6 +29,7 @@ export class TreatmentCurationComponent implements OnInit {
   selectedHpo: HpoTerm;
   maxoOptions: MaxoSearchResult[];
   hpoOptions: HpoTerm[];
+  chebiOptions: any;
   selectedPublications: Publication[] = [];
 
   savingAnnotation: boolean = false;
@@ -36,13 +38,13 @@ export class TreatmentCurationComponent implements OnInit {
     hpoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     evidenceFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     relationFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    extensionIdFormControl: new FormControl({value: '', disabled: false}, Validators.pattern("^CHEBI:[0-9]{5}$")),
-    extensionLabelFormControl: new FormControl({value: '', disabled: false}),
+    extensionFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     commentFormControl: new FormControl({value: '', disabled: false}),
   });
 
   constructor(public hpoService: HpoService,
               public curationService: CurationService,
+              public monarchService: MonarchService,
               public stateService: StateService,
               public dialog: MatDialog,
               private _snackBar: MatSnackBar) {
@@ -61,7 +63,7 @@ export class TreatmentCurationComponent implements OnInit {
     this.stateService.selectedTreatmentAnnotation.subscribe((annotation) => {
       if (!annotation) {
         this.selectedPublications = [];
-        this.resetMaxoForm();
+        this.resetTreatmentForm();
       } else {
         this.selectedAnnotation = annotation;
         this.setFormValues(annotation);
@@ -108,6 +110,21 @@ export class TreatmentCurationComponent implements OnInit {
           });
         }
       });
+
+    this.formControlGroup.get("extensionFormControl").valueChanges
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe(query => {
+        if (query && query.length > 3 && !this.formControlGroup.disabled) {
+          this.monarchService.searchMonarch(query, "CHEBI").subscribe((data) => {
+            if (!data) {
+              this.formControlGroup.get("extensionFormControl").setErrors({notFound: true});
+            }
+            this.chebiOptions = data;
+          }, (err) => {
+            this.formControlGroup.get("extensionFormControl").setErrors({notFound: true});
+          });
+        }
+      });
   }
 
   submitForm(): void {
@@ -120,21 +137,21 @@ export class TreatmentCurationComponent implements OnInit {
       evidence: this.formControlGroup.get('evidenceFormControl').value,
       relation: this.formControlGroup.get('relationFormControl').value,
       comment: this.formControlGroup.get('commentFormControl').value,
-      extensionId: this.formControlGroup.get('extensionIdFormControl').value,
-      extensionLabel: this.formControlGroup.get('extensionLabelFormControl').value
+      extensionId: this.formControlGroup.get('extensionFormControl').value.id,
+      extensionLabel: this.formControlGroup.get('extensionFormControl').value.label[0]
     }
     this.savingAnnotation = true;
     if (this.updating) {
-      this.curationService.updateTreatmentAnnotation(treatmentAnnotation).subscribe(() => {
-        this.onSuccessfulMaxo('Annotation Updated!')
+      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment').subscribe(() => {
+        this.onSuccessfulTreatment('Annotation Updated!')
       }, (err) => {
-        this.onErrorMaxoSave();
+        this.onErrorTreatmentSave();
       });
     } else {
-      this.curationService.saveTreatmentAnnotation(treatmentAnnotation).subscribe(() => {
-        this.onSuccessfulMaxo('Annotation Saved!')
+      this.curationService.saveAnnotation(treatmentAnnotation, 'treatment').subscribe(() => {
+        this.onSuccessfulTreatment('Annotation Saved!')
       }, (err) => {
-        this.onErrorMaxoSave();
+        this.onErrorTreatmentSave();
       });
     }
   }
@@ -151,18 +168,18 @@ export class TreatmentCurationComponent implements OnInit {
 
   }
 
-  onSuccessfulMaxo(message: string) {
+  onSuccessfulTreatment(message: string) {
     this.savingAnnotation = false;
     this.stateService.triggerAnnotationReload(true);
     this.stateService.triggerAnnotationCountsReload(true);
-    this.resetMaxoForm();
+    this.resetTreatmentForm();
     this._snackBar.open(message, 'Close', {
       duration: 3000,
       horizontalPosition: "left"
     });
   }
 
-  onErrorMaxoSave() {
+  onErrorTreatmentSave() {
     this.savingAnnotation = false;
     this._snackBar.open('Error Saving Annotation!', 'Close', {
       duration: 3000,
@@ -183,16 +200,8 @@ export class TreatmentCurationComponent implements OnInit {
     return this.formControlGroup.valid && this.selectedPublications.length > 0 && !this.formControlGroup.disabled;
   }
 
-  resetMaxoForm() {
+  resetTreatmentForm() {
     this.formControlGroup.reset();
-  }
-
-  resetMaxoTermSelect() {
-    this.formControlGroup.get('maxoFormControl').reset();
-  }
-
-  resetHpoTermSelect() {
-    this.formControlGroup.get('hpoFormControl').reset();
   }
 
   displayMaxoFn(option) {
@@ -201,6 +210,12 @@ export class TreatmentCurationComponent implements OnInit {
 
   displayHpoFn(option) {
     return option && option.name ? `${option.name} ${option.id}` : '';
+  }
+
+  displayMonarchSearchFn(monarchSearchResult: MonarchSearchResult) {
+    if (monarchSearchResult) {
+      return monarchSearchResult.label[0];
+    }
   }
 
   remove(publication: Publication): void {

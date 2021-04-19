@@ -2,7 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import { Observable } from "rxjs";
-import { Disease, Publication, TreatmentAnnotation, UserActivityResponse } from "../../models/models";
+import {
+  Disease,
+  PhenotypeAnnotation,
+  Publication,
+  TreatmentAnnotation,
+  UserActivityResponse
+} from "../../models/models";
 import { StateService } from "../state/state.service";
 import { map, shareReplay } from "rxjs/operators";
 
@@ -63,7 +69,6 @@ export class CurationService {
     return this.httpClient.post(environment.POET_API_PUBLICATION_ENTITY_URL, annotationSource)
   }
 
-
   /**
    * Get a list of diseases associated to a publication
    * @param id - ideally a PMID.
@@ -73,7 +78,27 @@ export class CurationService {
   }
 
   /**
-   * Get a list of Maxo Annotations
+   * Get a list of Phenotype Annotations
+   * @param publication
+   * @param disease
+   * @param sort
+   */
+  getPhenotypeAnnotations(disease: Disease, publication: Publication, sort: string): Observable<PhenotypeAnnotation[]> {
+    let params;
+    if (sort) {
+      params = new HttpParams().set("sort", sort);
+    }
+    if (publication != null) {
+      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
+    } else {
+      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
+    }
+  }
+
+
+  /**
+   * Get a list of Treatment Annotations
+   * @param publication
    * @param disease
    * @param publication
    * @param sort
@@ -84,51 +109,68 @@ export class CurationService {
       params = new HttpParams().set("sort", sort);
     }
     if (publication != null) {
-      return this.httpClient.get<any>(environment.POET_API_MAXO_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
+      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
     } else {
-      return this.httpClient.get<any>(environment.POET_API_MAXO_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
+      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
     }
   }
 
   /**
-   * Update a maxo annotation to the database
-   * @param annotation - a maxo annotation from the maxo form
+   * Update an annotation to the database
+   * @param annotation - an phenotype or treatment annotation
+   * @param category - the selected category they are curating
    */
-  updateTreatmentAnnotation(annotation: any) {
+  updateAnnotation(annotation: any, category: string) {
     const annotationSource = this.stateService.getSelectedSource();
     annotation.publicationId = annotationSource.publication.publicationId;
     annotation.publicationName = annotationSource.publication.publicationName;
     annotation.diseaseId = annotationSource.disease.diseaseId;
     annotation.diseaseName = annotationSource.disease.diseaseName;
-    return this.httpClient.put(environment.POET_API_MAXO_ANNOTATION, annotation);
+    if(category === 'treatment'){
+      return this.httpClient.put(environment.POET_API_TREATMENTS_ANNOTATION, annotation);
+    } else {
+      return this.httpClient.put(environment.POET_API_PHENOTYPES_ANNOTATION, annotation);
+    }
   }
 
   /**
-   * Save a maxo annotation to the database
-   * @param annotation - a maxo annotation from the maxo form
+   * Save an annotation to the database
+   * @param annotation - a phenotype or treatment annotation
+   * @param ontology - the selected category they are curating
    */
-  saveTreatmentAnnotation(annotation: any) {
+  saveAnnotation(annotation: any, category: string) {
     const annotationSource = this.stateService.getSelectedSource();
     annotation.publicationId = annotationSource.publication.publicationId;
     annotation.publicationName = annotationSource.publication.publicationName;
     annotation.diseaseId = annotationSource.disease.diseaseId;
     annotation.diseaseName = annotationSource.disease.diseaseName;
-    return this.httpClient.post(environment.POET_API_MAXO_ANNOTATION, annotation);
+    if(category ==='treatment'){
+      return this.httpClient.post(environment.POET_API_TREATMENTS_ANNOTATION, annotation);
+    } else {
+      return this.httpClient.post(environment.POET_API_PHENOTYPES_ANNOTATION, annotation);
+    }
+
   }
 
   /**
    * Save a maxo annotation to the database
    * @param id - an annotation id
+   * @param category - the selected category
    */
-  deleteTreatmentAnnotation(id: string) {
-    return this.httpClient.delete(environment.POET_API_MAXO_ANNOTATION + id);
+  deleteAnnotation(id: string, category: string) {
+    if(category === 'treatment'){
+      return this.httpClient.delete(environment.POET_API_TREATMENTS_ANNOTATION + id);
+    } else {
+      return this.httpClient.delete(environment.POET_API_PHENOTYPES_ANNOTATION + id);
+    }
+
   }
 
   /**
    * Get User Activity for curations
    * @param everyone
    */
-  getActivity(everyone: boolean) {
+  getUserActivity(everyone: boolean) {
     const params = new HttpParams().set("all", String(everyone));
     return this.httpClient.get<UserActivityResponse[]>(environment.POET_API_STATISTICS_ACTIVITY_URL, {params: params}).pipe(
       map((response: UserActivityResponse[]) => {

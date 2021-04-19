@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ import java.util.List;
  */
 @CrossOrigin
 @RestController
-@RequestMapping(value = "${api.version}/annotation/treatments") // /annotation/<type>/<action>
+@RequestMapping(value = "${api.version}/annotation/treatments")
 public class TreatmentController {
 
     private final AnnotationService annotationService;
@@ -65,7 +66,7 @@ public class TreatmentController {
      * @since 0.5.0
      */
     @PostMapping(value = "/", headers = "Accept=application/json")
-    public ResponseEntity<?> createTreatmentAnnotation(@RequestBody TreatmentRequest treatmentRequest, Authentication authentication) {
+    public ResponseEntity<?> createTreatmentAnnotation(@Valid @RequestBody TreatmentRequest treatmentRequest, Authentication authentication) {
         annotationService.createTreatmentAnnotation(treatmentRequest, authentication);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -79,7 +80,7 @@ public class TreatmentController {
      * @since 0.5.0
      */
     @PutMapping(value = "/", headers = "Accept=application/json")
-    public ResponseEntity<?> updateTreatmentAnnotation(@RequestBody TreatmentRequest treatmentRequest, Authentication authentication) {
+    public ResponseEntity<?> updateTreatmentAnnotation(@Valid @RequestBody TreatmentRequest treatmentRequest, Authentication authentication) {
         annotationService.updateTreatmentAnnotation(treatmentRequest, authentication);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

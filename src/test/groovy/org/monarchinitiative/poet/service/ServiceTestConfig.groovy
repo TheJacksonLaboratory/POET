@@ -2,6 +2,7 @@ package org.monarchinitiative.poet.service
 
 import org.monarchinitiative.poet.repository.AnnotationSourceRepository
 import org.monarchinitiative.poet.repository.DiseaseRepository
+import org.monarchinitiative.poet.repository.PhenotypeAnnotationRepository
 import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository
 import org.monarchinitiative.poet.repository.PublicationRepository
 import org.monarchinitiative.poet.repository.UserActivityRepository
@@ -40,15 +41,20 @@ class ServiceTestConfig {
     }
 
     @Bean
-    TreatmentAnnotationRepository maxoAnnotationStub(){
+    TreatmentAnnotationRepository treatmentAnnotationStub(){
         return mockFactory.Stub(TreatmentAnnotationRepository)
+    }
+
+    @Bean
+    PhenotypeAnnotationRepository  phenotypeAnnotationStub(){
+        return mockFactory.Stub(PhenotypeAnnotationRepository)
     }
 
     @Bean
     AnnotationService annotationService(){
         AnnotationService annotationService = new AnnotationService(
                 publicationStub(), diseaseStub(), annotationSourceStub(),
-                maxoAnnotationStub(), userStub(), userActivityStub()
+                treatmentAnnotationStub(), userStub(), userActivityStub(), phenotypeAnnotationStub()
         )
         return annotationService
     }
@@ -68,8 +74,9 @@ class ServiceTestConfig {
 
 
     @Bean
-    StatisticsService orderService() {
-            StatisticsService statisticsService = new StatisticsService(userActivityStub());
+    StatisticsService statisticService() {
+            StatisticsService statisticsService = new StatisticsService(userActivityStub(), treatmentAnnotationStub(), diseaseStub(),
+                    phenotypeAnnotationStub());
             return statisticsService;
     }
 }

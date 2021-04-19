@@ -18,7 +18,7 @@ public interface TreatmentAnnotationRepository extends CrudRepository<TreatmentA
     TreatmentAnnotation findDistinctById(long id);
     int countAllByAnnotationSourceDiseaseAndStatusNot(Disease disease, AnnotationStatus status);
     int countAllByStatusNot(AnnotationStatus status);
-    boolean existsByAnnotationSourceAndAnnotationTypeAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceTypeAndRelationAndStatusNot(
+    boolean existsByAnnotationSourceAndAnnotationTypeAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
             AnnotationSource annotationSource, String annotationType, String maxoId, String hpoId,
-            String extensionId, String evidenceType, String relation, AnnotationStatus status);
+            String extensionId, String evidence, String relation, AnnotationStatus status);
 }

@@ -7,7 +7,6 @@ import org.monarchinitiative.poet.model.entities.Disease;
 import org.monarchinitiative.poet.model.entities.Publication;
 import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
-import org.monarchinitiative.poet.model.requests.DiseaseRequest;
 import org.monarchinitiative.poet.model.requests.PublicationRequest;
 import org.monarchinitiative.poet.repository.AnnotationSourceRepository;
 import org.monarchinitiative.poet.repository.DiseaseRepository;

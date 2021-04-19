@@ -1,5 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AnnotationSource, Disease, TreatmentAnnotation, Publication } from "../../../shared/models/models";
+import {
+  AnnotationSource,
+  Disease,
+  TreatmentAnnotation,
+  Publication,
+  PhenotypeAnnotation
+} from "../../../shared/models/models";
 import { StateService } from "../../../shared/services/state/state.service";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { Observable } from "rxjs";
@@ -7,14 +13,13 @@ import { tap } from "rxjs/operators";
 import { transition, trigger, useAnimation } from "@angular/animations";
 import { bounceInLeft } from "ng-animate";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { Route } from '@angular/compiler/src/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageEvent } from "@angular/material/paginator";
 import { MatBottomSheet } from "@angular/material/bottom-sheet";
 import { DeleteSheetComponent } from "./delete-sheet/delete-sheet.component";
 
 @Component({
-  selector: 'app-annotation-card',
+  selector: 'poet-annotation-card',
   templateUrl: './annotation-card.component.html',
   styleUrls: ['./annotation-card.component.scss'],
   animations: [
@@ -30,8 +35,9 @@ export class AnnotationCardComponent implements OnInit {
   @Input('formOpen') formOpen: boolean = false;
   disease: Disease;
   publication: Publication;
-  ontology: string;
+  category: string;
   treatmentAnnotations: Observable<TreatmentAnnotation[]>;
+  phenotypeAnnotations: Observable<PhenotypeAnnotation[]>;
   annotationMode: any;
   triggerBounceIn: any;
   activeAnnotation: any;
@@ -47,16 +53,18 @@ export class AnnotationCardComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.stateService.selectedOntology.subscribe((ontology) => {
-      this.ontology = ontology;
-    });
-
     this.stateService.selectedDisease.subscribe((disease: Disease) => {
-      if (this.ontology === 'maxo' && disease != null) {
+      if (disease != null) {
         this.disease = disease;
         this.updateAnnotations({disease: disease, publication: null});
       }
     });
+
+    this.stateService.selectedCategory.subscribe((category) => {
+      this.category = category;
+      this.updateAnnotations(null);
+    });
+
 
     this.stateService.triggerReloadAnnotations.subscribe((reload) => {
       // TODO: Polling in the future.
@@ -82,10 +90,10 @@ export class AnnotationCardComponent implements OnInit {
     });
   }
 
-  ontologyToDisplay() {
-    if (this.ontology == 'maxo') {
-      return "Medical Actions";
-    } else if (this.ontology == 'hpo') {
+  categoryToDisplay() {
+    if (this.category == 'treatment') {
+      return "Treatments";
+    } else if (this.category == 'phenotype') {
       return "Phenotypes";
     }
   }
@@ -95,19 +103,30 @@ export class AnnotationCardComponent implements OnInit {
       this.publication = source.publication;
       this.disease = source.disease;
     }
-    if (this.ontology && this.disease) {
+    if (this.category && this.disease) {
       if (this.annotationMode == 'edit') {
         this.activeAnnotation = null;
         this.annotationAction(null, 'create')
       }
-      this.treatmentAnnotations = this.curationService.getTreatmentAnnotations(this.disease, this.publication, "").pipe(
-        tap((annotations => {
-        annotations.forEach((annotation) => {
-          this.annotationStatuses.push(annotation.status);
-        });
-        this.annotationStatuses = [...new Set(this.annotationStatuses)].sort();
-        this.selectedStatuses = this.annotationStatuses;
-      })));
+      if(this.category === 'treatment'){
+        this.treatmentAnnotations = this.curationService.getTreatmentAnnotations(this.disease, this.publication, "").pipe(
+          tap((annotations => {
+          annotations.forEach((annotation) => {
+            this.annotationStatuses.push(annotation.status);
+          });
+          this.annotationStatuses = [...new Set(this.annotationStatuses)].sort();
+          this.selectedStatuses = this.annotationStatuses;
+        })));
+      } else if(this.category === 'phenotype'){
+        this.phenotypeAnnotations = this.curationService.getPhenotypeAnnotations(this.disease, this.publication, "").pipe(
+          tap((annotations => {
+            annotations.forEach((annotation) => {
+              this.annotationStatuses.push(annotation.status);
+            });
+            this.annotationStatuses = [...new Set(this.annotationStatuses)].sort();
+            this.selectedStatuses = this.annotationStatuses;
+          })));
+      }
     }
   }
 
@@ -121,25 +140,42 @@ export class AnnotationCardComponent implements OnInit {
 
   annotationAction(annotation: any, action: any) {
     if (action == 'delete') {
-      this._bottomSheet.open(DeleteSheetComponent, {
-        restoreFocus: false,
-        disableClose: true
-      }).afterDismissed().subscribe(shouldDelete => {
-        if(shouldDelete){
-          this.curationService.deleteTreatmentAnnotation(annotation.id).subscribe(() => {
-            this._snackBar.open('Annotation Deleted!', 'Close', {
-              duration: 3000,
+      if(this.category == 'treatment'){
+        this._bottomSheet.open(DeleteSheetComponent, {
+          restoreFocus: false,
+          disableClose: true
+        }).afterDismissed().subscribe(shouldDelete => {
+          if(shouldDelete){
+            this.curationService.deleteAnnotation(annotation.id, 'treatment').subscribe(() => {
+              this._snackBar.open('Annotation Deleted!', 'Close', {
+                duration: 3000,
+              });
+              this.updateAnnotations(null);
+              this.stateService.triggerAnnotationCountsReload(true);
+              this.formOpen = false;
+              this.closeForm();
             });
-            this.updateAnnotations(null);
-            this.stateService.triggerAnnotationCountsReload(true);
-            this.formOpen = false;
-            this.closeForm();
-          });
         }
-      });
+        });
+      } else {
+        this._bottomSheet.open(DeleteSheetComponent, {
+          restoreFocus: false,
+          disableClose: true
+        }).afterDismissed().subscribe(shouldDelete => {
+          if(shouldDelete){
+            this.curationService.deleteAnnotation(annotation.id, this.category).subscribe(() => {
+              this._snackBar.open('Annotation Deleted!', 'Close', {
+                duration: 3000,
+              });
+              this.updateAnnotations(null);
+              this.stateService.triggerAnnotationCountsReload(true);
+              this.closeForm();
+            });
+          }
+        });
+      }
     } else {
-      this.activeAnnotation = annotation;
-      if (this.ontology == 'maxo' && action != 'delete') {
+      if (this.category == 'treatment') {
         this.stateService.setSelectedTreatmentAnnotation(annotation);
       } else {
         this.stateService.setSelectedPhenotypeAnnotation(annotation);
@@ -163,4 +199,5 @@ export class AnnotationCardComponent implements OnInit {
     this.highValue = this.lowValue + event.pageSize;
     return event;
   }
+
 }

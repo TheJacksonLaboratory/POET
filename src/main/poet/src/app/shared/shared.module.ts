@@ -27,6 +27,8 @@ import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { FilterPipe } from './pipes/filter.pipe';
+import { MatChipsModule } from "@angular/material/chips";
+import { MatRadioModule } from "@angular/material/radio";
 
 @NgModule({
   declarations: [SearchComponent, FilterPipe],
@@ -61,7 +63,9 @@ import { FilterPipe } from './pipes/filter.pipe';
     MatCheckboxModule,
     MatTooltipModule,
     FlexLayoutModule,
-    MatCheckboxModule
+    MatChipsModule,
+    MatCheckboxModule,
+    MatRadioModule,
   ],
   exports: [
     MatToolbarModule,
@@ -92,9 +96,11 @@ import { FilterPipe } from './pipes/filter.pipe';
     MatPaginatorModule,
     MatCheckboxModule,
     MatTooltipModule,
+    MatChipsModule,
     FlexLayoutModule,
     MatCheckboxModule,
-    FilterPipe
+    FilterPipe,
+    MatRadioModule
   ]
 })
 export class SharedModule {

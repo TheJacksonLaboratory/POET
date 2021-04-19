@@ -1,7 +1,6 @@
 package org.monarchinitiative.poet.controller
 
-import groovy.json.JsonBuilder
-import org.monarchinitiative.poet.controller.publication.PublicationController
+
 import org.monarchinitiative.poet.model.entities.Publication
 import org.monarchinitiative.poet.service.EntityService
 import org.spockframework.spring.SpringBean

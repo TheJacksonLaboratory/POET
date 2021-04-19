@@ -40,7 +40,7 @@ export class SearchComponent implements OnInit {
         switchMap(value => {
           if (this.hasValidInput(value)) {
             this.isLoading = true;
-            return this.monarchService.searchDisease(value)
+            return this.monarchService.searchMonarch(value, "MONDO")
               .pipe(
                 finalize(() => {
                   this.isLoading = false
@@ -97,11 +97,7 @@ export class SearchComponent implements OnInit {
 
   displayFn(monarchSearchResult: MonarchSearchResult) {
     if (monarchSearchResult) {
-      return monarchSearchResult.match;
+      return monarchSearchResult.label[0];
     }
-  }
-
-  isElevatedCurator(){
-    return this.role === 'ELEVATED_CURATOR';
   }
 }

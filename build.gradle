@@ -6,6 +6,7 @@ plugins {
 	id 'groovy'
 	id "com.github.node-gradle.node" version "2.2.4"
 	id "com.dorongold.task-tree" version "1.5"
+	id 'jacoco'
 }
 
 group = 'org.monarchinitiative.poet'
@@ -68,6 +69,8 @@ task shouldClientTest(){
 bootWar.dependsOn {
 	buildClientProd
 }
+
+test.finalizedBy(jacocoTestReport)
 
 task testApp {
 	dependsOn(bootRun.dependsOn(buildClientProd))
