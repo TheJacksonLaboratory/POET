@@ -3,8 +3,10 @@ package org.monarchinitiative.poet.controller.annotation;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.exceptions.AnnotationSourceException;
 import org.monarchinitiative.poet.model.entities.PhenotypeAnnotation;
+import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.requests.PhenotypeRequest;
 import org.monarchinitiative.poet.service.AnnotationService;
+import org.monarchinitiative.poet.service.UserService;
 import org.monarchinitiative.poet.views.AnnotationViews;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +22,11 @@ import java.util.List;
 public class PhenotypeController {
 
     private AnnotationService annotationService;
+    private UserService userService;
 
-    public PhenotypeController(AnnotationService annotationService) {
+    public PhenotypeController(AnnotationService annotationService, UserService userService) {
         this.annotationService = annotationService;
+        this.userService = userService;
     }
 
     /**
@@ -55,12 +59,12 @@ public class PhenotypeController {
      *
      * @param phenotypeRequest a json object in the form of {@link PhenotypeRequest}
      * @return a response entity either created or a server error if we failed to create the phenotype annotation.
-     * TODO: Add better error handling here.
      * @since 0.5.0
      */
     @PostMapping(value = "/", headers = "Accept=application/json")
     public ResponseEntity<?> createPhenotypeAnnotation(@Valid @RequestBody PhenotypeRequest phenotypeRequest, Authentication authentication) {
-        annotationService.createPhenotypeAnnotation(phenotypeRequest, authentication);
+        final User user = userService.getExistingUser(authentication);
+        annotationService.createPhenotypeAnnotation(phenotypeRequest, user);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -69,12 +73,14 @@ public class PhenotypeController {
      *
      * @param phenotypeRequest a json object in the form of {@link PhenotypeRequest}
      * @return a response entity either created or a server error if we failed to create the maxo annotation.
-     * TODO: Add better error handling here.
      * @since 0.5.0
      */
     @PutMapping(value = "/", headers = "Accept=application/json")
-    public ResponseEntity<?> updatePhenotypeAnnotation(@Valid @RequestBody PhenotypeRequest phenotypeRequest, Authentication authentication) {
-        annotationService.updatePhenotypeAnnotation(phenotypeRequest, authentication);
+    public ResponseEntity<?> updatePhenotypeAnnotation(@Valid @RequestBody PhenotypeRequest phenotypeRequest,
+                                                       @RequestParam(value = "review", defaultValue = "true") boolean review,
+                                                       Authentication authentication) {
+        final User user = userService.getExistingUser(authentication);
+        annotationService.updatePhenotypeAnnotation(phenotypeRequest, user, review);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -83,12 +89,12 @@ public class PhenotypeController {
      *
      * @param id the id to be deleted
      * @return a response entity ok if deleted or error if not.
-     * TODO: Add better error handling here.
      * @since 0.5.0
      */
     @DeleteMapping(value = "/{id}", headers = "Accept=application/json")
     public ResponseEntity<?> deletePhenotypeAnnotation(@PathVariable Long id, Authentication authentication) {
-        if(annotationService.deletePhenotypeAnnotation(id, authentication)){
+        final User user = userService.getExistingUser(authentication);
+        if(annotationService.deletePhenotypeAnnotation(id, user)){
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

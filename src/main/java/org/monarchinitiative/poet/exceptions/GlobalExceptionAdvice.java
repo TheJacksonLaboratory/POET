@@ -46,7 +46,7 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     ErrorDetails authenticationException(AuthenticationException ex) {
-        return new ErrorDetails(new Date(), "Unauthorized Actions",
+        return new ErrorDetails(new Date(), "Unauthorized.",
                 ex.getMessage());
     }
 

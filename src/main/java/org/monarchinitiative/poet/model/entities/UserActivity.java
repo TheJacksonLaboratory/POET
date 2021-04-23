@@ -16,7 +16,10 @@ public class UserActivity {
 
     @JsonView(UserActivityViews.Simple.class)
     @ManyToOne
-    private User user;
+    private User owner;
+
+    @ManyToOne
+    private User reviewer;
 
     @JsonView(UserActivityViews.Simple.class)
     @OneToOne
@@ -36,16 +39,25 @@ public class UserActivity {
     protected UserActivity() {
     }
 
-    public UserActivity(User user, CurationAction curationAction, Annotation annotation, Annotation oldAnnotation) {
-        this.user = user;
+    public UserActivity(User owner, CurationAction curationAction, Annotation annotation, Annotation oldAnnotation) {
+        this.owner = owner;
         this.annotation = annotation;
         this.oldAnnotation = oldAnnotation;
         this.curationAction = curationAction;
         this.localDateTime = LocalDateTime.now();
     }
 
-    public User getUser() {
-        return user;
+    public UserActivity(User owner, User reviewer, CurationAction curationAction, Annotation annotation, Annotation oldAnnotation) {
+        this.owner = owner;
+        this.reviewer = reviewer;
+        this.annotation = annotation;
+        this.oldAnnotation = oldAnnotation;
+        this.curationAction = curationAction;
+        this.localDateTime = LocalDateTime.now();
+    }
+
+    public User getOwner() {
+        return owner;
     }
 
     public Annotation getAnnotation() {
@@ -62,7 +74,7 @@ public class UserActivity {
         if (o == null || getClass() != o.getClass()) return false;
         UserActivity that = (UserActivity) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(user, that.user) &&
+                Objects.equals(owner, that.owner) &&
                 Objects.equals(annotation, that.annotation) &&
                 Objects.equals(localDateTime, that.localDateTime) &&
                 curationAction == that.curationAction;
@@ -70,6 +82,6 @@ public class UserActivity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, annotation, localDateTime, curationAction);
+        return Objects.hash(id, owner, annotation, localDateTime, curationAction);
     }
 }
