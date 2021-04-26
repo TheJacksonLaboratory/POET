@@ -208,6 +208,19 @@ public class AnnotationService {
     }
 
     /**
+     * Given the complex size of get treatment annotations we are creating this method to get
+     * treatment annotations with only the status under_review
+     * @return reviewable treatment annotations
+     */
+    public List<TreatmentAnnotation> getReviewableTreatmentAnnotations(){
+       return this.treatmentAnnotationRepository.findAllByStatus(AnnotationStatus.UNDER_REVIEW);
+    }
+
+    public List<PhenotypeAnnotation> getReviewablePhenotypeAnnotations(){
+        return this.phenotypeAnnotationRepository.findAllByStatus(AnnotationStatus.UNDER_REVIEW);
+    }
+
+    /**
      * Create a MaXo annotation with a pending review status.
      * enforcing business rules with the status of the annotation
      *
@@ -220,7 +233,8 @@ public class AnnotationService {
         // We have a valid publication and a valid disease, do we have an annotation source for them?
         final AnnotationSource annotationSource = getAnnotationSource(treatmentRequest.getPublicationId(), treatmentRequest.getDiseaseId());
         if(annotationSource != null){
-            final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, annotationSource);
+            AnnotationStatus status = user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR) ? AnnotationStatus.ACCEPTED : AnnotationStatus.UNDER_REVIEW;
+            final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, annotationSource, status);
             // Check if we have a duplicate annotation, if so throw an error
             // See if we already have an annotation like this.
             if(treatmentAnnotationRepository.existsByAnnotationSourceAndAnnotationTypeAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
@@ -245,9 +259,7 @@ public class AnnotationService {
      */
     public void updateTreatmentAnnotation(TreatmentRequest treatmentRequest, User user, boolean review) throws DuplicateAnnotationException {
 
-            // Need to retire the old annotation
             TreatmentAnnotation oldAnnotation = treatmentAnnotationRepository.findDistinctById(treatmentRequest.getId());
-            // Normal update, just ensure that they own the annotation
             User owner = userActivityRespository.getMostRecentDateForAnnotationActivity(oldAnnotation.getId()).getOwner();
 
             if(review){

@@ -2,6 +2,9 @@ package org.monarchinitiative.poet.controller.annotation;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.exceptions.AnnotationSourceException;
+import org.monarchinitiative.poet.exceptions.AuthenticationException;
+import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
+import org.monarchinitiative.poet.model.enumeration.CurationRole;
 import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.model.entities.*;
 import org.monarchinitiative.poet.service.AnnotationService;
@@ -13,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -61,6 +65,28 @@ public class TreatmentController {
     }
 
     /**
+     * The endpoint to retrieve treatment annotations that need review.
+     *
+     * @throws AuthenticationException if the user is not an elevated user.
+     * @since 0.6.0
+     */
+    @JsonView(AnnotationViews.Simple.class)
+    @GetMapping(value = {"/review"})
+    public List<TreatmentAnnotation> getReviewableTreatmentAnnotations(Authentication authentication){
+        final User user = userService.getExistingUser(authentication);
+        if(user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)){
+            final List<TreatmentAnnotation> annotations = this.annotationService.getReviewableTreatmentAnnotations();
+            if(annotations != null){
+                return annotations;
+            } else {
+                return Collections.emptyList();
+            }
+        } else {
+            throw new AuthenticationException(user.getNickname());
+        }
+    }
+
+    /**
      * The endpoint to create a maxo annotation
      *
      * @param treatmentRequest a json object in the form of {@link TreatmentRequest}
@@ -85,7 +111,7 @@ public class TreatmentController {
      */
     @PutMapping(value = "/", headers = "Accept=application/json")
     public ResponseEntity<?> updateTreatmentAnnotation(@Valid @RequestBody TreatmentRequest treatmentRequest,
-                                                       @RequestParam(value = "review", defaultValue = "true") boolean review,
+                                                       @RequestParam(value = "review", defaultValue = "false") boolean review,
                                                        Authentication authentication) {
         final User user = userService.getExistingUser(authentication);
         annotationService.updateTreatmentAnnotation(treatmentRequest, user, review);

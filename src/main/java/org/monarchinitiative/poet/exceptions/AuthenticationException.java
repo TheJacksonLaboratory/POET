@@ -11,6 +11,6 @@ public class AuthenticationException extends RuntimeException {
     }
 
     public AuthenticationException(boolean malformed) {
-        super(String.format("Authentication or authentication claims are malformed"));
+        super(String.format("Authentication or authentication claims are malformed."));
     }
 }

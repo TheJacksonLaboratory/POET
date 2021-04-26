@@ -57,9 +57,9 @@ public class StatisticsService {
             }
         } else {
             if(weeks == 0){
-                return this.userActivityRepository.findUserActivityByUserAuthId(authentication.getName());
+                return this.userActivityRepository.findUserActivityByOwnerAuthId(authentication.getName());
             } else {
-                return this.userActivityRepository.findUserActivityByLocalDateTimeAfterAndUserAuthId(compare, authentication.getName());
+                return this.userActivityRepository.findUserActivityByLocalDateTimeAfterAndOwnerAuthId(compare, authentication.getName());
             }
         }
     }
@@ -72,7 +72,7 @@ public class StatisticsService {
      * @since 0.5.0
      */
     public Contribution summarizeUserContributions(Authentication authentication){
-        final int treatment = userActivityRepository.countAllByAnnotation_AnnotationTypeAndUserAuthId("maxo", authentication.getName());
+        final int treatment = userActivityRepository.countAllByAnnotation_AnnotationTypeAndOwnerAuthId("maxo", authentication.getName());
         final int phenotype = 0;
         final int phenopackets = 0;
         return new Contribution(treatment, phenotype, phenopackets);

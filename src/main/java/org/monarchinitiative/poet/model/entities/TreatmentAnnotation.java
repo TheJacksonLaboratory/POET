@@ -3,6 +3,7 @@ package org.monarchinitiative.poet.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
+import org.monarchinitiative.poet.model.enumeration.CurationRole;
 import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.views.AnnotationViews;
 
@@ -70,8 +71,10 @@ public class TreatmentAnnotation extends Annotation {
         this.extensionLabel = extensionLabel;
     }
 
-    public TreatmentAnnotation(TreatmentRequest treatmentRequest, AnnotationSource annotationSource){
-        super(annotationSource, AnnotationStatus.UNDER_REVIEW);
+    public TreatmentAnnotation(TreatmentRequest treatmentRequest, AnnotationSource annotationSource,
+                              AnnotationStatus status){
+
+        super(annotationSource, status);
         this.maxoId = treatmentRequest.getMaxoId();
         this.maxoName = treatmentRequest.getMaxoName();
         this.hpoId = treatmentRequest.getHpoId();

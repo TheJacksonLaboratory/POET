@@ -21,4 +21,5 @@ public interface TreatmentAnnotationRepository extends CrudRepository<TreatmentA
     boolean existsByAnnotationSourceAndAnnotationTypeAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
             AnnotationSource annotationSource, String annotationType, String maxoId, String hpoId,
             String extensionId, String evidence, String relation, AnnotationStatus status);
+    List<TreatmentAnnotation> findAllByStatus(AnnotationStatus status);
 }

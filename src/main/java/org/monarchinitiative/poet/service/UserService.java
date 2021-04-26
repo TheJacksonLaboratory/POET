@@ -78,14 +78,18 @@ public class UserService {
      * @since 0.6.0
      */
     private User getUserFromAuthentication(Authentication authentication){
-        final Jwt credentials = (Jwt) authentication.getCredentials();
-        String authId = authentication.getName();
-        String nickname = credentials.getClaim(nickname_claim);
-        String email = credentials.getClaim(email_claim);
-        String orcid = "";
-        CurationRole curationRole = CurationRole.valueOf(credentials.getClaim(role_claim));
-        if(authId != null && nickname != null && email != null){
-            return new User(authId, nickname, email, orcid, curationRole);
+        if(authentication != null){
+            final Jwt credentials = (Jwt) authentication.getCredentials();
+            String authId = authentication.getName();
+            String nickname = credentials.getClaim(nickname_claim);
+            String email = credentials.getClaim(email_claim);
+            String orcid = "";
+            CurationRole curationRole = CurationRole.valueOf(credentials.getClaim(role_claim));
+            if(authId != null && nickname != null && email != null){
+                return new User(authId, nickname, email, orcid, curationRole);
+            } else {
+                throw new AuthenticationException(true);
+            }
         } else {
             throw new AuthenticationException(true);
         }

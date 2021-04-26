@@ -26,6 +26,7 @@ public class Annotation {
     @JsonView({AnnotationViews.Simple.class, UserActivityViews.Simple.class})
     private AnnotationSource annotationSource;
 
+    @JsonView({AnnotationViews.Simple.class})
     @Enumerated(EnumType.STRING)
     private AnnotationStatus status;
 
