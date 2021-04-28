@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
 import {
   Disease,
   PhenotypeAnnotation,
-  Publication,
+  Publication, Status,
   TreatmentAnnotation,
   UserActivityResponse
 } from "../../models/models";
@@ -82,16 +82,22 @@ export class CurationService {
    * @param publication
    * @param disease
    * @param sort
+   * @param review
    */
-  getPhenotypeAnnotations(disease: Disease, publication: Publication, sort: string): Observable<PhenotypeAnnotation[]> {
+  getPhenotypeAnnotations(disease: Disease, publication: Publication, sort: string, review: boolean): Observable<PhenotypeAnnotation[]> {
     let params;
-    if (sort) {
-      params = new HttpParams().set("sort", sort);
-    }
-    if (publication != null) {
-      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
+
+    if(review) {
+      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + 'review');
     } else {
-      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
+      if (sort) {
+        params = new HttpParams().set("sort", sort);
+      }
+      if (publication != null) {
+        return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
+      } else {
+        return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
+      }
     }
   }
 
@@ -102,16 +108,23 @@ export class CurationService {
    * @param disease
    * @param publication
    * @param sort
+   * @param review
    */
-  getTreatmentAnnotations(disease: Disease, publication: Publication, sort: string): Observable<TreatmentAnnotation[]> {
+  getTreatmentAnnotations(disease: Disease, publication: Publication, sort: string, review: boolean): Observable<TreatmentAnnotation[]> {
     let params;
-    if (sort) {
-      params = new HttpParams().set("sort", sort);
-    }
-    if (publication != null) {
-      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
+
+    if(review){
+      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + 'review');
     } else {
-      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
+      if (sort) {
+        params = new HttpParams().set("sort", sort);
+      }
+
+      if (publication != null) {
+        return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
+      } else {
+        return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
+      }
     }
   }
 
@@ -119,24 +132,26 @@ export class CurationService {
    * Update an annotation to the database
    * @param annotation - an phenotype or treatment annotation
    * @param category - the selected category they are curating
+   * @param review - whether this update is a review or not.
    */
-  updateAnnotation(annotation: any, category: string) {
+  updateAnnotation(annotation: any, category: string, review: boolean) {
     const annotationSource = this.stateService.getSelectedSource();
     annotation.publicationId = annotationSource.publication.publicationId;
     annotation.publicationName = annotationSource.publication.publicationName;
     annotation.diseaseId = annotationSource.disease.diseaseId;
     annotation.diseaseName = annotationSource.disease.diseaseName;
+    const params = new HttpParams().set("review", String(review));
     if(category === 'treatment'){
-      return this.httpClient.put(environment.POET_API_TREATMENTS_ANNOTATION, annotation);
+      return this.httpClient.put(environment.POET_API_TREATMENTS_ANNOTATION, annotation, {params: params});
     } else {
-      return this.httpClient.put(environment.POET_API_PHENOTYPES_ANNOTATION, annotation);
+      return this.httpClient.put(environment.POET_API_PHENOTYPES_ANNOTATION, annotation, {params: params});
     }
   }
 
   /**
    * Save an annotation to the database
    * @param annotation - a phenotype or treatment annotation
-   * @param ontology - the selected category they are curating
+   * @param category - the category we are curating
    */
   saveAnnotation(annotation: any, category: string) {
     const annotationSource = this.stateService.getSelectedSource();

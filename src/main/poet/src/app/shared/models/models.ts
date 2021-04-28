@@ -1,7 +1,7 @@
 export interface Annotation {
   id?: string;
   type: string;
-  status: string;
+  status: Status;
   annotationSource: AnnotationSource;
 }
 
@@ -63,4 +63,11 @@ export interface HomeIcon {
   name: string;
   dateAdded: string;
   link: string;
+}
+
+export enum Status {
+  OFFICIAL,
+  ACCEPTED,
+  UNDER_REVIEW,
+  RETIRED
 }

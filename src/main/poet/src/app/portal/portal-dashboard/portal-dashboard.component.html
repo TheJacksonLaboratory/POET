@@ -25,21 +25,21 @@
                                showFirstLastButtons="false">
                 </mat-paginator>
           </mat-tab>
-          <mat-tab label="Most Curated" [disabled]="true">Most Curated Diseases</mat-tab>
-          <mat-tab label="Contributions" [disabled]="noContributions()">
-            <div class="chart-wrapper" *ngIf="!noContributions()">
-              <ngx-charts-pie-chart
-                [results]="pieData"
-                legend="true"
-                legendTitle="Legend"
-                legendPosition="bottom"
-                explodeSlices="true"
-                gradient="true"
-                scheme="ocean"
-              >
-              </ngx-charts-pie-chart>
-            </div>
-          </mat-tab>
+              <mat-tab label="Most Curated" [disabled]="true">Most Curated Diseases</mat-tab>
+              <mat-tab label="Contributions" [disabled]="noContributions()">
+                <div class="chart-wrapper" *ngIf="!noContributions()">
+                  <ngx-charts-pie-chart
+                    [results]="pieData"
+                    legend="true"
+                    legendTitle="Legend"
+                    legendPosition="bottom"
+                    explodeSlices="true"
+                    gradient="true"
+                    scheme="ocean"
+                  >
+                  </ngx-charts-pie-chart>
+                </div>
+              </mat-tab>
         </mat-tab-group>
         </div>
         </div>

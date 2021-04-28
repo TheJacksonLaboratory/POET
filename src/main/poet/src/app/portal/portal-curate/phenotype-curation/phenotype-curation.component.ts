@@ -160,7 +160,7 @@ export class PhenotypeCurationComponent implements OnInit {
     }
     this.savingAnnotation = true;
     if (this.updating) {
-      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype').subscribe(() => {
+      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', false).subscribe(() => {
         this.onSuccessfulPhenotype('Annotation Updated!')
       }, (err) => {
         this.onErrorPhenotypeSave();
@@ -190,6 +190,7 @@ export class PhenotypeCurationComponent implements OnInit {
   onSuccessfulPhenotype(message: string) {
     this.savingAnnotation = false;
     this.stateService.triggerAnnotationReload(true);
+    this.stateService.triggerAnnotationCountsReload(true);
     this.resetPhenotypeForm();
     this._snackBar.open(message, 'Close', {
       duration: 3000,

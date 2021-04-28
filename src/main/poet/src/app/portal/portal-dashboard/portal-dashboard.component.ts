@@ -3,10 +3,12 @@ import { AuthService } from "@auth0/auth0-angular";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { transition, trigger, useAnimation } from "@angular/animations";
 import { fadeIn } from "ng-animate";
-import { Router } from "@angular/router";
 import { CurationService } from "../../shared/services/curation/curation.service";
 import { MatDialog } from "@angular/material/dialog";
 import { environment } from "../../../environments/environment";
+import {PhenotypeAnnotation, TreatmentAnnotation} from "../../shared/models/models";
+import {Observable} from "rxjs";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: 'app-portal-home',
@@ -21,7 +23,6 @@ export class PortalDashboardComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   displayedColumns: string[] = ['category', 'curator', 'date', 'time', 'actions'];
-  dataSource: any;
   user: any;
   pieData = [];
   userRole: any;
@@ -29,8 +30,8 @@ export class PortalDashboardComponent implements OnInit {
   lowValue: number = 0;
   highValue: number = 5;
 
-  constructor(public authService: AuthService, private router: Router,
-              public curationService: CurationService, public dialog: MatDialog) {
+
+  constructor(public authService: AuthService, public curationService: CurationService, public dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -80,5 +81,9 @@ export class PortalDashboardComponent implements OnInit {
 
   noContributions(){
     return this.pieData?.length == 0;
+  }
+
+  isElevatedCurator(){
+    return this.userRole == "ELEVATED_CURATOR";
   }
 }

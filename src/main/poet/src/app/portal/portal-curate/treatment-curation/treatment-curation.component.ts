@@ -137,12 +137,12 @@ export class TreatmentCurationComponent implements OnInit {
       evidence: this.formControlGroup.get('evidenceFormControl').value,
       relation: this.formControlGroup.get('relationFormControl').value,
       comment: this.formControlGroup.get('commentFormControl').value,
-      extensionId: this.formControlGroup.get('extensionFormControl').value.id,
-      extensionLabel: this.formControlGroup.get('extensionFormControl').value.label[0]
+      extensionId: this.formControlGroup.get('extensionFormControl').value ? this.formControlGroup.get('extensionFormControl').value.id : null,
+      extensionLabel: this.formControlGroup.get('extensionFormControl').value ? this.formControlGroup.get('extensionFormControl').value.label[0] : null,
     }
     this.savingAnnotation = true;
     if (this.updating) {
-      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment').subscribe(() => {
+      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', false).subscribe(() => {
         this.onSuccessfulTreatment('Annotation Updated!')
       }, (err) => {
         this.onErrorTreatmentSave();
