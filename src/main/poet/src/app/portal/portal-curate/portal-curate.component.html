@@ -1,8 +1,9 @@
 <div class="portal-curate">
   <mat-toolbar class="top-banner" *ngIf="selectedDisease && selectedDisease.diseaseId != null">
     <mat-toolbar-row>
-      <h2 class="display-name">{{selectedDisease.diseaseName}} &nbsp; <span
-        class="display-id">{{selectedDisease.diseaseId}}</span></h2>
+      <h2 class="display-name">{{selectedDisease.diseaseName}} &nbsp;
+        <span class="display-id">{{selectedDisease.diseaseId}} {{selectedDisease.equivalentId}}
+        </span></h2>
       <span class="spacer"></span>
       <div class="search-wrapper">
         <app-search [role]="userRole"></app-search>
@@ -14,7 +15,10 @@
       <a *ngFor="let annotation of annotationItems"
          (click)="changeCategory(annotation.value)"
          mat-tab-link
-         [active]="this.selectedCategory == annotation.value" [disabled]="annotation.disabled">
+         [active]="this.selectedCategory == annotation.value" [disabled]="annotation.disabled"
+         [matTooltip]="annotation.reason"
+         [matTooltipDisabled]="annotation.reason === ''"
+         matTooltipPosition="above">
         <mat-icon matListIcon> {{ annotation.icon }} </mat-icon>
         &nbsp;{{annotation.display}}&nbsp;<span *ngIf="annotation.count != 0">({{annotation.count}})</span>
       </a>

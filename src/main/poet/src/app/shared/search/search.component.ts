@@ -21,7 +21,7 @@ export class SearchComponent implements OnInit {
   @Input() role: string;
   @ViewChild(MatAutocompleteTrigger, {read: MatAutocompleteTrigger}) searchBar: MatAutocompleteTrigger;
   searchControl = new FormControl();
-  diseaseOptions: any;
+  diseaseOptions: MonarchSearchResult[];
   isLoading = false;
   errorMsg: string;
 
@@ -53,7 +53,7 @@ export class SearchComponent implements OnInit {
           } else {
             return of();
           }
-        })).subscribe(data => {
+        })).subscribe((data: MonarchSearchResult[]) => {
             if (!data) {
               this.searchControl.setErrors({notFound: true});
             }

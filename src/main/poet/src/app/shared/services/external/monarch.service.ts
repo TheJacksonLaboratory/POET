@@ -34,6 +34,7 @@ export class MonarchService {
           return responses.map(response => {
             let mappedResponse: MonarchSearchResult = {id: "", label: "", leaf: false, match: "", omim_id: ""};
             mappedResponse.label = response.label[0];
+            mappedResponse.id = response.id;
             mappedResponse.omim_id = "";
             mappedResponse.leaf = false;
             mappedResponse.match = response.match;
