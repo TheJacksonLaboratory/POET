@@ -37,6 +37,10 @@ public class AnnotationSource {
         return disease;
     }
 
+    public void setDisease(Disease disease) {
+        this.disease = disease;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.exceptions.DiseaseNotFoundException;
 import org.monarchinitiative.poet.model.entities.Disease;
 import org.monarchinitiative.poet.model.entities.Publication;
+import org.monarchinitiative.poet.model.requests.DiseaseRequest;
 import org.monarchinitiative.poet.service.EntityService;
 import org.monarchinitiative.poet.views.DiseaseViews;
 import org.monarchinitiative.poet.views.PublicationViews;
@@ -74,7 +75,8 @@ public class DiseaseController {
      */
     @JsonView(DiseaseViews.Simple.class)
     @PutMapping(value = "/", headers = "Accept=application/json")
-    public ResponseEntity<?> newDisease(@RequestBody Disease disease){
+    public ResponseEntity<?> newDisease(@RequestBody DiseaseRequest diseaseRequest){
+        Disease disease = new Disease(diseaseRequest);
         if(!this.entityService.saveNewDisease(disease)){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } else {

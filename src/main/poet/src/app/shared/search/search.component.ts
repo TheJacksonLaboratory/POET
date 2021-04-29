@@ -39,8 +39,12 @@ export class SearchComponent implements OnInit {
         }),
         switchMap(value => {
           if (this.hasValidInput(value)) {
+            let prefix = "MONDO";
             this.isLoading = true;
-            return this.monarchService.searchMonarch(value, "MONDO")
+            if(value.startsWith("OMIM:")){
+              prefix = "OMIM";
+            }
+            return this.monarchService.searchMonarch(value, prefix)
               .pipe(
                 finalize(() => {
                   this.isLoading = false
@@ -74,7 +78,8 @@ export class SearchComponent implements OnInit {
            const diseaseToSave = {
              description: diseaseData.description,
              diseaseId: diseaseData.id,
-             diseaseName: diseaseData.label
+             diseaseName: diseaseData.label,
+             diseaseEquivalentId: monarchSearchResult.omim_id
            };
            this.curationService.saveDisease(diseaseToSave).subscribe(() => {
              this.router.navigate(['/portal/curate/' + diseaseToSave.diseaseId]);

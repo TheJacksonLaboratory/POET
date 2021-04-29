@@ -7,6 +7,7 @@ import org.monarchinitiative.poet.model.entities.Disease;
 import org.monarchinitiative.poet.model.entities.Publication;
 import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
+import org.monarchinitiative.poet.model.requests.DiseaseRequest;
 import org.monarchinitiative.poet.model.requests.PublicationRequest;
 import org.monarchinitiative.poet.repository.AnnotationSourceRepository;
 import org.monarchinitiative.poet.repository.DiseaseRepository;
@@ -71,13 +72,25 @@ public class EntityService {
     /**
      * A function to get a disease from the disease repository implementation
      *
-     * @param disease a OMIM or MONDO disease id
+     * @param disease a disease object created from the
      *
      * @return a disease or nothing
      * @since 0.5.0
      */
     public boolean saveNewDisease(Disease disease){
-        this.diseaseRepository.save(disease);
+        if(disease.getEquivalentId() != null){
+            Disease diseaseOld = this.diseaseRepository.findDiseaseByDiseaseId(disease.getEquivalentId());
+            this.diseaseRepository.save(disease);
+            if(diseaseOld != null){
+                List<AnnotationSource> sourceList = this.annotationSourceRepository.findDistinctByDisease(diseaseOld);
+                sourceList.forEach(source -> {
+                    source.setDisease(disease);
+                    this.annotationSourceRepository.save(source);
+                });
+            }
+        } else {
+            this.diseaseRepository.save(disease);
+        }
         return true;
     }
 
