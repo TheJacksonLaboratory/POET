@@ -488,6 +488,7 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   }
 }
 
+
 .page-title {
   padding: 1rem;
   margin-top: 1rem !important;
@@ -495,4 +496,8 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   color: whitesmoke;
   text-transform: uppercase;
   font-weight: bold !important;
+}
+
+.mat-tab-link.mat-tab-disabled {
+  pointer-events: unset !important;
 }

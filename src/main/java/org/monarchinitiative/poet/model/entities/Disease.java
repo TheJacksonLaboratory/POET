@@ -29,6 +29,7 @@ public class Disease {
     private String diseaseName;
 
     @JsonView({DiseaseViews.Simple.class})
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @OneToMany(mappedBy = "disease")

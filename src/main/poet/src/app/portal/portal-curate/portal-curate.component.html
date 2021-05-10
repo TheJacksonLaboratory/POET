@@ -18,7 +18,7 @@
          [active]="this.selectedCategory == annotation.value" [disabled]="annotation.disabled"
          [matTooltip]="annotation.reason"
          [matTooltipDisabled]="annotation.reason === ''"
-         matTooltipPosition="above">
+         matTooltipPosition="below">
         <mat-icon matListIcon> {{ annotation.icon }} </mat-icon>
         &nbsp;{{annotation.display}}&nbsp;<span *ngIf="annotation.count != 0">({{annotation.count}})</span>
       </a>

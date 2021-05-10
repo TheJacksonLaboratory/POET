@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from "@angular/forms";
-import { debounceTime, finalize } from "rxjs/operators";
+import {debounceTime, filter, finalize, map} from "rxjs/operators";
 import { tap } from "rxjs/internal/operators/tap";
 import { switchMap } from "rxjs/internal/operators/switchMap";
 import { CurationService } from "../services/curation/curation.service";
@@ -48,7 +48,7 @@ export class SearchComponent implements OnInit {
               .pipe(
                 finalize(() => {
                   this.isLoading = false
-                }),
+                })
               );
           } else {
             return of();

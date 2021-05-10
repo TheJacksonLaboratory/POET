@@ -45,10 +45,14 @@ export class MonarchService {
                 mappedResponse.omim_id = response.equivalent_ids[omim_index];
               }
             }
+            // Throw out obsolete terms?, how do we handle this case in the future when a disease becomes obsoleted,
+            // Might need a job to update the annotation source monthly.. etc.
             return mappedResponse;
           });
         }
-      )
+      ), map( responses => {
+          return responses.filter(response => !response.label.includes("obsolete"));
+        })
     );
   }
 }
