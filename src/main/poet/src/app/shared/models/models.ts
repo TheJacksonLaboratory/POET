@@ -57,7 +57,7 @@ export interface UserActivityResponse {
   annotation: any;
   curationAction: string;
   localDateTime: string;
-  user: object;
+  owner: object;
 }
 
 export interface HomeIcon {

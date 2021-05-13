@@ -136,7 +136,7 @@ public class EntityService {
         Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(request.getDisease().getDiseaseId());
         User user = userRepository.findDistinctByAuthId(authentication.getName());
         if(disease != null){
-            if(user != null && user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)){
+            if(user != null){
                 this.publicationRepository.save(publication);
                 this.annotationSourceRepository.save(new AnnotationSource(publication, disease));
                 return true;

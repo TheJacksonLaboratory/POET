@@ -14,17 +14,34 @@
     <span *ngIf="category == 'phenotype'">A list of curated phenotypes of this disease</span><br><br>
   </mat-card-subtitle>
   <mat-card-content>
-    <!--<mat-form-field appearance="fill" *ngIf="(maxoAnnotations | async)?.length > 0">
-      <mat-label>Annotation Status</mat-label>
-      <mat-select multiple [(ngModel)]="selectedStatuses">
-        <mat-option *ngFor="let status of annotationStatuses" [value]="status">{{status}}</mat-option>
-      </mat-select>
-    </mat-form-field>-->
+
+    <div class="filter-wrapper" *ngIf="(category === 'phenotype' && (phenotypeAnnotations | async)?.length > 0) ||
+                                        (category === 'treatment' && (treatmentAnnotations | async)?.length > 0)">
+      <mat-form-field class="filter-container">
+        <mat-label>Annotation Status</mat-label>
+        <mat-select multiple [(ngModel)]="selectedStatuses">
+          <mat-option *ngFor="let status of annotationStatuses" [value]="status"
+                      [class]="{'statusApproved': status === 'ACCEPTED', 'statusReview': status === 'UNDER_REVIEW',
+                      'statusOfficial': status === 'OFFICIAL'}">
+            {{status}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="filter-container">
+        <mat-label>Sort By</mat-label>
+        <mat-select [(ngModel)]="selectedSort">
+          <mat-option value="recent">Most Recent</mat-option>
+          <mat-option value="name"><span class="capitalize">{{category}}</span> Name</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
     <mat-list #treatment *ngIf="category === 'treatment'">
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': treatment == activeAnnotation}"
-                     *ngFor="let treatment of treatmentAnnotations | async | slice: lowValue : highValue">
-        <mat-icon matListIcon>health_and_safety</mat-icon>
+                     *ngFor="let treatment of treatmentAnnotations | async | slice: lowValue : highValue | filter: selectedStatuses:user:showAll | sortBy: selectedSort:category">
+        <mat-icon [class]="{'statusApproved': treatment.status === 'ACCEPTED', 'statusReview': treatment.status === 'UNDER_REVIEW',
+                      'statusOfficial': treatment.status === 'OFFICIAL'}" matListIcon>health_and_safety</mat-icon>
         <div class="selection-text" *ngIf="formOpen">
           <span matLine class="selection-id">
             <strong>{{treatment.maxoName}}</strong>

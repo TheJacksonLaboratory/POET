@@ -84,4 +84,8 @@
   .selection-text {
     margin-left: 1rem;
   }
+
+  .filter-container:not(:first-child){
+    margin-left: .5rem;
+  }
 }

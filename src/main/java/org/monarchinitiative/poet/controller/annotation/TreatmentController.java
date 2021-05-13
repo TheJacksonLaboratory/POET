@@ -43,8 +43,6 @@ public class TreatmentController {
      * The endpoint to retrieve a maxo annotation by disease.
      *
      * @param diseaseId a url parameter that is an OMIM disease id
-     * @param publicationId an optional url parameter that is a PubMed id to limit results only annotated
-     *                      to this publication
      * @param sort an optional query parameter to sort the returned annotations <direction> <field>
      * @return the medical action ontology annotations
      * @throws AnnotationSourceException if required parameter entities could not be found in the database.
@@ -53,15 +51,9 @@ public class TreatmentController {
     @JsonView(AnnotationViews.Simple.class)
     @GetMapping(value = {"/{diseaseId}", "/{diseaseId}/{publicationId}"})
     public List<TreatmentAnnotation> getTreatmentAnnotation(@PathVariable("diseaseId")  String diseaseId,
-                                                            @PathVariable(value = "publicationId", required = false) String publicationId,
                                                             @RequestParam(defaultValue = "desc date") String sort){
 
-        final List<TreatmentAnnotation> annotations = this.annotationService.getTreatmentAnnotations(diseaseId, publicationId, sort);
-        if(annotations != null){
-            return annotations;
-        } else {
-            throw new AnnotationSourceException(publicationId, diseaseId);
-        }
+        return this.annotationService.getTreatmentAnnotations(diseaseId, sort);
     }
 
     /**

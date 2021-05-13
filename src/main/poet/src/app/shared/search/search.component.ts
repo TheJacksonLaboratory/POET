@@ -79,7 +79,7 @@ export class SearchComponent implements OnInit {
              description: diseaseData.description,
              diseaseId: diseaseData.id,
              diseaseName: diseaseData.label,
-             diseaseEquivalentId: monarchSearchResult.omim_id
+             equivalentId: monarchSearchResult.omim_id
            };
            this.curationService.saveDisease(diseaseToSave).subscribe(() => {
              this.router.navigate(['/portal/curate/' + diseaseToSave.diseaseId]);

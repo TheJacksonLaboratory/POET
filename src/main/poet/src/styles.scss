@@ -501,3 +501,23 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 .mat-tab-link.mat-tab-disabled {
   pointer-events: unset !important;
 }
+
+.capitalize, .mat-select-value-text {
+  text-transform: capitalize;
+}
+
+.mat-option.statusApproved .mat-pseudo-checkbox-checked {
+    background: limegreen !important;
+}
+
+.mat-option.statusReview .mat-pseudo-checkbox-checked {
+  background: yellow !important;
+}
+
+.mat-icon.statusApproved {
+  color: limegreen !important;
+}
+
+.mat-icon.statusReview {
+  color: yellow !important;
+}

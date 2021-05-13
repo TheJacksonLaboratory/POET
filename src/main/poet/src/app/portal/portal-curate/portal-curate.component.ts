@@ -36,7 +36,7 @@ export class PortalCurateComponent implements OnInit {
     {value: 'phenotype', display: 'Phenotypes', icon: 'assignment', disabled: false, count: 0, reason:""},
     {value: 'treatment', display: 'Treatments', icon: 'healing', disabled: false, count: 0, reason: ""}
   ];
-  userRole: string = 'GUEST';
+  user: any;
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog,
               public curationService: CurationService, public stateService: StateService,
@@ -72,7 +72,12 @@ export class PortalCurateComponent implements OnInit {
     this.stateService.selectedCategory.subscribe((category) => this.selectedCategory = category);
 
     this.authService.user$.subscribe((user) => {
-      this.userRole = user[environment.AUDIENCE_ROLE];
+      if(!user){
+        user = {nickname: 'GUEST', role: 'GUEST'};
+      } else {
+        user.role = user[environment.AUDIENCE_ROLE];
+      }
+      this.user = user
     });
 
     this.stateService.triggerReloadAnnotationCounts.subscribe((reload) => {

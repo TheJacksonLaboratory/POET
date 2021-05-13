@@ -20,7 +20,7 @@ public class PhenotypeRequest {
     private final String description;
     @Pattern(regexp = "HP:[0-9]{7}$", message = "hpoId should be a valid identifier from human phenotype ontology")
     private final String onset;
-    @Pattern(regexp = "PMID:[0-9]{8}", message = "publicationID should be a valid identifier from PubMed")
+    @Pattern(regexp = "PMID:[0-9]{1,8}", message = "publicationID should be a valid identifier from PubMed")
     private final String publicationId;
     private final String publicationName;
     @Pattern(regexp = "MONDO:[0-9]{7}", message = "diseaseId should be a valid identifier from mondo disease ontology")

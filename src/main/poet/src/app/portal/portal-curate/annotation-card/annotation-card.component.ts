@@ -31,7 +31,7 @@ import { DeleteSheetComponent } from "./delete-sheet/delete-sheet.component";
 export class AnnotationCardComponent implements OnInit {
 
   @Output('openForm') openAnnotationForm: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Input('role') userRole: string;
+  @Input('user') user: any;
   @Input('formOpen') formOpen: boolean = false;
   disease: Disease;
   publication: Publication;
@@ -45,6 +45,8 @@ export class AnnotationCardComponent implements OnInit {
   selectedStatuses: any[] = [];
   lowValue: number = 0;
   highValue: number = 5;
+  showAll: boolean = false;
+  selectedSort: string = 'recent';
 
 
   constructor(public stateService: StateService, public curationService: CurationService,
@@ -187,11 +189,11 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   isUser() {
-    return this.userRole != 'GUEST';
+    return this.user.role != 'GUEST';
   }
 
   isElevatedCurator() {
-    return this.userRole === 'ELEVATED_CURATOR';
+    return this.user.role === 'ELEVATED_CURATOR';
   }
 
   getPaginatorData(event: PageEvent): PageEvent {
@@ -199,5 +201,4 @@ export class AnnotationCardComponent implements OnInit {
     this.highValue = this.lowValue + event.pageSize;
     return event;
   }
-
 }

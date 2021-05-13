@@ -6,7 +6,7 @@
         </span></h2>
       <span class="spacer"></span>
       <div class="search-wrapper">
-        <app-search [role]="userRole"></app-search>
+        <app-search [role]="user.role"></app-search>
       </div>
     </mat-toolbar-row>
   </mat-toolbar>
@@ -26,13 +26,13 @@
   </div>
   <div class="curation-container" [fxLayout]="fxLayout" [fxLayoutAlign]="fxLayoutAlign" [@fadeIn]="selectedCategory">
     <poet-annotation-card [fxFlex]="fxFlexAnnotations" [fxFlexOffset]="fxFlexAnnotationOffset" *ngIf="selectedDisease"
-                         (openForm)="handleForm($event)" [role]="userRole"></poet-annotation-card>
-    <poet-treatment-curation [fxFlex]="fxFlexForm" [fxFlexOffset]="fxFlexFormOffset" [role]="userRole"
+                         (openForm)="handleForm($event)" [user]="user"></poet-annotation-card>
+    <poet-treatment-curation [fxFlex]="fxFlexForm" [fxFlexOffset]="fxFlexFormOffset" [role]="user.role"
                              (handleForm)="handleForm($event)"
                             *ngIf="shouldShowTreatmentCard()">
     </poet-treatment-curation>
     <poet-phenotype-curation [fxFlex]="fxFlexForm" [fxFlexOffset]="fxFlexFormOffset"
-                             [role]="userRole" (handleForm)="handleForm($event)" *ngIf="shouldShowPhenotypeCard()">
+                             [role]="user.role" (handleForm)="handleForm($event)" *ngIf="shouldShowPhenotypeCard()">
     </poet-phenotype-curation>
   </div>
 </div>

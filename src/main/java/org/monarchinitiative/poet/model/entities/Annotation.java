@@ -76,13 +76,6 @@ public class Annotation {
         return id;
     }
 
-    public LocalDateTime getLastUpdatedDate() {
-        return lastUpdatedDate;
-    }
-
-    public void setLastUpdatedDate(LocalDateTime lastUpdatedDate) {
-        this.lastUpdatedDate = lastUpdatedDate;
-    }
 
     public String getOwner() {
         return owner;
@@ -91,6 +84,15 @@ public class Annotation {
     public void setOwner(String owner) {
         this.owner = owner;
     }
+
+    public LocalDateTime getLastUpdatedDate() {
+        return lastUpdatedDate;
+    }
+
+    public void setLastUpdatedDate(LocalDateTime lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
+    }
+
 
     @Override
     public boolean equals(Object o) {

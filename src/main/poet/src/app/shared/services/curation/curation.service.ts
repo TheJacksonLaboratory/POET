@@ -202,7 +202,7 @@ export class CurationService {
           newData.source = activity.annotation["annotationSource"];
           newData.category = activity.annotation["annotationType"].toUpperCase();
           newData.curationAction = activity.curationAction;
-          newData.curator = activity.user["nickname"];
+          newData.curator = activity.owner["nickname"];
           newData.date = new Date(activity.localDateTime).toLocaleDateString();
           newData.time = new Date(activity.localDateTime).toLocaleTimeString();
           newData.annotationId = activity.annotation.id;
@@ -255,8 +255,8 @@ export class CurationService {
         if (parseInt(daysFromNow) == 0) {
           // Today
           dayMap[daysFromNow][diseaseJoined] = dayMap[daysFromNow][diseaseJoined].reduce((r, a) => {
-            r[a.user.nickname] = r[a.user.nickname] || [];
-            r[a.user.nickname].push(a);
+            r[a.owner.nickname] = r[a.owner.nickname] || [];
+            r[a.owner.nickname].push(a);
             return r;
           }, Object.create(null));
 
@@ -333,7 +333,7 @@ export class CurationService {
           const count = dayMap[daysFromNow][diseaseJoined].length;
           const annotationGrammar = this.annotationGrammar(count);
           const userList = [...new Set(dayMap[daysFromNow][diseaseJoined].map(item => {
-            return item.user.nickname;
+            return item.owner.nickname;
           }))].join(",");
           let view;
           if (parseInt(daysFromNow) == 1) {

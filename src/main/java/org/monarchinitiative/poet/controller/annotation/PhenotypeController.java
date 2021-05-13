@@ -43,19 +43,9 @@ public class PhenotypeController {
     @JsonView(AnnotationViews.Simple.class)
     @GetMapping(value = {"/{diseaseId}", "/{diseaseId}/{publicationId}"})
     public List<PhenotypeAnnotation> getPhenotypeAnnotation(@PathVariable("diseaseId")  String diseaseId,
-                                                            @PathVariable(value = "publicationId", required = false) String publicationId,
                                                             @RequestParam(defaultValue = "desc date") String sort){
 
-        final List<PhenotypeAnnotation> annotations = this.annotationService.getPhenotypeAnnotations(diseaseId, sort);
-        if(annotations != null){
-            return annotations;
-        } else {
-            if(!publicationId.isEmpty()){
-                throw new AnnotationSourceException(publicationId, diseaseId);
-            } else {
-                throw new AnnotationSourceException(diseaseId);
-            }
-        }
+       return this.annotationService.getPhenotypeAnnotations(diseaseId, sort);
     }
 
     /**

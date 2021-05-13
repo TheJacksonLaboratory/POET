@@ -62,17 +62,10 @@ public class AnnotationService {
             Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
             if(disease != null) {
                 List<PhenotypeAnnotation> annotations = this.phenotypeAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNot(disease, AnnotationStatus.RETIRED);
-                if(annotations.size() > 0){
-                    return annotations.stream().peek(annotation -> {
-                        UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
-                        annotation.setLastUpdatedDate(activity.getLocalDateTime());
-                        annotation.setOwner(activity.getOwner().getNickname());
-                    }).sorted(Comparator.comparing(PhenotypeAnnotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
-                } else {
-                    return Collections.emptyList();
-                }
-        }
-        return null;
+                return (List<PhenotypeAnnotation>) getLastUpdatedandOwnerForTreatment(annotations);
+            } else {
+                throw new AnnotationSourceException(diseaseId);
+            }
     }
 
     /**
@@ -166,45 +159,31 @@ public class AnnotationService {
      * A function to get maxo annotations from the database by either both publication and  disease or just disease.
      *
      * @param diseaseId a OMIM disease id
-     * @param publicationId a PubMed id
      * @param sort a string composing of two parts both direction and field. TODO: Implement functionality
      *
      * @return a collection of maxo annotations or an empty list.
      * @since 0.5.0
      */
-    public List<TreatmentAnnotation> getTreatmentAnnotations(String diseaseId, String publicationId, String sort) {
-            if(publicationId != null){
-                final AnnotationSource annotationSource = getAnnotationSource(publicationId, diseaseId);
-                if(annotationSource != null){
-                    List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findDistinctByAnnotationSourceAndStatusNot(annotationSource, AnnotationStatus.RETIRED);
-                    if(annotations.size() > 0){
-                        return annotations.stream().peek(annotation -> {
-                            UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
-                            annotation.setLastUpdatedDate(activity.getLocalDateTime());
-                            annotation.setOwner(activity.getOwner().getNickname());
-                        }).sorted(Comparator.comparing(TreatmentAnnotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
-                    } else {
-                        return Collections.emptyList();
-                    }
-                }
-            } else {
-                Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
-                if(disease != null) {
-                    List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNot(disease, AnnotationStatus.RETIRED);
-                    if(annotations.size() > 0){
-                        return annotations.stream().peek(annotation -> {
-                            UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
-                            annotation.setLastUpdatedDate(activity.getLocalDateTime());
-                            annotation.setOwner(activity.getOwner().getNickname());
-                        }).sorted(Comparator.comparing(TreatmentAnnotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
-                    } else {
-                        return Collections.emptyList();
-                    }
-                } else {
-                    return null;
-                }
-            }
-            return null;
+    public List<TreatmentAnnotation> getTreatmentAnnotations(String diseaseId, String sort) {
+        Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
+        if(disease != null) {
+            List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNot(disease, AnnotationStatus.RETIRED);
+            return (List<TreatmentAnnotation>) getLastUpdatedandOwnerForTreatment(annotations);
+        }
+        throw new AnnotationSourceException(diseaseId);
+
+    }
+
+    private List<? extends Annotation> getLastUpdatedandOwnerForTreatment(List<? extends Annotation> annotations){
+        if(annotations.size() > 0){
+            return annotations.stream().peek(annotation -> {
+                UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
+                annotation.setLastUpdatedDate(activity.getLocalDateTime());
+                annotation.setOwner(activity.getOwner().getNickname());
+            }).sorted(Comparator.comparing(Annotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     /**
