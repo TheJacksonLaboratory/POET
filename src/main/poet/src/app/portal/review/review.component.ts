@@ -14,7 +14,7 @@ export class ReviewComponent implements OnInit {
   userRole: string;
   phenotypeDataSource = new MatTableDataSource();
   treatmentDataSource = new MatTableDataSource();
-  displayedPhenotypeColumns = ['position'];
+  displayedPhenotypeColumns = ['owner', 'phenotypeId', 'phenotypeName', 'sex', 'frequency', 'qualifier'];
   displayedTreatmentColumns = ['position'];
 
   constructor(public authService: AuthService, public curationService: CurationService) { }
@@ -35,7 +35,7 @@ export class ReviewComponent implements OnInit {
   }
 
   hasReviews(){
-    return this.treatmentDataSource.data.length > 0 && this.phenotypeDataSource.data.length > 0;
+    return this.treatmentDataSource.data.length > 0 || this.phenotypeDataSource.data.length > 0;
   }
 
 }

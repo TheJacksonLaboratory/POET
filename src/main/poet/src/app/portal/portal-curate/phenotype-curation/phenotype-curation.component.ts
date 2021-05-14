@@ -290,4 +290,16 @@ export class PhenotypeCurationComponent implements OnInit {
     this.stateService.setSelectedPhenotypeAnnotation(null);
     this.handleFormEmitter.emit(false);
   }
+
+  isElevatedCurator(): boolean {
+    return this.userRole === 'ELEVATED_CURATOR';
+  }
+
+  isUnderReview(): boolean {
+    if(this.selectedAnnotation){
+      return this.selectedAnnotation.status === "UNDER_REVIEW";
+    } else {
+      return false;
+    }
+  }
 }

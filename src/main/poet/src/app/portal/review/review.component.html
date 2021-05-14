@@ -1,27 +1,53 @@
-<div class="review-wrapper"  fxLayout="column" fxLayoutAlign="start start">
+<div class="review-wrapper">
   <h3 class="page-title mat-elevation-z1">Elevated Curator Approvals</h3>
   <div class="review-tables">
     <div class="review-table">
-      <table mat-table [dataSource]="phenotypeDataSource" class="mat-elevation-z8"
-             *ngIf="phenotypeDataSource.data.length > 0">
-        <ng-container matColumnDef="position">
-          <th mat-header-cell *matHeaderCellDef> No. </th>
-          <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+      <mat-table [dataSource]="phenotypeDataSource" class="mat-elevation-z8"
+                 *ngIf="phenotypeDataSource.data.length > 0">
+        <ng-container matColumnDef="owner">
+          <mat-header-cell *matHeaderCellDef> Owner </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.owner}} </mat-cell>
         </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedPhenotypeColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedPhenotypeColumns;"></tr>
-      </table>
+
+        <ng-container matColumnDef="phenotypeId">
+          <mat-header-cell *matHeaderCellDef> Phenotype Id </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.hpoId}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="phenotypeName">
+          <mat-header-cell *matHeaderCellDef> Phenotype Name </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.hpoName}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="sex">
+          <mat-header-cell *matHeaderCellDef> Sex</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.sex}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="frequency">
+          <mat-header-cell *matHeaderCellDef> Frequency </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.frequency}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="qualifier">
+          <mat-header-cell *matHeaderCellDef> Present? </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.qualifier}} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedPhenotypeColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedPhenotypeColumns;"></mat-row>
+      </mat-table>
     </div>
     <div class="review-table">
-      <table mat-table [dataSource]="treatmentDataSource" class="mat-elevation-z8"
+      <mat-table mat-table [dataSource]="treatmentDataSource" class="mat-elevation-z8"
              *ngIf="treatmentDataSource.data.length > 0">
         <ng-container matColumnDef="position">
-          <th mat-header-cell *matHeaderCellDef> No. </th>
-          <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+          <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
         </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedTreatmentColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedTreatmentColumns;"></tr>
-      </table>
+        <mat-header-row *matHeaderRowDef="displayedTreatmentColumns"></mat-header-row>
+        <mat-row  *matRowDef="let row; columns: displayedTreatmentColumns;"></mat-row>
+      </mat-table>
     </div>
     <div class="no-reviews" *ngIf="!hasReviews()">
       <h1>No New Reviews</h1>
@@ -29,3 +55,4 @@
 
   </div>
 </div>
+

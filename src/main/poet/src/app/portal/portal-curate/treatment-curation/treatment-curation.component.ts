@@ -3,7 +3,7 @@ import { HpoService } from "../../../shared/services/external/hpo.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { HpoTerm, MaxoSearchResult, MaxoTerm, MonarchSearchResult } from "../../../shared/models/search-models";
-import { AnnotationSource, Publication, TreatmentAnnotation } from "../../../shared/models/models";
+import { AnnotationSource, Publication, Status, TreatmentAnnotation } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { StateService } from "../../../shared/services/state/state.service";
 import { MatDialog } from "@angular/material/dialog";
@@ -161,11 +161,9 @@ export class TreatmentCurationComponent implements OnInit {
     this.formControlGroup.get('hpoFormControl').setValue({id: annotation.hpoId, name: annotation.hpoName});
     this.formControlGroup.get('evidenceFormControl').setValue(annotation.evidenceType);
     this.formControlGroup.get('relationFormControl').setValue(annotation.relation);
-    this.formControlGroup.get('extensionIdFormControl').setValue(annotation.extensionId);
-    this.formControlGroup.get('extensionLabelFormControl').setValue(annotation.extensionLabel);
+    this.formControlGroup.get('extensionFormControl').setValue({id: annotation.extensionId, label :[annotation.extensionLabel]});
     this.formControlGroup.get('commentFormControl').setValue(annotation.comment);
     this.stateService.setSelectedSource(annotation.annotationSource);
-
   }
 
   onSuccessfulTreatment(message: string) {
@@ -223,6 +221,18 @@ export class TreatmentCurationComponent implements OnInit {
 
     if (index >= 0) {
       this.selectedPublications.splice(index, 1);
+    }
+  }
+
+  isElevatedCurator(): boolean {
+    return this.userRole === 'ELEVATED_CURATOR';
+  }
+
+  isUnderReview(): boolean {
+    if(this.selectedAnnotation){
+      return this.selectedAnnotation.status === "UNDER_REVIEW";
+    } else {
+      return false;
     }
   }
 

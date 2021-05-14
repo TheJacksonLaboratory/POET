@@ -1,7 +1,7 @@
 export interface Annotation {
   id?: string;
   type: string;
-  status: Status;
+  status: string;
   annotationSource: AnnotationSource;
 }
 

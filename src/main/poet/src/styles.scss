@@ -521,3 +521,11 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 .mat-icon.statusReview {
   color: yellow !important;
 }
+
+.approve-annotation {
+  background: indianred;
+}
+
+.deny-annotation {
+  background: forestgreen;
+}

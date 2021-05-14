@@ -56,11 +56,14 @@
           </span>
         </div>
         <div class="spacer"></div>
-        <button mat-icon-button aria-label="Edit Treatment Annotation" *ngIf="isUser()" [disabled]="!isUser()"
+        <span *ngIf="isElevatedCurator() && isUnderReview(treatment.status)">
+          Needs Review
+        </span>
+        <button mat-icon-button aria-label="Edit Treatment Annotation" *ngIf="(isElevatedCurator()  && ownsAnnotation(treatment.owner))" [disabled]="!isUser()"
                 (click)="annotationAction(treatment, 'edit')">
           <mat-icon>create</mat-icon>
         </button>
-        <button mat-icon-button aria-label="Delete Treatment Annotation" *ngIf="isElevatedCurator() || isUser()"
+        <button mat-icon-button aria-label="Delete Treatment Annotation" *ngIf="isElevatedCurator() || (isUser() && ownsAnnotation(treatment.owner))"
                 [disabled]="!isUser()"
                 (click)="annotationAction(treatment, 'delete')">
           <mat-icon>delete</mat-icon>
@@ -89,6 +92,9 @@
           </span>
         </div>
         <div class="spacer"></div>
+        <span *ngIf="isElevatedCurator() && isUnderReview(phenotype.status)">
+          Needs Review
+        </span>
         <button mat-icon-button aria-label="Edit Phenotype Annotation" *ngIf="isUser()" [disabled]="!isUser()"
                 (click)="annotationAction(phenotype, 'edit')">
           <mat-icon>create</mat-icon>

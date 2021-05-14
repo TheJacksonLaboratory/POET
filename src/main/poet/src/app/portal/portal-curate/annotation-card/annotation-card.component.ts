@@ -4,7 +4,7 @@ import {
   Disease,
   TreatmentAnnotation,
   Publication,
-  PhenotypeAnnotation
+  PhenotypeAnnotation, Status
 } from "../../../shared/models/models";
 import { StateService } from "../../../shared/services/state/state.service";
 import { CurationService } from "../../../shared/services/curation/curation.service";
@@ -188,12 +188,20 @@ export class AnnotationCardComponent implements OnInit {
     }
   }
 
-  isUser() {
+  isUser(): boolean  {
     return this.user.role != 'GUEST';
   }
 
-  isElevatedCurator() {
+  isElevatedCurator(): boolean  {
     return this.user.role === 'ELEVATED_CURATOR';
+  }
+
+  isUnderReview(status: Status): boolean {
+    return status === Status["UNDER_REVIEW"];
+  }
+
+  ownsAnnotation(annotationUser){
+    return this.user.nickname === annotationUser;
   }
 
   getPaginatorData(event: PageEvent): PageEvent {
