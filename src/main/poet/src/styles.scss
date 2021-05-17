@@ -529,3 +529,10 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 .deny-annotation {
   background: forestgreen;
 }
+
+.portal-curate {
+  .mat-card-title {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+}
