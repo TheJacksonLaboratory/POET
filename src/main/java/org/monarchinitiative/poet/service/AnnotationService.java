@@ -239,11 +239,11 @@ public class AnnotationService {
             TreatmentAnnotation oldAnnotation = treatmentAnnotationRepository.findDistinctById(treatmentRequest.getId());
             User owner = userActivityRespository.getMostRecentDateForAnnotationActivity(oldAnnotation.getId()).getOwner();
 
-            if(!review.equals("")){
-                AnnotationStatus newStatus = oldAnnotation.getStatus();
+            if(review.equals("approve") || review.equals("deny")){
+                AnnotationStatus newStatus;
                 if(review.equals("approve")){
                     newStatus = AnnotationStatus.ACCEPTED;
-                } else if(review.equals("deny")) {
+                } else {
                     newStatus = AnnotationStatus.NEEDS_WORK;
                 }
                 // Review, check that the authentication is a valid user and that they are an elevated curator
