@@ -127,8 +127,8 @@ export class TreatmentCurationComponent implements OnInit {
       });
   }
 
-  submitForm(): void {
-    const treatmentAnnotation = {
+  getFormTreatmentAnnotation(){
+    return {
       id: this.selectedAnnotation && this.selectedAnnotation.id ? this.selectedAnnotation.id : null,
       maxoId: this.formControlGroup.get('maxoFormControl').value.ontologyId.toString(),
       maxoName: this.formControlGroup.get('maxoFormControl').value.name,
@@ -140,6 +140,10 @@ export class TreatmentCurationComponent implements OnInit {
       extensionId: this.formControlGroup.get('extensionFormControl').value ? this.formControlGroup.get('extensionFormControl').value.id : null,
       extensionLabel: this.formControlGroup.get('extensionFormControl').value ? this.formControlGroup.get('extensionFormControl').value.label[0] : null,
     }
+  }
+
+  submitForm(): void {
+    const treatmentAnnotation = this.getFormTreatmentAnnotation();
     this.savingAnnotation = true;
     if (this.updating) {
       this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', false).subscribe(() => {
@@ -159,7 +163,7 @@ export class TreatmentCurationComponent implements OnInit {
   setFormValues(annotation: any) {
     this.formControlGroup.get('maxoFormControl').setValue({ontologyId: annotation.maxoId, name: annotation.maxoName});
     this.formControlGroup.get('hpoFormControl').setValue({id: annotation.hpoId, name: annotation.hpoName});
-    this.formControlGroup.get('evidenceFormControl').setValue(annotation.evidenceType);
+    this.formControlGroup.get('evidenceFormControl').setValue(annotation.evidence);
     this.formControlGroup.get('relationFormControl').setValue(annotation.relation);
     this.formControlGroup.get('extensionFormControl').setValue({id: annotation.extensionId, label :[annotation.extensionLabel]});
     this.formControlGroup.get('commentFormControl').setValue(annotation.comment);
@@ -171,6 +175,17 @@ export class TreatmentCurationComponent implements OnInit {
     this.stateService.triggerAnnotationReload(true);
     this.stateService.triggerAnnotationCountsReload(true);
     this.resetTreatmentForm();
+    this._snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: "left"
+    });
+  }
+
+  onTreatmentApprove(message: string) {
+    this.savingAnnotation = false;
+    this.stateService.triggerAnnotationReload(true);
+    this.stateService.triggerAnnotationCountsReload(true);
+    this.closeForm();
     this._snackBar.open(message, 'Close', {
       duration: 3000,
       horizontalPosition: "left"
@@ -239,5 +254,19 @@ export class TreatmentCurationComponent implements OnInit {
   closeForm() {
     this.stateService.setSelectedTreatmentAnnotation(null);
     this.handleFormEmitter.emit(false);
+  }
+
+  reviewAnnotation(action: string){
+    if(action === 'approve'){
+      // approve the annotation
+      const treatmentAnnotation = this.getFormTreatmentAnnotation();
+      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', true).subscribe(() => {
+        this.onTreatmentApprove('Phenotype Annotation Approved!');
+      }, (err) => {
+        this.onErrorTreatmentSave();
+      });
+    } else if(action === 'deny') {
+      // open dialog get comments and
+    }
   }
 }

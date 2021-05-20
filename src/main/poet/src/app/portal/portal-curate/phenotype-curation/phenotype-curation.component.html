@@ -172,11 +172,11 @@
   <mat-card-actions>
     <div class="left-actions">
       <button class="approve-annotation" mat-raised-button aria-label="Approve Phenotype Annotation"
-              *ngIf="isElevatedCurator() && isUnderReview()">
+              *ngIf="isElevatedCurator() && isUnderReview()" (click)="reviewAnnotation('approve')">
         Approve
       </button>
       <button class="deny-annotation" mat-raised-button aria-label="Deny Phenotype Annotation"
-              *ngIf="isElevatedCurator() && isUnderReview()">
+              *ngIf="isElevatedCurator() && isUnderReview()" (click)="reviewAnnotation('deny')">
         Deny
       </button>
       <button mat-raised-button color="primary" *ngIf="everythingValid()" (click)="submitForm()">SUBMIT</button>

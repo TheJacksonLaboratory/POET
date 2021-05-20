@@ -11,8 +11,6 @@
       lock_open
     </mat-icon>
     New Treatment
-    <!--<mat-icon class="help-icon" matTooltip="View Previous Versions"
-              matTooltipPosition="below">history</mat-icon>-->
     <mat-icon class="help-icon" (click)="closeForm()">cancel</mat-icon>
   </mat-card-title>
   <mat-card-subtitle>
@@ -135,11 +133,11 @@
   <mat-card-actions>
     <div class="left-actions">
       <button class="approve-annotation" mat-raised-button aria-label="Approve Treatment Annotation"
-              *ngIf="isElevatedCurator() && isUnderReview()">
+              *ngIf="isElevatedCurator() && isUnderReview()" (click)="reviewAnnotation('approve')">
         Approve
       </button>
       <button class="deny-annotation" mat-raised-button aria-label="Deny Treatment Annotation"
-              *ngIf="isElevatedCurator() && isUnderReview()">
+              *ngIf="isElevatedCurator() && isUnderReview()" (click)="reviewAnnotation('deny')">
         Deny
       </button>
       <button mat-raised-button color="primary" *ngIf="everythingValid()" (click)="submitForm()">SUBMIT</button>

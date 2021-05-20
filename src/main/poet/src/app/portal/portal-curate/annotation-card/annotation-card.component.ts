@@ -113,19 +113,19 @@ export class AnnotationCardComponent implements OnInit {
       if(this.category === 'treatment'){
         this.treatmentAnnotations = this.curationService.getTreatmentAnnotations(this.disease, this.publication, "", false).pipe(
           tap((annotations => {
-          annotations.forEach((annotation) => {
-            this.annotationStatuses.push(annotation.status);
+          const statuses = annotations.map((annotation) => {
+            return annotation.status;
           });
-          this.annotationStatuses = [...new Set(this.annotationStatuses)].sort();
+          this.annotationStatuses = [...new Set(statuses)].sort();
           this.selectedStatuses = this.annotationStatuses;
         })));
       } else if(this.category === 'phenotype'){
         this.phenotypeAnnotations = this.curationService.getPhenotypeAnnotations(this.disease, this.publication, "", false).pipe(
           tap((annotations => {
-            annotations.forEach((annotation) => {
-              this.annotationStatuses.push(annotation.status);
+            const statuses = annotations.map((annotation) => {
+              return annotation.status;
             });
-            this.annotationStatuses = [...new Set(this.annotationStatuses)].sort();
+            this.annotationStatuses = [...new Set(statuses)].sort();
             this.selectedStatuses = this.annotationStatuses;
           })));
       }
@@ -196,8 +196,8 @@ export class AnnotationCardComponent implements OnInit {
     return this.user.role === 'ELEVATED_CURATOR';
   }
 
-  isUnderReview(status: Status): boolean {
-    return status === Status["UNDER_REVIEW"];
+  isUnderReview(status: string): boolean {
+    return status ==="UNDER_REVIEW";
   }
 
   ownsAnnotation(annotationUser){

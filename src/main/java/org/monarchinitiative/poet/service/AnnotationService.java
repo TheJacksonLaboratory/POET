@@ -58,11 +58,11 @@ public class AnnotationService {
      * @return a collection of phenotype annotations or an empty list.
      * @since 0.5.0
      */
-    public List<PhenotypeAnnotation> getPhenotypeAnnotations(String diseaseId, String sort) {
+    public List<PhenotypeAnnotation> getPhenotypeAnnotations(String diseaseId, String sort) throws AnnotationSourceException {
             Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
             if(disease != null) {
                 List<PhenotypeAnnotation> annotations = this.phenotypeAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNot(disease, AnnotationStatus.RETIRED);
-                return (List<PhenotypeAnnotation>) getLastUpdatedandOwnerForTreatment(annotations);
+                return (List<PhenotypeAnnotation>) getLastUpdatedAndOwnerForAnnotation(annotations);
             } else {
                 throw new AnnotationSourceException(diseaseId);
             }
@@ -105,7 +105,6 @@ public class AnnotationService {
         User owner = userActivityRespository.getMostRecentDateForAnnotationActivity(oldAnnotation.getId()).getOwner();
 
         if(review){
-            // Review, check that the authentication is a valid user and that they are an elevated curator
             if(user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)){
                 oldAnnotation.setStatus(AnnotationStatus.ACCEPTED);
                 phenotypeAnnotationRepository.save(oldAnnotation);
@@ -140,7 +139,7 @@ public class AnnotationService {
      *
      * @param id a phenotype annotation id
      * @param user the user making the request
-     * @return a boolean whether the annotation was created or not.
+     * @return a boolean wherther the annotation was created or not.
      */
     public boolean deletePhenotypeAnnotation(Long id, User user) {
         if(id != null){
@@ -164,23 +163,22 @@ public class AnnotationService {
      * @return a collection of maxo annotations or an empty list.
      * @since 0.5.0
      */
-    public List<TreatmentAnnotation> getTreatmentAnnotations(String diseaseId, String sort) {
+    public List<TreatmentAnnotation> getTreatmentAnnotations(String diseaseId, String sort) throws AnnotationSourceException {
         Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
         if(disease != null) {
             List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNot(disease, AnnotationStatus.RETIRED);
-            return (List<TreatmentAnnotation>) getLastUpdatedandOwnerForTreatment(annotations);
+            return (List<TreatmentAnnotation>) getLastUpdatedAndOwnerForAnnotation(annotations);
         }
         throw new AnnotationSourceException(diseaseId);
-
     }
 
-    private List<? extends Annotation> getLastUpdatedandOwnerForTreatment(List<? extends Annotation> annotations){
+    private List<? extends Annotation> getLastUpdatedAndOwnerForAnnotation(List<? extends Annotation> annotations) {
         if(annotations.size() > 0){
-            return annotations.stream().peek(annotation -> {
-                UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
-                annotation.setLastUpdatedDate(activity.getLocalDateTime());
-                annotation.setOwner(activity.getOwner().getNickname());
-            }).sorted(Comparator.comparing(Annotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
+                return annotations.stream().peek(annotation -> {
+                    UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
+                    annotation.setLastUpdatedDate(activity.getLocalDateTime());
+                    annotation.setOwner(activity.getOwner().getNickname());
+                }).sorted(Comparator.comparing(Annotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
         } else {
             return Collections.emptyList();
         }

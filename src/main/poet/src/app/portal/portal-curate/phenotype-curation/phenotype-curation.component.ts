@@ -145,8 +145,8 @@ export class PhenotypeCurationComponent implements OnInit {
       });
   }
 
-  submitForm(): void {
-    const phenotypeAnnotation = {
+  getFormPhenotypeAnnotation(){
+    return {
       id: this.selectedAnnotation && this.selectedAnnotation.id ? this.selectedAnnotation.id : null,
       hpoId: this.formControlGroup.get('hpoFormControl').value.id,
       hpoName: this.formControlGroup.get('hpoFormControl').value.name,
@@ -157,7 +157,11 @@ export class PhenotypeCurationComponent implements OnInit {
       frequency: this.formControlGroup.get('frequencyFormControl').value,
       modifiers: this.selectedModifiers.join(";"),
       onset: this.formControlGroup.get('onsetFormControl').value?.ontologyId
-    }
+    };
+  }
+
+  submitForm(): void {
+    const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
     this.savingAnnotation = true;
     if (this.updating) {
       this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', false).subscribe(() => {
@@ -300,6 +304,20 @@ export class PhenotypeCurationComponent implements OnInit {
       return this.selectedAnnotation.status === "UNDER_REVIEW";
     } else {
       return false;
+    }
+  }
+
+  reviewAnnotation(action: string){
+    if(action === 'approve'){
+      // approve the annotation
+      const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
+      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', true).subscribe(() => {
+        this.onSuccessfulPhenotype('Phenotype Annotation Approved!')
+      }, (err) => {
+        this.onErrorPhenotypeSave();
+      });
+    } else if(action === 'deny') {
+      // open dialog get comments and
     }
   }
 }
