@@ -93,24 +93,13 @@
       <div class="form-content-section">
         <mat-form-field appearance="fill">
           <mat-label>HPO Age Of Onset</mat-label>
-          <input matInput placeholder="..." formControlName="onsetFormControl" ngDefaultControl
-                 [matAutocomplete]="onset">
-          <button mat-button *ngIf="formControlGroup.get('onsetFormControl').value != null" matSuffix mat-icon-button
-                  aria-label="Clear" (click)="formControlGroup.get('onsetFormControl').reset()">
-            <mat-icon>close</mat-icon>
-          </button>
-          <mat-hint *ngIf="!selectedHpo">e.g. Childhood onset</mat-hint>
-          <mat-error *ngIf="formControlGroup.get('onsetFormControl').hasError('notFound')">
-            Looks like there was an error with the HPO API.
-          </mat-error>
-          <mat-autocomplete #onset="matAutocomplete" (optionSelected)="selectedOnset = $event.option.value"
-                            [displayWith]="displayIdFn">
-            <mat-option class="auto-complete-option" *ngFor="let option of onsetOptions" [value]="option">
+          <mat-select formControlName="onsetFormControl">
+            <mat-option *ngFor="let option of onsetOptions | async" [value]="option">
               <span class="option-name">{{option.name}}</span>
               &nbsp;
               <span class="option-id">{{option.ontologyId}}</span>
             </mat-option>
-          </mat-autocomplete>
+          </mat-select>
         </mat-form-field>
         <mat-form-field appearance="fill" class="ml1">
           <mat-label>HPO Frequency</mat-label>

@@ -11,6 +11,7 @@ import { DialogSourceComponent } from "../dialog-source/dialog-source.component"
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { COMMA, ENTER } from "@angular/cdk/keycodes";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
+import { Observable } from "rxjs";
 
 @Component({
   selector: 'poet-phenotype-curation',
@@ -29,7 +30,7 @@ export class PhenotypeCurationComponent implements OnInit {
   selectedHpo: HpoTerm;
   hpoOptions: HpoTerm[];
   modifierOptions: AnchorSearchResult[];
-  onsetOptions: AnchorSearchResult[];
+  onsetOptions: Observable<AnchorSearchResult[]>;
   frequencyOptions: AnchorSearchResult[];
   selectedPublications: Publication[] = [];
   selectedModifiers: string[] = [];
@@ -79,8 +80,10 @@ export class PhenotypeCurationComponent implements OnInit {
         this.formControlGroup.disable();
       } else if (mode == 'edit') {
         this.updating = true;
+        this.onsetOptions = this.hpoService.searchDescendants("", 'HP:0003674')
         this.formControlGroup.enable();
       } else {
+        this.onsetOptions = this.hpoService.searchDescendants("", 'HP:0003674')
         this.formControlGroup.enable();
       }
     });
@@ -111,21 +114,6 @@ export class PhenotypeCurationComponent implements OnInit {
             this.modifierOptions = data;
           }, (err) => {
             this.formControlGroup.get("hpoFormControl").setErrors({notFound: true});
-          });
-        }
-      });
-
-    this.formControlGroup.get("onsetFormControl").valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe(query => {
-        if (query && query.length > 3 && !this.formControlGroup.disabled) {
-          this.hpoService.searchDescendants(query, 'HP:0003674').subscribe((data) => {
-            if (!data) {
-              this.formControlGroup.get("ageOnsetFormControl").setErrors({notFound: true});
-            }
-            this.onsetOptions = data;
-          }, (err) => {
-            this.formControlGroup.get("ageOnsetFormControl").setErrors({notFound: true});
           });
         }
       });
