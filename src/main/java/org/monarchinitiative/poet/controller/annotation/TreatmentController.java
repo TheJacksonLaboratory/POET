@@ -103,7 +103,7 @@ public class TreatmentController {
      */
     @PutMapping(value = "/", headers = "Accept=application/json")
     public ResponseEntity<?> updateTreatmentAnnotation(@Valid @RequestBody TreatmentRequest treatmentRequest,
-                                                       @RequestParam(value = "review", defaultValue = "false") boolean review,
+                                                       @RequestParam(value = "review", defaultValue = "") String review,
                                                        Authentication authentication) {
         final User user = userService.getExistingUser(authentication);
         annotationService.updateTreatmentAnnotation(treatmentRequest, user, review);

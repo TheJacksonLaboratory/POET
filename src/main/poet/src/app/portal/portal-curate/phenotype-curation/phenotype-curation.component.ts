@@ -152,7 +152,7 @@ export class PhenotypeCurationComponent implements OnInit {
     const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
     this.savingAnnotation = true;
     if (this.updating) {
-      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', false).subscribe(() => {
+      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', '').subscribe(() => {
         this.onSuccessfulPhenotype('Annotation Updated!')
       }, (err) => {
         this.onErrorPhenotypeSave();
@@ -299,13 +299,18 @@ export class PhenotypeCurationComponent implements OnInit {
     if(action === 'approve'){
       // approve the annotation
       const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
-      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', true).subscribe(() => {
+      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "approve").subscribe(() => {
         this.onSuccessfulPhenotype('Phenotype Annotation Approved!')
       }, (err) => {
         this.onErrorPhenotypeSave();
       });
     } else if(action === 'deny') {
-      // open dialog get comments and
+      const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
+      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "deny").subscribe(() => {
+        this.onSuccessfulPhenotype('Phenotype Annotation Approved!')
+      }, (err) => {
+        this.onErrorPhenotypeSave();
+      });
     }
   }
 }

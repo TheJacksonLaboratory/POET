@@ -134,13 +134,13 @@ export class CurationService {
    * @param category - the selected category they are curating
    * @param review - whether this update is a review or not.
    */
-  updateAnnotation(annotation: any, category: string, review: boolean) {
+  updateAnnotation(annotation: any, category: string, review: string) {
     const annotationSource = this.stateService.getSelectedSource();
     annotation.publicationId = annotationSource.publication.publicationId;
     annotation.publicationName = annotationSource.publication.publicationName;
     annotation.diseaseId = annotationSource.disease.diseaseId;
     annotation.diseaseName = annotationSource.disease.diseaseName;
-    const params = new HttpParams().set("review", String(review));
+    const params = new HttpParams().set("review", review);
     if(category === 'treatment'){
       return this.httpClient.put(environment.POET_API_TREATMENTS_ANNOTATION, annotation, {params: params});
     } else {
@@ -193,7 +193,7 @@ export class CurationService {
           let newData = {
             source: null,
             category: null,
-            curationAction: null,
+            curationAction: "",
             curator: null,
             date: null,
             time: null,

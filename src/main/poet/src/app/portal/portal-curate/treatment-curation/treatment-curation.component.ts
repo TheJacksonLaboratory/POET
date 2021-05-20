@@ -146,7 +146,7 @@ export class TreatmentCurationComponent implements OnInit {
     const treatmentAnnotation = this.getFormTreatmentAnnotation();
     this.savingAnnotation = true;
     if (this.updating) {
-      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', false).subscribe(() => {
+      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', '').subscribe(() => {
         this.onSuccessfulTreatment('Annotation Updated!')
       }, (err) => {
         this.onErrorTreatmentSave();
@@ -260,7 +260,7 @@ export class TreatmentCurationComponent implements OnInit {
     if(action === 'approve'){
       // approve the annotation
       const treatmentAnnotation = this.getFormTreatmentAnnotation();
-      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', true).subscribe(() => {
+      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', '').subscribe(() => {
         this.onTreatmentApprove('Phenotype Annotation Approved!');
       }, (err) => {
         this.onErrorTreatmentSave();

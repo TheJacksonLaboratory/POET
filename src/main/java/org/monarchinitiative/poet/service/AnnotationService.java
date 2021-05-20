@@ -230,19 +230,25 @@ public class AnnotationService {
      *
      * @param treatmentRequest a maxo request body
      * @param user the user making the request
-     * @param review a boolean whether this a review update
+     * @param review integer 0 = not a review, 1 = approve 2 = deny
      *
      * @return a boolean whether the annotation was created or not.
      */
-    public void updateTreatmentAnnotation(TreatmentRequest treatmentRequest, User user, boolean review) throws DuplicateAnnotationException {
+    public void updateTreatmentAnnotation(TreatmentRequest treatmentRequest, User user, String review) throws DuplicateAnnotationException {
 
             TreatmentAnnotation oldAnnotation = treatmentAnnotationRepository.findDistinctById(treatmentRequest.getId());
             User owner = userActivityRespository.getMostRecentDateForAnnotationActivity(oldAnnotation.getId()).getOwner();
 
-            if(review){
+            if(!review.equals("")){
+                AnnotationStatus newStatus = oldAnnotation.getStatus();
+                if(review.equals("approve")){
+                    newStatus = AnnotationStatus.ACCEPTED;
+                } else if(review.equals("deny")) {
+                    newStatus = AnnotationStatus.NEEDS_WORK;
+                }
                 // Review, check that the authentication is a valid user and that they are an elevated curator
                 if(user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)){
-                    oldAnnotation.setStatus(AnnotationStatus.ACCEPTED);
+                    oldAnnotation.setStatus(newStatus);
                     treatmentAnnotationRepository.save(oldAnnotation);
                     updateUserActivity(owner, user, CurationAction.REVIEW, oldAnnotation, null);
                 }else {
