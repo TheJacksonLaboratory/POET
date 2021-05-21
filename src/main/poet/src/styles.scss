@@ -522,6 +522,10 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   color: yellow !important;
 }
 
+.mat-icon.statusNeedsWork{
+  color: indianred;
+}
+
 .approve-annotation {
   background: forestgreen;
 }

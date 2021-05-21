@@ -93,7 +93,7 @@ public class PhenotypeController {
      */
     @PutMapping(value = "/", headers = "Accept=application/json")
     public ResponseEntity<?> updatePhenotypeAnnotation(@Valid @RequestBody PhenotypeRequest phenotypeRequest,
-                                                       @RequestParam(value = "review", defaultValue = "false") boolean review,
+                                                       @RequestParam(value = "review", defaultValue = "") String review,
                                                        Authentication authentication) {
         final User user = userService.getExistingUser(authentication);
         annotationService.updatePhenotypeAnnotation(phenotypeRequest, user, review);

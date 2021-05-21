@@ -34,6 +34,9 @@
           <mat-option value="name"><span class="capitalize">{{category}}</span> Name</mat-option>
         </mat-select>
       </mat-form-field>
+      <div class="filter-container mat-form-field">
+        <mat-checkbox [(ngModel)]="showAll"> Show Other Curators </mat-checkbox>
+      </div>
     </div>
 
     <mat-list #treatment *ngIf="category === 'treatment'">
@@ -41,7 +44,7 @@
                      [ngClass]="{'active': treatment == activeAnnotation}"
                      *ngFor="let treatment of treatmentAnnotations | async | slice: lowValue : highValue | filter: selectedStatuses:user:showAll | sortBy: selectedSort:category">
         <mat-icon [class]="{'statusApproved': treatment.status === 'ACCEPTED', 'statusReview': treatment.status === 'UNDER_REVIEW',
-                      'statusOfficial': treatment.status === 'OFFICIAL'}" matListIcon>health_and_safety</mat-icon>
+                      'statusOfficial': treatment.status === 'OFFICIAL', 'statusNeedsWork': treatment.status === 'NEEDS_WORK'}" matListIcon>health_and_safety</mat-icon>
         <div class="selection-text" *ngIf="formOpen">
           <span matLine>
             <strong>{{treatment.maxoName}}</strong>
@@ -83,7 +86,7 @@
                      [ngClass]="{'active': phenotype == activeAnnotation}"
                      *ngFor="let phenotype of phenotypeAnnotations | async | slice: lowValue : highValue | filter: selectedStatuses:user:showAll | sortBy: selectedSort:category">
         <mat-icon matListIcon [class]="{'statusApproved': phenotype.status === 'ACCEPTED', 'statusReview': phenotype.status === 'UNDER_REVIEW',
-                      'statusOfficial': phenotype.status === 'OFFICIAL'}">attribution</mat-icon>
+                      'statusOfficial': phenotype.status === 'OFFICIAL', 'statusNeedsWork': phenotype.status === 'NEEDS_WORK'}">attribution</mat-icon>
         <div matLine class="selection-text" *ngIf="formOpen">
           <strong>{{phenotype.hpoName}}</strong>
           <span class="selection-id">

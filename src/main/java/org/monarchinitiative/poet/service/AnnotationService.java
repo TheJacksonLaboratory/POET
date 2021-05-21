@@ -79,8 +79,9 @@ public class AnnotationService {
     public void createPhenotypeAnnotation(PhenotypeRequest phenotypeRequest, User user) throws DuplicateAnnotationException {
         final AnnotationSource annotationSource = getAnnotationSource(phenotypeRequest.getPublicationId(), phenotypeRequest.getDiseaseId());
         if(annotationSource != null){
+            AnnotationStatus status = user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR) ? AnnotationStatus.ACCEPTED : AnnotationStatus.UNDER_REVIEW;
             final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, annotationSource,
-                    AnnotationStatus.UNDER_REVIEW);
+                    status);
             if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndModifier(
                     annotation.getAnnotationSource(), annotation.getHpoId(), annotation.getSex(),
                     annotation.getEvidence(), annotation.getOnset(), annotation.getModifier())){
@@ -99,14 +100,15 @@ public class AnnotationService {
      * @param phenotypeRequest a phenotype request body
      * @param user the user making the request
      */
-    public void updatePhenotypeAnnotation(PhenotypeRequest phenotypeRequest, User user, boolean review) throws DuplicateAnnotationException {
+    public void updatePhenotypeAnnotation(PhenotypeRequest phenotypeRequest, User user, String review) throws DuplicateAnnotationException {
 
         PhenotypeAnnotation oldAnnotation = phenotypeAnnotationRepository.findDistinctById(phenotypeRequest.getId());
         User owner = userActivityRespository.getMostRecentDateForAnnotationActivity(oldAnnotation.getId()).getOwner();
 
-        if(review){
+
+        if(isValidReview(review)){
             if(user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)){
-                oldAnnotation.setStatus(AnnotationStatus.ACCEPTED);
+                oldAnnotation.setStatus(reviewToStatus(review));
                 phenotypeAnnotationRepository.save(oldAnnotation);
                 updateUserActivity(owner, user, CurationAction.REVIEW, oldAnnotation, null);
             }else {
@@ -239,16 +241,10 @@ public class AnnotationService {
             TreatmentAnnotation oldAnnotation = treatmentAnnotationRepository.findDistinctById(treatmentRequest.getId());
             User owner = userActivityRespository.getMostRecentDateForAnnotationActivity(oldAnnotation.getId()).getOwner();
 
-            if(review.equals("approve") || review.equals("deny")){
-                AnnotationStatus newStatus;
-                if(review.equals("approve")){
-                    newStatus = AnnotationStatus.ACCEPTED;
-                } else {
-                    newStatus = AnnotationStatus.NEEDS_WORK;
-                }
+            if(isValidReview(review)){
                 // Review, check that the authentication is a valid user and that they are an elevated curator
                 if(user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)){
-                    oldAnnotation.setStatus(newStatus);
+                    oldAnnotation.setStatus(reviewToStatus(review));
                     treatmentAnnotationRepository.save(oldAnnotation);
                     updateUserActivity(owner, user, CurationAction.REVIEW, oldAnnotation, null);
                 }else {
@@ -339,6 +335,20 @@ public class AnnotationService {
             userActivityRespository.save(userActivity);
     }
 
+    /**
+     * A function get the status from a review
+     */
+    private AnnotationStatus reviewToStatus(String review){
+        if(review.equals("approve")){
+            return AnnotationStatus.ACCEPTED;
+        } else {
+            return AnnotationStatus.NEEDS_WORK;
+        }
+    }
+
+    private boolean isValidReview(String review){
+        return review.equals("approve") || review.equals("deny");
+    }
 
 
     public void insertTestData(){
