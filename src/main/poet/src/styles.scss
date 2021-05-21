@@ -514,6 +514,10 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   background: yellow !important;
 }
 
+.mat-option.statusNeedsWork .mat-pseudo-checkbox-checked {
+  background: indianred !important;
+}
+
 .mat-icon.statusApproved {
   color: limegreen !important;
 }

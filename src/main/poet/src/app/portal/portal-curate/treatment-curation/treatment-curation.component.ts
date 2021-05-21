@@ -194,7 +194,7 @@ export class TreatmentCurationComponent implements OnInit {
 
   onErrorTreatmentSave() {
     this.savingAnnotation = false;
-    this._snackBar.open('Error Saving Annotation!', 'Close', {
+    this._snackBar.open('Annotation Action Error!', 'Close', {
       duration: 3000,
       horizontalPosition: "left"
     });
@@ -266,7 +266,12 @@ export class TreatmentCurationComponent implements OnInit {
         this.onErrorTreatmentSave();
       });
     } else if(action === 'deny') {
-      // open dialog get comments and
+      const treatmentAnnotation = this.getFormTreatmentAnnotation();
+      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', "deny").subscribe(() => {
+        this.onTreatmentApprove('Treatment Annotation Rejected!')
+      }, (err) => {
+        this.onErrorTreatmentSave();
+      });
     }
   }
 }

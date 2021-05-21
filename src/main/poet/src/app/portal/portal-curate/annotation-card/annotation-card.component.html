@@ -22,7 +22,7 @@
         <mat-select multiple [(value)]="selectedStatuses">
           <mat-option *ngFor="let status of annotationStatuses" [value]="status"
                       [class]="{'statusApproved': status === 'ACCEPTED', 'statusReview': status === 'UNDER_REVIEW',
-                      'statusOfficial': status === 'OFFICIAL'}">
+                      'statusOfficial': status === 'OFFICIAL', 'statusNeedsWork': status === 'NEEDS_WORK'}">
             {{status}}
           </mat-option>
         </mat-select>
