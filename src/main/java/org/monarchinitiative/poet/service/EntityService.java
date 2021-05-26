@@ -129,22 +129,25 @@ public class EntityService {
      *
      * @param request a publication request to save to a disease
      * @param authentication a spring authentication object
-     * @return a boolean if save is successful or not
      */
-    public boolean savePublicationToDisease(PublicationRequest request, Authentication authentication){
-        Publication publication = new Publication(request.getPublication());
+    public void savePublicationToDisease(PublicationRequest request, Authentication authentication){
+        Publication publication = this.publicationRepository.findByPublicationId(request.getPublication().getPublicationId());
         Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(request.getDisease().getDiseaseId());
         User user = userRepository.findDistinctByAuthId(authentication.getName());
+        if(publication == null){
+            publication = new Publication(request.getPublication());
+            this.publicationRepository.save(publication);
+        }
+
         if(disease != null){
             if(user != null){
-                this.publicationRepository.save(publication);
                 this.annotationSourceRepository.save(new AnnotationSource(publication, disease));
-                return true;
             } else {
                 throw new AuthenticationException(authentication.getName());
             }
         } else {
             throw new DiseaseNotFoundException(request.getDisease().getDiseaseId());
         }
+
     }
 }

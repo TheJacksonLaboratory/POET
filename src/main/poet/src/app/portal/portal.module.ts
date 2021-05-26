@@ -13,12 +13,11 @@ import { DialogSourceComponent } from './portal-curate/dialog-source/dialog-sour
 import { HttpClientModule } from "@angular/common/http";
 import { AnnotationCardComponent } from './portal-curate/annotation-card/annotation-card.component';
 import { DeleteSheetComponent } from "./portal-curate/annotation-card/delete-sheet/delete-sheet.component";
-import { ReviewComponent } from "./review/review.component";
 
 
 @NgModule({
   declarations: [PortalDashboardComponent, PortalCurateComponent, PortalComponent, TreatmentCurationComponent,
-    PhenotypeCurationComponent, DialogSourceComponent, AnnotationCardComponent, DeleteSheetComponent, ReviewComponent],
+    PhenotypeCurationComponent, DialogSourceComponent, AnnotationCardComponent, DeleteSheetComponent],
   imports: [
     CommonModule,
     SharedModule,

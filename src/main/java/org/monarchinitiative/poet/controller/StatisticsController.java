@@ -1,17 +1,19 @@
 package org.monarchinitiative.poet.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import org.monarchinitiative.poet.model.response.AnnotationCount;
-import org.monarchinitiative.poet.model.response.Contribution;
+import org.monarchinitiative.poet.model.enumeration.CurationAction;
+import org.monarchinitiative.poet.model.responses.AnnotationCount;
+import org.monarchinitiative.poet.model.responses.Contribution;
 import org.monarchinitiative.poet.model.entities.UserActivity;
+import org.monarchinitiative.poet.model.responses.ReviewCount;
 import org.monarchinitiative.poet.service.StatisticsService;
+import org.monarchinitiative.poet.views.DiseaseViews;
 import org.monarchinitiative.poet.views.UserActivityViews;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This class is an implementation of Spring's Rest Controller. It provides RESTful API's to get useful
@@ -42,7 +44,12 @@ public class StatisticsController {
     public List<UserActivity> getUserActivity(@RequestParam(value = "all", defaultValue = "true") boolean all,
                                               @RequestParam(value = "weeks", defaultValue = "0") int weeks,
                                               Authentication authentication){
-        return statisticsService.getUserActivity(all, weeks, authentication);
+        return statisticsService.getUserActivity(all, weeks, authentication).stream().map(activity -> {
+            if(activity.getCurationAction().equals(CurationAction.REVIEW)){
+                activity.ownerSwap();
+            }
+            return activity;
+        }).collect(Collectors.toList());
     }
 
     /**
@@ -64,5 +71,14 @@ public class StatisticsController {
     @GetMapping(value = "/annotation/{diseaseId}")
     public AnnotationCount getAnnotationStatistics(@PathVariable(value = "diseaseId", required = false)  String diseaseId){
         return this.statisticsService.summarizeAnnotations(diseaseId);
+    }
+
+    /**
+     * The endpoint to get annotation summary statistics by type.
+     * @return
+     */
+    @GetMapping(value = "/annotation/review")
+    public List<ReviewCount> getAnnotationsNeedingReview(){
+        return this.statisticsService.summarizeAnnotationNeedReview();
     }
 }

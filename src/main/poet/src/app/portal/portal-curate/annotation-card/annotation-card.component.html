@@ -69,8 +69,9 @@
           <mat-icon>delete</mat-icon>
         </button>
         <button *ngIf="isElevatedCurator() && isUnderReview(treatment.status) else elseBlock"
-                mat-stroked-button color="warn" aria-label="Review Treatment Annotation"
-                (click)="annotationAction(treatment, 'view')">
+                mat-flat-button color="warn" aria-label="Review Treatment Annotation"
+                (click)="annotationAction(treatment, 'view')"
+        class="needs-review-btn">
           Needs Review
         </button>
         <ng-template #elseBlock>

@@ -1,6 +1,6 @@
 package org.monarchinitiative.poet.exceptions;
 
-import org.monarchinitiative.poet.model.response.ErrorDetails;
+import org.monarchinitiative.poet.model.responses.ErrorDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;

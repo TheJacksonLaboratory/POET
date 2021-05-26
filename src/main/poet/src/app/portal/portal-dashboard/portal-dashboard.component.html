@@ -25,6 +25,16 @@
                                showFirstLastButtons="false">
                 </mat-paginator>
           </mat-tab>
+              <mat-tab label="Reviews" *ngIf="isElevatedCurator()">
+                <mat-list *ngFor="let review of reviews">
+                  <mat-list-item class="activity-item">
+                    <h4>{{review.count}} {{review.type}} annotations ready to be reviewed for {{review.diseaseName}}.</h4>
+                    <span class="spacer"></span>
+                    <button mat-stroked-button [routerLink]="'/curate/' + review.diseaseId + '/' + review.type">View Disease</button>
+                  </mat-list-item>
+                  <p class="no-activity" *ngIf="reviews?.length == 0 || !reviews">No Annotations Need Review.</p>
+                </mat-list>
+              </mat-tab>
               <mat-tab label="Most Curated" [disabled]="true">Most Curated Diseases</mat-tab>
               <mat-tab label="Contributions" [disabled]="noContributions()">
                 <div class="chart-wrapper" *ngIf="!noContributions()">

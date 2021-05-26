@@ -101,6 +101,10 @@ export class CurationService {
     }
   }
 
+  getAnnotationsNeedingReview(): Observable<any> {
+    return this.httpClient.get(environment.POET_API_STATISTICS_ANNOTATION_URL + 'review');
+  }
+
 
   /**
    * Get a list of Treatment Annotations
@@ -382,7 +386,8 @@ export class CurationService {
     const actionMap = {
       "CREATE": "created",
       "UPDATE": "updated",
-      "DELETE": "deleted"
+      "DELETE": "deleted",
+      "REVIEW": "reviewed"
     }
     return actionMap[action];
   }

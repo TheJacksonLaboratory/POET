@@ -84,5 +84,8 @@ export class StateService implements OnInit {
     this.selectedAnnotationModeSubject.next(mode)
   }
 
+  isValidCategory(category: string){
+    return category === 'phenotype' || category === 'treatment';
+  }
 
 }

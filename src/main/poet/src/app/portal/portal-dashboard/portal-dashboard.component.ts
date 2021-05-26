@@ -6,9 +6,6 @@ import { fadeIn } from "ng-animate";
 import { CurationService } from "../../shared/services/curation/curation.service";
 import { MatDialog } from "@angular/material/dialog";
 import { environment } from "../../../environments/environment";
-import {PhenotypeAnnotation, TreatmentAnnotation} from "../../shared/models/models";
-import {Observable} from "rxjs";
-import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: 'app-portal-home',
@@ -29,7 +26,7 @@ export class PortalDashboardComponent implements OnInit {
   recentActivity: any;
   lowValue: number = 0;
   highValue: number = 5;
-
+  reviews: any;
 
   constructor(public authService: AuthService, public curationService: CurationService, public dialog: MatDialog) {
   }
@@ -50,6 +47,10 @@ export class PortalDashboardComponent implements OnInit {
       } else {
         this.pieData = contributions;
       }
+    });
+
+    this.curationService.getAnnotationsNeedingReview().subscribe((annotations) => {
+      this.reviews = annotations;
     });
   }
 

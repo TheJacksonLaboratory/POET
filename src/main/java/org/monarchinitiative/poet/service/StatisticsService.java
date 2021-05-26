@@ -2,9 +2,10 @@ package org.monarchinitiative.poet.service;
 
 
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
-import org.monarchinitiative.poet.model.response.AnnotationCount;
-import org.monarchinitiative.poet.model.response.Contribution;
+import org.monarchinitiative.poet.model.responses.AnnotationCount;
+import org.monarchinitiative.poet.model.responses.Contribution;
 import org.monarchinitiative.poet.model.entities.UserActivity;
+import org.monarchinitiative.poet.model.responses.ReviewCount;
 import org.monarchinitiative.poet.repository.DiseaseRepository;
 import org.monarchinitiative.poet.repository.PhenotypeAnnotationRepository;
 import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A spring service component created to provide business logic and functionality to get user activity
@@ -79,8 +82,8 @@ public class StatisticsService {
     }
 
     public AnnotationCount summarizeAnnotations(String diseaseId){
-        int treatmentCount = 0;
-        int phenotypeCount = 0;
+        int treatmentCount;
+        int phenotypeCount;
         if(diseaseId != null){
             treatmentCount = this.treatmentAnnotationRepository.countAllByAnnotationSourceDiseaseAndStatusNot(
                     this.diseaseRepository.findDiseaseByDiseaseId(diseaseId), AnnotationStatus.RETIRED
@@ -94,5 +97,11 @@ public class StatisticsService {
         }
 
         return new AnnotationCount(phenotypeCount, treatmentCount);
+    }
+
+    public List<ReviewCount> summarizeAnnotationNeedReview(){
+        List<ReviewCount> phenotypeAnnotations = this.phenotypeAnnotationRepository.getAllByStatus(AnnotationStatus.UNDER_REVIEW);
+        List<ReviewCount> treatmentAnnotations = this.treatmentAnnotationRepository.getAllByStatus(AnnotationStatus.UNDER_REVIEW);
+        return Stream.concat(phenotypeAnnotations.stream(), treatmentAnnotations.stream()).collect(Collectors.toList());
     }
 }

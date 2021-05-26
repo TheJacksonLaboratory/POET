@@ -7,6 +7,7 @@ import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.monarchinitiative.poet.model.responses.ReviewCount;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -23,4 +24,6 @@ public interface TreatmentAnnotationRepository extends CrudRepository<TreatmentA
             AnnotationSource annotationSource, String annotationType, String maxoId, String hpoId,
             String extensionId, String evidence, String relation, AnnotationStatus status);
     List<TreatmentAnnotation> findAllByStatus(AnnotationStatus status);
+    @Query("select new org.monarchinitiative.poet.model.responses.ReviewCount(a.annotationSource.disease, count(a), 'treatment') from TreatmentAnnotation a where a.status = ?1 group by a.annotationSource.disease")
+    List<ReviewCount> getAllByStatus(AnnotationStatus status);
 }

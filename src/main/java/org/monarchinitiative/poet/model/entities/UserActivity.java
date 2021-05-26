@@ -68,6 +68,12 @@ public class UserActivity {
         return localDateTime;
     }
 
+    public CurationAction getCurationAction() { return curationAction;}
+
+    public void ownerSwap() {
+        this.owner = this.reviewer;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
