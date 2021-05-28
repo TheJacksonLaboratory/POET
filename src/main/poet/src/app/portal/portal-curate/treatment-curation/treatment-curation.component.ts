@@ -125,6 +125,7 @@ export class TreatmentCurationComponent implements OnInit {
           });
         }
       });
+    this.formControlGroup.get('evidenceFormControl').setValue('TAS');
   }
 
   getFormTreatmentAnnotation(){

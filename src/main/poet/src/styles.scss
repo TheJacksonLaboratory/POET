@@ -544,3 +544,13 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
     margin-bottom: 5px;
   }
 }
+
+.form-card {
+    & .evidence.mat-form-field, .evidence .mat-form-field-infix {
+      width: auto !important;
+      & .mat-select-value {
+        max-width: 100%;
+        width: auto;
+      }
+    }
+}

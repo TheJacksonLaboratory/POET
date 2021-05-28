@@ -56,6 +56,8 @@ export class PhenotypeCurationComponent implements OnInit {
               public stateService: StateService,
               public dialog: MatDialog,
               private _snackBar: MatSnackBar) {
+
+
   }
 
   ngOnInit(): void {
@@ -131,6 +133,7 @@ export class PhenotypeCurationComponent implements OnInit {
           });
         }
       });
+    this.formControlGroup.get('evidenceFormControl').setValue('TAS');
   }
 
   getFormPhenotypeAnnotation(){
@@ -172,7 +175,7 @@ export class PhenotypeCurationComponent implements OnInit {
     this.formControlGroup.get('descriptionFormControl').setValue(annotation.description);
     this.formControlGroup.get('frequencyFormControl').setValue(annotation.frequency);
     this.formControlGroup.get('onsetFormControl').setValue({ontologyId: annotation.onset, name: ""});
-    this.selectedModifiers = annotation.modifier.length > 0 ?  annotation.modifier.split(";") : [annotation.modifier]
+    this.selectedModifiers = annotation.modifier.length > 0 ?  annotation.modifier.split(";") : []
     this.formControlGroup.get('sexFormControl').setValue(annotation.sex);
     this.selectedQualifier = annotation.qualifier == "NOT";
     this.stateService.setSelectedSource(annotation.annotationSource);
