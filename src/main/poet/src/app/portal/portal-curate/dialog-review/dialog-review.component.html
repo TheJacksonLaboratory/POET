@@ -1,8 +1,8 @@
 <h4 mat-dialog-title>{{title}}</h4>
 <mat-dialog-content class="mat-typography">
-  <textarea *ngIf="!approve" matInput placeholder="Leave a comment if denying..." [(ngModel)]="message"></textarea>
+  <textarea rows="8" *ngIf="!approve" matInput placeholder="Why are you denying this annotation?" [formControl]="denyMessageControl"></textarea>
 </mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button mat-dialog-close (click)="closeDialog('yes')">Yes</button>
-  <button mat-button mat-dialog-close (click)="closeDialog('no')">No</button>
+<mat-dialog-actions *ngIf="this.denyMessageControl.valid">
+  <button mat-button mat-dialog-close (click)="closeDialog('yes')">Confirm</button>
+  <button mat-button mat-dialog-close (click)="closeDialog('no')">Cancel</button>
 </mat-dialog-actions>

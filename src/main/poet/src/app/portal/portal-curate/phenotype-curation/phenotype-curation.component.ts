@@ -158,15 +158,15 @@ export class PhenotypeCurationComponent implements OnInit {
     this.savingAnnotation = true;
     if (this.updating) {
       this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', '').subscribe(() => {
-        this.onSuccessfulPhenotype('Annotation Updated!')
+        this.onSuccessfulPhenotype('Annotation Updated!', false);
       }, (err) => {
-        this.onErrorPhenotypeSave();
+        this.onErrorPhenotype();
       });
     } else {
       this.curationService.saveAnnotation(phenotypeAnnotation, 'phenotype').subscribe(() => {
-        this.onSuccessfulPhenotype('Annotation Saved!')
+        this.onSuccessfulPhenotype('Annotation Saved!', false);
       }, (err) => {
-        this.onErrorPhenotypeSave();
+        this.onErrorPhenotype();
       });
     }
   }
@@ -184,18 +184,23 @@ export class PhenotypeCurationComponent implements OnInit {
     this.formControlGroup.markAsPristine();
   }
 
-  onSuccessfulPhenotype(message: string) {
+  onSuccessfulPhenotype(message: string, close: boolean) {
+    this.isUnderReview()
     this.savingAnnotation = false;
     this.stateService.triggerAnnotationReload(true);
     this.stateService.triggerAnnotationCountsReload(true);
-    this.resetPhenotypeForm();
+    if(close) {
+      this.closeForm();
+    } else {
+      this.resetPhenotypeForm();
+    }
     this._snackBar.open(message, 'Close', {
       duration: 3000,
       horizontalPosition: "left"
     });
   }
 
-  onErrorPhenotypeSave() {
+  onErrorPhenotype() {
     this.savingAnnotation = false;
     this._snackBar.open('Error Saving Annotation!', 'Close', {
       duration: 3000,
@@ -306,24 +311,25 @@ export class PhenotypeCurationComponent implements OnInit {
       this.dialog.open(DialogReviewComponent, {
         minWidth: 300,
         data: {
-          title: "Are you sure you want to approve this annotation?",
+          title: "Approve Phenotype Annotation",
           approve: true
         }
       }).afterClosed().subscribe((data) => {
         if(data.confirmed){
           const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
           this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "approve").subscribe(() => {
-            this.onSuccessfulPhenotype('Phenotype Annotation Approved!')
+            this.onSuccessfulPhenotype('Phenotype Annotation Approved!', true);
           }, (err) => {
-            this.onErrorPhenotypeSave();
+            this.onErrorPhenotype();
           });
         }
       });
     } else if(action === 'deny') {
       this.dialog.open(DialogReviewComponent, {
         minWidth: 300,
+        minHeight: 250,
         data: {
-          title: "Are you sure you want to deny this annotation?",
+          title: "Deny Phenotype Annotation.",
           approve: false
         }
       }).afterClosed().subscribe((data) => {
@@ -331,9 +337,9 @@ export class PhenotypeCurationComponent implements OnInit {
           const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
           phenotypeAnnotation.message = data.message;
           this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "deny").subscribe(() => {
-            this.onSuccessfulPhenotype('Phenotype Annotation Approved!')
+            this.onSuccessfulPhenotype('Phenotype Annotation Rejected!', true);
           }, (err) => {
-            this.onErrorPhenotypeSave();
+            this.onErrorPhenotype();
           });
         }
       });

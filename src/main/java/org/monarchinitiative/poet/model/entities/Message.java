@@ -1,9 +1,9 @@
 package org.monarchinitiative.poet.model.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.monarchinitiative.poet.views.AnnotationViews;
+
+import javax.persistence.*;
 
 @Entity
 public class Message {
@@ -12,7 +12,12 @@ public class Message {
     @GeneratedValue
     private long id;
 
+    @JsonView(AnnotationViews.Simple.class)
     private String value;
+
+    @OneToOne
+    @JsonView(AnnotationViews.Simple.class)
+    private User reviewer;
 
     @ManyToOne
     private Annotation annotation;
@@ -21,8 +26,16 @@ public class Message {
 
     }
 
-    public Message(String value, Annotation annotation) {
+    public Message(String value, User reviewer, Annotation annotation) {
         this.annotation = annotation;
         this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public User getUser() {
+        return reviewer;
     }
 }

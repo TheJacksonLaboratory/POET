@@ -150,15 +150,15 @@ export class TreatmentCurationComponent implements OnInit {
     this.savingAnnotation = true;
     if (this.updating) {
       this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', '').subscribe(() => {
-        this.onSuccessfulTreatment('Annotation Updated!')
+        this.onSuccessfulTreatment('Annotation Updated!', true);
       }, (err) => {
-        this.onErrorTreatmentSave();
+        this.onErrorTreatment();
       });
     } else {
       this.curationService.saveAnnotation(treatmentAnnotation, 'treatment').subscribe(() => {
-        this.onSuccessfulTreatment('Annotation Saved!')
+        this.onSuccessfulTreatment('Annotation Saved!', false);
       }, (err) => {
-        this.onErrorTreatmentSave();
+        this.onErrorTreatment();
       });
     }
   }
@@ -173,29 +173,22 @@ export class TreatmentCurationComponent implements OnInit {
     this.stateService.setSelectedSource(annotation.annotationSource);
   }
 
-  onSuccessfulTreatment(message: string) {
+  onSuccessfulTreatment(message: string, close: boolean) {
     this.savingAnnotation = false;
     this.stateService.triggerAnnotationReload(true);
     this.stateService.triggerAnnotationCountsReload(true);
-    this.resetTreatmentForm();
+    if(close){
+      this.closeForm();
+    } else {
+      this.resetTreatmentForm();
+    }
     this._snackBar.open(message, 'Close', {
       duration: 3000,
       horizontalPosition: "left"
     });
   }
 
-  onTreatmentApprove(message: string) {
-    this.savingAnnotation = false;
-    this.stateService.triggerAnnotationReload(true);
-    this.stateService.triggerAnnotationCountsReload(true);
-    this.closeForm();
-    this._snackBar.open(message, 'Close', {
-      duration: 3000,
-      horizontalPosition: "left"
-    });
-  }
-
-  onErrorTreatmentSave() {
+  onErrorTreatment() {
     this.savingAnnotation = false;
     this._snackBar.open('Annotation Action Error!', 'Close', {
       duration: 3000,
@@ -266,24 +259,25 @@ export class TreatmentCurationComponent implements OnInit {
       this.dialog.open(DialogReviewComponent, {
         minWidth: 300,
         data: {
-          title: "Are you sure you want to approve this annotation?",
+          title: "Approve Treatment Annotation",
           approve: true
         }
       }).afterClosed().subscribe((data) => {
         if(data.confirmed){
           const treatmentAnnotation = this.getFormTreatmentAnnotation();
           this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', 'approve').subscribe(() => {
-            this.onTreatmentApprove('Treatment Annotation Approved!');
+            this.onSuccessfulTreatment('Treatment Annotation Approved!', true);
           }, (err) => {
-            this.onErrorTreatmentSave();
+            this.onErrorTreatment();
           });
         }
       })
     } else if(action === 'deny') {
       this.dialog.open(DialogReviewComponent, {
         minWidth: 300,
+        minHeight: 250,
         data: {
-          title: "Are you sure you want to deny this annotation?",
+          title: "Deny Treatment Annotation",
           approve: false
         }
       }).afterClosed().subscribe((data) => {
@@ -291,9 +285,9 @@ export class TreatmentCurationComponent implements OnInit {
           const treatmentAnnotation = this.getFormTreatmentAnnotation();
           treatmentAnnotation.message = data.message;
           this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', "deny").subscribe(() => {
-            this.onTreatmentApprove('Treatment Annotation Rejected!')
+            this.onSuccessfulTreatment('Treatment Annotation Rejected!', true);
           }, (err) => {
-            this.onErrorTreatmentSave();
+            this.onErrorTreatment();
           });
         }
       });

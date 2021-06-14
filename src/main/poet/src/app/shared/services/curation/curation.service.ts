@@ -144,7 +144,11 @@ export class CurationService {
     annotation.publicationName = annotationSource.publication.publicationName;
     annotation.diseaseId = annotationSource.disease.diseaseId;
     annotation.diseaseName = annotationSource.disease.diseaseName;
-    const params = new HttpParams().set("review", review);
+    let params = new HttpParams();
+    if(review) {
+     params = params.set("review", review);
+    }
+
     if(category === 'treatment'){
       return this.httpClient.put(environment.POET_API_TREATMENTS_ANNOTATION, annotation, {params: params});
     } else {

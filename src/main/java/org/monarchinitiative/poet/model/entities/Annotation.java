@@ -86,6 +86,10 @@ public class Annotation {
         return owner;
     }
 
+    public List<Message> getReviewMessages() {
+        return reviewMessages;
+    }
+
     public void setOwner(String owner) {
         this.owner = owner;
     }
