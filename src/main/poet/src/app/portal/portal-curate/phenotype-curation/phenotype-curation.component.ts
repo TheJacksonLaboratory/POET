@@ -12,6 +12,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { COMMA, ENTER } from "@angular/cdk/keycodes";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { Observable } from "rxjs";
+import { DialogReviewComponent } from "../dialog-review/dialog-review.component";
 
 @Component({
   selector: 'poet-phenotype-curation',
@@ -147,7 +148,8 @@ export class PhenotypeCurationComponent implements OnInit {
       qualifier: this.selectedQualifier == true ? "NOT" : '',
       frequency: this.formControlGroup.get('frequencyFormControl').value,
       modifiers: this.selectedModifiers.join(";"),
-      onset: this.formControlGroup.get('onsetFormControl').value?.ontologyId
+      onset: this.formControlGroup.get('onsetFormControl').value?.ontologyId,
+      message: ""
     };
   }
 
@@ -216,6 +218,7 @@ export class PhenotypeCurationComponent implements OnInit {
 
   resetPhenotypeForm() {
     this.formControlGroup.reset();
+    this.formControlGroup.get('evidenceFormControl').setValue('TAS');
     this.selectedQualifier = false;
     this.selectedModifiers = [];
     this.selectedOnset = [];
@@ -300,19 +303,39 @@ export class PhenotypeCurationComponent implements OnInit {
 
   reviewAnnotation(action: string){
     if(action === 'approve'){
-      // approve the annotation
-      const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
-      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "approve").subscribe(() => {
-        this.onSuccessfulPhenotype('Phenotype Annotation Approved!')
-      }, (err) => {
-        this.onErrorPhenotypeSave();
+      this.dialog.open(DialogReviewComponent, {
+        minWidth: 300,
+        data: {
+          title: "Are you sure you want to approve this annotation?",
+          approve: true
+        }
+      }).afterClosed().subscribe((data) => {
+        if(data.confirmed){
+          const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
+          this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "approve").subscribe(() => {
+            this.onSuccessfulPhenotype('Phenotype Annotation Approved!')
+          }, (err) => {
+            this.onErrorPhenotypeSave();
+          });
+        }
       });
     } else if(action === 'deny') {
-      const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
-      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "deny").subscribe(() => {
-        this.onSuccessfulPhenotype('Phenotype Annotation Approved!')
-      }, (err) => {
-        this.onErrorPhenotypeSave();
+      this.dialog.open(DialogReviewComponent, {
+        minWidth: 300,
+        data: {
+          title: "Are you sure you want to deny this annotation?",
+          approve: false
+        }
+      }).afterClosed().subscribe((data) => {
+        if(data.confirmed){
+          const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
+          phenotypeAnnotation.message = data.message;
+          this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "deny").subscribe(() => {
+            this.onSuccessfulPhenotype('Phenotype Annotation Approved!')
+          }, (err) => {
+            this.onErrorPhenotypeSave();
+          });
+        }
       });
     }
   }

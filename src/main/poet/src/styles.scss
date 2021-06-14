@@ -554,3 +554,7 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
       }
     }
 }
+
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+  color: #59c9e8;
+}

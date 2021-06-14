@@ -35,18 +35,21 @@ public class AnnotationService {
     private TreatmentAnnotationRepository treatmentAnnotationRepository;
     private UserActivityRepository userActivityRespository;
     private PhenotypeAnnotationRepository phenotypeAnnotationRepository;
+    private MessageRepository messageRepository;
 
     public AnnotationService(PublicationRepository publicationRepository,
                              DiseaseRepository diseaseRepository, AnnotationSourceRepository annotationSourceRepository,
                              TreatmentAnnotationRepository treatmentAnnotationRepository,
                              UserActivityRepository userActivityRepository,
-                             PhenotypeAnnotationRepository phenotypeAnnotationRepository) {
+                             PhenotypeAnnotationRepository phenotypeAnnotationRepository,
+                             MessageRepository messageRepository) {
         this.publicationRepository = publicationRepository;
         this.diseaseRepository = diseaseRepository;
         this.annotationSourceRepository = annotationSourceRepository;
         this.treatmentAnnotationRepository = treatmentAnnotationRepository;
         this.userActivityRespository = userActivityRepository;
         this.phenotypeAnnotationRepository = phenotypeAnnotationRepository;
+        this.messageRepository = messageRepository;
     }
 
     /**
@@ -109,6 +112,11 @@ public class AnnotationService {
         if(isValidReview(review)){
             if(user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)){
                 oldAnnotation.setStatus(reviewToStatus(review));
+                if(review.equals("deny")){
+                    Message reviewMessage = new Message(phenotypeRequest.getMessage(), oldAnnotation);
+                    messageRepository.save(reviewMessage);
+                    oldAnnotation.newMessage(reviewMessage);
+                }
                 phenotypeAnnotationRepository.save(oldAnnotation);
                 updateUserActivity(owner, user, CurationAction.REVIEW, oldAnnotation, null);
             }else {
@@ -245,6 +253,11 @@ public class AnnotationService {
                 // Review, check that the authentication is a valid user and that they are an elevated curator
                 if(user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)){
                     oldAnnotation.setStatus(reviewToStatus(review));
+                    if(review.equals("deny")){
+                        Message reviewMessage = new Message(treatmentRequest.getMessage(), oldAnnotation);
+                        messageRepository.save(reviewMessage);
+                        oldAnnotation.newMessage(reviewMessage);
+                    }
                     treatmentAnnotationRepository.save(oldAnnotation);
                     updateUserActivity(owner, user, CurationAction.REVIEW, oldAnnotation, null);
                 }else {

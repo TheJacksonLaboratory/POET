@@ -1,0 +1,8 @@
+<h4 mat-dialog-title>{{title}}</h4>
+<mat-dialog-content class="mat-typography">
+  <textarea *ngIf="!approve" matInput placeholder="Leave a comment if denying..." [(ngModel)]="message"></textarea>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close (click)="closeDialog('yes')">Yes</button>
+  <button mat-button mat-dialog-close (click)="closeDialog('no')">No</button>
+</mat-dialog-actions>

@@ -16,7 +16,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageEvent } from "@angular/material/paginator";
 import { MatBottomSheet } from "@angular/material/bottom-sheet";
-import { DeleteSheetComponent } from "./delete-sheet/delete-sheet.component";
+import { ConfirmSheetComponent } from "./confirm-sheet/confirm-sheet.component";
 
 @Component({
   selector: 'poet-annotation-card',
@@ -143,7 +143,7 @@ export class AnnotationCardComponent implements OnInit {
   annotationAction(annotation: any, action: any) {
     if (action == 'delete') {
       if(this.category == 'treatment'){
-        this._bottomSheet.open(DeleteSheetComponent, {
+        this._bottomSheet.open(ConfirmSheetComponent, {
           restoreFocus: false,
           disableClose: true
         }).afterDismissed().subscribe(shouldDelete => {
@@ -160,7 +160,7 @@ export class AnnotationCardComponent implements OnInit {
         }
         });
       } else {
-        this._bottomSheet.open(DeleteSheetComponent, {
+        this._bottomSheet.open(ConfirmSheetComponent, {
           restoreFocus: false,
           disableClose: true
         }).afterDismissed().subscribe(shouldDelete => {

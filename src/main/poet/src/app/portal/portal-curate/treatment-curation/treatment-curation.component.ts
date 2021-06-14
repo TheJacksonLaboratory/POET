@@ -10,6 +10,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { DialogSourceComponent } from "../dialog-source/dialog-source.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MonarchService } from "../../../shared/services/external/monarch.service";
+import { DialogReviewComponent } from "../dialog-review/dialog-review.component";
 
 @Component({
   selector: 'poet-treatment-curation',
@@ -140,6 +141,7 @@ export class TreatmentCurationComponent implements OnInit {
       comment: this.formControlGroup.get('commentFormControl').value,
       extensionId: this.formControlGroup.get('extensionFormControl').value ? this.formControlGroup.get('extensionFormControl').value.id : null,
       extensionLabel: this.formControlGroup.get('extensionFormControl').value ? this.formControlGroup.get('extensionFormControl').value.label[0] : null,
+      message: ""
     }
   }
 
@@ -216,6 +218,7 @@ export class TreatmentCurationComponent implements OnInit {
 
   resetTreatmentForm() {
     this.formControlGroup.reset();
+    this.formControlGroup.get('evidenceFormControl').setValue('TAS');
   }
 
   displayMaxoFn(option) {
@@ -260,18 +263,39 @@ export class TreatmentCurationComponent implements OnInit {
   reviewAnnotation(action: string){
     if(action === 'approve'){
       // approve the annotation
-      const treatmentAnnotation = this.getFormTreatmentAnnotation();
-      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', '').subscribe(() => {
-        this.onTreatmentApprove('Phenotype Annotation Approved!');
-      }, (err) => {
-        this.onErrorTreatmentSave();
-      });
+      this.dialog.open(DialogReviewComponent, {
+        minWidth: 300,
+        data: {
+          title: "Are you sure you want to approve this annotation?",
+          approve: true
+        }
+      }).afterClosed().subscribe((data) => {
+        if(data.confirmed){
+          const treatmentAnnotation = this.getFormTreatmentAnnotation();
+          this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', 'approve').subscribe(() => {
+            this.onTreatmentApprove('Treatment Annotation Approved!');
+          }, (err) => {
+            this.onErrorTreatmentSave();
+          });
+        }
+      })
     } else if(action === 'deny') {
-      const treatmentAnnotation = this.getFormTreatmentAnnotation();
-      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', "deny").subscribe(() => {
-        this.onTreatmentApprove('Treatment Annotation Rejected!')
-      }, (err) => {
-        this.onErrorTreatmentSave();
+      this.dialog.open(DialogReviewComponent, {
+        minWidth: 300,
+        data: {
+          title: "Are you sure you want to deny this annotation?",
+          approve: false
+        }
+      }).afterClosed().subscribe((data) => {
+        if (data.confirmed) {
+          const treatmentAnnotation = this.getFormTreatmentAnnotation();
+          treatmentAnnotation.message = data.message;
+          this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', "deny").subscribe(() => {
+            this.onTreatmentApprove('Treatment Annotation Rejected!')
+          }, (err) => {
+            this.onErrorTreatmentSave();
+          });
+        }
       });
     }
   }

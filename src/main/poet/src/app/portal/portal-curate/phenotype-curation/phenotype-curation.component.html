@@ -83,8 +83,7 @@
           </mat-chip-list>
           <mat-autocomplete #modifier="matAutocomplete" (optionSelected)="selected($event)">
             <mat-option *ngFor="let modifier of modifierOptions" [value]="modifier.ontologyId">
-              <span class="option-name">{{modifier.name}}</span>
-              &nbsp;
+              <span class="option-name">{{modifier.name}}</span>&nbsp;
               <span class="option-id">{{modifier.ontologyId}}</span>
             </mat-option>
           </mat-autocomplete>
@@ -95,8 +94,7 @@
           <mat-label>HPO Age Of Onset</mat-label>
           <mat-select formControlName="onsetFormControl">
             <mat-option *ngFor="let option of onsetOptions | async" [value]="option">
-              <span class="option-name">{{option.name}}</span>
-              &nbsp;
+              <span class="option-name">{{option.name}}</span>&nbsp;
               <span class="option-id">{{option.ontologyId}}</span>
             </mat-option>
           </mat-select>
@@ -116,8 +114,7 @@
           <mat-autocomplete #frequency="matAutocomplete" (optionSelected)="selectedFrequency = $event.option.value"
                             [displayWith]="displayIdFn">
             <mat-option class="auto-complete-option" *ngFor="let option of frequencyOptions" [value]="option">
-              <span class="option-name">{{option.name}}</span>
-              &nbsp;
+              <span class="option-name">{{option.name}}</span>&nbsp;
               <span class="option-id">{{option.ontologyId}}</span>
             </mat-option>
           </mat-autocomplete>

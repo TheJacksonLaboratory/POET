@@ -12,12 +12,13 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { DialogSourceComponent } from './portal-curate/dialog-source/dialog-source.component';
 import { HttpClientModule } from "@angular/common/http";
 import { AnnotationCardComponent } from './portal-curate/annotation-card/annotation-card.component';
-import { DeleteSheetComponent } from "./portal-curate/annotation-card/delete-sheet/delete-sheet.component";
+import { ConfirmSheetComponent } from "./portal-curate/annotation-card/confirm-sheet/confirm-sheet.component";
+import { DialogReviewComponent } from './portal-curate/dialog-review/dialog-review.component';
 
 
 @NgModule({
   declarations: [PortalDashboardComponent, PortalCurateComponent, PortalComponent, TreatmentCurationComponent,
-    PhenotypeCurationComponent, DialogSourceComponent, AnnotationCardComponent, DeleteSheetComponent],
+    PhenotypeCurationComponent, DialogSourceComponent, AnnotationCardComponent, ConfirmSheetComponent, DialogReviewComponent],
   imports: [
     CommonModule,
     SharedModule,

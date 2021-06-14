@@ -9,6 +9,7 @@ import org.monarchinitiative.poet.views.UserActivityViews;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -32,6 +33,10 @@ public class Annotation {
 
     @Column(name="annotation_type", insertable = false, updatable = false)
     protected String annotationType;
+
+    @OneToMany
+    @JsonView(AnnotationViews.Simple.class)
+    private List<Message> reviewMessages;
 
     @Transient
     @JsonInclude()
@@ -93,6 +98,9 @@ public class Annotation {
         this.lastUpdatedDate = lastUpdatedDate;
     }
 
+    public void newMessage(Message message){
+        this.reviewMessages.add(message);
+    }
 
     @Override
     public boolean equals(Object o) {
