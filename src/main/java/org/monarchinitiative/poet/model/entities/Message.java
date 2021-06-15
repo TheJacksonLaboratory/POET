@@ -27,8 +27,13 @@ public class Message {
     }
 
     public Message(String value, User reviewer, Annotation annotation) {
-        this.annotation = annotation;
         this.value = value;
+        this.annotation = annotation;
+        this.reviewer = reviewer;
+    }
+
+    public User getReviewer() {
+        return reviewer;
     }
 
     public String getValue() {

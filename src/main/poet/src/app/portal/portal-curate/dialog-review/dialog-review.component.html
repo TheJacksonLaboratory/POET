@@ -1,5 +1,7 @@
 <h4 mat-dialog-title>{{title}}</h4>
-<mat-dialog-content class="mat-typography">
+<mat-dialog-content class="mat-typography"  cdkDrag
+                    cdkDragRootElement=".cdk-overlay-pane"
+                    cdkDragHandle>
   <textarea rows="8" *ngIf="!approve" matInput placeholder="Why are you denying this annotation?" [formControl]="denyMessageControl"></textarea>
 </mat-dialog-content>
 <mat-dialog-actions *ngIf="this.denyMessageControl.valid">

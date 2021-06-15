@@ -4,7 +4,6 @@ import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { transition, trigger, useAnimation } from "@angular/animations";
 import { fadeIn } from "ng-animate";
 import { CurationService } from "../../shared/services/curation/curation.service";
-import { MatDialog } from "@angular/material/dialog";
 import { environment } from "../../../environments/environment";
 
 @Component({
@@ -28,7 +27,7 @@ export class PortalDashboardComponent implements OnInit {
   highValue: number = 5;
   reviews: any;
 
-  constructor(public authService: AuthService, public curationService: CurationService, public dialog: MatDialog) {
+  constructor(public authService: AuthService, public curationService: CurationService) {
   }
 
   ngOnInit(): void {

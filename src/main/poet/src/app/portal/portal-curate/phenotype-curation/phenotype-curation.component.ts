@@ -3,7 +3,7 @@ import { HpoService } from "../../../shared/services/external/hpo.service";
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { AnchorSearchResult, HpoTerm } from "../../../shared/models/search-models";
-import { AnnotationSource, PhenotypeAnnotation, Publication } from "../../../shared/models/models";
+import { Annotation, AnnotationSource, PhenotypeAnnotation, Publication } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { StateService } from "../../../shared/services/state/state.service";
 import { MatDialog } from "@angular/material/dialog";
@@ -13,6 +13,8 @@ import { COMMA, ENTER } from "@angular/cdk/keycodes";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { Observable } from "rxjs";
 import { DialogReviewComponent } from "../dialog-review/dialog-review.component";
+import { UtilityService } from "../../../shared/services/utility.service";
+import { UserService } from "../../../shared/services/user/user.service";
 
 @Component({
   selector: 'poet-phenotype-curation',
@@ -26,7 +28,7 @@ export class PhenotypeCurationComponent implements OnInit {
   @Output('onAnnotationSuccess') onAnnotationSuccess: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output('handleForm') handleFormEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   @ViewChild('modifierInput') modifierInput: ElementRef<HTMLInputElement>;
-  selectedAnnotation: any;
+  selectedAnnotation: PhenotypeAnnotation;
   updating: boolean;
   selectedHpo: HpoTerm;
   hpoOptions: HpoTerm[];
@@ -55,6 +57,8 @@ export class PhenotypeCurationComponent implements OnInit {
   constructor(public hpoService: HpoService,
               public curationService: CurationService,
               public stateService: StateService,
+              public utilityService: UtilityService,
+              public userService: UserService,
               public dialog: MatDialog,
               private _snackBar: MatSnackBar) {
 
@@ -185,7 +189,6 @@ export class PhenotypeCurationComponent implements OnInit {
   }
 
   onSuccessfulPhenotype(message: string, close: boolean) {
-    this.isUnderReview()
     this.savingAnnotation = false;
     this.stateService.triggerAnnotationReload(true);
     this.stateService.triggerAnnotationCountsReload(true);
@@ -227,18 +230,6 @@ export class PhenotypeCurationComponent implements OnInit {
     this.selectedQualifier = false;
     this.selectedModifiers = [];
     this.selectedOnset = [];
-  }
-
-  displayMaxoFn(option) {
-    return option && option.name ? `${option.name} ${option.ontologyId}` : '';
-  }
-
-  displayHpoFn(option) {
-    return option && option.name ? `${option.name} ${option.id}` : '';
-  }
-
-  displayIdFn(option) {
-    return option && option.ontologyId ? `${option.name} ${option.ontologyId}` : '';
   }
 
   removePublication(publication: Publication): void {
@@ -292,18 +283,6 @@ export class PhenotypeCurationComponent implements OnInit {
   closeForm() {
     this.stateService.setSelectedPhenotypeAnnotation(null);
     this.handleFormEmitter.emit(false);
-  }
-
-  isElevatedCurator(): boolean {
-    return this.userRole === 'ELEVATED_CURATOR';
-  }
-
-  isUnderReview(): boolean {
-    if(this.selectedAnnotation){
-      return this.selectedAnnotation.status === "UNDER_REVIEW";
-    } else {
-      return false;
-    }
   }
 
   reviewAnnotation(action: string){

@@ -2,6 +2,7 @@ package org.monarchinitiative.poet.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
+import org.monarchinitiative.poet.views.AnnotationViews;
 import org.monarchinitiative.poet.views.UserActivityViews;
 
 import javax.persistence.*;
@@ -13,7 +14,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @JsonView(UserActivityViews.Simple.class)
+    @JsonView({UserActivityViews.Simple.class, AnnotationViews.Simple.class})
     @Column(unique = true, nullable = false)
     private String nickname;
     @Column(unique = true, nullable = false)

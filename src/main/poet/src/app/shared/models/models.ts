@@ -3,6 +3,7 @@ export interface Annotation {
   type: string;
   status: string;
   annotationSource: AnnotationSource;
+  reviewMessages: Message[];
 }
 
 export interface AnnotationSource {
@@ -65,6 +66,16 @@ export interface HomeIcon {
   name: string;
   dateAdded: string;
   link: string;
+}
+
+export interface Message {
+  reviewer: User;
+  value: string;
+}
+
+export interface User {
+  nickname: string;
+  userRole: string;
 }
 
 export enum Status {

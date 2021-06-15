@@ -11,6 +11,8 @@ import { DialogSourceComponent } from "../dialog-source/dialog-source.component"
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MonarchService } from "../../../shared/services/external/monarch.service";
 import { DialogReviewComponent } from "../dialog-review/dialog-review.component";
+import { UtilityService } from "../../../shared/services/utility.service";
+import { UserService } from "../../../shared/services/user/user.service";
 
 @Component({
   selector: 'poet-treatment-curation',
@@ -47,6 +49,8 @@ export class TreatmentCurationComponent implements OnInit {
               public curationService: CurationService,
               public monarchService: MonarchService,
               public stateService: StateService,
+              public utilityService: UtilityService,
+              public userService: UserService,
               public dialog: MatDialog,
               private _snackBar: MatSnackBar) {
   }
@@ -214,14 +218,6 @@ export class TreatmentCurationComponent implements OnInit {
     this.formControlGroup.get('evidenceFormControl').setValue('TAS');
   }
 
-  displayMaxoFn(option) {
-    return option && option.name ? `${option.name} ${option.ontologyId}` : '';
-  }
-
-  displayHpoFn(option) {
-    return option && option.name ? `${option.name} ${option.id}` : '';
-  }
-
   displayMonarchSearchFn(monarchSearchResult: MonarchSearchResult) {
     if (monarchSearchResult) {
       return monarchSearchResult.label[0];
@@ -233,18 +229,6 @@ export class TreatmentCurationComponent implements OnInit {
 
     if (index >= 0) {
       this.selectedPublications.splice(index, 1);
-    }
-  }
-
-  isElevatedCurator(): boolean {
-    return this.userRole === 'ELEVATED_CURATOR';
-  }
-
-  isUnderReview(): boolean {
-    if(this.selectedAnnotation){
-      return this.selectedAnnotation.status === "UNDER_REVIEW";
-    } else {
-      return false;
     }
   }
 

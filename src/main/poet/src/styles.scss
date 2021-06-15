@@ -438,15 +438,27 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
     }
   }
 
-  & .mode-icon {
+  & .form-icon-left {
     float: left;
 
     &.lock {
       color: indianred;
+      cursor: default;
     }
 
     &.unlock {
       color: lightgreen;
+      cursor: default;
+    }
+
+    &.messages {
+      margin-left: .5rem;
+      color: gold;
+      cursor: pointer;
+      opacity: .6;
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 
@@ -511,7 +523,7 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 }
 
 .mat-option.statusReview .mat-pseudo-checkbox-checked {
-  background: yellow !important;
+  background: gold !important;
 }
 
 .mat-option.statusNeedsWork .mat-pseudo-checkbox-checked {
@@ -523,7 +535,7 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 }
 
 .mat-icon.statusReview {
-  color: yellow !important;
+  color: gold !important;
 }
 
 .mat-icon.statusNeedsWork{

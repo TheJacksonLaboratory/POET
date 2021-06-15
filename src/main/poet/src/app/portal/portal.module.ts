@@ -14,19 +14,22 @@ import { HttpClientModule } from "@angular/common/http";
 import { AnnotationCardComponent } from './portal-curate/annotation-card/annotation-card.component';
 import { ConfirmSheetComponent } from "./portal-curate/annotation-card/confirm-sheet/confirm-sheet.component";
 import { DialogReviewComponent } from './portal-curate/dialog-review/dialog-review.component';
+import { DragDropModule } from "@angular/cdk/drag-drop";
+import { DialogMessagesComponent } from './portal-curate/dialog-messages/dialog-messages.component';
 
 
 @NgModule({
   declarations: [PortalDashboardComponent, PortalCurateComponent, PortalComponent, TreatmentCurationComponent,
-    PhenotypeCurationComponent, DialogSourceComponent, AnnotationCardComponent, ConfirmSheetComponent, DialogReviewComponent],
-  imports: [
-    CommonModule,
-    SharedModule,
-    RouterModule,
-    HttpClientModule,
-    PortalRoutingModule,
-    FlexLayoutModule
-  ],
+    PhenotypeCurationComponent, DialogSourceComponent, AnnotationCardComponent, ConfirmSheetComponent, DialogReviewComponent, DialogMessagesComponent],
+    imports: [
+        CommonModule,
+        SharedModule,
+        RouterModule,
+        HttpClientModule,
+        PortalRoutingModule,
+        FlexLayoutModule,
+        DragDropModule
+    ],
   entryComponents: [DialogSourceComponent]
 })
 export class PortalModule {

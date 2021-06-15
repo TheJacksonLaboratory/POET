@@ -342,7 +342,7 @@ export class CurationService {
           const annotationGrammar = this.annotationGrammar(count);
           const userList = [...new Set(dayMap[daysFromNow][diseaseJoined].map(item => {
             return item.owner.nickname;
-          }))].join(",");
+          }))].join(", ");
           let view;
           if (parseInt(daysFromNow) == 1) {
             view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName} yesterday.`;
