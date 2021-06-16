@@ -4,6 +4,7 @@ export interface Annotation {
   status: string;
   annotationSource: AnnotationSource;
   reviewMessages: Message[];
+  owner: User;
 }
 
 export interface AnnotationSource {
@@ -51,7 +52,6 @@ export interface TreatmentAnnotation extends Annotation {
   relation: string;
   extension: string;
   lastUpdatedDate: string;
-  owner: string;
 }
 
 export interface UserActivityResponse {

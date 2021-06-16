@@ -3,7 +3,6 @@ package org.monarchinitiative.poet.controller.annotation;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.exceptions.AnnotationSourceException;
 import org.monarchinitiative.poet.exceptions.AuthenticationException;
-import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
 import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.model.entities.*;
@@ -40,6 +39,17 @@ public class TreatmentController {
     }
 
     /**
+     * The endpoint to retrieve all maxo annotations by a user
+     * @since 0.6.0
+     */
+    @JsonView(AnnotationViews.UserSpecific.class)
+    @GetMapping(value = {"/"})
+    public List<TreatmentAnnotation> getTreatmentAnnotationByUser(Authentication authentication){
+        final User user = userService.getExistingUser(authentication);
+        return this.annotationService.getTreatmentAnnotationByUser(user);
+    }
+
+    /**
      * The endpoint to retrieve a maxo annotation by disease.
      *
      * @param diseaseId a url parameter that is an OMIM disease id
@@ -53,7 +63,7 @@ public class TreatmentController {
     public List<TreatmentAnnotation> getTreatmentAnnotation(@PathVariable("diseaseId")  String diseaseId,
                                                             @RequestParam(defaultValue = "desc date") String sort){
 
-        return this.annotationService.getTreatmentAnnotations(diseaseId, sort);
+        return this.annotationService.getTreatmentAnnotationsByDisease(diseaseId, sort);
     }
 
     /**

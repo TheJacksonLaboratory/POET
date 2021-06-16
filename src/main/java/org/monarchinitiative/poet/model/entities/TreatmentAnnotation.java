@@ -72,9 +72,9 @@ public class TreatmentAnnotation extends Annotation {
     }
 
     public TreatmentAnnotation(TreatmentRequest treatmentRequest, AnnotationSource annotationSource,
-                              AnnotationStatus status){
+                              AnnotationStatus status, User user){
 
-        super(annotationSource, status);
+        super(annotationSource, status, user);
         this.maxoId = treatmentRequest.getMaxoId();
         this.maxoName = treatmentRequest.getMaxoName();
         this.hpoId = treatmentRequest.getHpoId();

@@ -1,10 +1,8 @@
 package org.monarchinitiative.poet.controller.annotation;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import org.monarchinitiative.poet.exceptions.AnnotationSourceException;
 import org.monarchinitiative.poet.exceptions.AuthenticationException;
 import org.monarchinitiative.poet.model.entities.PhenotypeAnnotation;
-import org.monarchinitiative.poet.model.entities.TreatmentAnnotation;
 import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
 import org.monarchinitiative.poet.model.requests.PhenotypeRequest;
@@ -35,8 +33,18 @@ public class PhenotypeController {
 
     /**
      * The endpoint to get phenotype annotations
+     * @return a list of phenotype annotations
+     */
+    @JsonView(AnnotationViews.UserSpecific.class)
+    @GetMapping(value = {"/", "/{diseaseId}/{publicationId}"})
+    public List<PhenotypeAnnotation> getPhenotypeAnnotationByUser(Authentication authentication){
+        final User user = userService.getExistingUser(authentication);
+        return this.annotationService.getPhenotypeAnnotationsByUser(user);
+    }
+
+    /**
+     * The endpoint to get phenotype annotations
      * @param diseaseId the diseaseId for the creation
-     * @param publicationId the publicationId for the creation
      * @param sort the way to sort the response
      * @return a list of phenotype annotations
      */
@@ -45,7 +53,7 @@ public class PhenotypeController {
     public List<PhenotypeAnnotation> getPhenotypeAnnotation(@PathVariable("diseaseId")  String diseaseId,
                                                             @RequestParam(defaultValue = "desc date") String sort){
 
-       return this.annotationService.getPhenotypeAnnotations(diseaseId, sort);
+       return this.annotationService.getPhenotypeAnnotationsByDisease(diseaseId, sort);
     }
 
     /**

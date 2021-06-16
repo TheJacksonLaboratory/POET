@@ -51,6 +51,8 @@ export class PortalDashboardComponent implements OnInit {
     this.curationService.getAnnotationsNeedingReview().subscribe((annotations) => {
       this.reviews = annotations;
     });
+
+    this.curationService.getUserAnnotations().subscribe(()=>{});
   }
 
   graphUserActivity(userActivity: any) {

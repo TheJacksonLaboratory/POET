@@ -24,10 +24,10 @@ public class Annotation {
     private long id;
 
     @ManyToOne
-    @JsonView({AnnotationViews.Simple.class, UserActivityViews.Simple.class})
+    @JsonView({AnnotationViews.Simple.class, UserActivityViews.Simple.class, AnnotationViews.UserSpecific.class})
     private AnnotationSource annotationSource;
 
-    @JsonView({AnnotationViews.Simple.class})
+    @JsonView({AnnotationViews.Simple.class, AnnotationViews.UserSpecific.class})
     @Enumerated(EnumType.STRING)
     private AnnotationStatus status;
 
@@ -40,19 +40,24 @@ public class Annotation {
 
     @Transient
     @JsonInclude()
-    @JsonView(AnnotationViews.Simple.class)
+    @JsonView({AnnotationViews.Simple.class, AnnotationViews.UserSpecific.class})
     private LocalDateTime lastUpdatedDate;
 
-    @Transient
-    @JsonInclude()
-    @JsonView(AnnotationViews.Simple.class)
-    private String owner;
+    @OneToOne
+    @JsonView({AnnotationViews.Simple.class, AnnotationViews.UserSpecific.class})
+    private User owner;
 
     public Annotation(){}
 
     public Annotation(AnnotationSource annotationSource, AnnotationStatus status) {
         this.annotationSource = annotationSource;
         this.status = status;
+    }
+
+    public Annotation(AnnotationSource annotationSource, AnnotationStatus status, User user) {
+        this.annotationSource = annotationSource;
+        this.status = status;
+        this.owner = user;
     }
 
     public AnnotationSource getAnnotationSource() {
@@ -81,17 +86,12 @@ public class Annotation {
         return id;
     }
 
-
-    public String getOwner() {
+    public User getOwner() {
         return owner;
     }
 
     public List<Message> getReviewMessages() {
         return reviewMessages;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
     }
 
     public LocalDateTime getLastUpdatedDate() {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
-import { Observable } from "rxjs";
+import { forkJoin, Observable } from "rxjs";
 import {
   Disease,
   PhenotypeAnnotation,
@@ -10,7 +10,7 @@ import {
   UserActivityResponse
 } from "../../models/models";
 import { StateService } from "../state/state.service";
-import { map, shareReplay } from "rxjs/operators";
+import { map, shareReplay, tap } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -130,6 +130,16 @@ export class CurationService {
         return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
       }
     }
+  }
+
+  getUserAnnotations(){
+    const phenotypeHttp = this.httpClient.get(environment.POET_API_PHENOTYPES_ANNOTATION);
+    const treatmentHttp = this.httpClient.get(environment.POET_API_TREATMENTS_ANNOTATION);
+    return forkJoin([phenotypeHttp, treatmentHttp]).pipe(
+      tap(result => {
+        const [phenotypes, treatments] = result;
+      }
+    ));
   }
 
   /**

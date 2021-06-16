@@ -1,7 +1,6 @@
 package org.monarchinitiative.poet.controller.annotation
 
 import groovy.json.JsonBuilder
-import org.monarchinitiative.poet.controller.annotation.TreatmentController
 import org.monarchinitiative.poet.model.requests.TreatmentRequest
 import org.monarchinitiative.poet.service.AnnotationService
 import org.spockframework.spring.SpringBean
@@ -37,7 +36,7 @@ class TreatmentControllerSpec extends Specification {
     @Unroll
     def "when we test get treatment annotations"() {
         given:
-        annotationService.getTreatmentAnnotations(_, _, _) >> Collections.emptyList()
+        annotationService.getTreatmentAnnotationsByDisease(_, _, _) >> Collections.emptyList()
 
 
         expect: "an annotation state"

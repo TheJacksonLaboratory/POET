@@ -3,6 +3,7 @@ package org.monarchinitiative.poet.repository;
 import org.monarchinitiative.poet.model.entities.AnnotationSource;
 import org.monarchinitiative.poet.model.entities.Disease;
 import org.monarchinitiative.poet.model.entities.TreatmentAnnotation;
+import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -26,4 +27,6 @@ public interface TreatmentAnnotationRepository extends CrudRepository<TreatmentA
     List<TreatmentAnnotation> findAllByStatus(AnnotationStatus status);
     @Query("select new org.monarchinitiative.poet.model.responses.ReviewCount(a.annotationSource.disease, count(a), 'treatment') from TreatmentAnnotation a where a.status = ?1 group by a.annotationSource.disease")
     List<ReviewCount> getAllByStatus(AnnotationStatus status);
+
+    List<TreatmentAnnotation> findAllByOwnerAndStatusNot(User user, AnnotationStatus retired);
 }

@@ -14,7 +14,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @JsonView({UserActivityViews.Simple.class, AnnotationViews.Simple.class})
+    @JsonView({UserActivityViews.Simple.class, AnnotationViews.Simple.class, AnnotationViews.UserSpecific.class})
     @Column(unique = true, nullable = false)
     private String nickname;
     @Column(unique = true, nullable = false)
