@@ -147,7 +147,7 @@ public class AnnotationService {
                     updateUserActivity(user, null, CurationAction.RESUBMIT, oldAnnotation, null);
                 } else {
                     final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, oldAnnotation.getAnnotationSource(),
-                            oldAnnotation.getStatus());
+                            oldAnnotation.getStatus(), oldAnnotation.getOwner());
 
                     // See if we already have an annotation like this.
                     if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndModifierAndStatusNot(
@@ -300,7 +300,7 @@ public class AnnotationService {
                     } else {
                         // Create the new one with updated values
                         final TreatmentAnnotation annotation = new TreatmentAnnotation(oldAnnotation.getAnnotationSource(),
-                                oldAnnotation.getStatus(), treatmentRequest.getMaxoId(), treatmentRequest.getMaxoName(),
+                                oldAnnotation.getStatus(), oldAnnotation.getOwner(), treatmentRequest.getMaxoId(), treatmentRequest.getMaxoName(),
                                 treatmentRequest.getHpoName(), treatmentRequest.getHpoId(), treatmentRequest.getEvidence(),
                                 treatmentRequest.getComment(), treatmentRequest.getRelation(), treatmentRequest.getExtensionId(), treatmentRequest.getExtensionLabel());
 

@@ -43,10 +43,10 @@ public class TreatmentAnnotation extends Annotation {
 
     public TreatmentAnnotation(){}
 
-    public TreatmentAnnotation(AnnotationSource annotationSource, AnnotationStatus status, String maxoId,
+    public TreatmentAnnotation(AnnotationSource annotationSource, AnnotationStatus status, User owner, String maxoId,
                                String maxoName, String hpoName, String hpoId, String evidence, String comment, String relation,
                                String extensionId, String extensionLabel) {
-        super(annotationSource, status);
+        super(annotationSource, status, owner);
         this.maxoId = maxoId;
         this.maxoName = maxoName;
         this.hpoName = hpoName;
