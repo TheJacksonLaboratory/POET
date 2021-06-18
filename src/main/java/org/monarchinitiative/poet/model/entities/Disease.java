@@ -18,14 +18,16 @@ public class Disease {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class, UserActivityViews.Simple.class})
+    @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class, UserActivityViews.Simple.class,
+            AnnotationViews.UserSpecific.class})
     @Column(nullable = false, unique = true)
     private String diseaseId;
 
     @JsonView({DiseaseViews.Simple.class})
     private String equivalentId;
 
-    @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class, UserActivityViews.Simple.class})
+    @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class, UserActivityViews.Simple.class,
+            AnnotationViews.UserSpecific.class})
     private String diseaseName;
 
     @JsonView({DiseaseViews.Simple.class})

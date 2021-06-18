@@ -1,12 +1,14 @@
 package org.monarchinitiative.poet.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.enumeration.CurationAction;
 import org.monarchinitiative.poet.model.responses.AnnotationCount;
 import org.monarchinitiative.poet.model.responses.Contribution;
 import org.monarchinitiative.poet.model.entities.UserActivity;
 import org.monarchinitiative.poet.model.responses.ReviewCount;
 import org.monarchinitiative.poet.service.StatisticsService;
+import org.monarchinitiative.poet.service.UserService;
 import org.monarchinitiative.poet.views.DiseaseViews;
 import org.monarchinitiative.poet.views.UserActivityViews;
 import org.springframework.security.core.Authentication;
@@ -27,9 +29,11 @@ import java.util.stream.Collectors;
 public class StatisticsController {
 
     private StatisticsService statisticsService;
+    private UserService userService;
 
-    public StatisticsController(StatisticsService statisticsService) {
+    public StatisticsController(StatisticsService statisticsService, UserService userService) {
         this.statisticsService = statisticsService;
+        this.userService = userService;
     }
 
     /**
@@ -80,5 +84,15 @@ public class StatisticsController {
     @GetMapping(value = "/annotation/review")
     public List<ReviewCount> getAnnotationsNeedingReview(){
         return this.statisticsService.summarizeAnnotationNeedReview();
+    }
+
+    /**
+     * The endpoint to get annotation summary statistics by type.
+     * @return
+     */
+    @GetMapping(value = "/annotation/work")
+    public List<ReviewCount> getAnnotationsNeedWorkByUser(Authentication authentication){
+        final User user = userService.getExistingUser(authentication);
+        return this.statisticsService.summarizeAnnotationNeedWork(user);
     }
 }

@@ -13,7 +13,8 @@ import java.util.List;
 
 public interface PhenotypeAnnotationRepository extends CrudRepository<PhenotypeAnnotation, Long> {
     List<PhenotypeAnnotation> findAllByAnnotationSourceDiseaseAndStatusNot(Disease disease, AnnotationStatus status);
-    List<PhenotypeAnnotation> findAllByOwnerAndStatusNot(User owner, AnnotationStatus annotationStatus);
+    List<PhenotypeAnnotation> findAllByOwnerAndStatusNot(User owner, AnnotationStatus status);
+    List<PhenotypeAnnotation> findAllByOwnerAndStatus(User owner, AnnotationStatus status);
     PhenotypeAnnotation findDistinctById(long id);
     boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndModifier(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String modifier);
     boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndModifierAndStatusNot(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String modifier, AnnotationStatus status);
@@ -22,5 +23,7 @@ public interface PhenotypeAnnotationRepository extends CrudRepository<PhenotypeA
     List<PhenotypeAnnotation> findAllByStatus(AnnotationStatus status);
     @Query("select new org.monarchinitiative.poet.model.responses.ReviewCount(a.annotationSource.disease, count(a), 'phenotype') from PhenotypeAnnotation a where a.status = ?1 group by a.annotationSource.disease")
     List<ReviewCount> getAllByStatus(AnnotationStatus status);
+    @Query("select new org.monarchinitiative.poet.model.responses.ReviewCount(a.annotationSource.disease, count(a), 'phenotype') from PhenotypeAnnotation a where a.status = ?1 and a.owner = ?2 group by a.annotationSource.disease")
+    List<ReviewCount> getAllByStatusAndUser(AnnotationStatus status, User user);
 
 }

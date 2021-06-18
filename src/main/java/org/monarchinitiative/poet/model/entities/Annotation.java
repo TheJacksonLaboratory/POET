@@ -20,7 +20,7 @@ public class Annotation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView({AnnotationViews.Simple.class, UserActivityViews.Simple.class})
+    @JsonView({AnnotationViews.Simple.class, UserActivityViews.Simple.class, AnnotationViews.UserSpecific.class})
     private long id;
 
     @ManyToOne

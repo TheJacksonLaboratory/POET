@@ -1,6 +1,7 @@
 package org.monarchinitiative.poet.service;
 
 
+import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.model.responses.AnnotationCount;
 import org.monarchinitiative.poet.model.responses.Contribution;
@@ -102,6 +103,12 @@ public class StatisticsService {
     public List<ReviewCount> summarizeAnnotationNeedReview(){
         List<ReviewCount> phenotypeAnnotations = this.phenotypeAnnotationRepository.getAllByStatus(AnnotationStatus.UNDER_REVIEW);
         List<ReviewCount> treatmentAnnotations = this.treatmentAnnotationRepository.getAllByStatus(AnnotationStatus.UNDER_REVIEW);
+        return Stream.concat(phenotypeAnnotations.stream(), treatmentAnnotations.stream()).collect(Collectors.toList());
+    }
+
+    public List<ReviewCount> summarizeAnnotationNeedWork(User user){
+        List<ReviewCount> phenotypeAnnotations = this.phenotypeAnnotationRepository.getAllByStatusAndUser(AnnotationStatus.NEEDS_WORK, user);
+        List<ReviewCount> treatmentAnnotations = this.treatmentAnnotationRepository.getAllByStatusAndUser(AnnotationStatus.NEEDS_WORK, user);
         return Stream.concat(phenotypeAnnotations.stream(), treatmentAnnotations.stream()).collect(Collectors.toList());
     }
 }

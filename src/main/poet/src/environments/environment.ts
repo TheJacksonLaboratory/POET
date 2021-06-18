@@ -8,6 +8,7 @@ const MONARCH_BASE_URL = 'https://api-dev.monarchinitiative.org/api';
 const PUBMED_BASE_URL = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
 const HPO_BASE_URL = 'https://hpo.jax.org/api/';
 export const environment = {
+  production: false,
   auth: {
     domain: "dev-poet.us.auth0.com",
     clientId: "zAquxh5T1sPsoqBmSd8R7UasuFCcl9LY",
@@ -18,6 +19,7 @@ export const environment = {
       POET_BASE_URL + '/user/check',
       POET_BASE_URL + '/statistics/activity/',
       POET_BASE_URL + '/statistics/contributions/',
+      POET_BASE_URL + '/statistics/annotation/work',
       {
         uri: POET_BASE_URL + '/annotation/*',
         httpMethod: HttpMethod.Get,
@@ -44,7 +46,6 @@ export const environment = {
       },
     ]
   },
-  production: false,
   POET_BASE_URL: POET_BASE_URL,
   POET_API_CHECK_USER_URL: POET_BASE_URL + '/user/check',
   POET_API_SEARCH_URL: POET_BASE_URL + '/search',

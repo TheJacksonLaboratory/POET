@@ -111,7 +111,7 @@ export class AnnotationCardComponent implements OnInit {
         this.annotationAction(null, 'create')
       }
       if(this.category === 'treatment'){
-        this.treatmentAnnotations = this.curationService.getTreatmentAnnotations(this.disease, this.publication, "", false).pipe(
+        this.treatmentAnnotations = this.curationService.getTreatmentAnnotations(this.disease, this.publication, "").pipe(
           tap((annotations => {
           const statuses = annotations.map((annotation) => {
             return annotation.status;
@@ -120,7 +120,7 @@ export class AnnotationCardComponent implements OnInit {
           this.selectedStatuses = this.annotationStatuses;
         })));
       } else if(this.category === 'phenotype'){
-        this.phenotypeAnnotations = this.curationService.getPhenotypeAnnotations(this.disease, this.publication, "", false).pipe(
+        this.phenotypeAnnotations = this.curationService.getPhenotypeAnnotations(this.disease, this.publication, "").pipe(
           tap((annotations => {
             const statuses = annotations.map((annotation) => {
               return annotation.status;

@@ -79,8 +79,9 @@ export interface User {
 }
 
 export enum Status {
-  OFFICIAL,
-  ACCEPTED,
-  UNDER_REVIEW,
-  RETIRED
+  OFFICIAL = "OFFICIAL",
+  ACCEPTED = "ACCEPTED",
+  UNDER_REVIEW = "UNDER_REVIEW",
+  NEEDS_WORK = "NEEDS_WORK",
+  RETIRED = "RETIRED"
 }

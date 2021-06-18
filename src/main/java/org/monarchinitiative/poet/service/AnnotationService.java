@@ -10,7 +10,6 @@ import org.monarchinitiative.poet.model.entities.*;
 import org.monarchinitiative.poet.model.enumeration.CurationAction;
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
 import org.monarchinitiative.poet.repository.*;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -60,8 +59,14 @@ public class AnnotationService {
      * @return a collection of phenotype annotations or an empty list.
      * @since 0.5.0
      */
-    public List<PhenotypeAnnotation> getPhenotypeAnnotationsByUser(User user) throws AnnotationSourceException {
-        return this.phenotypeAnnotationRepository.findAllByOwnerAndStatusNot(user, AnnotationStatus.RETIRED);
+    public List<PhenotypeAnnotation> getPhenotypeAnnotationsByUser(User user, AnnotationStatus status) throws AnnotationSourceException {
+        List<PhenotypeAnnotation> annotations;
+        if(status != null){
+            annotations = this.phenotypeAnnotationRepository.findAllByOwnerAndStatus(user, status);
+        } else {
+            annotations = this.phenotypeAnnotationRepository.findAllByOwnerAndStatusNot(user, AnnotationStatus.RETIRED);
+        }
+        return (List<PhenotypeAnnotation>) getLastUpdatedForAnnotation(annotations);
     }
 
     /**
@@ -77,7 +82,7 @@ public class AnnotationService {
             Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
             if(disease != null) {
                 List<PhenotypeAnnotation> annotations = this.phenotypeAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNot(disease, AnnotationStatus.RETIRED);
-                return (List<PhenotypeAnnotation>) getLastUpdatedAndOwnerForAnnotation(annotations);
+                return (List<PhenotypeAnnotation>) getLastUpdatedForAnnotation(annotations);
             } else {
                 throw new AnnotationSourceException(diseaseId);
             }
@@ -190,8 +195,14 @@ public class AnnotationService {
      * @return a collection of phenotype annotations or an empty list.
      * @since 0.5.0
      */
-    public List<TreatmentAnnotation> getTreatmentAnnotationByUser(User user) throws AnnotationSourceException {
-        return this.treatmentAnnotationRepository.findAllByOwnerAndStatusNot(user, AnnotationStatus.RETIRED);
+    public List<TreatmentAnnotation> getTreatmentAnnotationByUser(User user, AnnotationStatus status) {
+        List<TreatmentAnnotation> annotations;
+        if (status != null){
+            annotations = this.treatmentAnnotationRepository.findAllByOwnerAndStatus(user, status);
+        } else {
+            annotations = this.treatmentAnnotationRepository.findAllByOwnerAndStatusNot(user, AnnotationStatus.RETIRED);
+        }
+        return (List<TreatmentAnnotation>) getLastUpdatedForAnnotation(annotations);
     }
 
     /**
@@ -207,13 +218,13 @@ public class AnnotationService {
         Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
         if(disease != null) {
             List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNot(disease, AnnotationStatus.RETIRED);
-            return (List<TreatmentAnnotation>) getLastUpdatedAndOwnerForAnnotation(annotations);
+            return (List<TreatmentAnnotation>) getLastUpdatedForAnnotation(annotations);
         }
         throw new AnnotationSourceException(diseaseId);
     }
 
 
-    private List<? extends Annotation> getLastUpdatedAndOwnerForAnnotation(List<? extends Annotation> annotations) {
+    private List<? extends Annotation> getLastUpdatedForAnnotation(List<? extends Annotation> annotations) {
         if(annotations.size() > 0){
                 return annotations.stream().peek(annotation -> {
                     UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
@@ -222,19 +233,6 @@ public class AnnotationService {
         } else {
             return Collections.emptyList();
         }
-    }
-
-    /**
-     * Given the complex size of get treatment annotations we are creating this method to get
-     * treatment annotations with only the status under_review
-     * @return reviewable treatment annotations
-     */
-    public List<TreatmentAnnotation> getReviewableTreatmentAnnotations(){
-       return this.treatmentAnnotationRepository.findAllByStatus(AnnotationStatus.UNDER_REVIEW);
-    }
-
-    public List<PhenotypeAnnotation> getReviewablePhenotypeAnnotations(){
-        return this.phenotypeAnnotationRepository.findAllByStatus(AnnotationStatus.UNDER_REVIEW);
     }
 
     /**

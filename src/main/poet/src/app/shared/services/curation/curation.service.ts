@@ -84,25 +84,24 @@ export class CurationService {
    * @param sort
    * @param review
    */
-  getPhenotypeAnnotations(disease: Disease, publication: Publication, sort: string, review: boolean): Observable<PhenotypeAnnotation[]> {
+  getPhenotypeAnnotations(disease: Disease, publication: Publication, sort: string): Observable<PhenotypeAnnotation[]> {
     let params;
-
-    if(review) {
-      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + 'review');
+    if (sort) {
+      params = new HttpParams().set("sort", sort);
+    }
+    if (publication != null) {
+      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
     } else {
-      if (sort) {
-        params = new HttpParams().set("sort", sort);
-      }
-      if (publication != null) {
-        return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
-      } else {
-        return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
-      }
+      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
     }
   }
 
   getAnnotationsNeedingReview(): Observable<any> {
     return this.httpClient.get(environment.POET_API_STATISTICS_ANNOTATION_URL + 'review');
+  }
+
+  getUserAnnotationsNeedingWork(): Observable<any> {
+    return this.httpClient.get(environment.POET_API_STATISTICS_ANNOTATION_URL + 'work');
   }
 
 
@@ -114,32 +113,17 @@ export class CurationService {
    * @param sort
    * @param review
    */
-  getTreatmentAnnotations(disease: Disease, publication: Publication, sort: string, review: boolean): Observable<TreatmentAnnotation[]> {
+  getTreatmentAnnotations(disease: Disease, publication: Publication, sort: string): Observable<TreatmentAnnotation[]> {
     let params;
-
-    if(review){
-      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + 'review');
-    } else {
-      if (sort) {
-        params = new HttpParams().set("sort", sort);
-      }
-
-      if (publication != null) {
-        return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
-      } else {
-        return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
-      }
+    if (sort) {
+      params = new HttpParams().set("sort", sort);
     }
-  }
 
-  getUserAnnotations(){
-    const phenotypeHttp = this.httpClient.get(environment.POET_API_PHENOTYPES_ANNOTATION);
-    const treatmentHttp = this.httpClient.get(environment.POET_API_TREATMENTS_ANNOTATION);
-    return forkJoin([phenotypeHttp, treatmentHttp]).pipe(
-      tap(result => {
-        const [phenotypes, treatments] = result;
-      }
-    ));
+    if (publication != null) {
+      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
+    } else {
+      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
+    }
   }
 
   /**

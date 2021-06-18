@@ -3,6 +3,7 @@ package org.monarchinitiative.poet.controller.annotation;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.exceptions.AnnotationSourceException;
 import org.monarchinitiative.poet.exceptions.AuthenticationException;
+import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
 import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.model.entities.*;
@@ -39,17 +40,6 @@ public class TreatmentController {
     }
 
     /**
-     * The endpoint to retrieve all maxo annotations by a user
-     * @since 0.6.0
-     */
-    @JsonView(AnnotationViews.UserSpecific.class)
-    @GetMapping(value = {"/"})
-    public List<TreatmentAnnotation> getTreatmentAnnotationByUser(Authentication authentication){
-        final User user = userService.getExistingUser(authentication);
-        return this.annotationService.getTreatmentAnnotationByUser(user);
-    }
-
-    /**
      * The endpoint to retrieve a maxo annotation by disease.
      *
      * @param diseaseId a url parameter that is an OMIM disease id
@@ -64,28 +54,6 @@ public class TreatmentController {
                                                             @RequestParam(defaultValue = "desc date") String sort){
 
         return this.annotationService.getTreatmentAnnotationsByDisease(diseaseId, sort);
-    }
-
-    /**
-     * The endpoint to retrieve treatment annotations that need review.
-     *
-     * @throws AuthenticationException if the user is not an elevated user.
-     * @since 0.6.0
-     */
-    @JsonView(AnnotationViews.Simple.class)
-    @GetMapping(value = {"/review"})
-    public List<TreatmentAnnotation> getReviewableTreatmentAnnotations(Authentication authentication){
-        final User user = userService.getExistingUser(authentication);
-        if(user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)){
-            final List<TreatmentAnnotation> annotations = this.annotationService.getReviewableTreatmentAnnotations();
-            if(annotations != null){
-                return annotations;
-            } else {
-                return Collections.emptyList();
-            }
-        } else {
-            throw new AuthenticationException(user.getNickname());
-        }
     }
 
     /**
