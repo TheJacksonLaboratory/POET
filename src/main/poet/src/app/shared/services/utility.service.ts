@@ -30,10 +30,6 @@ export class UtilityService {
     return option && option.name ? `${option.name} ${option.id}` : '';
   }
 
-  displayIdFn(option) {
-    return option && option.ontologyId ? `${option.name} ${option.ontologyId}` : '';
-  }
-
   openMessagesDialog(messages: Message[]){
     this.dialog.open(DialogMessagesComponent, {
       data: {

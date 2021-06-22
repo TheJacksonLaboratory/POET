@@ -11,7 +11,6 @@ export interface AnnotationSource {
   id?: number;
   publication: Publication;
   disease: Disease;
-  ontology?: string;
 }
 
 export interface Publication {

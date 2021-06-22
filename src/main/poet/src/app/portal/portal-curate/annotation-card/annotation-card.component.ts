@@ -189,11 +189,11 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   isUser(): boolean  {
-    return this.user.role != 'GUEST';
+    return this.user?.role != 'GUEST';
   }
 
   isElevatedCurator(): boolean  {
-    return this.user.role === 'ELEVATED_CURATOR';
+    return this.user?.role === 'ELEVATED_CURATOR';
   }
 
   isUnderReview(status: string): boolean {
@@ -201,7 +201,7 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   ownsAnnotation(annotationUser){
-    return this.user.nickname === annotationUser;
+    return this.user?.nickname === annotationUser;
   }
 
   getPaginatorData(event: PageEvent): PageEvent {

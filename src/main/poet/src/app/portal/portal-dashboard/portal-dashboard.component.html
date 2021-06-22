@@ -25,7 +25,7 @@
                                showFirstLastButtons="false">
                 </mat-paginator>
               </mat-tab>
-              <mat-tab label="Reviews" *ngIf="isElevatedCurator() && reviews?.length > 0">
+              <mat-tab label="Reviews" *ngIf="userService.isElevatedCurator(userRole) && reviews?.length > 0">
                 <mat-list *ngFor="let review of reviews">
                   <mat-list-item class="activity-item">
                     <h4>{{review.count}} {{review.type}} annotations ready to be reviewed for {{review.diseaseName}}.</h4>

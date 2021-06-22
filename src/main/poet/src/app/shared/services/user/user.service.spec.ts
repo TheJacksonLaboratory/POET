@@ -16,4 +16,11 @@ describe('UserService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should test elevated curator', () => {
+    expect(service.isElevatedCurator("ELEVATED_CURATOR")).toBeTrue();
+    expect(service.isElevatedCurator("CURATOR")).toBeFalse();
+    expect(service.isElevatedCurator("")).toBeFalse();
+    expect(service.isElevatedCurator(null)).toBeFalse();
+  })
 });

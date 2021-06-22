@@ -6,6 +6,7 @@ import { fadeIn } from "ng-animate";
 import { CurationService } from "../../shared/services/curation/curation.service";
 import { environment } from "../../../environments/environment";
 import { Status } from "../../shared/models/models";
+import { UserService } from "../../shared/services/user/user.service";
 
 @Component({
   selector: 'app-portal-home',
@@ -29,7 +30,7 @@ export class PortalDashboardComponent implements OnInit {
   reviews: any;
   userAnnotations: any;
 
-  constructor(public authService: AuthService, public curationService: CurationService) {
+  constructor(public authService: AuthService, public curationService: CurationService, public userService: UserService) {
   }
 
   ngOnInit(): void {
@@ -88,9 +89,5 @@ export class PortalDashboardComponent implements OnInit {
 
   noContributions(){
     return this.pieData?.length == 0;
-  }
-
-  isElevatedCurator(){
-    return this.userRole == "ELEVATED_CURATOR";
   }
 }

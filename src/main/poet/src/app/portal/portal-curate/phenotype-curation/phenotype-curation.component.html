@@ -117,7 +117,7 @@
             Looks like there was an error with the HPO API.
           </mat-error>
           <mat-autocomplete #frequency="matAutocomplete" (optionSelected)="selectedFrequency = $event.option.value"
-                            [displayWith]="utilityService.displayIdFn">
+                            [displayWith]="utilityService.displayMaxoFn">
             <mat-option class="auto-complete-option" *ngFor="let option of frequencyOptions" [value]="option">
               <span class="option-name">{{option.name}}</span>&nbsp;
               <span class="option-id">{{option.ontologyId}}</span>
