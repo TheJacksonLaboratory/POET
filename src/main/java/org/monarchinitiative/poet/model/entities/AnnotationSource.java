@@ -29,6 +29,10 @@ public class AnnotationSource {
         this.disease = disease;
     }
 
+    public boolean isDiseaseDatabaseSource(){
+        return publication == null;
+    }
+
     public Publication getPublication() {
         return publication;
     }

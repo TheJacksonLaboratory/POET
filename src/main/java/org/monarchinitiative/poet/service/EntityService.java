@@ -125,29 +125,57 @@ public class EntityService {
     }
 
     /**
+     * A function to get an annotation source object.
+     *
+     * @param publicationId a PubMed id
+     * @param diseaseId a OMIM disease id
+     *
+     * @return an annotation source object  or null
+     * @since 0.5.0
+     */
+    public AnnotationSource getAnnotationSource(String publicationId, String diseaseId){
+        final Publication publication = publicationRepository.findByPublicationId(publicationId);
+        final Disease disease = diseaseRepository.findDiseaseByDiseaseId(diseaseId);
+        if(disease != null) {
+            return annotationSourceRepository.findByPublicationAndDisease(publication, disease);
+        }
+        return null;
+    }
+
+    /**
      * A function to save a publication annotation to a disease.
      *
      * @param request a publication request to save to a disease
-     * @param authentication a spring authentication object
      */
-    public void savePublicationToDisease(PublicationRequest request, Authentication authentication){
+    public AnnotationSource createAnnotationSource(PublicationRequest request){
         Publication publication = this.publicationRepository.findByPublicationId(request.getPublication().getPublicationId());
         Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(request.getDisease().getDiseaseId());
-        User user = userRepository.findDistinctByAuthId(authentication.getName());
         if(publication == null){
             publication = new Publication(request.getPublication());
             this.publicationRepository.save(publication);
         }
 
         if(disease != null){
-            if(user != null){
-                this.annotationSourceRepository.save(new AnnotationSource(publication, disease));
-            } else {
-                throw new AuthenticationException(authentication.getName());
-            }
+            return this.annotationSourceRepository.save(new AnnotationSource(publication, disease));
         } else {
             throw new DiseaseNotFoundException(request.getDisease().getDiseaseId());
         }
+    }
 
+    /**
+     * A function to create a disease identifier source. ( an annotation source without a publication
+     * we assume the source is the disease itself, either orphanet or omim )
+     *
+     * @param disease - the disease object to see if it has a self source.
+     *
+     * @return an annotation source
+     */
+    public AnnotationSource createOrGetDiseaseDatabaseSource(Disease disease){
+        final AnnotationSource source = this.annotationSourceRepository.findByPublicationAndDisease(null, disease);
+        if(source == null){
+            return this.annotationSourceRepository.save(new AnnotationSource(null, disease));
+        } else {
+            return source;
+        }
     }
 }

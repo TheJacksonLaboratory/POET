@@ -36,13 +36,14 @@ public class AnnotationService {
     private UserActivityRepository userActivityRespository;
     private PhenotypeAnnotationRepository phenotypeAnnotationRepository;
     private MessageRepository messageRepository;
+    private EntityService entityService;
 
     public AnnotationService(PublicationRepository publicationRepository,
                              DiseaseRepository diseaseRepository, AnnotationSourceRepository annotationSourceRepository,
                              TreatmentAnnotationRepository treatmentAnnotationRepository,
                              UserActivityRepository userActivityRepository,
                              PhenotypeAnnotationRepository phenotypeAnnotationRepository,
-                             MessageRepository messageRepository) {
+                             MessageRepository messageRepository, EntityService entityService) {
         this.publicationRepository = publicationRepository;
         this.diseaseRepository = diseaseRepository;
         this.annotationSourceRepository = annotationSourceRepository;
@@ -50,6 +51,7 @@ public class AnnotationService {
         this.userActivityRespository = userActivityRepository;
         this.phenotypeAnnotationRepository = phenotypeAnnotationRepository;
         this.messageRepository = messageRepository;
+        this.entityService = entityService;
     }
 
     /**
@@ -97,7 +99,7 @@ public class AnnotationService {
      */
     @Transactional()
     public void createPhenotypeAnnotation(PhenotypeRequest phenotypeRequest, User user) throws DuplicateAnnotationException {
-        final AnnotationSource annotationSource = getAnnotationSource(phenotypeRequest.getPublicationId(), phenotypeRequest.getDiseaseId());
+        final AnnotationSource annotationSource = entityService.getAnnotationSource(phenotypeRequest.getPublicationId(), phenotypeRequest.getDiseaseId());
         if(annotationSource != null){
             AnnotationStatus status = user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR) ? AnnotationStatus.ACCEPTED : AnnotationStatus.UNDER_REVIEW;
             final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, annotationSource,
@@ -246,7 +248,7 @@ public class AnnotationService {
     @Transactional()
     public void createTreatmentAnnotation(TreatmentRequest treatmentRequest, User user) throws DuplicateAnnotationException {
         // We have a valid publication and a valid disease, do we have an annotation source for them?
-        final AnnotationSource annotationSource = getAnnotationSource(treatmentRequest.getPublicationId(), treatmentRequest.getDiseaseId());
+        final AnnotationSource annotationSource = entityService.getAnnotationSource(treatmentRequest.getPublicationId(), treatmentRequest.getDiseaseId());
         if(annotationSource != null){
             AnnotationStatus status = user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR) ? AnnotationStatus.ACCEPTED : AnnotationStatus.UNDER_REVIEW;
             final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, annotationSource, status, user);
@@ -342,24 +344,6 @@ public class AnnotationService {
             }
         }
         return false;
-    }
-
-    /**
-     * A function to get an annotation source object.
-     *
-     * @param publicationId a PubMed id
-     * @param diseaseId a OMIM disease id
-     *
-     * @return an annotation source object  or null
-     * @since 0.5.0
-     */
-    private AnnotationSource getAnnotationSource(String publicationId, String diseaseId){
-        final Publication publication = publicationRepository.findByPublicationId(publicationId);
-        final Disease disease = diseaseRepository.findDiseaseByDiseaseId(diseaseId);
-        if(disease !=null && publication != null) {
-            return annotationSourceRepository.findByPublicationAndDisease(publication, disease);
-        }
-        return null;
     }
 
     /**

@@ -58,7 +58,7 @@ public class UserService {
      * @param authentication a spring authentication object
      * @return the created or fetched user object
      */
-    public User getExistingUser(Authentication authentication){
+    public User getExistingUser(Authentication authentication) throws AuthenticationException{
         final User user = getUserFromAuthentication(authentication);
         User existing = userRepository.findDistinctByAuthId(user.getAuthId());
         if(existing != null){
@@ -68,6 +68,19 @@ public class UserService {
             return user;
         }
     }
+
+    /***
+     * Create the user for phenotype.hpoa file load.
+     * Phenol currently does not carry biocurator information from the
+     * HpoAnnotation objects.
+     *
+     * This functions should only be run once before the switch to POET.
+     */
+    public User getHumanPhenotypeOntologyUser(){
+        final User user = new User("auth:00000", "hpoteam", "dr.sebastian.koehler@gmail.com", "00000", CurationRole.ELEVATED_CURATOR);
+        return userRepository.save(user);
+    }
+
 
     /**
      * A functon to transform an authentication object to a user entity
