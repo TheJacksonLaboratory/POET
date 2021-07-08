@@ -74,7 +74,7 @@ public class InitDatabaseService {
             } catch (IOException | PhenolException e) {
                 throw new PhenolException(String.format("Could not read annotation file: %s", e.getMessage()));
             }
-            // For each entry we load?
+
             diseaseAnnotationMap.entrySet().forEach(entry -> {
                 Optional<String> diseaseNameOptional = entry.getValue().stream().map(
                         line -> line.getDbObjectName().replaceAll("\\d{6}|^#\\d{6}|^\\d{6}|^\\+\\d{6}", "").trim().split(";")[0]).min(Comparator.comparingInt(String::length));
@@ -86,10 +86,8 @@ public class InitDatabaseService {
                         disease = new Disease(diseaseId.toString(), diseaseName);
                         entityService.saveNewDisease(disease);
                     } else {
-                        System.out.println("IGNORED: " + entry.getKey().toString());
                         return;
                     }
-
                 } else {
                     return;
                 }
@@ -105,14 +103,22 @@ public class InitDatabaseService {
                     Optional<String> isbnCitation = publications.stream().filter(citation -> citation.contains("ISBN")).findFirst();
                     if(publicationCitation.isPresent()){
                         // Phenotype has PMID create source if not exist
-                        Publication publication = new Publication(publicationCitation.get(), "", "", "");
-                        annotationSource = entityService.getAnnotationSource(publication.getPublicationId(), disease.getDiseaseId());
+                        Publication publication = null;
+                        annotationSource = entityService.getAnnotationSource(publicationCitation.get(), disease.getDiseaseId());
                         if(annotationSource == null){
+                            try {
+                                publication = this.getPublication(publicationCitation.get());
+                            } catch (IOException e) {
+                                publication = new Publication(publicationCitation.get(), "", "","");
+                            }
                             annotationSource = entityService.createAnnotationSource(new PublicationRequest(publication, disease));
                         }
                     } else if(diseaseCitation.isPresent()){
-                        // Create the disease identifier source.
-                        annotationSource = entityService.createOrGetDiseaseDatabaseSource(disease);
+                        annotationSource = entityService.getAnnotationSource(disease.getDiseaseId(), disease.getDiseaseId());
+                        if(annotationSource == null){
+                            Publication publication = new Publication(diseaseId, "https://www.omim.org/", "", "");
+                            annotationSource = entityService.createAnnotationSource(new PublicationRequest(publication, disease));
+                        }
                     } else if(isbnCitation.isPresent() || publications.size() == 1){
                         final String publicationId = isbnCitation.orElseGet(() -> publications.get(0));
                         Publication publication = new Publication(publicationId, "", "", "");
@@ -120,21 +126,14 @@ public class InitDatabaseService {
                         if(annotationSource == null){
                             annotationSource = entityService.createAnnotationSource(new PublicationRequest(publication, disease));
                         }
+                    } else {
+                        System.out.println(diseaseId);
                     }
-
-                    String publicationId = null;
-                    String publicationName = null;
-
-                    if(annotationSource.getPublication() != null){
-                        publicationId = annotationSource.getPublication().getPublicationId();
-                        publicationName = annotationSource.getPublication().getPublicationName();
-                    }
-
 
                     PhenotypeRequest request = new PhenotypeRequest(null, term.getName(), term.getId().toString(),
                             phenotype.getEvidence(), "", phenotype.getOnsetId(),
-                            publicationId,
-                            publicationName,
+                            annotationSource.getPublication().getPublicationId(),
+                    annotationSource.getPublication().getPublicationName(),
                             annotationSource.getDisease().getDiseaseId(),
                             annotationSource.getDisease().getDiseaseName(),
                             phenotype.getModifierList(),
@@ -150,19 +149,17 @@ public class InitDatabaseService {
         }
     }
 
-   /** private Map getMostRecentDiseaseName(String diseaseId) throws IOException {
-        final String urlString = "https://api.monarchinitiative.org/api/search/entity/autocomplete/" + diseaseId +"?" +
-                "category=disease&include_eqs=false&rows=1&start=0&exclude_groups=false&minimal_tokenizer=false";
+   private Publication getPublication(String publicationId) throws IOException {
+        publicationId = publicationId.replace("PMID:", "");
+        final String urlString = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi" + "?db=pubmed&retmode=json&id=" + publicationId;
         URL url = new URL(urlString);
         // Convert to a JSON object to print data
         ObjectMapper mapper = new ObjectMapper();
         Map map = mapper.readValue(url, Map.class);
-        List<LinkedHashMap> docs = (List<LinkedHashMap>) map.get("docs");
-        if(docs.size() > 0){
-            return docs.get(0).get("")
-        }
-
-        return map;
-    }**/
+        Map result = (Map) map.get("result");
+        Map publication = (Map) result.get(publicationId);
+        return new Publication("PMID:" + publicationId, (String) publication.get("title"),
+                (String) publication.get("pubdate"), (String) publication.get("sortfirstauthor"));
+    }
 }
 

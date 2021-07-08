@@ -27,6 +27,7 @@ public class Publication {
     @Column(unique = true) private String publicationId;
 
     @JsonView({PublicationViews.Simple.class, AnnotationViews.Simple.class})
+    @Column(columnDefinition = "TEXT")
     private String publicationName;
 
     @OneToMany(mappedBy = "publication")

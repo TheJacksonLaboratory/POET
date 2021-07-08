@@ -151,10 +151,15 @@ public class EntityService {
      * @since 0.5.0
      */
     public AnnotationSource getAnnotationSource(String publicationId, String diseaseId){
-        final Publication publication = publicationRepository.findByPublicationId(publicationId);
-        final Disease disease = diseaseRepository.findDiseaseByDiseaseId(diseaseId);
-        if(disease != null) {
-            return annotationSourceRepository.findByPublicationAndDisease(publication, disease);
+        final Publication publication = this.publicationRepository.findByPublicationId(publicationId);
+        final Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
+        if(disease != null && publication != null) {
+            try{
+                return this.annotationSourceRepository.findByPublicationAndDisease(publication, disease);
+            } catch (Exception ex){
+                return null;
+            }
+
         }
         return null;
     }
@@ -176,23 +181,6 @@ public class EntityService {
             return this.annotationSourceRepository.save(new AnnotationSource(publication, disease));
         } else {
             throw new DiseaseNotFoundException(request.getDisease().getDiseaseId());
-        }
-    }
-
-    /**
-     * A function to create a disease identifier source. ( an annotation source without a publication
-     * we assume the source is the disease itself, either orphanet or omim )
-     *
-     * @param disease - the disease object to see if it has a self source.
-     *
-     * @return an annotation source
-     */
-    public AnnotationSource createOrGetDiseaseDatabaseSource(Disease disease){
-        final AnnotationSource source = this.annotationSourceRepository.findByPublicationAndDisease(null, disease);
-        if(source == null){
-            return this.annotationSourceRepository.save(new AnnotationSource(null, disease));
-        } else {
-            return source;
         }
     }
 }

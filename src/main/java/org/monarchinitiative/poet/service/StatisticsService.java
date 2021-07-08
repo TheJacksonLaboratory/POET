@@ -57,13 +57,13 @@ public class StatisticsService {
             if(weeks == 0){
                 return (List<UserActivity>) this.userActivityRepository.findAll();
             } else {
-                return this.userActivityRepository.findUserActivityByLocalDateTimeAfter(compare);
+                return this.userActivityRepository.findUserActivityByLocalDateTimeAfter(compare).stream().limit(150).collect(Collectors.toList());
             }
         } else {
             if(weeks == 0){
-                return this.userActivityRepository.findUserActivityByOwnerAuthId(authentication.getName());
+                return this.userActivityRepository.findUserActivityByOwnerAuthId(authentication.getName()).stream().limit(150).collect(Collectors.toList());
             } else {
-                return this.userActivityRepository.findUserActivityByLocalDateTimeAfterAndOwnerAuthId(compare, authentication.getName());
+                return this.userActivityRepository.findUserActivityByLocalDateTimeAfterAndOwnerAuthId(compare, authentication.getName()).stream().limit(150).collect(Collectors.toList());
             }
         }
     }
