@@ -74,6 +74,24 @@ public class DiseaseController {
      * @since 0.5.0
      */
     @JsonView(DiseaseViews.Simple.class)
+    @PatchMapping(value = "/", headers = "Accept=application/json")
+    public ResponseEntity<?> updateDisease(@RequestBody DiseaseRequest diseaseRequest){
+        if(!this.entityService.updateDisease(diseaseRequest)){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } else {
+            return ResponseEntity.ok().build();
+        }
+    }
+
+    /**
+     * The endpoint to retrieve a disease annotation by disease id.
+     *
+     * @return a disease object with fields annotated with DiseaseViews in the model.
+     *
+     * @throws DiseaseNotFoundException if a disease could not be found with the given id.
+     * @since 0.5.0
+     */
+    @JsonView(DiseaseViews.Simple.class)
     @PutMapping(value = "/", headers = "Accept=application/json")
     public ResponseEntity<?> newDisease(@RequestBody DiseaseRequest diseaseRequest){
         Disease disease = new Disease(diseaseRequest);

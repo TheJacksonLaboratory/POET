@@ -53,11 +53,6 @@ export class PortalCurateComponent implements OnInit {
           ).subscribe((disease) => {
             this.selectedDisease = disease
             this.stateService.setSelectedDisease(disease);
-            if(!this.selectedDisease.equivalentId){
-              this.annotationItems[0].disabled = true;
-              this.annotationItems[0].reason = "Annotating Phenotypes to a grouped disease node is prohibited."
-              this.stateService.setSelectedCategory("treatment");
-            }
             this.getAnnotationCount();
           }, (error) => {
             this.router.navigate(['/portal/dashboard'], {state: {error: true, message: error.text}});

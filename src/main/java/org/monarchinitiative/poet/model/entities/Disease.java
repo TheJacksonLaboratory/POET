@@ -79,6 +79,14 @@ public class Disease {
         return this.annotationSource.stream().map(AnnotationSource::getPublication).collect(Collectors.toList());
     }
 
+    public void setEquivalentId(String equivalentId) {
+        this.equivalentId = equivalentId;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

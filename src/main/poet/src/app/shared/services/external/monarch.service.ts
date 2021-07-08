@@ -51,8 +51,18 @@ export class MonarchService {
           });
         }
       ), map( responses => {
-          return responses.filter(response => !response.label.includes("obsolete"));
+        return responses.filter(response => {
+          return response.leaf
+        }).sort((a, b) => {
+          if (a.label < b.label) {
+            return -1;
+          } else if (a.label > b.label) {
+            return 1;
+          } else {
+            return 0;
+          }
         })
+      })
     );
   }
 }

@@ -52,6 +52,23 @@ public class EntityService {
         return this.diseaseRepository.findDiseaseByDiseaseId(id);
     }
 
+
+    /**
+     * A function to get a disease from the disease repository implementation
+     *
+     * @param diseaseRequest a disease from the client
+     *
+     * @return a disease or nothing
+     * @since 0.7.0
+     */
+    public boolean updateDisease(DiseaseRequest diseaseRequest){
+        Disease disease = this.getDisease(diseaseRequest.getDiseaseId());
+        disease.setDescription(diseaseRequest.getDescription());
+        disease.setEquivalentId(diseaseRequest.getEquivalentId());
+        this.diseaseRepository.save(disease);
+        return true;
+    }
+
     /**
      * A function to get disease publications from the
      *

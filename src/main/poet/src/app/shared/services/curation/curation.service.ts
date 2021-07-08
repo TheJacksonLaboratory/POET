@@ -39,6 +39,14 @@ export class CurationService {
   }
 
   /***
+   * Update a disease objects description and equivalent identifier.
+   * @param diseaseRequest a monarch disease object
+   */
+  updateDisease(diseaseRequest: any): Observable<any> {
+    return this.httpClient.patch(environment.POET_API_DISEASE_ENTITY_URL, diseaseRequest);
+  }
+
+  /***
    * Get a disease by OMIM id
    * @param diseaseRequest a monarch disease object
    */
@@ -299,7 +307,7 @@ export class CurationService {
                     if (minutesFromNow == 0 || minutesFromNow == 1) {
                       view = `${user} ${actionFriendly} ${count} ${type} ${annotationGrammar} for ${diseaseName} just now.`;
                     } else {
-                      view = `${user} ${actionFriendly} ${count} ${type} ${annotationGrammar} for ${diseaseName} ${minutesFromNow} minutes ago.`;
+                      view = `${user} ${actionFriendly} ${count} ${type} ${annotationGrammar} for ${diseaseName} -  ${minutesFromNow} minutes ago.`;
                     }
                     activities.push({
                       "view": view,
@@ -316,7 +324,7 @@ export class CurationService {
                   if (hoursFromNow == 1) {
                     view = `${user} modified ${count} ${type} ${annotationGrammar} for ${diseaseName} an hour ago.`;
                   } else {
-                    view = `${user} modified ${count} ${type} ${annotationGrammar} for ${diseaseName} ${hoursFromNow} hours ago.`;
+                    view = `${user} modified ${count} ${type} ${annotationGrammar} for ${diseaseName} - ${hoursFromNow} hours ago.`;
                   }
                   activities.push({
                     "view": view,
@@ -341,7 +349,7 @@ export class CurationService {
           if (parseInt(daysFromNow) == 1) {
             view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName} yesterday.`;
           } else {
-            view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName} ${daysFromNow} days ago.`;
+            view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName} - ${daysFromNow} days ago.`;
           }
           activities.push({
             "view": view,

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from "@angular/forms";
-import {debounceTime, filter, finalize, map} from "rxjs/operators";
+import { catchError, debounceTime, filter, finalize, map } from "rxjs/operators";
 import { tap } from "rxjs/internal/operators/tap";
 import { switchMap } from "rxjs/internal/operators/switchMap";
 import { CurationService } from "../services/curation/curation.service";
@@ -10,6 +10,7 @@ import { Router } from "@angular/router";
 import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
 import { MonarchService } from "../services/external/monarch.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { forkJoin } from "rxjs";
 
 @Component({
   selector: 'app-search',
@@ -70,27 +71,44 @@ export class SearchComponent implements OnInit {
   }
 
   onSelection(monarchSearchResult: MonarchSearchResult) {
-    this.curationService.getDisease(monarchSearchResult.id).subscribe( result => {
-      this.router.navigate(['/portal/curate/' + result.diseaseId]);
-      }, error => {
-       if(error.status == 404){
-         this.monarchService.getDisease(monarchSearchResult.id).subscribe((diseaseData: any) => {
-           const diseaseToSave = {
-             description: diseaseData.description,
-             diseaseId: diseaseData.id,
-             diseaseName: diseaseData.label,
-             equivalentId: monarchSearchResult.omim_id
-           };
-           this.curationService.saveDisease(diseaseToSave).subscribe(() => {
-             this.router.navigate(['/portal/curate/' + diseaseToSave.diseaseId]);
-           }, () => {
-             this._snackBar.open('Error Saving New Disease!', 'Close', {
-               duration: 3000,
-               horizontalPosition: "left"
-             });
-           })
-         });
-       }
+    // Get the disease information first
+    const monarchDiseaseHttp = this.monarchService.getDisease(monarchSearchResult.id).pipe(catchError(error => of(error)));
+    const poetDiseaseHttp = this.curationService.getDisease(monarchSearchResult.omim_id).pipe(catchError(error => of(error)));
+
+    forkJoin([monarchDiseaseHttp, poetDiseaseHttp]).subscribe(responseList => {
+      const monarchDiseaseData = responseList[0];
+      const poetResponse = responseList[1];
+      const diseaseToSave = {
+        description: monarchDiseaseData.description,
+        diseaseId: monarchSearchResult.omim_id,
+        diseaseName: monarchDiseaseData.label,
+        equivalentId: monarchSearchResult.id
+      };
+      // isnt an error
+      if(poetResponse){
+        // if response does not include equivalent id or description
+        if(poetResponse.description == null && poetResponse.equivalentId == null){
+          this.curationService.updateDisease(diseaseToSave).subscribe(() => {
+            this.router.navigate(['/portal/curate/' + poetResponse.diseaseId]);
+          }, error =>    this._snackBar.open('Error Silently Updating Disease!', 'Close', {
+            duration: 3000,
+            horizontalPosition: "left"
+          })); // TODO: fix error handling here
+        } else {
+          // Forward to disease page
+          this.router.navigate(['/portal/curate/' + poetResponse.diseaseId]);
+        }
+      } else {
+        // we insert into database
+        this.curationService.saveDisease(diseaseToSave).subscribe(() => {
+          this.router.navigate(['/portal/curate/' + diseaseToSave.diseaseId]);
+        }, () => {
+          this._snackBar.open('Error Saving New Disease!', 'Close', {
+            duration: 3000,
+            horizontalPosition: "left"
+          });
+        });
+      }
     });
   }
 
