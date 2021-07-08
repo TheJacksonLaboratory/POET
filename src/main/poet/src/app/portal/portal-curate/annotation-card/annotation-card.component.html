@@ -42,7 +42,7 @@
     <mat-list #treatment *ngIf="category === 'treatment'">
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': treatment == activeAnnotation}"
-                     *ngFor="let treatment of treatmentAnnotations | async | slice: lowValue : highValue | filter: selectedStatuses:user:showAll | sortBy: selectedSort:category">
+                     *ngFor="let treatment of treatmentAnnotations | async | filter: selectedStatuses:user:showAll | sortBy: selectedSort:category | slice:lowValue:highValue ">
         <mat-icon [class]="{'statusApproved': treatment.status === 'ACCEPTED', 'statusReview': treatment.status === 'UNDER_REVIEW',
                       'statusOfficial': treatment.status === 'OFFICIAL', 'statusNeedsWork': treatment.status === 'NEEDS_WORK'}" matListIcon>health_and_safety</mat-icon>
         <div class="selection-text" *ngIf="formOpen">
@@ -85,7 +85,7 @@
     <mat-list #phenotype *ngIf="category === 'phenotype'" class="phenotype-list">
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': phenotype == activeAnnotation}"
-                     *ngFor="let phenotype of phenotypeAnnotations | async | slice: lowValue : highValue | filter: selectedStatuses:user:showAll | sortBy: selectedSort:category">
+                     *ngFor="let phenotype of phenotypeAnnotations | async | filter: selectedStatuses : user : showAll | sortBy: selectedSort:category | slice:lowValue:highValue ">
         <mat-icon matListIcon [class]="{'statusApproved': phenotype.status === 'ACCEPTED', 'statusReview': phenotype.status === 'UNDER_REVIEW',
                       'statusOfficial': phenotype.status === 'OFFICIAL', 'statusNeedsWork': phenotype.status === 'NEEDS_WORK'}">attribution</mat-icon>
         <div matLine class="selection-text" *ngIf="formOpen">

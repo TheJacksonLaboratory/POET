@@ -12,7 +12,7 @@
           <div fxFlex="90" fxFlexOffset="5">
             <mat-tab-group animationDuration="1ms">
               <mat-tab label="Recent Activity">
-                <mat-list *ngFor="let recent of recentActivity">
+                <mat-list *ngFor="let recent of recentActivity | slice: lowValue : highValue">
                   <mat-list-item [routerLink]="'/curate/' + recent.diseaseId" class="activity-item">
                     <h4>{{recent.view}}</h4>
                     <span class="spacer"></span>

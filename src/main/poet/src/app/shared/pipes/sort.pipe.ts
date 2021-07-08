@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class SortPipe implements PipeTransform {
 
-  transform(items: any[], sortBy: string, category: string): unknown {
+  transform(items: any[], sortBy: string, category: string): any[] {
     if(items){
       if(items.length > 1){
         if(sortBy == 'recent'){

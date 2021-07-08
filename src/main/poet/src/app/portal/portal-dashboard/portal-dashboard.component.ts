@@ -5,7 +5,6 @@ import { transition, trigger, useAnimation } from "@angular/animations";
 import { fadeIn } from "ng-animate";
 import { CurationService } from "../../shared/services/curation/curation.service";
 import { environment } from "../../../environments/environment";
-import { Status } from "../../shared/models/models";
 import { UserService } from "../../shared/services/user/user.service";
 
 @Component({
@@ -40,7 +39,7 @@ export class PortalDashboardComponent implements OnInit {
       this.curationService.getUserAnnotationsNeedingWork().subscribe((annotations)=>{
         this.userAnnotations = annotations;
       });
-      if(this.isElevatedCurator()){
+      if(this.userService.isElevatedCurator(this.userRole)){
         this.curationService.getAnnotationsNeedingReview().subscribe((annotations) => {
           this.reviews = annotations;
         });
