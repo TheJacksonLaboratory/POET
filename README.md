@@ -19,9 +19,9 @@ Requirements
 - Node
 - Npm
 
-In root directory: 
+In root directory provide args where necessary to initialize database: 
 ` 
-./gradlew bootRun
+./gradlew bootRun --args="--initializePoet=true" 
 `
 
 In src/main/poet

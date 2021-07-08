@@ -19,10 +19,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -40,7 +37,8 @@ public class InitDatabaseService {
         this.userService = userService;
     }
 
-    private boolean shouldLoad = true;
+    @Value("${initializePoet}")
+    private boolean shouldLoad;
 
     @Value("classpath:phenotype.hpoa")
     private Resource hpoaResource;
@@ -53,7 +51,7 @@ public class InitDatabaseService {
     public void loadData() throws IOException, PhenolException {
         // if property has load data flag
         if(shouldLoad) {
-            System.out.println("Starting Loading Database!!");
+            System.out.println("Staring POET Initialization.");
             User user = userService.getHumanPhenotypeOntologyUser();
             Ontology ontology = OntologyLoader.loadOntology(new File(oboResource.getURI()));
             Map<TermId, Term> ontologyMap = ontology.getTermMap();
@@ -145,7 +143,9 @@ public class InitDatabaseService {
                     }
                 });
             });
-            System.out.println("Finished Loading Database!!");
+            System.out.println("Finished POET Initialization.");
+        } else {
+            System.out.println("Skipping POET Initialization.");
         }
     }
 

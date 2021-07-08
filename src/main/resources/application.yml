@@ -25,3 +25,5 @@ auth0:
 api:
   version: /api/v1
   client: /,/portal/**
+
+initializePoet: false
