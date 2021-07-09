@@ -150,7 +150,7 @@ export class PhenotypeCurationComponent implements OnInit {
       description: this.formControlGroup.get('descriptionFormControl').value,
       sex: this.formControlGroup.get('sexFormControl').value,
       qualifier: this.selectedQualifier == true ? "NOT" : '',
-      frequency: this.formControlGroup.get('frequencyFormControl').value,
+      frequency: this.formControlGroup.get('frequencyFormControl').value.ontologyId,
       modifiers: this.selectedModifiers.join(";"),
       onset: this.formControlGroup.get('onsetFormControl').value?.ontologyId,
       message: ""
