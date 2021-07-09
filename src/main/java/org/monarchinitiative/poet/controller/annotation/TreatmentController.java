@@ -53,29 +53,7 @@ public class TreatmentController {
     public List<TreatmentAnnotation> getTreatmentAnnotation(@PathVariable("diseaseId")  String diseaseId,
                                                             @RequestParam(defaultValue = "desc date") String sort){
 
-        return this.annotationService.getTreatmentAnnotations(diseaseId, sort);
-    }
-
-    /**
-     * The endpoint to retrieve treatment annotations that need review.
-     *
-     * @throws AuthenticationException if the user is not an elevated user.
-     * @since 0.6.0
-     */
-    @JsonView(AnnotationViews.Simple.class)
-    @GetMapping(value = {"/review"})
-    public List<TreatmentAnnotation> getReviewableTreatmentAnnotations(Authentication authentication){
-        final User user = userService.getExistingUser(authentication);
-        if(user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)){
-            final List<TreatmentAnnotation> annotations = this.annotationService.getReviewableTreatmentAnnotations();
-            if(annotations != null){
-                return annotations;
-            } else {
-                return Collections.emptyList();
-            }
-        } else {
-            throw new AuthenticationException(user.getNickname());
-        }
+        return this.annotationService.getTreatmentAnnotationsByDisease(diseaseId, sort);
     }
 
     /**

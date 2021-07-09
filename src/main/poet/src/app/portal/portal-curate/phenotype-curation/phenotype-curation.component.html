@@ -1,14 +1,19 @@
 <mat-card class="phenotype-card form-card">
   <mat-card-title>
-    <mat-icon class="mode-icon lock" *ngIf="formControlGroup.disabled"
+    <mat-icon class="form-icon-left lock" *ngIf="formControlGroup.disabled"
               matTooltip="View Mode Only"
               matTooltipPosition="below">
       lock
     </mat-icon>
-    <mat-icon class="mode-icon unlock" *ngIf="!formControlGroup.disabled"
+    <mat-icon class="form-icon-left unlock" *ngIf="!formControlGroup.disabled"
               matTooltip="Editing Mode"
               matTooltipPosition="below">
       lock_open
+    </mat-icon>
+    <mat-icon class="form-icon-left messages" *ngIf="utilityService.hasReviewerComments(selectedAnnotation)
+    && utilityService.isNeedsWork(this.selectedAnnotation)"
+              (click)="utilityService.openMessagesDialog(this.selectedAnnotation.reviewMessages)">
+      mark_chat_unread
     </mat-icon>
     New Phenotype
     <mat-icon class="help-icon" (click)="closeForm()">cancel</mat-icon>
@@ -42,7 +47,7 @@
             Looks like there was an error with the HPO API.
           </mat-error>
           <mat-autocomplete #hpo="matAutocomplete" (optionSelected)="selectedHpo = $event.option.value"
-                            [displayWith]="displayHpoFn">
+                            [displayWith]="utilityService.displayHpoFn">
             <mat-option class="auto-complete-option" *ngFor="let option of hpoOptions" [value]="option">
               <span class="option-name">{{option.name}}</span>
               &nbsp;
@@ -83,8 +88,7 @@
           </mat-chip-list>
           <mat-autocomplete #modifier="matAutocomplete" (optionSelected)="selected($event)">
             <mat-option *ngFor="let modifier of modifierOptions" [value]="modifier.ontologyId">
-              <span class="option-name">{{modifier.name}}</span>
-              &nbsp;
+              <span class="option-name">{{modifier.name}}</span>&nbsp;
               <span class="option-id">{{modifier.ontologyId}}</span>
             </mat-option>
           </mat-autocomplete>
@@ -95,8 +99,7 @@
           <mat-label>HPO Age Of Onset</mat-label>
           <mat-select formControlName="onsetFormControl">
             <mat-option *ngFor="let option of onsetOptions | async" [value]="option">
-              <span class="option-name">{{option.name}}</span>
-              &nbsp;
+              <span class="option-name">{{option.name}}</span>&nbsp;
               <span class="option-id">{{option.ontologyId}}</span>
             </mat-option>
           </mat-select>
@@ -114,10 +117,9 @@
             Looks like there was an error with the HPO API.
           </mat-error>
           <mat-autocomplete #frequency="matAutocomplete" (optionSelected)="selectedFrequency = $event.option.value"
-                            [displayWith]="displayIdFn">
+                            [displayWith]="utilityService.displayIdFn">
             <mat-option class="auto-complete-option" *ngFor="let option of frequencyOptions" [value]="option">
-              <span class="option-name">{{option.name}}</span>
-              &nbsp;
+              <span class="option-name">{{option.name}}</span>&nbsp;
               <span class="option-id">{{option.ontologyId}}</span>
             </mat-option>
           </mat-autocomplete>
@@ -135,11 +137,11 @@
         </mat-form-field>
       </div>
       <div class="form-content-section">
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="fill" class="evidence">
           <mat-label>Evidence</mat-label>
           <mat-select formControlName="evidenceFormControl">
-            <mat-option [value]="'TAS'">Traceable Author Statement</mat-option>
-            <mat-option [value]="'PCS'">Published Clinical Study</mat-option>
+            <mat-option value="TAS">Traceable Author Statement</mat-option>
+            <mat-option value="PCS">Published Clinical Study</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -160,11 +162,11 @@
   <mat-card-actions>
     <div class="left-actions">
       <button class="approve-annotation" mat-raised-button aria-label="Approve Phenotype Annotation"
-              *ngIf="isElevatedCurator() && isUnderReview()" (click)="reviewAnnotation('approve')">
+              *ngIf="userService.isElevatedCurator(userRole) && utilityService.isUnderReview(this.selectedAnnotation)" (click)="reviewAnnotation('approve')">
         Approve
       </button>
       <button class="deny-annotation" mat-raised-button aria-label="Deny Phenotype Annotation"
-              *ngIf="isElevatedCurator() && isUnderReview()" (click)="reviewAnnotation('deny')">
+              *ngIf="userService.isElevatedCurator(userRole) && utilityService.isUnderReview(this.selectedAnnotation)" (click)="reviewAnnotation('deny')">
         Deny
       </button>
       <button mat-raised-button color="primary" *ngIf="everythingValid()" (click)="submitForm()">SUBMIT</button>

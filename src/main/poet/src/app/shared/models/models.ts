@@ -3,6 +3,8 @@ export interface Annotation {
   type: string;
   status: string;
   annotationSource: AnnotationSource;
+  reviewMessages: Message[];
+  owner: User;
 }
 
 export interface AnnotationSource {
@@ -50,7 +52,6 @@ export interface TreatmentAnnotation extends Annotation {
   relation: string;
   extension: string;
   lastUpdatedDate: string;
-  owner: string;
 }
 
 export interface UserActivityResponse {
@@ -67,9 +68,20 @@ export interface HomeIcon {
   link: string;
 }
 
+export interface Message {
+  reviewer: User;
+  value: string;
+}
+
+export interface User {
+  nickname: string;
+  userRole: string;
+}
+
 export enum Status {
-  OFFICIAL,
-  ACCEPTED,
-  UNDER_REVIEW,
-  RETIRED
+  OFFICIAL = "OFFICIAL",
+  ACCEPTED = "ACCEPTED",
+  UNDER_REVIEW = "UNDER_REVIEW",
+  NEEDS_WORK = "NEEDS_WORK",
+  RETIRED = "RETIRED"
 }

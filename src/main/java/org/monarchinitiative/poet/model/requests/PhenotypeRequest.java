@@ -31,11 +31,12 @@ public class PhenotypeRequest {
     private final String frequency;
     @Pattern(regexp = "MALE|FEMALE", message = "sex be one of (MALE, FEMALE)")
     private final String sex;
+    private final String message;
 
     public PhenotypeRequest(Long id, String hpoName, String hpoId, String evidence, String description,
                             String onset, String publicationId, String publicationName,
                             String diseaseId, String diseaseName, String modifiers,
-                            String frequency, String qualifier, String sex) {
+                            String frequency, String qualifier, String sex, String message) {
         this.id = id;
         this.hpoName = hpoName;
         this.hpoId = hpoId;
@@ -50,6 +51,7 @@ public class PhenotypeRequest {
         this.qualifier = qualifier;
         this.frequency = frequency;
         this.sex = sex;
+        this.message = message;
     }
 
     public Long getId() {
@@ -106,6 +108,10 @@ public class PhenotypeRequest {
 
     public String getSex() {
         return sex;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     @Override

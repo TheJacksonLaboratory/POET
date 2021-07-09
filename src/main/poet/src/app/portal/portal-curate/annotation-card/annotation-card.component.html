@@ -59,18 +59,19 @@
           </span>
         </div>
         <div class="spacer"></div>
-        <button mat-icon-button aria-label="Edit Treatment Annotation" *ngIf="(isUser() && ownsAnnotation(treatment.owner))" [disabled]="!isUser()"
+        <button mat-icon-button aria-label="Edit Treatment Annotation" *ngIf="(isUser() && ownsAnnotation(treatment.owner.nickname))" [disabled]="!isUser()"
                 (click)="annotationAction(treatment, 'edit')">
           <mat-icon>create</mat-icon>
         </button>
-        <button mat-icon-button aria-label="Delete Treatment Annotation" *ngIf="(isUser() && ownsAnnotation(treatment.owner))"
+        <button mat-icon-button aria-label="Delete Treatment Annotation" *ngIf="(isUser() && ownsAnnotation(treatment.owner.nickname))"
                 [disabled]="!isUser()"
                 (click)="annotationAction(treatment, 'delete')">
           <mat-icon>delete</mat-icon>
         </button>
         <button *ngIf="isElevatedCurator() && isUnderReview(treatment.status) else elseBlock"
-                mat-stroked-button color="warn" aria-label="Review Treatment Annotation"
-                (click)="annotationAction(treatment, 'view')">
+                mat-flat-button color="warn" aria-label="Review Treatment Annotation"
+                (click)="annotationAction(treatment, 'view')"
+        class="needs-review-btn">
           Needs Review
         </button>
         <ng-template #elseBlock>
@@ -100,18 +101,19 @@
           </span>
         </div>
         <div class="spacer"></div>
-        <button mat-icon-button aria-label="Edit Phenotype Annotation" *ngIf="(isUser() && ownsAnnotation(phenotype.owner))" [disabled]="!isUser()"
+        <button mat-icon-button aria-label="Edit Phenotype Annotation" *ngIf="(isUser() && ownsAnnotation(phenotype.owner.nickname))" [disabled]="!isUser()"
                 (click)="annotationAction(phenotype, 'edit')">
           <mat-icon>create</mat-icon>
         </button>
-        <button mat-icon-button aria-label="Delete Phenotype Annotation" *ngIf="(isUser() && ownsAnnotation(phenotype.owner))"
+        <button mat-icon-button aria-label="Delete Phenotype Annotation" *ngIf="(isUser() && ownsAnnotation(phenotype.owner.nickname))"
                 [disabled]="!isUser()"
                 (click)="annotationAction(phenotype, 'delete')">
           <mat-icon>delete</mat-icon>
         </button>
         <button *ngIf="isElevatedCurator() && isUnderReview(phenotype.status) else elseBlock"
-                mat-stroked-button color="warn" aria-label="Review Phenotype Annotation"
-                (click)="annotationAction(phenotype, 'view')">
+                mat-flat-button color="warn" aria-label="Review Phenotype Annotation"
+                (click)="annotationAction(phenotype, 'view')"
+                class="needs-review-btn">
           Needs Review
         </button>
         <ng-template #elseBlock>

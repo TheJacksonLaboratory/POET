@@ -16,7 +16,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageEvent } from "@angular/material/paginator";
 import { MatBottomSheet } from "@angular/material/bottom-sheet";
-import { DeleteSheetComponent } from "./delete-sheet/delete-sheet.component";
+import { ConfirmSheetComponent } from "./confirm-sheet/confirm-sheet.component";
 
 @Component({
   selector: 'poet-annotation-card',
@@ -111,7 +111,7 @@ export class AnnotationCardComponent implements OnInit {
         this.annotationAction(null, 'create')
       }
       if(this.category === 'treatment'){
-        this.treatmentAnnotations = this.curationService.getTreatmentAnnotations(this.disease, this.publication, "", false).pipe(
+        this.treatmentAnnotations = this.curationService.getTreatmentAnnotations(this.disease, this.publication, "").pipe(
           tap((annotations => {
           const statuses = annotations.map((annotation) => {
             return annotation.status;
@@ -120,7 +120,7 @@ export class AnnotationCardComponent implements OnInit {
           this.selectedStatuses = this.annotationStatuses;
         })));
       } else if(this.category === 'phenotype'){
-        this.phenotypeAnnotations = this.curationService.getPhenotypeAnnotations(this.disease, this.publication, "", false).pipe(
+        this.phenotypeAnnotations = this.curationService.getPhenotypeAnnotations(this.disease, this.publication, "").pipe(
           tap((annotations => {
             const statuses = annotations.map((annotation) => {
               return annotation.status;
@@ -143,7 +143,7 @@ export class AnnotationCardComponent implements OnInit {
   annotationAction(annotation: any, action: any) {
     if (action == 'delete') {
       if(this.category == 'treatment'){
-        this._bottomSheet.open(DeleteSheetComponent, {
+        this._bottomSheet.open(ConfirmSheetComponent, {
           restoreFocus: false,
           disableClose: true
         }).afterDismissed().subscribe(shouldDelete => {
@@ -160,7 +160,7 @@ export class AnnotationCardComponent implements OnInit {
         }
         });
       } else {
-        this._bottomSheet.open(DeleteSheetComponent, {
+        this._bottomSheet.open(ConfirmSheetComponent, {
           restoreFocus: false,
           disableClose: true
         }).afterDismissed().subscribe(shouldDelete => {

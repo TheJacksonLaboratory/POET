@@ -89,4 +89,8 @@
   .filter-container:not(:first-child){
     margin-left: .5rem;
   }
+
+  .needs-review-btn {
+    color: white;
+  }
 }

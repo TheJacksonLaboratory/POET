@@ -3,7 +3,7 @@ import { HpoService } from "../../../shared/services/external/hpo.service";
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { AnchorSearchResult, HpoTerm } from "../../../shared/models/search-models";
-import { AnnotationSource, PhenotypeAnnotation, Publication } from "../../../shared/models/models";
+import { Annotation, AnnotationSource, PhenotypeAnnotation, Publication } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { StateService } from "../../../shared/services/state/state.service";
 import { MatDialog } from "@angular/material/dialog";
@@ -12,6 +12,9 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { COMMA, ENTER } from "@angular/cdk/keycodes";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { Observable } from "rxjs";
+import { DialogReviewComponent } from "../dialog-review/dialog-review.component";
+import { UtilityService } from "../../../shared/services/utility.service";
+import { UserService } from "../../../shared/services/user/user.service";
 
 @Component({
   selector: 'poet-phenotype-curation',
@@ -25,7 +28,7 @@ export class PhenotypeCurationComponent implements OnInit {
   @Output('onAnnotationSuccess') onAnnotationSuccess: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output('handleForm') handleFormEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   @ViewChild('modifierInput') modifierInput: ElementRef<HTMLInputElement>;
-  selectedAnnotation: any;
+  selectedAnnotation: PhenotypeAnnotation;
   updating: boolean;
   selectedHpo: HpoTerm;
   hpoOptions: HpoTerm[];
@@ -54,8 +57,12 @@ export class PhenotypeCurationComponent implements OnInit {
   constructor(public hpoService: HpoService,
               public curationService: CurationService,
               public stateService: StateService,
+              public utilityService: UtilityService,
+              public userService: UserService,
               public dialog: MatDialog,
               private _snackBar: MatSnackBar) {
+
+
   }
 
   ngOnInit(): void {
@@ -131,6 +138,7 @@ export class PhenotypeCurationComponent implements OnInit {
           });
         }
       });
+    this.formControlGroup.get('evidenceFormControl').setValue('TAS');
   }
 
   getFormPhenotypeAnnotation(){
@@ -144,7 +152,8 @@ export class PhenotypeCurationComponent implements OnInit {
       qualifier: this.selectedQualifier == true ? "NOT" : '',
       frequency: this.formControlGroup.get('frequencyFormControl').value,
       modifiers: this.selectedModifiers.join(";"),
-      onset: this.formControlGroup.get('onsetFormControl').value?.ontologyId
+      onset: this.formControlGroup.get('onsetFormControl').value?.ontologyId,
+      message: ""
     };
   }
 
@@ -153,15 +162,15 @@ export class PhenotypeCurationComponent implements OnInit {
     this.savingAnnotation = true;
     if (this.updating) {
       this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', '').subscribe(() => {
-        this.onSuccessfulPhenotype('Annotation Updated!')
+        this.onSuccessfulPhenotype('Annotation Updated!', false);
       }, (err) => {
-        this.onErrorPhenotypeSave();
+        this.onErrorPhenotype();
       });
     } else {
       this.curationService.saveAnnotation(phenotypeAnnotation, 'phenotype').subscribe(() => {
-        this.onSuccessfulPhenotype('Annotation Saved!')
+        this.onSuccessfulPhenotype('Annotation Saved!', false);
       }, (err) => {
-        this.onErrorPhenotypeSave();
+        this.onErrorPhenotype();
       });
     }
   }
@@ -172,25 +181,29 @@ export class PhenotypeCurationComponent implements OnInit {
     this.formControlGroup.get('descriptionFormControl').setValue(annotation.description);
     this.formControlGroup.get('frequencyFormControl').setValue(annotation.frequency);
     this.formControlGroup.get('onsetFormControl').setValue({ontologyId: annotation.onset, name: ""});
-    this.selectedModifiers = annotation.modifier.length > 0 ?  annotation.modifier.split(";") : [annotation.modifier]
+    this.selectedModifiers = annotation.modifier.length > 0 ?  annotation.modifier.split(";") : []
     this.formControlGroup.get('sexFormControl').setValue(annotation.sex);
     this.selectedQualifier = annotation.qualifier == "NOT";
     this.stateService.setSelectedSource(annotation.annotationSource);
     this.formControlGroup.markAsPristine();
   }
 
-  onSuccessfulPhenotype(message: string) {
+  onSuccessfulPhenotype(message: string, close: boolean) {
     this.savingAnnotation = false;
     this.stateService.triggerAnnotationReload(true);
     this.stateService.triggerAnnotationCountsReload(true);
-    this.resetPhenotypeForm();
+    if(close) {
+      this.closeForm();
+    } else {
+      this.resetPhenotypeForm();
+    }
     this._snackBar.open(message, 'Close', {
       duration: 3000,
       horizontalPosition: "left"
     });
   }
 
-  onErrorPhenotypeSave() {
+  onErrorPhenotype() {
     this.savingAnnotation = false;
     this._snackBar.open('Error Saving Annotation!', 'Close', {
       duration: 3000,
@@ -213,21 +226,10 @@ export class PhenotypeCurationComponent implements OnInit {
 
   resetPhenotypeForm() {
     this.formControlGroup.reset();
+    this.formControlGroup.get('evidenceFormControl').setValue('TAS');
     this.selectedQualifier = false;
     this.selectedModifiers = [];
     this.selectedOnset = [];
-  }
-
-  displayMaxoFn(option) {
-    return option && option.name ? `${option.name} ${option.ontologyId}` : '';
-  }
-
-  displayHpoFn(option) {
-    return option && option.name ? `${option.name} ${option.id}` : '';
-  }
-
-  displayIdFn(option) {
-    return option && option.ontologyId ? `${option.name} ${option.ontologyId}` : '';
   }
 
   removePublication(publication: Publication): void {
@@ -283,33 +285,42 @@ export class PhenotypeCurationComponent implements OnInit {
     this.handleFormEmitter.emit(false);
   }
 
-  isElevatedCurator(): boolean {
-    return this.userRole === 'ELEVATED_CURATOR';
-  }
-
-  isUnderReview(): boolean {
-    if(this.selectedAnnotation){
-      return this.selectedAnnotation.status === "UNDER_REVIEW";
-    } else {
-      return false;
-    }
-  }
-
   reviewAnnotation(action: string){
     if(action === 'approve'){
-      // approve the annotation
-      const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
-      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "approve").subscribe(() => {
-        this.onSuccessfulPhenotype('Phenotype Annotation Approved!')
-      }, (err) => {
-        this.onErrorPhenotypeSave();
+      this.dialog.open(DialogReviewComponent, {
+        minWidth: 300,
+        data: {
+          title: "Approve Phenotype Annotation",
+          approve: true
+        }
+      }).afterClosed().subscribe((data) => {
+        if(data.confirmed){
+          const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
+          this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "approve").subscribe(() => {
+            this.onSuccessfulPhenotype('Phenotype Annotation Approved!', true);
+          }, (err) => {
+            this.onErrorPhenotype();
+          });
+        }
       });
     } else if(action === 'deny') {
-      const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
-      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "deny").subscribe(() => {
-        this.onSuccessfulPhenotype('Phenotype Annotation Approved!')
-      }, (err) => {
-        this.onErrorPhenotypeSave();
+      this.dialog.open(DialogReviewComponent, {
+        minWidth: 300,
+        minHeight: 250,
+        data: {
+          title: "Deny Phenotype Annotation.",
+          approve: false
+        }
+      }).afterClosed().subscribe((data) => {
+        if(data.confirmed){
+          const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
+          phenotypeAnnotation.message = data.message;
+          this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "deny").subscribe(() => {
+            this.onSuccessfulPhenotype('Phenotype Annotation Rejected!', true);
+          }, (err) => {
+            this.onErrorPhenotype();
+          });
+        }
       });
     }
   }

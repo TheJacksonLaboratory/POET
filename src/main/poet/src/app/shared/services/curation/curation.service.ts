@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
-import { Observable } from "rxjs";
+import { forkJoin, Observable } from "rxjs";
 import {
   Disease,
   PhenotypeAnnotation,
@@ -10,7 +10,7 @@ import {
   UserActivityResponse
 } from "../../models/models";
 import { StateService } from "../state/state.service";
-import { map, shareReplay } from "rxjs/operators";
+import { map, shareReplay, tap } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -84,21 +84,24 @@ export class CurationService {
    * @param sort
    * @param review
    */
-  getPhenotypeAnnotations(disease: Disease, publication: Publication, sort: string, review: boolean): Observable<PhenotypeAnnotation[]> {
+  getPhenotypeAnnotations(disease: Disease, publication: Publication, sort: string): Observable<PhenotypeAnnotation[]> {
     let params;
-
-    if(review) {
-      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + 'review');
-    } else {
-      if (sort) {
-        params = new HttpParams().set("sort", sort);
-      }
-      if (publication != null) {
-        return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
-      } else {
-        return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
-      }
+    if (sort) {
+      params = new HttpParams().set("sort", sort);
     }
+    if (publication != null) {
+      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
+    } else {
+      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
+    }
+  }
+
+  getAnnotationsNeedingReview(): Observable<any> {
+    return this.httpClient.get(environment.POET_API_STATISTICS_ANNOTATION_URL + 'review');
+  }
+
+  getUserAnnotationsNeedingWork(): Observable<any> {
+    return this.httpClient.get(environment.POET_API_STATISTICS_ANNOTATION_URL + 'work');
   }
 
 
@@ -110,21 +113,16 @@ export class CurationService {
    * @param sort
    * @param review
    */
-  getTreatmentAnnotations(disease: Disease, publication: Publication, sort: string, review: boolean): Observable<TreatmentAnnotation[]> {
+  getTreatmentAnnotations(disease: Disease, publication: Publication, sort: string): Observable<TreatmentAnnotation[]> {
     let params;
+    if (sort) {
+      params = new HttpParams().set("sort", sort);
+    }
 
-    if(review){
-      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + 'review');
+    if (publication != null) {
+      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
     } else {
-      if (sort) {
-        params = new HttpParams().set("sort", sort);
-      }
-
-      if (publication != null) {
-        return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
-      } else {
-        return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
-      }
+      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
     }
   }
 
@@ -140,7 +138,11 @@ export class CurationService {
     annotation.publicationName = annotationSource.publication.publicationName;
     annotation.diseaseId = annotationSource.disease.diseaseId;
     annotation.diseaseName = annotationSource.disease.diseaseName;
-    const params = new HttpParams().set("review", review);
+    let params = new HttpParams();
+    if(review) {
+     params = params.set("review", review);
+    }
+
     if(category === 'treatment'){
       return this.httpClient.put(environment.POET_API_TREATMENTS_ANNOTATION, annotation, {params: params});
     } else {
@@ -334,7 +336,7 @@ export class CurationService {
           const annotationGrammar = this.annotationGrammar(count);
           const userList = [...new Set(dayMap[daysFromNow][diseaseJoined].map(item => {
             return item.owner.nickname;
-          }))].join(",");
+          }))].join(", ");
           let view;
           if (parseInt(daysFromNow) == 1) {
             view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName} yesterday.`;
@@ -382,7 +384,8 @@ export class CurationService {
     const actionMap = {
       "CREATE": "created",
       "UPDATE": "updated",
-      "DELETE": "deleted"
+      "DELETE": "deleted",
+      "REVIEW": "reviewed"
     }
     return actionMap[action];
   }

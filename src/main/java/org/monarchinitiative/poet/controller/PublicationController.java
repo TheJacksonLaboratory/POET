@@ -60,9 +60,7 @@ public class PublicationController {
     @PostMapping(value = "/", headers = "Accept=application/json")
     public ResponseEntity<?> savePublicationToDisease(@RequestBody PublicationRequest publicationRequest,
                                                       Authentication authentication){
-        if(!this.entityService.savePublicationToDisease(publicationRequest, authentication)){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        this.entityService.savePublicationToDisease(publicationRequest, authentication);
         return ResponseEntity.ok().build();
     }
 }

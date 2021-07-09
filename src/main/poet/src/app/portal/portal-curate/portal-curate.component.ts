@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
-import { MatDialog } from "@angular/material/dialog";
 import { CurationService } from "../../shared/services/curation/curation.service";
 import { AuthService } from "@auth0/auth0-angular";
 import { transition, trigger, useAnimation } from "@angular/animations";
@@ -38,14 +37,14 @@ export class PortalCurateComponent implements OnInit {
   ];
   user: any;
 
-  constructor(private route: ActivatedRoute, public dialog: MatDialog,
-              public curationService: CurationService, public stateService: StateService,
+  constructor(private route: ActivatedRoute, public curationService: CurationService, public stateService: StateService,
               public authService: AuthService, public router: Router) {
   }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       let id = params['id'];
+      let type = params['type'];
       if (id) {
         if (this.determineIdType(id) == 'disease') {
           this.doingWork(true);
@@ -67,6 +66,9 @@ export class PortalCurateComponent implements OnInit {
       } else {
         this.router.navigate(['/portal/dashboard']);
       }
+      if(type && this.stateService.isValidCategory(type)) {
+        this.stateService.setSelectedCategory(type);
+      }
     });
 
     this.stateService.selectedCategory.subscribe((category) => this.selectedCategory = category);
@@ -77,7 +79,7 @@ export class PortalCurateComponent implements OnInit {
       } else {
         user.role = user[environment.AUDIENCE_ROLE];
       }
-      this.user = user
+      this.user = user;
     });
 
     this.stateService.triggerReloadAnnotationCounts.subscribe((reload) => {

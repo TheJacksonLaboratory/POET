@@ -13,7 +13,7 @@ export class FilterPipe implements PipeTransform {
           return statuses.indexOf(it.status) != -1;
         }).filter( it => {
           if(it.status === "UNDER_REVIEW"){
-            if(user.role == "CURATOR" && it.owner != user.nickname){
+            if(user.role == "CURATOR" && it.owner.nickname != user.nickname){
               return false;
             } else if(showAll) {
               return true;

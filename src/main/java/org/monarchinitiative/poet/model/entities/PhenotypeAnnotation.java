@@ -47,24 +47,9 @@ public class PhenotypeAnnotation extends Annotation {
         this.sex = sex;
     }
 
-    public PhenotypeAnnotation(AnnotationSource annotationSource, AnnotationStatus status, String hpoId,
-                               String hpoName, String onset, String evidence, String modifier,
-                               String frequency, String qualifier, String description, String sex) {
-        super(annotationSource, status);
-        this.hpoId = hpoId;
-        this.hpoName = hpoName;
-        this.onset = onset;
-        this.evidence = evidence;
-        this.modifier = modifier;
-        this.frequency = frequency;
-        this.qualifier = qualifier;
-        this.description = description;
-        this.sex = sex;
-    }
-
     public PhenotypeAnnotation(PhenotypeRequest phenotypeRequest, AnnotationSource annotationSource,
-                               AnnotationStatus status) {
-        super(annotationSource, status);
+                               AnnotationStatus status, User owner) {
+        super(annotationSource, status, owner);
         this.hpoId = phenotypeRequest.getHpoId();
         this.hpoName = phenotypeRequest.getHpoName();
         this.onset = phenotypeRequest.getOnset();
