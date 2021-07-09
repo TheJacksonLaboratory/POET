@@ -94,8 +94,9 @@
         <mat-form-field appearance="fill" class="ml1 evidence">
           <mat-label>Evidence</mat-label>
           <mat-select formControlName="evidenceFormControl">
-            <mat-option [value]="'TAS'">Traceable Author Statement</mat-option>
-            <mat-option [value]="'PCS'">Published Clinical Study</mat-option>
+            <mat-option value="TAS">Traceable Author Statement</mat-option>
+            <mat-option value="PCS">Published Clinical Study</mat-option>
+            <mat-option value="IEA" [disabled]="true">Inferred Electronic Annotation</mat-option>
           </mat-select>
         </mat-form-field>
       </div>

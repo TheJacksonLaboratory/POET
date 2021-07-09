@@ -44,7 +44,7 @@ export class AnnotationCardComponent implements OnInit {
   annotationStatuses: any[] = [];
   selectedStatuses: any[] = [];
   lowValue: number = 0;
-  highValue: number = 5;
+  highValue: number = 10;
   showAll: boolean = false;
   selectedSort: string = 'recent';
 

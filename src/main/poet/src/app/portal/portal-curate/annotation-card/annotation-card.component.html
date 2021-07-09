@@ -125,12 +125,12 @@
       </mat-list-item>
     </mat-list>
     <mat-paginator *ngIf="(treatmentAnnotations | async)?.length > 0 && category === 'treatment'" [length]="(treatmentAnnotations | async)?.length"
-                   [pageSize]="5"
+                   [pageSize]="10"
                    [pageSizeOptions]="[5, 10, 25]"
                    (page)="getPaginatorData($event)"
                    showFirstLastButtons="false">
     </mat-paginator>
-    <mat-paginator *ngIf="(phenotypeAnnotations | async)?.length > 0 && category === 'phenotype'" [length]="(phenotypeAnnotations | async)?.length" pageSize=5
+    <mat-paginator *ngIf="(phenotypeAnnotations | async)?.length > 0 && category === 'phenotype'" [length]="(phenotypeAnnotations | async)?.length" pageSize=10
                    (page)="getPaginatorData($event)"
                    showFirstLastButtons="false">
     </mat-paginator>
