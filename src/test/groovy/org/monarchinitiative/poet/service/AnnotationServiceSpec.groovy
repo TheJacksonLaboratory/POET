@@ -11,6 +11,7 @@ import org.monarchinitiative.poet.model.enumeration.AnnotationStatus
 import org.monarchinitiative.poet.model.enumeration.CurationAction
 import org.monarchinitiative.poet.repository.AnnotationSourceRepository
 import org.monarchinitiative.poet.repository.DiseaseRepository
+import org.monarchinitiative.poet.repository.MessageRepository
 import org.monarchinitiative.poet.repository.PhenotypeAnnotationRepository
 import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository
 import org.monarchinitiative.poet.repository.PublicationRepository
@@ -47,7 +48,10 @@ class AnnotationServiceSpec extends Specification {
     UserActivityRepository userActivityStub
 
     @Autowired
-    UserRepository userStub
+    MessageRepository messageRepositoryStub
+
+    @Autowired
+    EntityService entityService
 
     @Autowired
     AnnotationService annotationService
@@ -60,7 +64,7 @@ class AnnotationServiceSpec extends Specification {
         publicationStub.findByPublicationId(_ as String) >> publicationResponse
         annotationStub.findByPublicationAndDisease(_ as Publication, _ as Disease) >> annotationSourceResponse
         userActivityStub.getMostRecentDateForAnnotationActivity(_ as Long) >> userActivityResponse
-        def result = annotationService.getTreatmentAnnotationsByDisease(inputParameters[0], inputParameters[1], inputParameters[2])
+        def result = annotationService.getTreatmentAnnotationsByDisease(inputParameters[0], inputParameters[2])
         expect:
         result == expectedResponse
 
@@ -68,10 +72,7 @@ class AnnotationServiceSpec extends Specification {
         inputParameters                               | diseaseResponse    | treatmentAnnotationResponse | publicationResponse    | annotationSourceResponse    | userActivityResponse | expectedResponse          | desc
         ["OMIM:029983", "PMID: 0092303", "desc date"] | getSingleDisease() | getTreatmentAnnotations()   | getSinglePublication() | getSingleAnnotationSource() | getUserActivity()    | getTreatmentAnnotations() | "a disease and publication id, with annotation source and returns maxo"
         ["OMIM:029983", "PMID: 0092303", "desc date"] | getSingleDisease() | []                          | getSinglePublication() | getSingleAnnotationSource() | getUserActivity()    | []                        | "a disease and publication id, with annotation source and returns empty list"
-        ["OMIM:029983", "PMID: 0092303", "desc date"] | getSingleDisease() | []                          | getSinglePublication() | null                        | getUserActivity()    | null                      | "a disease and publication id, with no annotation source and returns null"
-        ["OMIM:029983", null, "desc date"]            | getSingleDisease() | getTreatmentAnnotations()   | getSinglePublication() | null                        | getUserActivity()    | getTreatmentAnnotations() | "a disease and no publication id, with no annotation source and returns annotations"
-        ["OMIM:029983", null, "desc date"]            | getSingleDisease() | []                          | getSinglePublication() | null                        | getUserActivity()    | []                        | "a disease and no publication id, with disease found and returns empty list"
-        ["OMIM:029983", null, "desc date"]            | null               | []                          | getSinglePublication() | null                        | getUserActivity()    | null                      | "a disease and no publication id, with no disease found and returns null"
+        ["OMIM:029983", null, "desc date"]            | getSingleDisease() | []                          | getSinglePublication() | []                        | getUserActivity()    | []                        | "a disease and no publication id, with disease found and returns empty list"
     }
 
     def getTreatmentAnnotations() {
@@ -111,10 +112,7 @@ class AnnotationServiceSpec extends Specification {
         inputParameters                               | diseaseResponse    | phenotypeAnnotationResponse | annotationSourceResponse    | userActivityResponse | expectedResponse          | desc
         ["OMIM:029983", "desc date"]                  | getSingleDisease() | getPhenotypeAnnotations()   | getSingleAnnotationSource() | getUserActivity()    | getPhenotypeAnnotations() | "a disease with annotation source and returns phenotypes"
         ["OMIM:029983", "desc date"]                  | getSingleDisease() | []                          | getSingleAnnotationSource() | getUserActivity()    | []                        | "a disease with annotation source and returns empty list"
-        ["OMIM:029983", "desc date"]                  | null               | []                          | null                        | getUserActivity()    | null                      | "a disease with no annotation source and returns null"
-        ["OMIM:029983", "desc date"]                  | getSingleDisease() | getPhenotypeAnnotations()   | null                        | getUserActivity()    | getPhenotypeAnnotations() | "a disease with no annotation source and returns annotations"
         ["OMIM:029983", "desc date"]                  | getSingleDisease() | []                          | null                        | getUserActivity()    | []                        | "a disease with disease found and returns empty list"
-        ["OMIM:029983", "desc date"]                  | null               | []                          | null                        | getUserActivity()    | null                      | "a disease and no publication id, with no disease found and returns null"
     }
 
     def getPhenotypeAnnotations(){

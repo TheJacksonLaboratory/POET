@@ -3,6 +3,7 @@ package org.monarchinitiative.poet.controller.annotation
 import groovy.json.JsonBuilder
 import org.monarchinitiative.poet.model.requests.TreatmentRequest
 import org.monarchinitiative.poet.service.AnnotationService
+import org.monarchinitiative.poet.service.UserService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -29,6 +30,9 @@ class TreatmentControllerSpec extends Specification {
 
     @SpringBean
     private AnnotationService annotationService = Stub()
+
+    @SpringBean
+    private UserService userService = Stub()
 
     def setup() {
     }
@@ -94,7 +98,7 @@ class TreatmentControllerSpec extends Specification {
                     "Subarachnoid hemorrhage", "HP:0002138", "IEA", "daf", "PREVENTS", "CHEBI:1039000", "caffeine",
                     "PMID:31479590",
                     "Encoding Clinical Data with the Human Phenotype Ontology for Computational Differential Diagnostics.",
-                    "MONDO:1547000", "Marfan Syndrome")
+                    "MONDO:1547000", "Marfan Syndrome", "")
         }
     }
 }

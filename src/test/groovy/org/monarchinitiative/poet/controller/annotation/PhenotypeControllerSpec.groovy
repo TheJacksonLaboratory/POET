@@ -3,6 +3,7 @@ package org.monarchinitiative.poet.controller.annotation
 import groovy.json.JsonBuilder
 import org.monarchinitiative.poet.model.requests.PhenotypeRequest
 import org.monarchinitiative.poet.service.AnnotationService
+import org.monarchinitiative.poet.service.UserService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -29,6 +30,9 @@ class PhenotypeControllerSpec extends Specification {
 
     @SpringBean
     private AnnotationService annotationService = Stub()
+
+    @SpringBean
+    private UserService userService = Stub()
 
     def setup() {
     }
@@ -89,14 +93,14 @@ class PhenotypeControllerSpec extends Specification {
                     "fake publication name", "MONDO:154", "mondo disease name",
                     "",
                     "",
-                    "", "M")
+                    "", "M", "")
         } else {
             return new PhenotypeRequest(null, "fake hpo name", "HP:0002138",
                     "TAS", "some description", "HP:0002139", "PMID:31479590",
                     "fake publication name", "MONDO:1547000", "mondo disease name",
                     "",
                     "",
-                    "", "MALE")
+                    "", "MALE", "")
         }
     }
 }

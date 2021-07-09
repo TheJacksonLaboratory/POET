@@ -13,10 +13,10 @@ class TreatmentRequestSpec extends Specification {
     void "test treatment request constructor"() {
         given:
         def treatmentRequest = new TreatmentRequest(null,
-                maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extensionId, extensionLabel, publicationId, publicationName, diseaseId, diseaseName
+                maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extensionId, extensionLabel, publicationId, publicationName, diseaseId, diseaseName, ""
         )
         def treatmentRequest2 = new TreatmentRequest(null,
-                maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extensionId, extensionLabel, publicationId, publicationName, diseaseId, diseaseName
+                maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extensionId, extensionLabel, publicationId, publicationName, diseaseId, diseaseName, ""
         )
 
         expect:

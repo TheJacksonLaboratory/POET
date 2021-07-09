@@ -13,9 +13,9 @@ class PhenotypeRequestSpec extends Specification {
     void "test phenotype request constructor"() {
         given:
             def phenotypeRequest = new PhenotypeRequest(null, hpoName, hpoId, evidence, description, onset, publicationId,
-                    publicationName, diseaseId, diseaseName, modifiers, frequency, qualifier, sex)
+                    publicationName, diseaseId, diseaseName, modifiers, frequency, qualifier, sex, "")
             def phenotypeRequest2 = new PhenotypeRequest(null, hpoName, hpoId, evidence, description, onset, publicationId,
-                    publicationName, diseaseId, diseaseName, modifiers, frequency, qualifier, sex)
+                    publicationName, diseaseId, diseaseName, modifiers, frequency, qualifier, sex, "")
 
         expect:
             phenotypeRequest.getHpoName() == hpoName

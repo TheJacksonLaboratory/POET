@@ -1,9 +1,6 @@
 package org.monarchinitiative.poet.model.entities
 
-import org.monarchinitiative.poet.model.entities.AnnotationSource
-import org.monarchinitiative.poet.model.entities.Disease
-import org.monarchinitiative.poet.model.entities.Publication
-import org.monarchinitiative.poet.model.entities.TreatmentAnnotation
+import org.monarchinitiative.poet.model.enumeration.AnnotationStatus
 import org.monarchinitiative.poet.model.requests.TreatmentRequest
 import org.springframework.test.context.ActiveProfiles
 import spock.lang.Specification
@@ -46,7 +43,7 @@ class TreatmentAnnotationSpec extends Specification {
 
     void "test treatment annotation constructor phenotype request"(){
         given:
-            def treatmentAnnotation = new TreatmentAnnotation(treatmentRequest, annotationSource)
+            def treatmentAnnotation = new TreatmentAnnotation(treatmentRequest, annotationSource, annotationStatus, new User())
         expect:
             treatmentAnnotation.getHpoId() == treatmentRequest.getHpoId()
             treatmentAnnotation.getHpoName() == treatmentRequest.getHpoName()
@@ -57,11 +54,12 @@ class TreatmentAnnotationSpec extends Specification {
             treatmentAnnotation.getExtensionId() == treatmentRequest.getExtensionId()
             treatmentAnnotation.getRelation() == treatmentRequest.getRelation()
             treatmentAnnotation.getEvidence() == treatmentRequest.getEvidence()
+            treatmentAnnotation.getStatus() == annotationStatus
         where:
-        treatmentRequest            | annotationSource
-        getTreatmentRequest(0)      | getAnnotationSource(0, 0)
-        getTreatmentRequest(1)      | getAnnotationSource(0, 0)
-        getTreatmentRequest(2)      | getAnnotationSource(1, 1)
+        treatmentRequest            | annotationSource          | annotationStatus
+        getTreatmentRequest(0)      | getAnnotationSource(0, 0) | AnnotationStatus.ACCEPTED
+        getTreatmentRequest(1)      | getAnnotationSource(0, 0) | AnnotationStatus.NEEDS_WORK
+        getTreatmentRequest(2)      | getAnnotationSource(1, 1) | AnnotationStatus.UNDER_REVIEW
     }
 
     def getTreatmentRequest(int i){
@@ -70,17 +68,17 @@ class TreatmentAnnotationSpec extends Specification {
                 "Subarachnoid hemorrhage", "HP:0002138", "IEA", "daf", "PREVENTS", "CHEBI:1039000", "caffeine",
                 "PMID:31479590",
                 "Encoding Clinical Data with the Human Phenotype Ontology for Computational Differential Diagnostics.",
-                "MONDO:1547000", "Marfan Syndrome"),
+                "MONDO:1547000", "Marfan Syndrome", ""),
             new TreatmentRequest(null, "MAXO:0000004", "surgical procedure",
                 "Subarachnoid hemorrhage", "HP:0002138", "TAS", "", "TREATS", "", "",
                 "PMID:31479590",
                 "Encoding Clinical Data with the Human Phenotype Ontology for Computational Differential Diagnostics.",
-                "MONDO:1547000", "Marfan Syndrome"),
+                "MONDO:1547000", "Marfan Syndrome", "some message"),
          new TreatmentRequest(null, "MAXO:0000006", "surgical analysis",
                 "arachnoid hemorrhage", "HP:0002240", "TAS", "", "PREVENTS", "CHEBI:1039000", "beta blocker",
                 "PMID:49304995",
                 "some important publication name",
-                "MONDO:1547001", "Marfan Syndrome type 2")
+                "MONDO:1547001", "Marfan Syndrome type 2", "")
 
         ][i]
     }

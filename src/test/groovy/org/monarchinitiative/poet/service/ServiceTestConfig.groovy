@@ -2,6 +2,7 @@ package org.monarchinitiative.poet.service
 
 import org.monarchinitiative.poet.repository.AnnotationSourceRepository
 import org.monarchinitiative.poet.repository.DiseaseRepository
+import org.monarchinitiative.poet.repository.MessageRepository
 import org.monarchinitiative.poet.repository.PhenotypeAnnotationRepository
 import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository
 import org.monarchinitiative.poet.repository.PublicationRepository
@@ -51,19 +52,23 @@ class ServiceTestConfig {
     }
 
     @Bean
-    AnnotationService annotationService(){
-        AnnotationService annotationService = new AnnotationService(
-                publicationStub(), diseaseStub(), annotationSourceStub(),
-                treatmentAnnotationStub(), userStub(), userActivityStub(), phenotypeAnnotationStub()
-        )
-        return annotationService
+    MessageRepository messageRepositoryStub() {
+        return mockFactory.Stub(MessageRepository)
     }
-
     @Bean
     EntityService entityService(){
         EntityService entityService = new EntityService(diseaseStub(), publicationStub(), annotationSourceStub(),
                 userStub())
         return entityService
+    }
+
+    @Bean
+    AnnotationService annotationService(){
+        AnnotationService annotationService = new AnnotationService(
+                publicationStub(), diseaseStub(), annotationSourceStub(),
+                treatmentAnnotationStub(), userActivityStub(), phenotypeAnnotationStub(),
+                messageRepositoryStub(), entityService())
+        return annotationService
     }
 
     @Bean
