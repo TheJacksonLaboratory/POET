@@ -76,7 +76,7 @@
         </button>
         <ng-template #elseBlock>
           <button mat-icon-button aria-label="View Treatment Annotation"
-                  (click)="annotationAction(treatment, 'view')">
+                  (click)="annotationAction(treatment, 'view')" *ngIf="!needsWork(treatment.status)">
             <mat-icon>launch</mat-icon>
           </button>
         </ng-template>
@@ -118,7 +118,7 @@
         </button>
         <ng-template #elseBlock>
           <button mat-icon-button aria-label="View Phenotype Annotation"
-                  (click)="annotationAction(phenotype, 'view')">
+                  (click)="annotationAction(phenotype, 'view')" *ngIf="!needsWork(phenotype.status)">
             <mat-icon>launch</mat-icon>
           </button>
         </ng-template>

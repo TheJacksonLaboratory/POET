@@ -197,7 +197,11 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   isUnderReview(status: string): boolean {
-    return status ==="UNDER_REVIEW";
+    return status === "UNDER_REVIEW";
+  }
+
+  needsWork(status: string): boolean {
+    return status === "NEEDS_WORK";
   }
 
   ownsAnnotation(annotationUser){
