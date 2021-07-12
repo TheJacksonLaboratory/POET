@@ -39,6 +39,7 @@ export interface PhenotypeAnnotation extends Annotation {
   frequency: string;
   sex: string;
   description: string;
+  lastUpdatedDate: string;
 }
 
 export interface TreatmentAnnotation extends Annotation {
