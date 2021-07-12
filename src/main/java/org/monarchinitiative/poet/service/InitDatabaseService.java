@@ -135,7 +135,7 @@ public class InitDatabaseService {
                             annotationSource.getDisease().getDiseaseId(),
                             annotationSource.getDisease().getDiseaseName(),
                             phenotype.getModifierList(),
-                            phenotype. getFrequency(), phenotype.isNOT() ? "NOT": "", phenotype.getSex(), null);
+                            phenotype.getFrequency(), phenotype.isNOT() ? "NOT": "", phenotype.getSex(), null);
                     try{
                         annotationService.createPhenotypeAnnotation(request, user);
                     } catch (DuplicateAnnotationException ex){
@@ -158,8 +158,14 @@ public class InitDatabaseService {
         Map map = mapper.readValue(url, Map.class);
         Map result = (Map) map.get("result");
         Map publication = (Map) result.get(publicationId);
-        return new Publication("PMID:" + publicationId, (String) publication.get("title"),
-                (String) publication.get("pubdate"), (String) publication.get("sortfirstauthor"));
+        if(publication == null){
+            return new Publication("PMID:" + publicationId, "",
+                    "", "");
+        } else {
+            return new Publication("PMID:" + publicationId, (String) publication.get("title"),
+                    (String) publication.get("pubdate"), (String) publication.get("sortfirstauthor"));
+        }
+
     }
 }
 
