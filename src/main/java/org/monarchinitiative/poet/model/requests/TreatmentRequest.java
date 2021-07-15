@@ -29,10 +29,8 @@ public class TreatmentRequest {
     @Pattern(regexp = "CHEBI:[0-9]{5,8}", message = "extensionId should be a valid identifier from chemical entities of biological interest")
     private String extensionId;
     private String extensionLabel;
-    @Pattern(regexp = "PMID:[0-9]{1,8}", message = "publicationID should be a valid identifier from PubMed")
     private String publicationId;
     private String publicationName;
-    @Pattern(regexp = "MONDO:[0-9]{7}", message = "diseaseId should be a valid identifier from mondo disease ontology")
     private String diseaseId;
     private String diseaseName;
     private String message;

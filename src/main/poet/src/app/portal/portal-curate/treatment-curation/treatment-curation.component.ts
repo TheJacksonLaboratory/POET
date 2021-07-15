@@ -34,6 +34,9 @@ export class TreatmentCurationComponent implements OnInit {
   hpoOptions: HpoTerm[];
   chebiOptions: any;
   selectedPublications: Publication[] = [];
+  loadingHpoSuggestions: boolean = false;
+  loadingMaxoSuggestions: boolean = false;
+  loadingExtensionSuggestions: boolean = false;
 
   savingAnnotation: boolean = false;
   formControlGroup: FormGroup = new FormGroup({
@@ -90,13 +93,16 @@ export class TreatmentCurationComponent implements OnInit {
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
         if (query && query.length >= 3 && !this.formControlGroup.disabled) {
+          this.loadingMaxoSuggestions = true;
           this.hpoService.searchMaxoTerms(query).subscribe((data) => {
-            if (!data) {
+            if (!data || data.length == 0) {
               this.formControlGroup.get("maxoFormControl").setErrors({notFound: true});
             }
             this.maxoOptions = data;
           }, (err) => {
-            this.formControlGroup.get("maxoFormControl").setErrors({notFound: true});
+            this.formControlGroup.get("maxoFormControl").setErrors({apiError: true});
+          }, () => {
+            this.loadingMaxoSuggestions = false;
           });
         }
       });
@@ -105,13 +111,16 @@ export class TreatmentCurationComponent implements OnInit {
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
         if (query && query.length > 3 && !this.formControlGroup.disabled) {
+          this.loadingHpoSuggestions = true;
           this.hpoService.searchHPOTerms(query).subscribe((data) => {
-            if (!data) {
+            if (!data || data.length == 0) {
               this.formControlGroup.get("hpoFormControl").setErrors({notFound: true});
             }
             this.hpoOptions = data;
           }, (err) => {
-            this.formControlGroup.get("hpoFormControl").setErrors({notFound: true});
+            this.formControlGroup.get("hpoFormControl").setErrors({apiError: true});
+          }, () => {
+            this.loadingHpoSuggestions = false;
           });
         }
       });
@@ -120,13 +129,16 @@ export class TreatmentCurationComponent implements OnInit {
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
         if (query && query.length > 3 && !this.formControlGroup.disabled) {
+          this.loadingExtensionSuggestions = true;
           this.monarchService.searchMonarch(query, "CHEBI").subscribe((data) => {
-            if (!data) {
+            if (!data || data.length == 0) {
               this.formControlGroup.get("extensionFormControl").setErrors({notFound: true});
             }
             this.chebiOptions = data;
           }, (err) => {
-            this.formControlGroup.get("extensionFormControl").setErrors({notFound: true});
+            this.formControlGroup.get("extensionFormControl").setErrors({apiError: true});
+          }, () => {
+            this.loadingExtensionSuggestions = false;
           });
         }
       });

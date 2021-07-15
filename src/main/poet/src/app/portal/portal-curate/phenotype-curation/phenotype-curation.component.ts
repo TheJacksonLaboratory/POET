@@ -32,7 +32,7 @@ export class PhenotypeCurationComponent implements OnInit {
   updating: boolean;
   selectedHpo: HpoTerm;
   hpoOptions: HpoTerm[];
-  modifierOptions: AnchorSearchResult[];
+  modifierOptions: AnchorSearchResult[]
   onsetOptions: Observable<AnchorSearchResult[]>;
   frequencyOptions: AnchorSearchResult[];
   selectedPublications: Publication[] = [];
@@ -40,6 +40,8 @@ export class PhenotypeCurationComponent implements OnInit {
   selectedOnset: any;
   selectedQualifier: any;
   selectedFrequency: any;
+  loadingHpoSuggestions: boolean = false;
+  loadingModifierSuggestions: boolean = false;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   savingAnnotation: boolean = false;
@@ -99,13 +101,16 @@ export class PhenotypeCurationComponent implements OnInit {
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
         if (query && query.length >= 3 && !this.formControlGroup.disabled) {
+          this.loadingHpoSuggestions = true;
           this.hpoService.searchHPOTerms(query).subscribe((data) => {
-            if (!data) {
+            if (!data || data.length == 0) {
               this.formControlGroup.get("hpoFormControl").setErrors({notFound: true});
             }
             this.hpoOptions = data;
           }, (err) => {
-            this.formControlGroup.get("hpoFormControl").setErrors({notFound: true});
+            this.formControlGroup.get("hpoFormControl").setErrors({apiError: true});
+          }, () => {
+            this.loadingHpoSuggestions = false;
           });
         }
       });
@@ -114,13 +119,17 @@ export class PhenotypeCurationComponent implements OnInit {
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
         if (query && query.length >= 3 && !this.formControlGroup.disabled) {
+          this.loadingModifierSuggestions = true;
+          this.modifierOptions = [];
           this.hpoService.searchDescendants(query, 'HP:0012823').subscribe((data) => {
-            if (!data) {
-              this.formControlGroup.get("hpoFormControl").setErrors({notFound: true});
+            if (!data || data.length == 0) {
+              this.formControlGroup.get("modifierFormControl").setErrors({notFound: true});
             }
             this.modifierOptions = data;
           }, (err) => {
-            this.formControlGroup.get("hpoFormControl").setErrors({notFound: true});
+            this.formControlGroup.get("modifierFormControl").setErrors({apiError: true});
+          }, () => {
+            this.loadingModifierSuggestions = false;
           });
         }
       });
@@ -129,12 +138,12 @@ export class PhenotypeCurationComponent implements OnInit {
       .subscribe(query => {
         if (query && query.length >= 3 && !this.formControlGroup.disabled && isNaN(query)) {
           this.hpoService.searchDescendants(query, 'HP:0040279').subscribe((data) => {
-            if (!data) {
+            if (!data || data.length == 0) {
               this.formControlGroup.get("frequencyFormControl").setErrors({notFound: true});
             }
             this.frequencyOptions = data;
           }, (err) => {
-            this.formControlGroup.get("frequencyFormControl").setErrors({notFound: true});
+            this.formControlGroup.get("frequencyFormControl").setErrors({apiError: true});
           });
         }
       });
