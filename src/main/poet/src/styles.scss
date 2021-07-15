@@ -50,7 +50,7 @@ $mat-light-theme-foreground: (
   hint-text:         $dark-disabled-text,
   accent-text:       $dark-accent-text,
   icon:              $dark-accent-text,
-  icons:             $dark-accent-text,
+  icons:             $dark-accent-text,required
   text:              $dark-primary-text,
   slider-min:        $dark-primary-text,
   slider-off:        rgba($dark-text, 0.26),
@@ -569,4 +569,10 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 
 .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
   color: #59c9e8;
+}
+
+.source-required {
+  font-size: 12px;
+  margin-left: .5rem;
+  color: #ff4a4a;
 }

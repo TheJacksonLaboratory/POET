@@ -25,9 +25,12 @@
       {{selectedAnnotation.owner.nickname}} updated on {{selectedAnnotation.lastUpdatedDate | date: 'medium':"EST"}} </p>
   </mat-card-subtitle>
   <mat-card-content>
-    <button mat-raised-button color="primary" (click)="selectPublication()"
+    <button mat-raised-button color="primary" (click)="selectPublication()" class="required"
             *ngIf="selectedPublications.length === 0">Select Source
     </button>
+    <span class="source-required" *ngIf="selectedPublications.length === 0">
+       * A source is required to submit this annotation.
+    </span>
     <mat-list class="publication-list" aria-label="publication selection">
       <mat-list-item *ngFor="let publication of selectedPublications">
           {{publication.publicationName}} {{publication.publicationId}}
@@ -40,7 +43,7 @@
         <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>HPO Term</mat-label>
           <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
-                 [matAutocomplete]="hpo">
+                 [matAutocomplete]="hpo" required>
           <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
             <mat-icon>close</mat-icon>

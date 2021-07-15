@@ -27,6 +27,9 @@
     <button mat-raised-button color="primary" (click)="selectPublication()"
             *ngIf="selectedPublications.length === 0">Select Source
     </button>
+    <span class="source-required" *ngIf="selectedPublications.length === 0">
+       * A source is required to submit this annotation.
+    </span>
     <mat-list class="publication-list" aria-label="publication selection">
       <mat-list-item *ngFor="let publication of selectedPublications">
         {{publication.publicationName}} {{publication.publicationId}}
@@ -34,12 +37,12 @@
         <mat-icon class="remove-icon" (click)="removePublication(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
-    <form [formGroup]="formControlGroup" fxLayout="column" fxLayoutAlign="start stretch">
+     <form [formGroup]="formControlGroup" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="form-content-section" fxFlex="100">
         <mat-form-field class="phenotype-form" appearance="fill">
           <mat-label>HPO Term</mat-label>
-          <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
-                 [matAutocomplete]="hpo">
+          <input matInput formControlName="hpoFormControl" ngDefaultControl
+                 [matAutocomplete]="hpo" required>
           <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
             <mat-icon>close</mat-icon>
