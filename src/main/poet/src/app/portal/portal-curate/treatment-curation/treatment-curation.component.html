@@ -66,7 +66,7 @@
         <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>MAxO Term</mat-label>
           <input matInput placeholder="Search for a MAxO Term" formControlName="maxoFormControl" ngDefaultControl
-                 [matAutocomplete]="maxoAuto">
+                 [matAutocomplete]="maxoAuto" required>
           <button mat-button *ngIf="formControlGroup.get('maxoFormControl').value != null"
                   matSuffix mat-icon-button aria-label="Clear" (click)="formControlGroup.get('maxoFormControl').reset()">
             <mat-icon>close</mat-icon>
@@ -88,7 +88,7 @@
       <div class="form-content-section">
         <mat-form-field appearance="fill" >
           <mat-label>Relation</mat-label>
-          <mat-select formControlName="relationFormControl">
+          <mat-select formControlName="relationFormControl" required>
             <mat-option [value]="'TREATS'">TREATS</mat-option>
             <mat-option [value]="'PREVENTS'">PREVENTS</mat-option>
             <mat-option [value]="'INVESTIGATES'">INVESTIGATES</mat-option>
