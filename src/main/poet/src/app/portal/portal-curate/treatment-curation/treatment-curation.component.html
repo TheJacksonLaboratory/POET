@@ -43,7 +43,7 @@
         <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>HPO Term</mat-label>
           <mat-hint *ngIf="!formControlGroup.get('hpoFormControl').hasError('notFound') &&
-          !formControlGroup.get('modifierFormControl').hasError('apiError')">
+          !formControlGroup.get('hpoFormControl').hasError('apiError')">
             Try: arachnodactyly</mat-hint>
           <mat-hint *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound')">
             <span class="mat-error">Sorry we could not find what you were looking for!</span>
@@ -74,7 +74,7 @@
         <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>MAxO Term</mat-label>
           <mat-hint *ngIf="!formControlGroup.get('maxoFormControl').hasError('notFound') &&
-          !formControlGroup.get('modifierFormControl').hasError('apiError')">
+          !formControlGroup.get('maxoFormControl').hasError('apiError')">
             Try: calcium assessment</mat-hint>
           <mat-hint *ngIf="formControlGroup.get('maxoFormControl').hasError('notFound')">
             <span class="mat-error">Sorry we could not find what you were looking for!</span>
@@ -123,7 +123,7 @@
         <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>CHEBI Extension</mat-label>
           <mat-hint *ngIf="!formControlGroup.get('extensionFormControl').hasError('notFound') &&
-          !formControlGroup.get('modifierFormControl').hasError('apiError')">
+          !formControlGroup.get('extensionFormControl').hasError('apiError')">
             Try: CHEBI:27732</mat-hint>
           <mat-hint *ngIf="formControlGroup.get('extensionFormControl').hasError('notFound')">
             <span class="mat-error">Sorry we could not find what you were looking for!</span>
