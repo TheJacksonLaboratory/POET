@@ -1,4 +1,4 @@
-<mat-card [@bounceInLeft]="triggerBounceIn" class="annotation-card">
+<mat-card class="annotation-card">
   <mat-card-title>
     <span *ngIf="category == 'treatment'">Treatments</span>
     <span *ngIf="category == 'phenotype'">Phenotypes</span>
@@ -14,7 +14,7 @@
     <span *ngIf="category == 'phenotype'">A list of curated phenotypes of this disease</span><br><br>
   </mat-card-subtitle>
   <mat-card-content>
-
+    <mat-progress-bar mode="buffer" *ngIf="loadingAnnotations"></mat-progress-bar>
     <div class="filter-wrapper" *ngIf="(category === 'phenotype' && (phenotypeAnnotations | async)?.length > 0) ||
                                         (category === 'treatment' && (treatmentAnnotations | async)?.length > 0)">
       <mat-form-field class="filter-container">

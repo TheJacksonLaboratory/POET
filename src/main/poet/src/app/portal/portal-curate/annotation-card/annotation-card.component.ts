@@ -9,7 +9,7 @@ import {
 import { StateService } from "../../../shared/services/state/state.service";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { Observable } from "rxjs";
-import { tap } from "rxjs/operators";
+import { finalize, tap } from "rxjs/operators";
 import { transition, trigger, useAnimation } from "@angular/animations";
 import { bounceInLeft } from "ng-animate";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -47,6 +47,7 @@ export class AnnotationCardComponent implements OnInit {
   highValue: number = 10;
   showAll: boolean = false;
   selectedSort: string = 'recent';
+  loadingAnnotations: boolean = false;
 
 
   constructor(public stateService: StateService, public curationService: CurationService,
@@ -110,6 +111,7 @@ export class AnnotationCardComponent implements OnInit {
         this.activeAnnotation = null;
         this.annotationAction(null, 'create')
       }
+      this.loadingAnnotations = true;
       if(this.category === 'treatment'){
         this.treatmentAnnotations = this.curationService.getTreatmentAnnotations(this.disease, this.publication, "").pipe(
           tap((annotations => {
@@ -118,7 +120,7 @@ export class AnnotationCardComponent implements OnInit {
           });
           this.annotationStatuses = [...new Set(statuses)].sort();
           this.selectedStatuses = this.annotationStatuses;
-        })));
+        })), finalize(() => this.loadingAnnotations = false));
       } else if(this.category === 'phenotype'){
         this.phenotypeAnnotations = this.curationService.getPhenotypeAnnotations(this.disease, this.publication, "").pipe(
           tap((annotations => {
@@ -127,7 +129,7 @@ export class AnnotationCardComponent implements OnInit {
             });
             this.annotationStatuses = [...new Set(statuses)].sort();
             this.selectedStatuses = this.annotationStatuses;
-          })));
+          })), finalize(() => this.loadingAnnotations = false));
       }
     }
   }
