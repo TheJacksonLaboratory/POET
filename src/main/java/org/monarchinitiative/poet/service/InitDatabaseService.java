@@ -137,7 +137,7 @@ public class InitDatabaseService {
                             phenotype.getModifierList(),
                             phenotype.getFrequency(), phenotype.isNOT() ? "NOT": "", phenotype.getSex(), null);
                     try{
-                        annotationService.createPhenotypeAnnotation(request, user, false);
+                        annotationService.createPhenotypeAnnotation(request, user, true);
                     } catch (DuplicateAnnotationException ex){
                         System.out.println(ex.getMessage());
                     }
