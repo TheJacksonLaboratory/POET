@@ -56,7 +56,7 @@ public class PhenotypeController {
     @PostMapping(value = "/", headers = "Accept=application/json")
     public ResponseEntity<?> createPhenotypeAnnotation(@Valid @RequestBody PhenotypeRequest phenotypeRequest, Authentication authentication) {
         final User user = userService.getExistingUser(authentication);
-        annotationService.createPhenotypeAnnotation(phenotypeRequest, user);
+        annotationService.createPhenotypeAnnotation(phenotypeRequest, user, false);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
