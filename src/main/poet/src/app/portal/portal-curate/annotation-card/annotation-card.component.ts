@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {
   AnnotationSource,
   Disease,
@@ -14,7 +14,7 @@ import { transition, trigger, useAnimation } from "@angular/animations";
 import { bounceInLeft } from "ng-animate";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from '@angular/router';
-import { PageEvent } from "@angular/material/paginator";
+import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import { MatBottomSheet } from "@angular/material/bottom-sheet";
 import { ConfirmSheetComponent } from "./confirm-sheet/confirm-sheet.component";
 
@@ -33,6 +33,8 @@ export class AnnotationCardComponent implements OnInit {
   @Output('openForm') openAnnotationForm: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Input('user') user: any;
   @Input('formOpen') formOpen: boolean = false;
+  @ViewChild('phenotypePaginator') phenotypePagination: MatPaginator;
+  @ViewChild('treatmentPaginator') treatmentPagination:MatPaginator;
   disease: Disease;
   publication: Publication;
   category: string;
@@ -214,5 +216,14 @@ export class AnnotationCardComponent implements OnInit {
     this.lowValue = event.pageIndex * event.pageSize;
     this.highValue = this.lowValue + event.pageSize;
     return event;
+  }
+
+  resetPaginator(){
+    if(this.category == 'phenotype'){
+      this.phenotypePagination.pageIndex = 0;
+    } else if(this.category == 'phenotype'){
+      this.treatmentPagination.pageIndex = 0;
+    }
+
   }
 }
