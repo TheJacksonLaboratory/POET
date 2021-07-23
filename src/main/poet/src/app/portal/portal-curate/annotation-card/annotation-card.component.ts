@@ -220,8 +220,12 @@ export class AnnotationCardComponent implements OnInit {
 
   resetPaginator(){
     if(this.category == 'phenotype'){
+      this.lowValue = 0;
+      this.highValue = 10;
       this.phenotypePagination.pageIndex = 0;
     } else if(this.category == 'phenotype'){
+      this.lowValue = 0;
+      this.highValue = 10;
       this.treatmentPagination.pageIndex = 0;
     }
 

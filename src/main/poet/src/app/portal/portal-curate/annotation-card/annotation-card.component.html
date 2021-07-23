@@ -19,24 +19,23 @@
                                         (category === 'treatment' && (treatmentAnnotations | async)?.length > 0)">
       <mat-form-field class="filter-container">
         <mat-label>Annotation Status</mat-label>
-        <mat-select multiple [(value)]="selectedStatuses">
+        <mat-select multiple [(value)]="selectedStatuses" (selectionChange)="resetPaginator()">
           <mat-option *ngFor="let status of annotationStatuses" [value]="status"
                       [class]="{'statusApproved': status === 'ACCEPTED', 'statusReview': status === 'UNDER_REVIEW',
-                      'statusOfficial': status === 'OFFICIAL', 'statusNeedsWork': status === 'NEEDS_WORK'}"
-                      (click)="resetPaginator()">
+                      'statusOfficial': status === 'OFFICIAL', 'statusNeedsWork': status === 'NEEDS_WORK'}">
             {{status}}
           </mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field class="filter-container">
         <mat-label>Sort By</mat-label>
-        <mat-select [(ngModel)]="selectedSort">
-          <mat-option value="recent" (click)="resetPaginator()">Most Recent</mat-option>
-          <mat-option value="name" (click)="resetPaginator()"><span class="capitalize">{{category}}</span> Name</mat-option>
+        <mat-select [(ngModel)]="selectedSort" (selectionChange)="resetPaginator()">
+          <mat-option value="recent">Most Recent</mat-option>
+          <mat-option value="name"><span class="capitalize">{{category}}</span> Name</mat-option>
         </mat-select>
       </mat-form-field>
       <div class="filter-container mat-form-field">
-        <mat-checkbox [(ngModel)]="showAll" (click)="resetPaginator()"> Show Other Curators </mat-checkbox>
+        <mat-checkbox [(ngModel)]="showAll" (change)="resetPaginator()"> Show Other Curators </mat-checkbox>
       </div>
     </div>
 

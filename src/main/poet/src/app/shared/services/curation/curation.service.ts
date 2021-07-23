@@ -225,9 +225,19 @@ export class CurationService {
    * Get User Activity for curations
    * @param everyone - a boolean if we should get everyone or the current user
    * @param weeksBack - how many weeks of activity
+   * @param offset - the offset for the pagination to start at
+   * @param limit - the page limit
    */
-  getGroupActivityFeed(everyone: boolean, weeksBack: number) {
-    const params = new HttpParams().set("all", String(everyone)).set("weeks", String(weeksBack));
+  getGroupActivityFeed(everyone: boolean, weeksBack: number, offset: number, limit: number) {
+    let params = new HttpParams().set("all", String(everyone)).set("weeks", String(weeksBack));
+    if(offset){
+      params = params.set("offset", String(offset));
+    }
+
+    if(limit){
+      params = params.set("limit", String(limit))
+    }
+
     return this.httpClient.get<UserActivityResponse[]>(environment.POET_API_STATISTICS_ACTIVITY_URL, {params: params}).pipe(
       map((activityMap) => this.reduceToGroupedActivity(activityMap))
     );
@@ -312,7 +322,7 @@ export class CurationService {
                     activities.push({
                       "view": view,
                       "diseaseId": diseaseId,
-                      "date": mostRecent,
+                      "date": mostRecent
                     });
                   });
 
@@ -329,7 +339,7 @@ export class CurationService {
                   activities.push({
                     "view": view,
                     "diseaseId": diseaseId,
-                    "date": mostRecent,
+                    "date": mostRecent
                   });
                 }
               });
@@ -354,7 +364,7 @@ export class CurationService {
           activities.push({
             "view": view,
             "diseaseId": diseaseId,
-            "date": mostRecent,
+            "date": mostRecent
           });
         }
       });
