@@ -306,21 +306,11 @@ export class PhenotypeCurationComponent implements OnInit {
 
   reviewAnnotation(action: string){
     if(action === 'approve'){
-      this.dialog.open(DialogReviewComponent, {
-        minWidth: 300,
-        data: {
-          title: "Approve Phenotype Annotation",
-          approve: true
-        }
-      }).afterClosed().subscribe((data) => {
-        if(data.confirmed){
-          const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
-          this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "approve").subscribe(() => {
-            this.onSuccessfulPhenotype('Phenotype Annotation Approved!', true);
-          }, (err) => {
-            this.onErrorPhenotype();
-          });
-        }
+      const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
+      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "approve").subscribe(() => {
+        this.onSuccessfulPhenotype('Phenotype Annotation Approved!', true);
+      }, (err) => {
+        this.onErrorPhenotype();
       });
     } else if(action === 'deny') {
       this.dialog.open(DialogReviewComponent, {
