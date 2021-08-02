@@ -576,3 +576,10 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   margin-left: .5rem;
   color: #ff4a4a;
 }
+
+.filter-container {
+  & .mat-select-value-text, .mat-checkbox-label {
+    font-size: 12px;
+  }
+}
+
