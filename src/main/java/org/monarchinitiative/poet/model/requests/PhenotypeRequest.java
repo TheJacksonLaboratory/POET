@@ -22,7 +22,6 @@ public class PhenotypeRequest {
     private final String onset;
     private final String publicationId;
     private final String publicationName;
-    @Pattern(regexp = "MONDO:[0-9]{7}", message = "diseaseId should be a valid identifier from mondo disease ontology")
     private final String diseaseId;
     private final String diseaseName;
     private final String modifiers;

@@ -22,12 +22,15 @@
   <mat-card-subtitle>
     Medical Action Ontology [ MAxO ] <br>
     <p class="extra-information" *ngIf="selectedAnnotation?.owner.nickname">
-      {{selectedAnnotation.owner.nickname}} updated on {{selectedAnnotation.lastUpdatedDate}} </p>
+      {{selectedAnnotation.owner.nickname}} updated on {{selectedAnnotation.lastUpdatedDate | date: 'medium':"EST"}} </p>
   </mat-card-subtitle>
   <mat-card-content>
-    <button mat-raised-button color="primary" (click)="selectPublication()"
+    <button mat-raised-button color="primary" (click)="selectPublication()" class="required"
             *ngIf="selectedPublications.length === 0">Select Source
     </button>
+    <span class="source-required" *ngIf="selectedPublications.length === 0">
+       * A source is required to submit this annotation.
+    </span>
     <mat-list class="publication-list" aria-label="publication selection">
       <mat-list-item *ngFor="let publication of selectedPublications">
           {{publication.publicationName}} {{publication.publicationId}}
@@ -39,18 +42,26 @@
       <div class="form-content-section">
         <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>HPO Term</mat-label>
+          <mat-hint *ngIf="!formControlGroup.get('hpoFormControl').hasError('notFound') &&
+          !formControlGroup.get('hpoFormControl').hasError('apiError')">
+            Try: arachnodactyly</mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound')">
+            <span class="mat-error">Sorry we could not find what you were looking for!</span>
+          </mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('hpoFormControl').hasError('apiError')">
+            <span class="mat-error">The connection for this data is broken, please contact us!</span>
+          </mat-hint>
           <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
-                 [matAutocomplete]="hpo">
+                 [matAutocomplete]="hpo" required>
           <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
-          <mat-hint *ngIf="!selectedHpo">Try: arachnodactyly</mat-hint>
-          <mat-error *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound')">
-            Looks like there was an error with the HPO API.
-          </mat-error>
           <mat-autocomplete #hpo="matAutocomplete" (optionSelected)="selectedHpo = $event.option.value"
                             [displayWith]="utilityService.displayHpoFn">
+            <mat-option *ngIf="loadingHpoSuggestions">
+              <mat-progress-bar mode="query"></mat-progress-bar>
+            </mat-option>
             <mat-option class="auto-complete-option" *ngFor="let option of hpoOptions" [value]="option">
               <span class="option-name">{{option.name}}</span>
               &nbsp;
@@ -62,18 +73,26 @@
       <div class="form-content-section">
         <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>MAxO Term</mat-label>
+          <mat-hint *ngIf="!formControlGroup.get('maxoFormControl').hasError('notFound') &&
+          !formControlGroup.get('maxoFormControl').hasError('apiError')">
+            Try: calcium assessment</mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('maxoFormControl').hasError('notFound')">
+            <span class="mat-error">Sorry we could not find what you were looking for!</span>
+          </mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('maxoFormControl').hasError('apiError')">
+            <span class="mat-error">The connection for this data is broken, please contact us!</span>
+          </mat-hint>
           <input matInput placeholder="Search for a MAxO Term" formControlName="maxoFormControl" ngDefaultControl
-                 [matAutocomplete]="maxoAuto">
+                 [matAutocomplete]="maxoAuto" required>
           <button mat-button *ngIf="formControlGroup.get('maxoFormControl').value != null"
                   matSuffix mat-icon-button aria-label="Clear" (click)="formControlGroup.get('maxoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
-          <mat-hint *ngIf="!selectedTreatment">Try: calcium assessment</mat-hint>
-          <mat-error *ngIf="formControlGroup.get('maxoFormControl').hasError('notFound')">
-            Looks like there was an error with the MAxO API.
-          </mat-error>
           <mat-autocomplete #maxoAuto="matAutocomplete" (optionSelected)="selectedTreatment = $event.option.value"
                             [displayWith]="utilityService.displayMaxoFn">
+            <mat-option *ngIf="loadingMaxoSuggestions">
+              <mat-progress-bar mode="query"></mat-progress-bar>
+            </mat-option>
             <mat-option class="auto-complete-option" *ngFor="let option of maxoOptions" [value]="option">
               <span class="option-name">{{option.name}}</span>
               &nbsp;
@@ -85,7 +104,7 @@
       <div class="form-content-section">
         <mat-form-field appearance="fill" >
           <mat-label>Relation</mat-label>
-          <mat-select formControlName="relationFormControl">
+          <mat-select formControlName="relationFormControl" required>
             <mat-option [value]="'TREATS'">TREATS</mat-option>
             <mat-option [value]="'PREVENTS'">PREVENTS</mat-option>
             <mat-option [value]="'INVESTIGATES'">INVESTIGATES</mat-option>
@@ -103,18 +122,26 @@
       <div class="form-content-section">
         <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>CHEBI Extension</mat-label>
+          <mat-hint *ngIf="!formControlGroup.get('extensionFormControl').hasError('notFound') &&
+          !formControlGroup.get('extensionFormControl').hasError('apiError')">
+            Try: CHEBI:27732</mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('extensionFormControl').hasError('notFound')">
+            <span class="mat-error">Sorry we could not find what you were looking for!</span>
+          </mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('extensionFormControl').hasError('apiError')">
+            <span class="mat-error">The connection for this data is broken, please contact us!</span>
+          </mat-hint>
           <input matInput placeholder="..." formControlName="extensionFormControl" ngDefaultControl
                  [matAutocomplete]="extensionAuto">
           <button mat-button *ngIf="formControlGroup.get('extensionFormControl').value != null"
                   matSuffix mat-icon-button aria-label="Clear" (click)="formControlGroup.get('extensionFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
-          <mat-hint *ngIf="!selectedTreatment">Try: CHEBI:27732</mat-hint>
-          <mat-error *ngIf="formControlGroup.get('extensionFormControl').hasError('notFound')">
-            Looks like there was an error with the MAxO API.
-          </mat-error>
           <mat-autocomplete #extensionAuto="matAutocomplete"
                             [displayWith]="displayMonarchSearchFn.bind(this)">
+            <mat-option *ngIf="loadingExtensionSuggestions">
+              <mat-progress-bar mode="query"></mat-progress-bar>
+            </mat-option>
             <mat-option class="auto-complete-option" *ngFor="let option of chebiOptions" [value]="option">
               <span class="option-name">{{option.label[0]}}</span>
               &nbsp;

@@ -20,11 +20,16 @@
   </mat-card-title>
   <mat-card-subtitle>
     Human Phenotype Ontology [ HPO ]
+    <p class="extra-information" *ngIf="selectedAnnotation?.owner.nickname">
+      {{selectedAnnotation.owner.nickname}} updated on {{selectedAnnotation.lastUpdatedDate | date: 'medium':"EST"}} </p>
   </mat-card-subtitle>
   <mat-card-content>
     <button mat-raised-button color="primary" (click)="selectPublication()"
             *ngIf="selectedPublications.length === 0">Select Source
     </button>
+    <span class="source-required" *ngIf="selectedPublications.length === 0">
+       * A source is required to submit this annotation.
+    </span>
     <mat-list class="publication-list" aria-label="publication selection">
       <mat-list-item *ngFor="let publication of selectedPublications">
         {{publication.publicationName}} {{publication.publicationId}}
@@ -32,22 +37,30 @@
         <mat-icon class="remove-icon" (click)="removePublication(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
-    <form [formGroup]="formControlGroup" fxLayout="column" fxLayoutAlign="start stretch">
+     <form [formGroup]="formControlGroup" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="form-content-section" fxFlex="100">
         <mat-form-field class="phenotype-form" appearance="fill">
           <mat-label>HPO Term</mat-label>
-          <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
-                 [matAutocomplete]="hpo">
+          <mat-hint *ngIf="!formControlGroup.get('hpoFormControl').hasError('notFound') &&
+          !formControlGroup.get('hpoFormControl').hasError('apiError')">
+            e.g. arachnodactyly</mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound')">
+            <span class="mat-error">Sorry we could not find what you were looking for!</span>
+          </mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('hpoFormControl').hasError('apiError')">
+            <span class="mat-error">The connection for this data is broken, please contact us!</span>
+          </mat-hint>
+          <input matInput formControlName="hpoFormControl" ngDefaultControl
+                 [matAutocomplete]="hpo" required>
           <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
-          <mat-hint *ngIf="!selectedHpo">e.g. arachnodactyly</mat-hint>
-          <mat-error *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound')">
-            Looks like there was an error with the HPO API.
-          </mat-error>
           <mat-autocomplete #hpo="matAutocomplete" (optionSelected)="selectedHpo = $event.option.value"
                             [displayWith]="utilityService.displayHpoFn">
+            <mat-option *ngIf="loadingHpoSuggestions">
+              <mat-progress-bar mode="query"></mat-progress-bar>
+            </mat-option>
             <mat-option class="auto-complete-option" *ngFor="let option of hpoOptions" [value]="option">
               <span class="option-name">{{option.name}}</span>
               &nbsp;
@@ -59,7 +72,7 @@
           <mat-checkbox aria-label="Is Qualified?" formControlName="qualifierFormControl"
                         [(ngModel)]="selectedQualifier">
             NOT CHARACTERIZED <span class="form-field-help-icon material-icons"
-                                    matTooltip="Is this disorder characterized by the hpo feature?"
+                                    matTooltip="Checking this will negate the annotation for this disease."
                                     matTooltipPosition="below">
               help_outline
             </span>
@@ -69,7 +82,15 @@
       <div class="form-content-section" fxFlex="100">
         <mat-form-field class="phenotype-form" appearance="fill">
           <mat-label>HPO Clinical Modifiers</mat-label>
-          <mat-hint>The speed of progression, triggering factors, location or severity.</mat-hint>
+          <mat-hint *ngIf="!formControlGroup.get('modifierFormControl').hasError('notFound') &&
+          !formControlGroup.get('modifierFormControl').hasError('apiError')">
+          The speed of progression, triggering factors, location or severity.</mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('modifierFormControl').hasError('notFound')">
+            <span class="mat-error">Sorry we could not find what you were looking for!</span>
+          </mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('modifierFormControl').hasError('apiError')">
+            <span class="mat-error">The connection for this data is broken, please contact us!</span>
+          </mat-hint>
           <mat-chip-list #chipList aria-label="Modifier Selection" [disabled]="formControlGroup.get('modifierFormControl').disabled">
             <mat-chip
               *ngFor="let modifier of selectedModifiers"
@@ -87,6 +108,9 @@
               [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
           </mat-chip-list>
           <mat-autocomplete #modifier="matAutocomplete" (optionSelected)="selected($event)">
+            <mat-option *ngIf="loadingModifierSuggestions">
+              <mat-progress-bar mode="query"></mat-progress-bar>
+            </mat-option>
             <mat-option *ngFor="let modifier of modifierOptions" [value]="modifier.ontologyId">
               <span class="option-name">{{modifier.name}}</span>&nbsp;
               <span class="option-id">{{modifier.ontologyId}}</span>
@@ -112,7 +136,7 @@
                   aria-label="Clear" (click)="formControlGroup.get('frequencyFormControl').reset(); frequencyOptions = []">
             <mat-icon>close</mat-icon>
           </button>
-          <mat-hint *ngIf="formControlGroup.get('frequencyFormControl').value != null">e.g. 10/20, 50% or Frequent</mat-hint>
+          <mat-hint>e.g. 10/20, 50% or Frequent</mat-hint>
           <mat-error *ngIf="formControlGroup.get('frequencyFormControl').hasError('notFound')">
             Looks like there was an error with the HPO API.
           </mat-error>

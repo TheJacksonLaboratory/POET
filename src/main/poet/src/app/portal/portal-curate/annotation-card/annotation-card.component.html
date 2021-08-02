@@ -20,6 +20,12 @@
       <mat-form-field class="filter-container">
         <mat-label>Annotation Status</mat-label>
         <mat-select multiple [(value)]="selectedStatuses">
+          <mat-select-trigger>
+            {{selectedStatuses ? selectedStatuses[0] : ''}}
+            <span *ngIf="selectedStatuses?.length > 1" class="example-additional-selection">
+              (+{{selectedStatuses.length - 1}} {{selectedStatuses?.length === 2 ? 'other' : 'others'}})
+            </span>
+          </mat-select-trigger>
           <mat-option *ngFor="let status of annotationStatuses" [value]="status"
                       [class]="{'statusApproved': status === 'ACCEPTED', 'statusReview': status === 'UNDER_REVIEW',
                       'statusOfficial': status === 'OFFICIAL', 'statusNeedsWork': status === 'NEEDS_WORK'}">
@@ -39,7 +45,7 @@
       </div>
     </div>
 
-    <mat-list #treatment *ngIf="category === 'treatment'">
+    <mat-list *ngIf="category === 'treatment'">
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': treatment == activeAnnotation}"
                      *ngFor="let treatment of treatmentAnnotations | async | filter: selectedStatuses:user:showAll | sortBy: selectedSort:category | slice:lowValue:highValue ">
@@ -76,13 +82,13 @@
         </button>
         <ng-template #elseBlock>
           <button mat-icon-button aria-label="View Treatment Annotation"
-                  (click)="annotationAction(treatment, 'view')">
+                  (click)="annotationAction(treatment, 'view')" *ngIf="!needsWork(treatment.status)">
             <mat-icon>launch</mat-icon>
           </button>
         </ng-template>
       </mat-list-item>
     </mat-list>
-    <mat-list #phenotype *ngIf="category === 'phenotype'" class="phenotype-list">
+    <mat-list *ngIf="category === 'phenotype'" class="phenotype-list">
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': phenotype == activeAnnotation}"
                      *ngFor="let phenotype of phenotypeAnnotations | async | filter: selectedStatuses : user : showAll | sortBy: selectedSort:category | slice:lowValue:highValue ">
@@ -118,19 +124,19 @@
         </button>
         <ng-template #elseBlock>
           <button mat-icon-button aria-label="View Phenotype Annotation"
-                  (click)="annotationAction(phenotype, 'view')">
+                  (click)="annotationAction(phenotype, 'view')" *ngIf="!needsWork(phenotype.status)">
             <mat-icon>launch</mat-icon>
           </button>
         </ng-template>
       </mat-list-item>
     </mat-list>
-    <mat-paginator *ngIf="(treatmentAnnotations | async)?.length > 0 && category === 'treatment'" [length]="(treatmentAnnotations | async)?.length"
+    <mat-paginator *ngIf="(treatmentAnnotations | async)?.length > 0 && category === 'treatment'"
                    [pageSize]="10"
                    [pageSizeOptions]="[5, 10, 25]"
                    (page)="getPaginatorData($event)"
                    showFirstLastButtons="false">
     </mat-paginator>
-    <mat-paginator *ngIf="(phenotypeAnnotations | async)?.length > 0 && category === 'phenotype'" [length]="(phenotypeAnnotations | async)?.length" pageSize=10
+    <mat-paginator *ngIf="(phenotypeAnnotations | async)?.length > 0 && category === 'phenotype'" pageSize=10
                    (page)="getPaginatorData($event)"
                    showFirstLastButtons="false">
     </mat-paginator>
