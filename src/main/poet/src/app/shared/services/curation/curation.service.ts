@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
-import { Observable } from "rxjs";
+import { forkJoin, Observable } from "rxjs";
 import {
   Disease,
   PhenotypeAnnotation,
-  Publication,
+  Publication, Status,
   TreatmentAnnotation,
   UserActivityResponse
 } from "../../models/models";
 import { StateService } from "../state/state.service";
-import { map, shareReplay } from "rxjs/operators";
+import { map, shareReplay, tap } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -82,6 +82,7 @@ export class CurationService {
    * @param publication
    * @param disease
    * @param sort
+   * @param review
    */
   getPhenotypeAnnotations(disease: Disease, publication: Publication, sort: string): Observable<PhenotypeAnnotation[]> {
     let params;
@@ -95,6 +96,14 @@ export class CurationService {
     }
   }
 
+  getAnnotationsNeedingReview(): Observable<any> {
+    return this.httpClient.get(environment.POET_API_STATISTICS_ANNOTATION_URL + 'review');
+  }
+
+  getUserAnnotationsNeedingWork(): Observable<any> {
+    return this.httpClient.get(environment.POET_API_STATISTICS_ANNOTATION_URL + 'work');
+  }
+
 
   /**
    * Get a list of Treatment Annotations
@@ -102,12 +111,14 @@ export class CurationService {
    * @param disease
    * @param publication
    * @param sort
+   * @param review
    */
   getTreatmentAnnotations(disease: Disease, publication: Publication, sort: string): Observable<TreatmentAnnotation[]> {
     let params;
     if (sort) {
       params = new HttpParams().set("sort", sort);
     }
+
     if (publication != null) {
       return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
     } else {
@@ -119,24 +130,30 @@ export class CurationService {
    * Update an annotation to the database
    * @param annotation - an phenotype or treatment annotation
    * @param category - the selected category they are curating
+   * @param review - whether this update is a review or not.
    */
-  updateAnnotation(annotation: any, category: string) {
+  updateAnnotation(annotation: any, category: string, review: string) {
     const annotationSource = this.stateService.getSelectedSource();
     annotation.publicationId = annotationSource.publication.publicationId;
     annotation.publicationName = annotationSource.publication.publicationName;
     annotation.diseaseId = annotationSource.disease.diseaseId;
     annotation.diseaseName = annotationSource.disease.diseaseName;
+    let params = new HttpParams();
+    if(review) {
+     params = params.set("review", review);
+    }
+
     if(category === 'treatment'){
-      return this.httpClient.put(environment.POET_API_TREATMENTS_ANNOTATION, annotation);
+      return this.httpClient.put(environment.POET_API_TREATMENTS_ANNOTATION, annotation, {params: params});
     } else {
-      return this.httpClient.put(environment.POET_API_PHENOTYPES_ANNOTATION, annotation);
+      return this.httpClient.put(environment.POET_API_PHENOTYPES_ANNOTATION, annotation, {params: params});
     }
   }
 
   /**
    * Save an annotation to the database
    * @param annotation - a phenotype or treatment annotation
-   * @param ontology - the selected category they are curating
+   * @param category - the category we are curating
    */
   saveAnnotation(annotation: any, category: string) {
     const annotationSource = this.stateService.getSelectedSource();
@@ -178,7 +195,7 @@ export class CurationService {
           let newData = {
             source: null,
             category: null,
-            curationAction: null,
+            curationAction: "",
             curator: null,
             date: null,
             time: null,
@@ -187,7 +204,7 @@ export class CurationService {
           newData.source = activity.annotation["annotationSource"];
           newData.category = activity.annotation["annotationType"].toUpperCase();
           newData.curationAction = activity.curationAction;
-          newData.curator = activity.user["nickname"];
+          newData.curator = activity.owner["nickname"];
           newData.date = new Date(activity.localDateTime).toLocaleDateString();
           newData.time = new Date(activity.localDateTime).toLocaleTimeString();
           newData.annotationId = activity.annotation.id;
@@ -240,8 +257,8 @@ export class CurationService {
         if (parseInt(daysFromNow) == 0) {
           // Today
           dayMap[daysFromNow][diseaseJoined] = dayMap[daysFromNow][diseaseJoined].reduce((r, a) => {
-            r[a.user.nickname] = r[a.user.nickname] || [];
-            r[a.user.nickname].push(a);
+            r[a.owner.nickname] = r[a.owner.nickname] || [];
+            r[a.owner.nickname].push(a);
             return r;
           }, Object.create(null));
 
@@ -318,8 +335,8 @@ export class CurationService {
           const count = dayMap[daysFromNow][diseaseJoined].length;
           const annotationGrammar = this.annotationGrammar(count);
           const userList = [...new Set(dayMap[daysFromNow][diseaseJoined].map(item => {
-            return item.user.nickname;
-          }))].join(",");
+            return item.owner.nickname;
+          }))].join(", ");
           let view;
           if (parseInt(daysFromNow) == 1) {
             view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName} yesterday.`;
@@ -367,7 +384,8 @@ export class CurationService {
     const actionMap = {
       "CREATE": "created",
       "UPDATE": "updated",
-      "DELETE": "deleted"
+      "DELETE": "deleted",
+      "REVIEW": "reviewed"
     }
     return actionMap[action];
   }

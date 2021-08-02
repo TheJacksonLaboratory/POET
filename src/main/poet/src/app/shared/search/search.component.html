@@ -13,8 +13,10 @@
       <mat-option *ngIf="isLoading" class="is-loading">Loading...</mat-option>
       <ng-container *ngIf="!isLoading">
         <mat-option *ngFor="let disease of diseaseOptions" [value]="disease" [ngClass]="{'new-disease': disease.type == 'new'}">
-          <div class="result-name"><b>{{disease.label[0]}}</b></div>&nbsp;
-          <div class="result-id">{{disease.id}}</div>
+          <div class="result-name"><b>{{disease.label}}</b></div>&nbsp;
+          <div class="result-id">
+            {{disease.id}}<span *ngIf="disease.omim_id"> - </span> {{disease.omim_id}}
+          </div>
         </mat-option>
       </ng-container>
     </mat-autocomplete>

@@ -4,7 +4,7 @@ import {
   Disease,
   TreatmentAnnotation,
   Publication,
-  PhenotypeAnnotation
+  PhenotypeAnnotation, Status
 } from "../../../shared/models/models";
 import { StateService } from "../../../shared/services/state/state.service";
 import { CurationService } from "../../../shared/services/curation/curation.service";
@@ -16,7 +16,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageEvent } from "@angular/material/paginator";
 import { MatBottomSheet } from "@angular/material/bottom-sheet";
-import { DeleteSheetComponent } from "./delete-sheet/delete-sheet.component";
+import { ConfirmSheetComponent } from "./confirm-sheet/confirm-sheet.component";
 
 @Component({
   selector: 'poet-annotation-card',
@@ -31,7 +31,7 @@ import { DeleteSheetComponent } from "./delete-sheet/delete-sheet.component";
 export class AnnotationCardComponent implements OnInit {
 
   @Output('openForm') openAnnotationForm: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Input('role') userRole: string;
+  @Input('user') user: any;
   @Input('formOpen') formOpen: boolean = false;
   disease: Disease;
   publication: Publication;
@@ -45,6 +45,8 @@ export class AnnotationCardComponent implements OnInit {
   selectedStatuses: any[] = [];
   lowValue: number = 0;
   highValue: number = 5;
+  showAll: boolean = false;
+  selectedSort: string = 'recent';
 
 
   constructor(public stateService: StateService, public curationService: CurationService,
@@ -111,19 +113,19 @@ export class AnnotationCardComponent implements OnInit {
       if(this.category === 'treatment'){
         this.treatmentAnnotations = this.curationService.getTreatmentAnnotations(this.disease, this.publication, "").pipe(
           tap((annotations => {
-          annotations.forEach((annotation) => {
-            this.annotationStatuses.push(annotation.status);
+          const statuses = annotations.map((annotation) => {
+            return annotation.status;
           });
-          this.annotationStatuses = [...new Set(this.annotationStatuses)].sort();
+          this.annotationStatuses = [...new Set(statuses)].sort();
           this.selectedStatuses = this.annotationStatuses;
         })));
       } else if(this.category === 'phenotype'){
         this.phenotypeAnnotations = this.curationService.getPhenotypeAnnotations(this.disease, this.publication, "").pipe(
           tap((annotations => {
-            annotations.forEach((annotation) => {
-              this.annotationStatuses.push(annotation.status);
+            const statuses = annotations.map((annotation) => {
+              return annotation.status;
             });
-            this.annotationStatuses = [...new Set(this.annotationStatuses)].sort();
+            this.annotationStatuses = [...new Set(statuses)].sort();
             this.selectedStatuses = this.annotationStatuses;
           })));
       }
@@ -141,7 +143,7 @@ export class AnnotationCardComponent implements OnInit {
   annotationAction(annotation: any, action: any) {
     if (action == 'delete') {
       if(this.category == 'treatment'){
-        this._bottomSheet.open(DeleteSheetComponent, {
+        this._bottomSheet.open(ConfirmSheetComponent, {
           restoreFocus: false,
           disableClose: true
         }).afterDismissed().subscribe(shouldDelete => {
@@ -158,7 +160,7 @@ export class AnnotationCardComponent implements OnInit {
         }
         });
       } else {
-        this._bottomSheet.open(DeleteSheetComponent, {
+        this._bottomSheet.open(ConfirmSheetComponent, {
           restoreFocus: false,
           disableClose: true
         }).afterDismissed().subscribe(shouldDelete => {
@@ -186,12 +188,20 @@ export class AnnotationCardComponent implements OnInit {
     }
   }
 
-  isUser() {
-    return this.userRole != 'GUEST';
+  isUser(): boolean  {
+    return this.user.role != 'GUEST';
   }
 
-  isElevatedCurator() {
-    return this.userRole === 'ELEVATED_CURATOR';
+  isElevatedCurator(): boolean  {
+    return this.user.role === 'ELEVATED_CURATOR';
+  }
+
+  isUnderReview(status: string): boolean {
+    return status ==="UNDER_REVIEW";
+  }
+
+  ownsAnnotation(annotationUser){
+    return this.user.nickname === annotationUser;
   }
 
   getPaginatorData(event: PageEvent): PageEvent {
@@ -199,5 +209,4 @@ export class AnnotationCardComponent implements OnInit {
     this.highValue = this.lowValue + event.pageSize;
     return event;
   }
-
 }

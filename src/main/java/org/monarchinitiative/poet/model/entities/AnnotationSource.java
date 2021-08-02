@@ -15,11 +15,11 @@ public class AnnotationSource {
     private long id;
 
     @ManyToOne
-    @JsonView(AnnotationViews.Simple.class)
+    @JsonView({AnnotationViews.Simple.class, AnnotationViews.UserSpecific.class})
     private Publication publication;
 
     @ManyToOne
-    @JsonView({AnnotationViews.Simple.class, UserActivityViews.Simple.class})
+    @JsonView({AnnotationViews.Simple.class, UserActivityViews.Simple.class, AnnotationViews.UserSpecific.class})
     private Disease disease;
 
     public AnnotationSource(){}
@@ -35,6 +35,10 @@ public class AnnotationSource {
 
     public Disease getDisease() {
         return disease;
+    }
+
+    public void setDisease(Disease disease) {
+        this.disease = disease;
     }
 
     @Override

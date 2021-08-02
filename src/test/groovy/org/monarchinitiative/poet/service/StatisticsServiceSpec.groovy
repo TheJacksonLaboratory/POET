@@ -32,7 +32,7 @@ class StatisticsServiceSpec extends Specification {
     void "test that user activities #desc"() {
         given:
         userActivityStub.findAll() >> repositoryResponse
-        userActivityStub.findUserActivityByUserAuthId(_) >> repositoryResponse
+        userActivityStub.findUserActivityByOwnerAuthId(_) >> repositoryResponse
         authentication.getName() >> "fakename"
         def result = statisticsService.getUserActivity(all, 0, inputAuthentication)
 
@@ -51,7 +51,7 @@ class StatisticsServiceSpec extends Specification {
 
     void "test that user contribution #desc"() {
         given:
-        userActivityStub.countAllByAnnotation_AnnotationTypeAndUserAuthId(_, _) >> repositoryResponse
+        userActivityStub.countAllByAnnotation_AnnotationTypeAndOwnerAuthId(_, _) >> repositoryResponse
         def result = statisticsService.summarizeUserContributions(inputAuthentication)
         expect:
         result.getTreatment() == repositoryResponse

@@ -438,15 +438,27 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
     }
   }
 
-  & .mode-icon {
+  & .form-icon-left {
     float: left;
 
     &.lock {
       color: indianred;
+      cursor: default;
     }
 
     &.unlock {
       color: lightgreen;
+      cursor: default;
+    }
+
+    &.messages {
+      margin-left: .5rem;
+      color: gold;
+      cursor: pointer;
+      opacity: .6;
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 
@@ -486,4 +498,75 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   & .mat-tab-body-wrapper {
     margin: 1.5rem;
   }
+}
+
+
+.page-title {
+  padding: 1rem;
+  margin-top: 1rem !important;
+  background: #296b7c;
+  color: whitesmoke;
+  text-transform: uppercase;
+  font-weight: bold !important;
+}
+
+.mat-tab-link.mat-tab-disabled {
+  pointer-events: unset !important;
+}
+
+.capitalize, .mat-select-value-text {
+  text-transform: capitalize;
+}
+
+.mat-option.statusApproved .mat-pseudo-checkbox-checked {
+    background: limegreen !important;
+}
+
+.mat-option.statusReview .mat-pseudo-checkbox-checked {
+  background: gold !important;
+}
+
+.mat-option.statusNeedsWork .mat-pseudo-checkbox-checked {
+  background: indianred !important;
+}
+
+.mat-icon.statusApproved {
+  color: limegreen !important;
+}
+
+.mat-icon.statusReview {
+  color: gold !important;
+}
+
+.mat-icon.statusNeedsWork{
+  color: indianred;
+}
+
+.approve-annotation {
+  background: forestgreen;
+}
+
+.deny-annotation {
+  background: indianred;
+}
+
+.portal-curate {
+  .mat-card-title {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+}
+
+.form-card {
+    & .evidence.mat-form-field, .evidence .mat-form-field-infix {
+      width: auto !important;
+      & .mat-select-value {
+        max-width: 100%;
+        width: auto;
+      }
+    }
+}
+
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+  color: #59c9e8;
 }

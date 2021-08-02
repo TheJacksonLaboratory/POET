@@ -23,7 +23,7 @@ public class Publication {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @JsonView({PublicationViews.Simple.class, AnnotationViews.Simple.class})
+    @JsonView({PublicationViews.Simple.class, AnnotationViews.Simple.class, AnnotationViews.UserSpecific.class})
     @Column(unique = true) private String publicationId;
 
     @JsonView({PublicationViews.Simple.class, AnnotationViews.Simple.class})

@@ -29,19 +29,21 @@ public class TreatmentRequest {
     @Pattern(regexp = "CHEBI:[0-9]{5,8}", message = "extensionId should be a valid identifier from chemical entities of biological interest")
     private String extensionId;
     private String extensionLabel;
-    @Pattern(regexp = "PMID:[0-9]{8}", message = "publicationID should be a valid identifier from PubMed")
+    @Pattern(regexp = "PMID:[0-9]{1,8}", message = "publicationID should be a valid identifier from PubMed")
     private String publicationId;
     private String publicationName;
     @Pattern(regexp = "MONDO:[0-9]{7}", message = "diseaseId should be a valid identifier from mondo disease ontology")
     private String diseaseId;
     private String diseaseName;
+    private String message;
 
 
     TreatmentRequest(){}
 
     public TreatmentRequest(Long id, String maxoId, String maxoName, String hpoName, String hpoId, String evidence,
                             String comment, String relation, String extensionId, String extensionLabel,
-                            String publicationId, String publicationName, String diseaseId, String diseaseName) {
+                            String publicationId, String publicationName, String diseaseId, String diseaseName,
+                            String message) {
         this.id = id;
         this.maxoId = maxoId;
         this.maxoName = maxoName;
@@ -56,6 +58,7 @@ public class TreatmentRequest {
         this.publicationName = publicationName;
         this.diseaseId = diseaseId;
         this.diseaseName = diseaseName;
+        this.message = message;
     }
 
     public Long getId() {
@@ -112,6 +115,10 @@ public class TreatmentRequest {
         return diseaseName;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -136,6 +143,4 @@ public class TreatmentRequest {
     public int hashCode() {
         return Objects.hash(id, maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extensionId, publicationId, publicationName, diseaseId, diseaseName);
     }
-
-
 }

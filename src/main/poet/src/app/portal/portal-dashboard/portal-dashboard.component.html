@@ -24,22 +24,40 @@
                                (page)="getPaginatorData($event)"
                                showFirstLastButtons="false">
                 </mat-paginator>
-          </mat-tab>
-          <mat-tab label="Most Curated" [disabled]="true">Most Curated Diseases</mat-tab>
-          <mat-tab label="Contributions" [disabled]="noContributions()">
-            <div class="chart-wrapper" *ngIf="!noContributions()">
-              <ngx-charts-pie-chart
-                [results]="pieData"
-                legend="true"
-                legendTitle="Legend"
-                legendPosition="bottom"
-                explodeSlices="true"
-                gradient="true"
-                scheme="ocean"
-              >
-              </ngx-charts-pie-chart>
-            </div>
-          </mat-tab>
+              </mat-tab>
+              <mat-tab label="Reviews" *ngIf="isElevatedCurator() && reviews?.length > 0">
+                <mat-list *ngFor="let review of reviews">
+                  <mat-list-item class="activity-item">
+                    <h4>{{review.count}} {{review.type}} annotations ready to be reviewed for {{review.diseaseName}}.</h4>
+                    <span class="spacer"></span>
+                    <button mat-stroked-button [routerLink]="'/curate/' + review.diseaseId + '/' + review.type">View Disease</button>
+                  </mat-list-item>
+                </mat-list>
+              </mat-tab>
+              <mat-tab label="Needs Work" *ngIf="userAnnotations?.length > 0">
+                <mat-list *ngFor="let annotation of userAnnotations">
+                  <mat-list-item class="activity-item">
+                    <h4>{{annotation.count}} {{annotation.type}} annotations need work for {{annotation.diseaseName}}.</h4>
+                    <span class="spacer"></span>
+                    <button mat-stroked-button [routerLink]="'/curate/' + annotation.diseaseId + '/' + annotation.type">View Disease</button>
+                  </mat-list-item>
+                </mat-list>
+              </mat-tab>
+              <mat-tab label="Most Curated" [disabled]="true">Most Curated Diseases</mat-tab>
+              <mat-tab label="Contributions" [disabled]="noContributions()">
+                <div class="chart-wrapper" *ngIf="!noContributions()">
+                  <ngx-charts-pie-chart
+                    [results]="pieData"
+                    legend="true"
+                    legendTitle="Legend"
+                    legendPosition="bottom"
+                    explodeSlices="true"
+                    gradient="true"
+                    scheme="ocean"
+                  >
+                  </ngx-charts-pie-chart>
+                </div>
+              </mat-tab>
         </mat-tab-group>
         </div>
         </div>

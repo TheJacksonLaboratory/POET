@@ -29,9 +29,10 @@ import { FlexLayoutModule } from "@angular/flex-layout";
 import { FilterPipe } from './pipes/filter.pipe';
 import { MatChipsModule } from "@angular/material/chips";
 import { MatRadioModule } from "@angular/material/radio";
+import { SortPipe } from './pipes/sort.pipe';
 
 @NgModule({
-  declarations: [SearchComponent, FilterPipe],
+  declarations: [SearchComponent, FilterPipe, SortPipe],
   providers: [FilterPipe],
   imports: [
     CommonModule,
@@ -67,41 +68,42 @@ import { MatRadioModule } from "@angular/material/radio";
     MatCheckboxModule,
     MatRadioModule,
   ],
-  exports: [
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatListModule,
-    MatDividerModule,
-    MatIconModule,
-    MatTableModule,
-    MatCardModule,
-    MatDialogModule,
-    MatSelectModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatProgressBarModule,
-    MatDividerModule,
-    SearchComponent,
-    MatProgressSpinnerModule,
-    MatBottomSheetModule,
-    MatSnackBarModule,
-    MatTabsModule,
-    MatTooltipModule,
-    MatMenuModule,
-    NgxChartsModule,
-    MatPaginatorModule,
-    MatCheckboxModule,
-    MatTooltipModule,
-    MatChipsModule,
-    FlexLayoutModule,
-    MatCheckboxModule,
-    FilterPipe,
-    MatRadioModule
-  ]
+    exports: [
+        MatToolbarModule,
+        MatButtonModule,
+        MatSidenavModule,
+        MatListModule,
+        MatDividerModule,
+        MatIconModule,
+        MatTableModule,
+        MatCardModule,
+        MatDialogModule,
+        MatSelectModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatProgressBarModule,
+        MatDividerModule,
+        SearchComponent,
+        MatProgressSpinnerModule,
+        MatBottomSheetModule,
+        MatSnackBarModule,
+        MatTabsModule,
+        MatTooltipModule,
+        MatMenuModule,
+        NgxChartsModule,
+        MatPaginatorModule,
+        MatCheckboxModule,
+        MatTooltipModule,
+        MatChipsModule,
+        FlexLayoutModule,
+        MatCheckboxModule,
+        FilterPipe,
+        MatRadioModule,
+        SortPipe
+    ]
 })
 export class SharedModule {
 }

@@ -1,9 +1,7 @@
 package org.monarchinitiative.poet.controller.annotation
 
 import groovy.json.JsonBuilder
-import org.monarchinitiative.poet.controller.annotation.PhenotypeController
 import org.monarchinitiative.poet.model.requests.PhenotypeRequest
-import org.monarchinitiative.poet.model.requests.TreatmentRequest
 import org.monarchinitiative.poet.service.AnnotationService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,7 +36,7 @@ class PhenotypeControllerSpec extends Specification {
     @Unroll
     def "when we test get phenotype annotations"() {
         given:
-        annotationService.getPhenotypeAnnotations(_, _) >> Collections.emptyList()
+        annotationService.getPhenotypeAnnotationsByDisease(_, _) >> Collections.emptyList()
 
 
         expect: "an annotation state"

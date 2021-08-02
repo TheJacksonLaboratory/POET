@@ -1,24 +1,28 @@
 <mat-card class="treatment-card form-card">
   <mat-card-title>
-    <mat-icon class="mode-icon lock" *ngIf="formControlGroup.disabled"
+    <mat-icon class="form-icon-left lock" *ngIf="formControlGroup.disabled"
               matTooltip="View Mode Only"
               matTooltipPosition="below">
       lock
     </mat-icon>
-    <mat-icon class="mode-icon unlock" *ngIf="!formControlGroup.disabled"
+    <mat-icon class="form-icon-left unlock" *ngIf="!formControlGroup.disabled"
               matTooltip="Editing Mode"
               matTooltipPosition="below">
       lock_open
     </mat-icon>
+    <mat-icon class="form-icon-left messages"
+              *ngIf="utilityService.hasReviewerComments(selectedAnnotation) &&
+              utilityService.isNeedsWork(this.selectedAnnotation)"
+              (click)="utilityService.openMessagesDialog(this.selectedAnnotation.reviewMessages)">
+      mark_chat_unread
+    </mat-icon>
     New Treatment
-    <!--<mat-icon class="help-icon" matTooltip="View Previous Versions"
-              matTooltipPosition="below">history</mat-icon>-->
     <mat-icon class="help-icon" (click)="closeForm()">cancel</mat-icon>
   </mat-card-title>
   <mat-card-subtitle>
     Medical Action Ontology [ MAxO ] <br>
-    <p class="extra-information" *ngIf="selectedAnnotation?.owner">
-      {{selectedAnnotation.owner}} updated on {{selectedAnnotation.lastUpdatedDate}} </p>
+    <p class="extra-information" *ngIf="selectedAnnotation?.owner.nickname">
+      {{selectedAnnotation.owner.nickname}} updated on {{selectedAnnotation.lastUpdatedDate}} </p>
   </mat-card-subtitle>
   <mat-card-content>
     <button mat-raised-button color="primary" (click)="selectPublication()"
@@ -46,7 +50,7 @@
             Looks like there was an error with the HPO API.
           </mat-error>
           <mat-autocomplete #hpo="matAutocomplete" (optionSelected)="selectedHpo = $event.option.value"
-                            [displayWith]="displayHpoFn">
+                            [displayWith]="utilityService.displayHpoFn">
             <mat-option class="auto-complete-option" *ngFor="let option of hpoOptions" [value]="option">
               <span class="option-name">{{option.name}}</span>
               &nbsp;
@@ -69,7 +73,7 @@
             Looks like there was an error with the MAxO API.
           </mat-error>
           <mat-autocomplete #maxoAuto="matAutocomplete" (optionSelected)="selectedTreatment = $event.option.value"
-                            [displayWith]="displayMaxoFn">
+                            [displayWith]="utilityService.displayMaxoFn">
             <mat-option class="auto-complete-option" *ngFor="let option of maxoOptions" [value]="option">
               <span class="option-name">{{option.name}}</span>
               &nbsp;
@@ -87,11 +91,11 @@
             <mat-option [value]="'INVESTIGATES'">INVESTIGATES</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="fill" class="ml1">
+        <mat-form-field appearance="fill" class="ml1 evidence">
           <mat-label>Evidence</mat-label>
           <mat-select formControlName="evidenceFormControl">
-            <mat-option [value]="'TAS'">TAS</mat-option>
-            <mat-option [value]="'PCS'">PCS</mat-option>
+            <mat-option [value]="'TAS'">Traceable Author Statement</mat-option>
+            <mat-option [value]="'PCS'">Published Clinical Study</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -134,6 +138,14 @@
 
   <mat-card-actions>
     <div class="left-actions">
+      <button class="approve-annotation" mat-raised-button aria-label="Approve Treatment Annotation"
+              *ngIf="userService.isElevatedCurator(userRole) && utilityService.isUnderReview(this.selectedAnnotation)" (click)="reviewAnnotation('approve')">
+        Approve
+      </button>
+      <button class="deny-annotation" mat-raised-button aria-label="Deny Treatment Annotation"
+              *ngIf="userService.isElevatedCurator(userRole) && utilityService.isUnderReview(this.selectedAnnotation)" (click)="reviewAnnotation('deny')">
+        Deny
+      </button>
       <button mat-raised-button color="primary" *ngIf="everythingValid()" (click)="submitForm()">SUBMIT</button>
       <mat-spinner color="accent" [diameter]="20" mode="indeterminate" *ngIf="savingAnnotation"></mat-spinner>
     </div>

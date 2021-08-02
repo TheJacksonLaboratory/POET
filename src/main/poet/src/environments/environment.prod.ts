@@ -16,6 +16,11 @@ export const environment = {
       POET_BASE_URL + '/user/check',
       POET_BASE_URL + '/statistics/activity/',
       POET_BASE_URL + '/statistics/contributions/',
+      POET_BASE_URL + '/statistics/annotation/work',
+      {
+        uri: POET_BASE_URL + '/annotation/*',
+        httpMethod: HttpMethod.Get,
+      },
       {
         uri: POET_BASE_URL + '/annotation/*',
         httpMethod: HttpMethod.Post,

@@ -6,8 +6,10 @@ export interface SearchResult {
 
 export interface MonarchSearchResult {
   match: string;
-  label: string[];
+  label: string;
   id: string;
+  omim_id: string;
+  leaf: boolean;
 }
 
 export interface HpoTerm {

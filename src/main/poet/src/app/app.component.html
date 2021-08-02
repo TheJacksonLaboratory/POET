@@ -15,15 +15,18 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item *ngFor="let item of portalActionItems"
-                [routerLink]="[item.route]"
-                [disabled]="!(auth.isAuthenticated$ | async) && item.private"
-                routerLinkActive="list-item-active"
-                [routerLinkActiveOptions]="{exact:true}"
-                class="primary nav-btn" >
-          <mat-icon matListIcon> {{ item.icon }} </mat-icon>
-          {{item.title}}
-        </button>
+        <div *ngFor="let item of portalActionItems">
+          <button mat-menu-item [routerLink]="[item.route]"
+                  [disabled]="!(auth.isAuthenticated$ | async) && item.private"
+                  *ngIf="(!item.requiresElevated) || (item.requiresElevated && isElevated)"
+                  routerLinkActive="list-item-active"
+                  [routerLinkActiveOptions]="{exact:true}"
+                  class="primary nav-btn" >
+            <mat-icon matListIcon> {{ item.icon }} </mat-icon>
+            {{item.title}}
+          </button>
+        </div>
+
       </mat-menu>
     </div>
     <ng-container *ngIf="isHomePage() && (auth.isLoading$ | async); else loggedIn">

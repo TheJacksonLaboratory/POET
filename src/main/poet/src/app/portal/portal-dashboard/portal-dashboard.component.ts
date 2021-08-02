@@ -3,10 +3,9 @@ import { AuthService } from "@auth0/auth0-angular";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { transition, trigger, useAnimation } from "@angular/animations";
 import { fadeIn } from "ng-animate";
-import { Router } from "@angular/router";
 import { CurationService } from "../../shared/services/curation/curation.service";
-import { MatDialog } from "@angular/material/dialog";
 import { environment } from "../../../environments/environment";
+import { Status } from "../../shared/models/models";
 
 @Component({
   selector: 'app-portal-home',
@@ -21,22 +20,30 @@ export class PortalDashboardComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   displayedColumns: string[] = ['category', 'curator', 'date', 'time', 'actions'];
-  dataSource: any;
   user: any;
   pieData = [];
   userRole: any;
   recentActivity: any;
   lowValue: number = 0;
   highValue: number = 5;
+  reviews: any;
+  userAnnotations: any;
 
-  constructor(public authService: AuthService, private router: Router,
-              public curationService: CurationService, public dialog: MatDialog) {
+  constructor(public authService: AuthService, public curationService: CurationService) {
   }
 
   ngOnInit(): void {
     this.authService.user$.subscribe((user) => {
       this.user = user;
       this.userRole = user[environment.AUDIENCE_ROLE];
+      this.curationService.getUserAnnotationsNeedingWork().subscribe((annotations)=>{
+        this.userAnnotations = annotations;
+      });
+      if(this.isElevatedCurator()){
+        this.curationService.getAnnotationsNeedingReview().subscribe((annotations) => {
+          this.reviews = annotations;
+        });
+      }
     });
 
     this.curationService.getGroupActivityFeed(true, 1).subscribe((recentActivity) => {
@@ -50,12 +57,13 @@ export class PortalDashboardComponent implements OnInit {
         this.pieData = contributions;
       }
     });
+
+
   }
 
   graphUserActivity(userActivity: any) {
     let dates = userActivity.map((activity) => activity.date);
     let counts = {};
-
     for (let i = 0; i < dates.length; i++) {
       let date = dates[i];
       counts[date] = counts[date] && counts[date].value ? {name: date, value: counts[date].value + 1} : {
@@ -80,5 +88,9 @@ export class PortalDashboardComponent implements OnInit {
 
   noContributions(){
     return this.pieData?.length == 0;
+  }
+
+  isElevatedCurator(){
+    return this.userRole == "ELEVATED_CURATOR";
   }
 }

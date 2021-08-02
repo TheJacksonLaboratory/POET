@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from "@angular/forms";
-import { debounceTime, finalize } from "rxjs/operators";
+import {debounceTime, filter, finalize, map} from "rxjs/operators";
 import { tap } from "rxjs/internal/operators/tap";
 import { switchMap } from "rxjs/internal/operators/switchMap";
 import { CurationService } from "../services/curation/curation.service";
@@ -21,7 +21,7 @@ export class SearchComponent implements OnInit {
   @Input() role: string;
   @ViewChild(MatAutocompleteTrigger, {read: MatAutocompleteTrigger}) searchBar: MatAutocompleteTrigger;
   searchControl = new FormControl();
-  diseaseOptions: any;
+  diseaseOptions: MonarchSearchResult[];
   isLoading = false;
   errorMsg: string;
 
@@ -39,17 +39,21 @@ export class SearchComponent implements OnInit {
         }),
         switchMap(value => {
           if (this.hasValidInput(value)) {
+            let prefix = "MONDO";
             this.isLoading = true;
-            return this.monarchService.searchMonarch(value, "MONDO")
+            if(value.startsWith("OMIM:")){
+              prefix = "OMIM";
+            }
+            return this.monarchService.searchMonarch(value, prefix)
               .pipe(
                 finalize(() => {
                   this.isLoading = false
-                }),
+                })
               );
           } else {
             return of();
           }
-        })).subscribe(data => {
+        })).subscribe((data: MonarchSearchResult[]) => {
             if (!data) {
               this.searchControl.setErrors({notFound: true});
             }
@@ -74,7 +78,8 @@ export class SearchComponent implements OnInit {
            const diseaseToSave = {
              description: diseaseData.description,
              diseaseId: diseaseData.id,
-             diseaseName: diseaseData.label
+             diseaseName: diseaseData.label,
+             equivalentId: monarchSearchResult.omim_id
            };
            this.curationService.saveDisease(diseaseToSave).subscribe(() => {
              this.router.navigate(['/portal/curate/' + diseaseToSave.diseaseId]);

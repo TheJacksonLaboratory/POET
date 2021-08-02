@@ -1,10 +1,12 @@
 package org.monarchinitiative.poet.service;
 
 
+import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
-import org.monarchinitiative.poet.model.response.AnnotationCount;
-import org.monarchinitiative.poet.model.response.Contribution;
+import org.monarchinitiative.poet.model.responses.AnnotationCount;
+import org.monarchinitiative.poet.model.responses.Contribution;
 import org.monarchinitiative.poet.model.entities.UserActivity;
+import org.monarchinitiative.poet.model.responses.ReviewCount;
 import org.monarchinitiative.poet.repository.DiseaseRepository;
 import org.monarchinitiative.poet.repository.PhenotypeAnnotationRepository;
 import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A spring service component created to provide business logic and functionality to get user activity
@@ -57,9 +61,9 @@ public class StatisticsService {
             }
         } else {
             if(weeks == 0){
-                return this.userActivityRepository.findUserActivityByUserAuthId(authentication.getName());
+                return this.userActivityRepository.findUserActivityByOwnerAuthId(authentication.getName());
             } else {
-                return this.userActivityRepository.findUserActivityByLocalDateTimeAfterAndUserAuthId(compare, authentication.getName());
+                return this.userActivityRepository.findUserActivityByLocalDateTimeAfterAndOwnerAuthId(compare, authentication.getName());
             }
         }
     }
@@ -72,15 +76,15 @@ public class StatisticsService {
      * @since 0.5.0
      */
     public Contribution summarizeUserContributions(Authentication authentication){
-        final int treatment = userActivityRepository.countAllByAnnotation_AnnotationTypeAndUserAuthId("maxo", authentication.getName());
+        final int treatment = userActivityRepository.countAllByAnnotation_AnnotationTypeAndOwnerAuthId("maxo", authentication.getName());
         final int phenotype = 0;
         final int phenopackets = 0;
         return new Contribution(treatment, phenotype, phenopackets);
     }
 
     public AnnotationCount summarizeAnnotations(String diseaseId){
-        int treatmentCount = 0;
-        int phenotypeCount = 0;
+        int treatmentCount;
+        int phenotypeCount;
         if(diseaseId != null){
             treatmentCount = this.treatmentAnnotationRepository.countAllByAnnotationSourceDiseaseAndStatusNot(
                     this.diseaseRepository.findDiseaseByDiseaseId(diseaseId), AnnotationStatus.RETIRED
@@ -94,5 +98,17 @@ public class StatisticsService {
         }
 
         return new AnnotationCount(phenotypeCount, treatmentCount);
+    }
+
+    public List<ReviewCount> summarizeAnnotationNeedReview(){
+        List<ReviewCount> phenotypeAnnotations = this.phenotypeAnnotationRepository.getAllByStatus(AnnotationStatus.UNDER_REVIEW);
+        List<ReviewCount> treatmentAnnotations = this.treatmentAnnotationRepository.getAllByStatus(AnnotationStatus.UNDER_REVIEW);
+        return Stream.concat(phenotypeAnnotations.stream(), treatmentAnnotations.stream()).collect(Collectors.toList());
+    }
+
+    public List<ReviewCount> summarizeAnnotationNeedWork(User user){
+        List<ReviewCount> phenotypeAnnotations = this.phenotypeAnnotationRepository.getAllByStatusAndUser(AnnotationStatus.NEEDS_WORK, user);
+        List<ReviewCount> treatmentAnnotations = this.treatmentAnnotationRepository.getAllByStatusAndUser(AnnotationStatus.NEEDS_WORK, user);
+        return Stream.concat(phenotypeAnnotations.stream(), treatmentAnnotations.stream()).collect(Collectors.toList());
     }
 }

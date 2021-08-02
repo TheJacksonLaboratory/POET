@@ -1,7 +1,7 @@
 package org.monarchinitiative.poet.service;
 
 import org.monarchinitiative.poet.model.entities.Disease;
-import org.monarchinitiative.poet.model.response.SearchResponse;
+import org.monarchinitiative.poet.model.responses.SearchResponse;
 import org.monarchinitiative.poet.repository.DiseaseRepository;
 import org.springframework.stereotype.Service;
 

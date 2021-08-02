@@ -30,15 +30,19 @@ export class HpoService {
     let parameters: HttpParams = new HttpParams().set('q', query);
     return this.httpClient.get<any>(environment.HPO_API_MAXO_SEARCH_URL, {params: parameters})
       .pipe(pluck('terms'),
-      map((maxoResults: HpoMaxoSearchResult[]) => {
-        return maxoResults.map((maxoResult) => {
-          return {
-            ...maxoResult.term,
-            synonym: maxoResult.synonym,
-            synonymMatched: maxoResult.synonymMatched
-          };
-        });
-      }));
+        map((maxoResults: HpoMaxoSearchResult[]) => {
+          return maxoResults.map((maxoResult) => {
+            return {
+              ...maxoResult.term,
+              synonym: maxoResult.synonym,
+              synonymMatched: maxoResult.synonymMatched
+            };
+          });
+        }),
+        map( (items: MaxoSearchResult[]) => {
+          return items.filter((item: MaxoSearchResult) => !item.name.toLowerCase().includes("obsolete"));
+        })
+      );
   }
 
   /**

@@ -60,7 +60,7 @@ class AnnotationServiceSpec extends Specification {
         publicationStub.findByPublicationId(_ as String) >> publicationResponse
         annotationStub.findByPublicationAndDisease(_ as Publication, _ as Disease) >> annotationSourceResponse
         userActivityStub.getMostRecentDateForAnnotationActivity(_ as Long) >> userActivityResponse
-        def result = annotationService.getTreatmentAnnotations(inputParameters[0], inputParameters[1], inputParameters[2])
+        def result = annotationService.getTreatmentAnnotationsByDisease(inputParameters[0], inputParameters[1], inputParameters[2])
         expect:
         result == expectedResponse
 
@@ -103,7 +103,7 @@ class AnnotationServiceSpec extends Specification {
         phenotypeAnnotationStub.findAllByAnnotationSourceDiseaseAndStatusNot(_ as Disease, _ as AnnotationStatus) >> phenotypeAnnotationResponse
         annotationStub.findByPublicationAndDisease(_ as Publication, _ as Disease) >> annotationSourceResponse
         userActivityStub.getMostRecentDateForAnnotationActivity(_ as Long) >> userActivityResponse
-        def result = annotationService.getPhenotypeAnnotations(inputParameters[0], inputParameters[2])
+        def result = annotationService.getPhenotypeAnnotationsByDisease(inputParameters[0], inputParameters[2])
         expect:
         result == expectedResponse
 

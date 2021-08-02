@@ -20,7 +20,7 @@ public class PhenotypeRequest {
     private final String description;
     @Pattern(regexp = "HP:[0-9]{7}$", message = "hpoId should be a valid identifier from human phenotype ontology")
     private final String onset;
-    @Pattern(regexp = "PMID:[0-9]{8}", message = "publicationID should be a valid identifier from PubMed")
+    @Pattern(regexp = "PMID:[0-9]{1,8}", message = "publicationID should be a valid identifier from PubMed")
     private final String publicationId;
     private final String publicationName;
     @Pattern(regexp = "MONDO:[0-9]{7}", message = "diseaseId should be a valid identifier from mondo disease ontology")
@@ -31,11 +31,12 @@ public class PhenotypeRequest {
     private final String frequency;
     @Pattern(regexp = "MALE|FEMALE", message = "sex be one of (MALE, FEMALE)")
     private final String sex;
+    private final String message;
 
     public PhenotypeRequest(Long id, String hpoName, String hpoId, String evidence, String description,
                             String onset, String publicationId, String publicationName,
                             String diseaseId, String diseaseName, String modifiers,
-                            String frequency, String qualifier, String sex) {
+                            String frequency, String qualifier, String sex, String message) {
         this.id = id;
         this.hpoName = hpoName;
         this.hpoId = hpoId;
@@ -50,6 +51,7 @@ public class PhenotypeRequest {
         this.qualifier = qualifier;
         this.frequency = frequency;
         this.sex = sex;
+        this.message = message;
     }
 
     public Long getId() {
@@ -106,6 +108,10 @@ public class PhenotypeRequest {
 
     public String getSex() {
         return sex;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     @Override

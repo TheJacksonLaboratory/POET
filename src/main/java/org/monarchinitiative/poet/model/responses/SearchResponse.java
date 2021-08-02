@@ -1,4 +1,4 @@
-package org.monarchinitiative.poet.model.response;
+package org.monarchinitiative.poet.model.responses;
 
 public class SearchResponse {
 

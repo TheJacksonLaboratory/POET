@@ -7,6 +7,7 @@ import org.monarchinitiative.poet.model.entities.Disease;
 import org.monarchinitiative.poet.model.entities.Publication;
 import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
+import org.monarchinitiative.poet.model.requests.DiseaseRequest;
 import org.monarchinitiative.poet.model.requests.PublicationRequest;
 import org.monarchinitiative.poet.repository.AnnotationSourceRepository;
 import org.monarchinitiative.poet.repository.DiseaseRepository;
@@ -71,13 +72,25 @@ public class EntityService {
     /**
      * A function to get a disease from the disease repository implementation
      *
-     * @param disease a OMIM or MONDO disease id
+     * @param disease a disease object created from the
      *
      * @return a disease or nothing
      * @since 0.5.0
      */
     public boolean saveNewDisease(Disease disease){
-        this.diseaseRepository.save(disease);
+        if(disease.getEquivalentId() != null){
+            Disease diseaseOld = this.diseaseRepository.findDiseaseByDiseaseId(disease.getEquivalentId());
+            this.diseaseRepository.save(disease);
+            if(diseaseOld != null){
+                List<AnnotationSource> sourceList = this.annotationSourceRepository.findDistinctByDisease(diseaseOld);
+                sourceList.forEach(source -> {
+                    source.setDisease(disease);
+                    this.annotationSourceRepository.save(source);
+                });
+            }
+        } else {
+            this.diseaseRepository.save(disease);
+        }
         return true;
     }
 
@@ -116,22 +129,25 @@ public class EntityService {
      *
      * @param request a publication request to save to a disease
      * @param authentication a spring authentication object
-     * @return a boolean if save is successful or not
      */
-    public boolean savePublicationToDisease(PublicationRequest request, Authentication authentication){
-        Publication publication = new Publication(request.getPublication());
+    public void savePublicationToDisease(PublicationRequest request, Authentication authentication){
+        Publication publication = this.publicationRepository.findByPublicationId(request.getPublication().getPublicationId());
         Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(request.getDisease().getDiseaseId());
         User user = userRepository.findDistinctByAuthId(authentication.getName());
+        if(publication == null){
+            publication = new Publication(request.getPublication());
+            this.publicationRepository.save(publication);
+        }
+
         if(disease != null){
-            if(user != null && user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)){
-                this.publicationRepository.save(publication);
+            if(user != null){
                 this.annotationSourceRepository.save(new AnnotationSource(publication, disease));
-                return true;
             } else {
                 throw new AuthenticationException(authentication.getName());
             }
         } else {
             throw new DiseaseNotFoundException(request.getDisease().getDiseaseId());
         }
+
     }
 }

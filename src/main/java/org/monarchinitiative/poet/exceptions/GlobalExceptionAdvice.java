@@ -1,6 +1,6 @@
 package org.monarchinitiative.poet.exceptions;
 
-import org.monarchinitiative.poet.model.response.ErrorDetails;
+import org.monarchinitiative.poet.model.responses.ErrorDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +46,7 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     ErrorDetails authenticationException(AuthenticationException ex) {
-        return new ErrorDetails(new Date(), "Unauthorized Actions",
+        return new ErrorDetails(new Date(), "Unauthorized.",
                 ex.getMessage());
     }
 

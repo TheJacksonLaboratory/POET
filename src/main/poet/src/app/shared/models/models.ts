@@ -3,6 +3,8 @@ export interface Annotation {
   type: string;
   status: string;
   annotationSource: AnnotationSource;
+  reviewMessages: Message[];
+  owner: User;
 }
 
 export interface AnnotationSource {
@@ -24,6 +26,8 @@ export interface Publication {
 export interface Disease {
   diseaseId: string;
   diseaseName: string;
+  equivalentId: string;
+  description: string;
 }
 
 export interface PhenotypeAnnotation extends Annotation {
@@ -48,14 +52,13 @@ export interface TreatmentAnnotation extends Annotation {
   relation: string;
   extension: string;
   lastUpdatedDate: string;
-  owner: string;
 }
 
 export interface UserActivityResponse {
   annotation: any;
   curationAction: string;
   localDateTime: string;
-  user: object;
+  owner: object;
 }
 
 export interface HomeIcon {
@@ -63,4 +66,22 @@ export interface HomeIcon {
   name: string;
   dateAdded: string;
   link: string;
+}
+
+export interface Message {
+  reviewer: User;
+  value: string;
+}
+
+export interface User {
+  nickname: string;
+  userRole: string;
+}
+
+export enum Status {
+  OFFICIAL = "OFFICIAL",
+  ACCEPTED = "ACCEPTED",
+  UNDER_REVIEW = "UNDER_REVIEW",
+  NEEDS_WORK = "NEEDS_WORK",
+  RETIRED = "RETIRED"
 }
