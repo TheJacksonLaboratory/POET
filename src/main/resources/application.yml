@@ -1,12 +1,14 @@
 spring:
   datasource:
-    url: jdbc:h2:file:./usr/local/svc-maxo/database/poet
+    url: jdbc:h2:file:./usr/local/svc-maxo/database/poet;mode=MYSQL
   h2:
     console:
       enabled: true
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
+    generate-ddl: false
+
   security:
     oauth2:
       resourceserver:

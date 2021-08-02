@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class InitDatabaseService {
@@ -81,7 +82,7 @@ public class InitDatabaseService {
                 if(diseaseNameOptional.isPresent()){
                     if(diseaseId.contains("OMIM")){
                         final String diseaseName = WordUtils.capitalizeFully(diseaseNameOptional.get());
-                        disease = new Disease(diseaseId.toString(), diseaseName);
+                        disease = new Disease(diseaseId, diseaseName);
                         entityService.saveNewDisease(disease);
                     } else {
                         return;
@@ -92,7 +93,6 @@ public class InitDatabaseService {
 
                 entry.getValue().forEach(phenotype -> {
                     Term term = ontologyMap.get(phenotype.getPhenotypeId());
-                    ContainsPubmed<String> cpm = new ContainsPubmed<>();
                     List<String> publications = phenotype.getPublications();
                     AnnotationSource annotationSource = new AnnotationSource();
                     // Use the first Publication Identifier for now until we scale out the model
@@ -104,10 +104,10 @@ public class InitDatabaseService {
                         Publication publication = null;
                         annotationSource = entityService.getAnnotationSource(publicationCitation.get(), disease.getDiseaseId());
                         if(annotationSource == null){
-                            try {
+                            try{
                                 publication = this.getPublication(publicationCitation.get());
-                            } catch (IOException e) {
-                                publication = new Publication(publicationCitation.get(), "", "","");
+                            } catch(InterruptedException ex){
+                                System.exit(0);
                             }
                             annotationSource = entityService.createAnnotationSource(new PublicationRequest(publication, disease));
                         }
@@ -137,7 +137,7 @@ public class InitDatabaseService {
                             phenotype.getModifierList(),
                             phenotype.getFrequency(), phenotype.isNOT() ? "NOT": "", phenotype.getSex(), null);
                     try{
-                        annotationService.createPhenotypeAnnotation(request, user);
+                        annotationService.createPhenotypeAnnotation(request, user, true);
                     } catch (DuplicateAnnotationException ex){
                         System.out.println(ex.getMessage());
                     }
@@ -149,23 +149,29 @@ public class InitDatabaseService {
         }
     }
 
-   private Publication getPublication(String publicationId) throws IOException {
-        publicationId = publicationId.replace("PMID:", "");
-        final String urlString = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi" + "?db=pubmed&retmode=json&id=" + publicationId;
-        URL url = new URL(urlString);
-        // Convert to a JSON object to print data
-        ObjectMapper mapper = new ObjectMapper();
-        Map map = mapper.readValue(url, Map.class);
-        Map result = (Map) map.get("result");
-        Map publication = (Map) result.get(publicationId);
-        if(publication == null){
-            return new Publication("PMID:" + publicationId, "",
-                    "", "");
-        } else {
-            return new Publication("PMID:" + publicationId, (String) publication.get("title"),
-                    (String) publication.get("pubdate"), (String) publication.get("sortfirstauthor"));
-        }
+   private Publication getPublication(String publicationId) throws InterruptedException {
+       try {
+           publicationId = publicationId.replace("PMID:", "");
+           final String urlString = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi" + "?db=pubmed&retmode=json&id=" + publicationId;
+           URL url = new URL(urlString);
+           // Convert to a JSON object to print data
+           ObjectMapper mapper = new ObjectMapper();
+           Map map = mapper.readValue(url, Map.class);
+           Map result = (Map) map.get("result");
+           Map publication = (Map) result.get(publicationId);
 
+           if(publication == null){
+               return new Publication("PMID:" + publicationId, "",
+                       "", "");
+           } else {
+               String title = (String) publication.get("title");
+               return new Publication("PMID:" + publicationId, (String) publication.get("title"),
+                       (String) publication.get("pubdate"), (String) publication.get("sortfirstauthor"));
+           }
+       } catch (IOException e) {
+           TimeUnit.SECONDS.sleep(1);
+           return this.getPublication(publicationId);
+       }
     }
 }
 

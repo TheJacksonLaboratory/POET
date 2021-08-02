@@ -3,7 +3,7 @@ import { HpoService } from "../../../shared/services/external/hpo.service";
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { AnchorSearchResult, HpoTerm } from "../../../shared/models/search-models";
-import { Annotation, AnnotationSource, PhenotypeAnnotation, Publication } from "../../../shared/models/models";
+import { AnnotationSource, PhenotypeAnnotation, Publication } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { StateService } from "../../../shared/services/state/state.service";
 import { MatDialog } from "@angular/material/dialog";
@@ -159,12 +159,21 @@ export class PhenotypeCurationComponent implements OnInit {
       description: this.formControlGroup.get('descriptionFormControl').value,
       sex: this.formControlGroup.get('sexFormControl').value,
       qualifier: this.selectedQualifier == true ? "NOT" : '',
-      frequency: this.formControlGroup.get('frequencyFormControl').value?.ontologyId,
+      frequency: this.getFrequencyValue(),
       modifiers: this.selectedModifiers.join(";"),
       onset: this.formControlGroup.get('onsetFormControl').value?.ontologyId,
       message: ""
     };
   }
+
+  getFrequencyValue(): any {
+    const freqOntology = this.formControlGroup.get('frequencyFormControl').value?.ontologyId
+    if (freqOntology) {
+      return freqOntology
+    }
+    return this.formControlGroup.get('frequencyFormControl').value;
+  }
+
 
   submitForm(): void {
     const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
@@ -189,6 +198,7 @@ export class PhenotypeCurationComponent implements OnInit {
     this.formControlGroup.get('evidenceFormControl').setValue(annotation.evidence);
     this.formControlGroup.get('descriptionFormControl').setValue(annotation.description);
     this.formControlGroup.get('frequencyFormControl').setValue(annotation.frequency);
+    this.selectedFrequency = annotation.frequency;
     this.formControlGroup.get('onsetFormControl').setValue({ontologyId: annotation.onset, name: ""});
     this.selectedModifiers = annotation.modifier.length > 0 ?  annotation.modifier.split(";") : []
     this.formControlGroup.get('sexFormControl').setValue(annotation.sex);
@@ -296,21 +306,11 @@ export class PhenotypeCurationComponent implements OnInit {
 
   reviewAnnotation(action: string){
     if(action === 'approve'){
-      this.dialog.open(DialogReviewComponent, {
-        minWidth: 300,
-        data: {
-          title: "Approve Phenotype Annotation",
-          approve: true
-        }
-      }).afterClosed().subscribe((data) => {
-        if(data.confirmed){
-          const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
-          this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "approve").subscribe(() => {
-            this.onSuccessfulPhenotype('Phenotype Annotation Approved!', true);
-          }, (err) => {
-            this.onErrorPhenotype();
-          });
-        }
+      const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
+      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "approve").subscribe(() => {
+        this.onSuccessfulPhenotype('Phenotype Annotation Approved!', true);
+      }, (err) => {
+        this.onErrorPhenotype();
       });
     } else if(action === 'deny') {
       this.dialog.open(DialogReviewComponent, {

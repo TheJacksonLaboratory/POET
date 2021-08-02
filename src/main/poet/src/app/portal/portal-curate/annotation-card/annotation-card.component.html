@@ -1,4 +1,4 @@
-<mat-card [@bounceInLeft]="triggerBounceIn" class="annotation-card">
+<mat-card class="annotation-card">
   <mat-card-title>
     <span *ngIf="category == 'treatment'">Treatments</span>
     <span *ngIf="category == 'phenotype'">Phenotypes</span>
@@ -14,12 +14,12 @@
     <span *ngIf="category == 'phenotype'">A list of curated phenotypes of this disease</span><br><br>
   </mat-card-subtitle>
   <mat-card-content>
-
+    <mat-progress-bar mode="buffer" *ngIf="loadingAnnotations"></mat-progress-bar>
     <div class="filter-wrapper" *ngIf="(category === 'phenotype' && (phenotypeAnnotations | async)?.length > 0) ||
                                         (category === 'treatment' && (treatmentAnnotations | async)?.length > 0)">
       <mat-form-field class="filter-container">
         <mat-label>Annotation Status</mat-label>
-        <mat-select multiple [(value)]="selectedStatuses">
+        <mat-select multiple [(value)]="selectedStatuses" (selectionChange)="resetPaginator()">
           <mat-select-trigger>
             {{selectedStatuses ? selectedStatuses[0] : ''}}
             <span *ngIf="selectedStatuses?.length > 1" class="example-additional-selection">
@@ -35,13 +35,13 @@
       </mat-form-field>
       <mat-form-field class="filter-container">
         <mat-label>Sort By</mat-label>
-        <mat-select [(ngModel)]="selectedSort">
+        <mat-select [(ngModel)]="selectedSort" (selectionChange)="resetPaginator()">
           <mat-option value="recent">Most Recent</mat-option>
           <mat-option value="name"><span class="capitalize">{{category}}</span> Name</mat-option>
         </mat-select>
       </mat-form-field>
       <div class="filter-container mat-form-field">
-        <mat-checkbox [(ngModel)]="showAll"> Show Other Curators </mat-checkbox>
+        <mat-checkbox [(ngModel)]="showAll" (change)="resetPaginator()"> Show Other Curators </mat-checkbox>
       </div>
     </div>
 
@@ -130,14 +130,14 @@
         </ng-template>
       </mat-list-item>
     </mat-list>
-    <mat-paginator *ngIf="(treatmentAnnotations | async)?.length > 0 && category === 'treatment'"
-                   [pageSize]="10"
-                   [pageSizeOptions]="[5, 10, 25]"
+    <mat-paginator #treatmentPaginator *ngIf="(treatmentAnnotations | async)?.length > 0 && category === 'treatment'"
+                   pageSize="10"
                    (page)="getPaginatorData($event)"
                    showFirstLastButtons="false">
     </mat-paginator>
-    <mat-paginator *ngIf="(phenotypeAnnotations | async)?.length > 0 && category === 'phenotype'" pageSize=10
+    <mat-paginator #phenotypePaginator *ngIf="(phenotypeAnnotations | async)?.length > 0 && category === 'phenotype'"
                    (page)="getPaginatorData($event)"
+                   pageSize="10"
                    showFirstLastButtons="false">
     </mat-paginator>
     <div class="annotation-missing" *ngIf="((treatmentAnnotations | async)?.length == 0 && this.category == 'treatment')

@@ -251,23 +251,12 @@ export class TreatmentCurationComponent implements OnInit {
 
   reviewAnnotation(action: string){
     if(action === 'approve'){
-      // approve the annotation
-      this.dialog.open(DialogReviewComponent, {
-        minWidth: 300,
-        data: {
-          title: "Approve Treatment Annotation",
-          approve: true
-        }
-      }).afterClosed().subscribe((data) => {
-        if(data.confirmed){
-          const treatmentAnnotation = this.getFormTreatmentAnnotation();
-          this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', 'approve').subscribe(() => {
-            this.onSuccessfulTreatment('Treatment Annotation Approved!', true);
-          }, (err) => {
-            this.onErrorTreatment();
-          });
-        }
-      })
+      const treatmentAnnotation = this.getFormTreatmentAnnotation();
+      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', 'approve').subscribe(() => {
+        this.onSuccessfulTreatment('Treatment Annotation Approved!', true);
+      }, (err) => {
+        this.onErrorTreatment();
+      });
     } else if(action === 'deny') {
       this.dialog.open(DialogReviewComponent, {
         minWidth: 300,

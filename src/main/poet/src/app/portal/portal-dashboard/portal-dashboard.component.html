@@ -12,17 +12,18 @@
           <div fxFlex="90" fxFlexOffset="5">
             <mat-tab-group animationDuration="1ms">
               <mat-tab label="Recent Activity">
-                <mat-list *ngFor="let recent of recentActivity | slice: lowValue : highValue">
+                <mat-list *ngFor="let recent of recentActivity | slice: lowValue:highValue">
                   <mat-list-item [routerLink]="'/curate/' + recent.diseaseId" class="activity-item">
                     <h4>{{recent.view}}</h4>
                     <span class="spacer"></span>
                     <button mat-stroked-button>View Disease</button>
                   </mat-list-item>
                 </mat-list>
-                <p class="no-activity" *ngIf="recentActivity?.length == 0 || !recentActivity">No Recent Activity.</p>
-                <mat-paginator *ngIf="recentActivity?.length > 0" [length]="recentActivity?.length" pageSize=5
+                <mat-progress-bar *ngIf="loading"></mat-progress-bar>
+                <p class="no-activity" *ngIf="recentActivity?.length == 0">No Recent Activity.</p>
+                <mat-paginator *ngIf="recentActivity?.length > 0" [length]="recentActivity?.length" pageSize="5"
                                (page)="getPaginatorData($event)"
-                               showFirstLastButtons="false">
+                               showFirstLastButtons="false" hidePageSize="true">
                 </mat-paginator>
               </mat-tab>
               <mat-tab label="Reviews" *ngIf="userService.isElevatedCurator(userRole) && reviews?.length > 0">

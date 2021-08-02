@@ -11,8 +11,11 @@ import org.monarchinitiative.poet.repository.DiseaseRepository;
 import org.monarchinitiative.poet.repository.PhenotypeAnnotationRepository;
 import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository;
 import org.monarchinitiative.poet.repository.UserActivityRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -50,20 +53,20 @@ public class StatisticsService {
      * @return a list of search response objects or an empty list
      * @since 0.5.0
      */
-    public List<UserActivity> getUserActivity(boolean all, int weeks, Authentication authentication){
+    public Page<UserActivity> getUserActivity(boolean all, int weeks, Pageable pageable, Authentication authentication){
         long DAY_IN_MS = 1000 * 60 * 60 * 24;
         LocalDateTime compare = new Date(System.currentTimeMillis() - ((7 * weeks) * DAY_IN_MS)).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         if(all){
             if(weeks == 0){
-                return (List<UserActivity>) this.userActivityRepository.findAll();
+                return this.userActivityRepository.findAll(pageable);
             } else {
-                return this.userActivityRepository.findUserActivityByLocalDateTimeAfter(compare).stream().limit(150).collect(Collectors.toList());
+                return this.userActivityRepository.findUserActivityByLocalDateTimeAfter(compare, pageable);
             }
         } else {
             if(weeks == 0){
-                return this.userActivityRepository.findUserActivityByOwnerAuthId(authentication.getName()).stream().limit(150).collect(Collectors.toList());
+                return this.userActivityRepository.findUserActivityByOwnerAuthId(authentication.getName(), pageable);
             } else {
-                return this.userActivityRepository.findUserActivityByLocalDateTimeAfterAndOwnerAuthId(compare, authentication.getName()).stream().limit(150).collect(Collectors.toList());
+                return this.userActivityRepository.findUserActivityByLocalDateTimeAfterAndOwnerAuthId(compare, authentication.getName(), pageable);
             }
         }
     }

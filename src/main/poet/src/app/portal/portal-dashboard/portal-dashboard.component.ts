@@ -28,6 +28,7 @@ export class PortalDashboardComponent implements OnInit {
   highValue: number = 5;
   reviews: any;
   userAnnotations: any;
+  loading = false;
 
   constructor(public authService: AuthService, public curationService: CurationService, public userService: UserService) {
   }
@@ -36,19 +37,23 @@ export class PortalDashboardComponent implements OnInit {
     this.authService.user$.subscribe((user) => {
       this.user = user;
       this.userRole = user[environment.AUDIENCE_ROLE];
-      this.curationService.getUserAnnotationsNeedingWork().subscribe((annotations)=>{
-        this.userAnnotations = annotations;
-      });
       if(this.userService.isElevatedCurator(this.userRole)){
         this.curationService.getAnnotationsNeedingReview().subscribe((annotations) => {
           this.reviews = annotations;
         });
+      } else {
+        this.curationService.getUserAnnotationsNeedingWork().subscribe((annotations)=>{
+          this.userAnnotations = annotations;
+        });
       }
     });
-
-    this.curationService.getGroupActivityFeed(true, 1).subscribe((recentActivity) => {
+    this.loading = true;
+    this.curationService.getGroupActivityFeed(true, 1,  null, null)
+      .subscribe((recentActivity) => {
       this.recentActivity = recentActivity;
-    });
+    }, ()=>{},()=>{
+        this.loading = false;
+      });
 
     this.curationService.getUserContributions().subscribe((contributions) => {
       if (contributions.every(obj => obj.value === 0)) {

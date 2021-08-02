@@ -98,10 +98,13 @@ public class AnnotationService {
      * @param user the user making the request
      */
     @Transactional()
-    public void createPhenotypeAnnotation(PhenotypeRequest phenotypeRequest, User user) throws DuplicateAnnotationException {
+    public void createPhenotypeAnnotation(PhenotypeRequest phenotypeRequest, User user, boolean initialize) throws DuplicateAnnotationException {
         final AnnotationSource annotationSource = entityService.getAnnotationSource(phenotypeRequest.getPublicationId(), phenotypeRequest.getDiseaseId());
         if(annotationSource != null){
             AnnotationStatus status = user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR) ? AnnotationStatus.ACCEPTED : AnnotationStatus.UNDER_REVIEW;
+            if(initialize){
+                status = AnnotationStatus.OFFICIAL;
+            }
             final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, annotationSource,
                     status, user);
             if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndModifier(

@@ -30,6 +30,10 @@ export class UtilityService {
     return option && option.name ? `${option.name} ${option.id}` : '';
   }
 
+  displayFrequency(option){
+    return option;
+  }
+
   openMessagesDialog(messages: Message[]){
     this.dialog.open(DialogMessagesComponent, {
       data: {
