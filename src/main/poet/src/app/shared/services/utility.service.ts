@@ -31,7 +31,7 @@ export class UtilityService {
   }
 
   displayFrequency(option){
-    return option;
+    return option && option.hasOwnProperty("id") ?  `${option.name} ${option.id}` : option;
   }
 
   openMessagesDialog(messages: Message[]){

@@ -149,7 +149,7 @@ export class DialogSourceComponent implements OnInit {
   }
 
   isDiseaseSource(publicationId){
-    return publicationId.contains("OMIM");
+    return publicationId.includes("OMIM");
   }
 
 }

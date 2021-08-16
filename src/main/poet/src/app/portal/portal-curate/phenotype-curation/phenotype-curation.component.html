@@ -133,7 +133,7 @@
           <input matInput placeholder="..." formControlName="frequencyFormControl" ngDefaultControl
                  [matAutocomplete]="frequency">
           <button mat-button *ngIf="formControlGroup.get('frequencyFormControl').value != null" matSuffix mat-icon-button
-                  aria-label="Clear" (click)="formControlGroup.get('frequencyFormControl').reset(); frequencyOptions = []">
+                  aria-label="Clear" (click)="formControlGroup.get('frequencyFormControl').reset(); frequencyOptions = []; selectedFrequency = null ">
             <mat-icon>close</mat-icon>
           </button>
           <mat-hint *ngIf="!formControlGroup.disabled">e.g. 10/20, 50% or Frequent</mat-hint>

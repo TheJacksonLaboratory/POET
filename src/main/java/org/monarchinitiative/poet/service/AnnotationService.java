@@ -107,9 +107,9 @@ public class AnnotationService {
             }
             final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, annotationSource,
                     status, user);
-            if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndModifier(
+            if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifier(
                     annotation.getAnnotationSource(), annotation.getHpoId(), annotation.getSex(),
-                    annotation.getEvidence(), annotation.getOnset(), annotation.getModifier())){
+                    annotation.getEvidence(), annotation.getOnset(), annotation.getFrequency(), annotation.getModifier())){
                 throw new DuplicateAnnotationException("phenotype", annotation.getAnnotationSource().getDisease().getDiseaseName());
             }
             phenotypeAnnotationRepository.save(annotation);
@@ -155,9 +155,9 @@ public class AnnotationService {
                             oldAnnotation.getStatus(), oldAnnotation.getOwner());
 
                     // See if we already have an annotation like this.
-                    if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndModifierAndStatusNot(
+                    if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndStatusNot(
                             annotation.getAnnotationSource(), annotation.getHpoId(), annotation.getSex(),
-                            annotation.getEvidence(), annotation.getOnset(), annotation.getModifier(), AnnotationStatus.RETIRED)){
+                            annotation.getEvidence(), annotation.getOnset(), annotation.getFrequency(), annotation.getModifier(), AnnotationStatus.RETIRED)){
                         throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseName());
                     }
                     oldAnnotation.setStatus(AnnotationStatus.RETIRED);

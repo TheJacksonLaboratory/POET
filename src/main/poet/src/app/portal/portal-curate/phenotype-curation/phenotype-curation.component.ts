@@ -138,7 +138,7 @@ export class PhenotypeCurationComponent implements OnInit {
       .subscribe(query => {
         if (query && query.length >= 3 && !this.formControlGroup.disabled && isNaN(query)) {
           this.hpoService.searchDescendants(query, 'HP:0040279').subscribe((data) => {
-            if (!data || data.length == 0) {
+            if ((!data || data.length == 0) && (query.startsWith("HP:") || query.match(/^[A-Za-z]{3}/))) {
               this.formControlGroup.get("frequencyFormControl").setErrors({notFound: true});
             }
             this.frequencyOptions = data;
@@ -159,7 +159,7 @@ export class PhenotypeCurationComponent implements OnInit {
       description: this.formControlGroup.get('descriptionFormControl').value,
       sex: this.formControlGroup.get('sexFormControl').value,
       qualifier: this.selectedQualifier == true ? "NOT" : '',
-      frequency: this.formControlGroup.get('frequencyFormControl').value.ontologyId,
+      frequency: this.getFrequencyValue(),
       modifiers: this.selectedModifiers.join(";"),
       onset: this.formControlGroup.get('onsetFormControl').value?.ontologyId,
       message: ""
