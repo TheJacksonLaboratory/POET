@@ -47,6 +47,7 @@ export class AnnotationCardComponent implements OnInit {
   selectedStatuses: any[] = [];
   lowValue: number = 0;
   highValue: number = 10;
+  filteredAnnotationLength = { count: 0 };
   showAll: boolean = false;
   selectedSort: string = 'recent';
   loadingAnnotations: boolean = false;
@@ -223,11 +224,6 @@ export class AnnotationCardComponent implements OnInit {
       this.lowValue = 0;
       this.highValue = 10;
       this.phenotypePagination.pageIndex = 0;
-    } else if(this.category == 'phenotype'){
-      this.lowValue = 0;
-      this.highValue = 10;
-      this.treatmentPagination.pageIndex = 0;
     }
-
   }
 }
