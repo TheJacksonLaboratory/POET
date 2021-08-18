@@ -16,7 +16,7 @@ import java.util.List;
 public interface TreatmentAnnotationRepository extends CrudRepository<TreatmentAnnotation, Long> {
 
     List<TreatmentAnnotation> findDistinctByAnnotationSourceAndStatusNot(AnnotationSource source, AnnotationStatus status);
-    List<TreatmentAnnotation> findAllByAnnotationSourceDiseaseAndStatusNot(Disease disease, AnnotationStatus status);
+    List<TreatmentAnnotation> findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(Disease disease, AnnotationStatus status, AnnotationStatus status_two);
     List<TreatmentAnnotation> findAllByAnnotationSourceDiseaseAndStatusNotAndStatus(Disease disease, AnnotationStatus statusNot, AnnotationStatus status);
     TreatmentAnnotation findDistinctById(long id);
     int countAllByAnnotationSourceDiseaseAndStatusNot(Disease disease, AnnotationStatus status);

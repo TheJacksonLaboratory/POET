@@ -65,11 +65,16 @@
           </span>
         </div>
         <div class="spacer"></div>
-        <button mat-icon-button aria-label="Edit Treatment Annotation" *ngIf="(isUser() && ownsAnnotation(treatment.owner.nickname))" [disabled]="!isUser()"
+        <a mat-icon-button aria-label="Report Treatment Annotation" *ngIf="isOfficial(treatment.status)"
+           href="https://github.com/monarch-initiative/MAxO/issues/new" target="_blank">
+          <mat-icon>bug_report</mat-icon>
+        </a>
+        <button mat-icon-button aria-label="Edit Treatment Annotation" *ngIf="(isUser() && ownsAnnotation(treatment.owner.nickname)
+        && !isOfficial(treatment.status) || isElevatedCurator() && !isUnderReview(treatment.status))" [disabled]="!isUser()"
                 (click)="annotationAction(treatment, 'edit')">
           <mat-icon>create</mat-icon>
         </button>
-        <button mat-icon-button aria-label="Delete Treatment Annotation" *ngIf="(isUser() && ownsAnnotation(treatment.owner.nickname))"
+        <button mat-icon-button aria-label="Delete Treatment Annotation" *ngIf="(isUser() && ownsAnnotation(treatment.owner.nickname) && !isOfficial(treatment.status))"
                 [disabled]="!isUser()"
                 (click)="annotationAction(treatment, 'delete')">
           <mat-icon>delete</mat-icon>
@@ -107,11 +112,17 @@
           </span>
         </div>
         <div class="spacer"></div>
-        <button mat-icon-button aria-label="Edit Phenotype Annotation" *ngIf="(isUser() && ownsAnnotation(phenotype.owner.nickname))" [disabled]="!isUser()"
+        <a mat-icon-button aria-label="Report Phenotype Annotation" *ngIf="isOfficial(phenotype.status) && !isElevatedCurator()"
+           href="https://github.com/monarch-initiative/hpo-annotation-data/issues/new" target="_blank">
+          <mat-icon>bug_report</mat-icon>
+        </a>
+        <button mat-icon-button aria-label="Edit Phenotype Annotation" *ngIf="(isUser() && ownsAnnotation(phenotype.owner.nickname)
+        && !isOfficial(phenotype.status) || isElevatedCurator() && !isUnderReview(phenotype.status))" [disabled]="!isUser()"
                 (click)="annotationAction(phenotype, 'edit')">
           <mat-icon>create</mat-icon>
         </button>
-        <button mat-icon-button aria-label="Delete Phenotype Annotation" *ngIf="(isUser() && ownsAnnotation(phenotype.owner.nickname))"
+        <button mat-icon-button aria-label="Delete Phenotype Annotation" *ngIf="(isUser() && ownsAnnotation(phenotype.owner.nickname)
+        && !isOfficial(phenotype.status))"
                 [disabled]="!isUser()"
                 (click)="annotationAction(phenotype, 'delete')">
           <mat-icon>delete</mat-icon>

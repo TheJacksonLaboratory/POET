@@ -209,6 +209,10 @@ export class AnnotationCardComponent implements OnInit {
     return status === "NEEDS_WORK";
   }
 
+  isOfficial(status: string): boolean {
+    return status === "OFFICIAL";
+  }
+
   ownsAnnotation(annotationUser){
     return this.user?.nickname === annotationUser;
   }

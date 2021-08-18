@@ -5,5 +5,6 @@ public enum AnnotationStatus {
     ACCEPTED,
     UNDER_REVIEW,
     NEEDS_WORK,
+    RETIRED_PENDING,
     RETIRED
 }
