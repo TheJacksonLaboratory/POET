@@ -33,7 +33,12 @@
     </span>
     <mat-list class="publication-list" aria-label="publication selection">
       <mat-list-item *ngFor="let publication of selectedPublications">
-          {{publication.publicationName}} {{publication.publicationId}}
+          <span *ngIf="!utilityService.isDiseaseSource(publication.publicationId)">
+            {{publication.publicationName}} {{publication.publicationId}}
+          </span>
+          <span *ngIf="utilityService.isDiseaseSource(publication.publicationId)">
+            {{publication.publicationName}}{{publication.publicationId}}
+          </span>
         <span class="spacer"></span>
         <mat-icon class="remove-icon" matListIcon (click)="remove(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
       </mat-list-item>

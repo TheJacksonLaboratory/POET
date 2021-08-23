@@ -9,6 +9,7 @@ import { StateService } from "../../../shared/services/state/state.service";
 import { Publication } from "../../../shared/models/models";
 import { Observable } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import {UtilityService} from "../../../shared/services/utility.service";
 
 @Component({
   selector: 'app-dialog-curation',
@@ -31,7 +32,7 @@ export class DialogSourceComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<DialogSourceComponent>,
               private curationService: CurationService, private pubmedService: PubmedService,
-              private stateService: StateService,
+              private stateService: StateService, public utilityService: UtilityService,
               @Inject(MAT_DIALOG_DATA) public data: any, private _snackBar: MatSnackBar) {
   }
 
@@ -147,11 +148,6 @@ export class DialogSourceComponent implements OnInit {
     }
     return 'I have affirmed that this publication describes phenotypes for ' + this.selectedDisease.diseaseName;
   }
-
-  isDiseaseSource(publicationId){
-    return publicationId.includes("OMIM");
-  }
-
 }
 
 /** Error when invalid control is dirty, touched, or submitted. */
