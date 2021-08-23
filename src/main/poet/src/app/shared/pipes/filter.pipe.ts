@@ -7,6 +7,7 @@ export class FilterPipe implements PipeTransform {
 
   transform(items: any[], statuses: any, user: any, showAll: boolean, filteredAnnotationLength): any[] {
     if(statuses.length == 0){
+      filteredAnnotationLength.count = 0;
       return [];
     } else if(items?.length > 0){
         const filteredItems = items.filter(it => {
