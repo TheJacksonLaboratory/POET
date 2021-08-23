@@ -60,7 +60,7 @@ class AnnotationServiceSpec extends Specification {
         given:
         diseaseStub.findDiseaseByDiseaseId(_ as String) >> diseaseResponse
         treatmentAnnotationStub.findDistinctByAnnotationSourceAndStatusNot(_ as AnnotationSource, _ as AnnotationStatus) >> treatmentAnnotationResponse
-        treatmentAnnotationStub.findAllByAnnotationSourceDiseaseAndStatusNot(_ as Disease, _ as AnnotationStatus) >> treatmentAnnotationResponse
+        treatmentAnnotationStub.findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(_ as Disease, _ as AnnotationStatus, _ as AnnotationStatus) >> treatmentAnnotationResponse
         publicationStub.findByPublicationId(_ as String) >> publicationResponse
         annotationStub.findByPublicationAndDisease(_ as Publication, _ as Disease) >> annotationSourceResponse
         userActivityStub.getMostRecentDateForAnnotationActivity(_ as Long) >> userActivityResponse

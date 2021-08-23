@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface UserActivityRepository extends PagingAndSortingRepository<UserActivity, Long>, CrudRepository<UserActivity, Long> {
     Page<UserActivity> findUserActivityByOwnerAuthId(String authId, Pageable pageable);
