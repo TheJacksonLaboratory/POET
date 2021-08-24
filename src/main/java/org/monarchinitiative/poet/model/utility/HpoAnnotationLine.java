@@ -27,8 +27,6 @@ public class HpoAnnotationLine {
     private static final int ASPECT_IDX = 10;
     private static final int BIOCURATION_IDX = 11;
 
-    private static final String DEFAULT_FREQUENCY_STRING="n/a";
-
     private static final String EMPTY_STRING="";
 
 

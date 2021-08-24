@@ -1,6 +1,5 @@
 package org.monarchinitiative.poet.controller;
 
-import org.monarchinitiative.poet.model.entities.Publication;
 import org.monarchinitiative.poet.service.ExportService;
 import org.springframework.web.bind.annotation.*;
 

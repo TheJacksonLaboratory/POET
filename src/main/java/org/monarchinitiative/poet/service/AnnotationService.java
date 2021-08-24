@@ -169,6 +169,22 @@ public class AnnotationService {
                 phenotypeAnnotationRepository.save(oldAnnotation);
                 phenotypeAnnotationRepository.save(annotation);
                 updateUserActivity(oldAnnotation.getOwner(), user, CurationAction.OVERRIDE, annotation, oldAnnotation);
+            // An elevated curators annotations can never be under review, must be someone elses
+            } else if(oldAnnotation.getStatus().equals(AnnotationStatus.UNDER_REVIEW)){
+                // Most likely editing someones annotation
+                // Build the new annotation, do a check for duplicated data 
+                final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, oldAnnotation.getAnnotationSource(),
+                AnnotationStatus.ACCEPTED, oldAnnotation.getOwner());
+                if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndStatusNot(
+                    annotation.getAnnotationSource(), annotation.getHpoId(), annotation.getSex(), annotation.getEvidence(), 
+                    annotation.getOnset(), annotation.getFrequency(), annotation.getModifier(), annotation.getStatus())){
+                        throw new DuplicateAnnotationException("phenotype", annotation.getAnnotationSource().getDisease().getDiseaseId());
+                    }
+                // Save the new annotation as accepted, retire the current under review one
+                phenotypeAnnotationRepository.save(annotation);
+                oldAnnotation.setStatus(AnnotationStatus.RETIRED);
+                phenotypeAnnotationRepository.save(oldAnnotation);
+                updateUserActivity(oldAnnotation.getOwner(), user, CurationAction.OVERRIDE, annotation, oldAnnotation);
             }
         } else if(user.equals(owner)){
             // Resubmitting after needs work
@@ -281,8 +297,8 @@ public class AnnotationService {
             final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, annotationSource, status, user);
             // Check if we have a duplicate annotation, if so throw an error
             // See if we already have an annotation like this.
-            if(treatmentAnnotationRepository.existsByAnnotationSourceAndAnnotationTypeAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
-                    annotation.getAnnotationSource(), "treatment", annotation.getMaxoId(), annotation.getHpoId(), annotation.getExtensionId(), annotation.getEvidence(), annotation.getRelation(), AnnotationStatus.RETIRED)){
+            if(treatmentAnnotationRepository.existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
+                    annotation.getAnnotationSource(), annotation.getMaxoId(), annotation.getHpoId(), annotation.getExtensionId(), annotation.getEvidence(), annotation.getRelation(), AnnotationStatus.RETIRED)){
                 throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseName());
             }
             treatmentAnnotationRepository.save(annotation);
@@ -338,6 +354,22 @@ public class AnnotationService {
                     treatmentAnnotationRepository.save(oldAnnotation);
                     treatmentAnnotationRepository.save(annotation);
                     updateUserActivity(oldAnnotation.getOwner(), user, CurationAction.OVERRIDE, annotation, oldAnnotation);
+                 // An elevated curators annotations can never be under review, must be someone elses
+                } else if(oldAnnotation.getStatus().equals(AnnotationStatus.UNDER_REVIEW)){
+                    // Most likely editing someones annotation
+                    // Build the new annotation, do a check for duplicated data 
+                    final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, oldAnnotation.getAnnotationSource(),
+                    AnnotationStatus.ACCEPTED, oldAnnotation.getOwner());
+                    if(treatmentAnnotationRepository.existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
+                        annotation.getAnnotationSource(), annotation.getMaxoId(), annotation.getHpoId(), annotation.getExtensionId(), annotation.getEvidence(), 
+                        annotation.getRelation(), annotation.getStatus())){
+                            throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseId());
+                        }
+                    // Save the new annotation as accepted, retire the current under review one
+                    treatmentAnnotationRepository.save(annotation);
+                    oldAnnotation.setStatus(AnnotationStatus.RETIRED);
+                    treatmentAnnotationRepository.save(oldAnnotation);
+                    updateUserActivity(oldAnnotation.getOwner(), user, CurationAction.OVERRIDE, annotation, oldAnnotation);
                 }
             } else if(user.equals(owner)){
                 // Resubmitting after needs work
@@ -353,8 +385,8 @@ public class AnnotationService {
                             treatmentRequest.getComment(), treatmentRequest.getRelation(), treatmentRequest.getExtensionId(), treatmentRequest.getExtensionLabel());
 
                     // See if we already have an annotation that exists from the one we are trying to update to.
-                    if (treatmentAnnotationRepository.existsByAnnotationSourceAndAnnotationTypeAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
-                            annotation.getAnnotationSource(), "treatment", annotation.getMaxoId(), annotation.getHpoId(), annotation.getExtensionId(),
+                    if (treatmentAnnotationRepository.existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
+                            annotation.getAnnotationSource(), annotation.getMaxoId(), annotation.getHpoId(), annotation.getExtensionId(),
                             annotation.getEvidence(), annotation.getRelation(), AnnotationStatus.RETIRED)) {
                         throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseName());
                     }

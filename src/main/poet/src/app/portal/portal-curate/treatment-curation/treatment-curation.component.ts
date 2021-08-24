@@ -12,7 +12,6 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { MonarchService } from "../../../shared/services/external/monarch.service";
 import { DialogReviewComponent } from "../dialog-review/dialog-review.component";
 import { UtilityService } from "../../../shared/services/utility.service";
-import { UserService } from "../../../shared/services/user/user.service";
 
 @Component({
   selector: 'poet-treatment-curation',
@@ -37,6 +36,8 @@ export class TreatmentCurationComponent implements OnInit {
   loadingHpoSuggestions: boolean = false;
   loadingMaxoSuggestions: boolean = false;
   loadingExtensionSuggestions: boolean = false;
+  elevatedButtonText = {approve: {display: "Approve", show: true}, deny: {display: "Deny", show: true}, changes: {display: "Make changes", show: true}};
+  elevatedChanges: boolean = false;
 
   savingAnnotation: boolean = false;
   formControlGroup: FormGroup = new FormGroup({
@@ -53,7 +54,6 @@ export class TreatmentCurationComponent implements OnInit {
               public monarchService: MonarchService,
               public stateService: StateService,
               public utilityService: UtilityService,
-              public userService: UserService,
               public dialog: MatDialog,
               private _snackBar: MatSnackBar) {
   }
@@ -246,6 +246,8 @@ export class TreatmentCurationComponent implements OnInit {
 
   closeForm() {
     this.stateService.setSelectedTreatmentAnnotation(null);
+    this.elevatedButtonText = {approve: {display: "Approve", show: true}, deny: {display: "Deny", show: true}, changes: {display: "Make changes", show: true}};
+    this.elevatedChanges = false;
     this.handleFormEmitter.emit(false);
   }
 
@@ -277,5 +279,15 @@ export class TreatmentCurationComponent implements OnInit {
         }
       });
     }
+  }
+
+  /**
+  * Elevated curator making changes to an annotation under_review
+  */
+  makeAnnotationChanges(){
+    this.elevatedChanges = true;
+    this.formControlGroup.enable();
+    this.elevatedButtonText.approve.display = "Save & Accept";
+    this.elevatedButtonText.changes.show = false;
   }
 }

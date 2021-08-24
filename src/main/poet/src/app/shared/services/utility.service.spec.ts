@@ -57,6 +57,13 @@ describe('UtilityService', () => {
     expect(service.isDiseaseSource("PMID:009311")).toBeTrue();
   })
 
+  it('it should return correct elevated actions boolean', () => {
+    expect(service.showElevatedActions("ELEVATED_CURATOR", getFakeAnnotations()[1])).toBeTrue();
+    expect(service.showElevatedActions("ELEVATED_CURATOR", getFakeAnnotations()[0])).toBeFalse();
+    expect(service.showElevatedActions("CURATOR", getFakeAnnotations()[1])).toBeFalse();
+    expect(service.showElevatedActions("CURATOR", getFakeAnnotations()[0])).toBeFalse();
+  })
+
   function getFakeAnnotations(): Annotation[]
   {
    return [{

@@ -172,12 +172,17 @@
   <mat-card-actions>
     <div class="left-actions">
       <button class="approve-annotation" mat-raised-button aria-label="Approve Treatment Annotation"
-              *ngIf="userService.isElevatedCurator(userRole) && utilityService.isUnderReview(this.selectedAnnotation)" (click)="reviewAnnotation('approve')">
-        Approve
+              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="reviewAnnotation('approve')">
+        {{elevatedButtonText.approve.display}}
       </button>
       <button class="deny-annotation" mat-raised-button aria-label="Deny Treatment Annotation"
-              *ngIf="userService.isElevatedCurator(userRole) && utilityService.isUnderReview(this.selectedAnnotation)" (click)="reviewAnnotation('deny')">
-        Deny
+              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="reviewAnnotation('deny')">
+        {{elevatedButtonText.deny.display}}
+      </button>
+      <button class="edit-annotation" mat-raised-button aria-label="Edit Treatment Annotation"
+              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && elevatedButtonText.changes.show"
+              (click)="makeAnnotationChanges()">
+        {{elevatedButtonText.changes.display}}
       </button>
       <button mat-raised-button color="primary" *ngIf="everythingValid()" (click)="submitForm()">SUBMIT</button>
       <mat-spinner color="accent" [diameter]="20" mode="indeterminate" *ngIf="savingAnnotation"></mat-spinner>

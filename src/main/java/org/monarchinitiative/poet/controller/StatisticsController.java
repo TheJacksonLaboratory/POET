@@ -9,7 +9,6 @@ import org.monarchinitiative.poet.model.entities.UserActivity;
 import org.monarchinitiative.poet.model.responses.ReviewCount;
 import org.monarchinitiative.poet.service.StatisticsService;
 import org.monarchinitiative.poet.service.UserService;
-import org.monarchinitiative.poet.views.DiseaseViews;
 import org.monarchinitiative.poet.views.UserActivityViews;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

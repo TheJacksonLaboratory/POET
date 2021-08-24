@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { Annotation, Message } from "../models/models";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogMessagesComponent } from "../../portal/portal-curate/dialog-messages/dialog-messages.component";
+import { UserService } from './user/user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilityService {
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog, public userService: UserService) { }
 
   hasReviewerComments(annotation: Annotation){
     return  annotation && annotation.reviewMessages.length > 0;
@@ -40,7 +41,7 @@ export class UtilityService {
     }
   }
 
-  isDiseaseSource(publicationId){
+  isDiseaseSource(publicationId: string){
     return publicationId.includes("OMIM");
   }
 
@@ -50,5 +51,9 @@ export class UtilityService {
         messages: messages
       }
     });
+  }
+
+  showElevatedActions(userRole: string, selectedAnnotation: Annotation){
+    return this.isUnderReview(selectedAnnotation) && this.userService.isElevatedCurator(userRole);
   }
 }

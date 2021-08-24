@@ -1,19 +1,14 @@
 package org.monarchinitiative.poet.service;
 
-import org.monarchinitiative.poet.exceptions.AuthenticationException;
 import org.monarchinitiative.poet.exceptions.DiseaseNotFoundException;
 import org.monarchinitiative.poet.model.entities.AnnotationSource;
 import org.monarchinitiative.poet.model.entities.Disease;
 import org.monarchinitiative.poet.model.entities.Publication;
-import org.monarchinitiative.poet.model.entities.User;
-import org.monarchinitiative.poet.model.enumeration.CurationRole;
 import org.monarchinitiative.poet.model.requests.DiseaseRequest;
 import org.monarchinitiative.poet.model.requests.PublicationRequest;
 import org.monarchinitiative.poet.repository.AnnotationSourceRepository;
 import org.monarchinitiative.poet.repository.DiseaseRepository;
 import org.monarchinitiative.poet.repository.PublicationRepository;
-import org.monarchinitiative.poet.repository.UserRepository;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -30,14 +25,12 @@ public class EntityService {
     private final DiseaseRepository diseaseRepository;
     private final PublicationRepository publicationRepository;
     private final AnnotationSourceRepository annotationSourceRepository;
-    private final UserRepository userRepository;
 
     public EntityService(DiseaseRepository diseaseRepository, PublicationRepository publicationRepository,
-                         AnnotationSourceRepository annotationSourceRepository, UserRepository userRepository) {
+                         AnnotationSourceRepository annotationSourceRepository) {
         this.diseaseRepository = diseaseRepository;
         this.publicationRepository = publicationRepository;
         this.annotationSourceRepository = annotationSourceRepository;
-        this.userRepository = userRepository;
     }
 
     /**

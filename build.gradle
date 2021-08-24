@@ -86,5 +86,8 @@ clean {
 }
 
 bootRun {
+	if(System.getProperty("initialize") == true){
+		profile = "initialize"
+	}
 	systemProperty "spring.profiles.active", profile
 }

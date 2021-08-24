@@ -542,12 +542,18 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   color: indianred;
 }
 
+
 .approve-annotation {
   background: forestgreen;
 }
 
 .deny-annotation {
   background: indianred;
+}
+
+.edit-annotation {
+  background: #296a7c;
+  color: white;
 }
 
 .portal-curate {
@@ -583,3 +589,8 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   }
 }
 
+.mat-card-actions .left-actions {
+  & .mat-raised-button, .mat-stroked-button, .mat-flat-button, .mat-button {
+    margin: 0 6px !important;
+  }
+}
