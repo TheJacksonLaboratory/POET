@@ -7,15 +7,12 @@ import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.monarchinitiative.poet.model.responses.ReviewCount;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public interface TreatmentAnnotationRepository extends CrudRepository<TreatmentAnnotation, Long> {
 
-    List<TreatmentAnnotation> findDistinctByAnnotationSourceAndStatusNot(AnnotationSource source, AnnotationStatus status);
     List<TreatmentAnnotation> findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(Disease disease, AnnotationStatus status, AnnotationStatus status_two);
     List<TreatmentAnnotation> findAllByAnnotationSourceDiseaseAndStatusNotAndStatus(Disease disease, AnnotationStatus statusNot, AnnotationStatus status);
     TreatmentAnnotation findDistinctById(long id);

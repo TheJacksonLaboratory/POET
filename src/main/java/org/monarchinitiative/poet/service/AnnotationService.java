@@ -94,7 +94,7 @@ public class AnnotationService {
     public List<PhenotypeAnnotation> getPhenotypeAnnotationsByDisease(String diseaseId, String sort) throws AnnotationSourceException {
             Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
             if(disease != null) {
-                List<PhenotypeAnnotation> annotations = this.phenotypeAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNot(disease, AnnotationStatus.RETIRED);
+                List<PhenotypeAnnotation> annotations = this.phenotypeAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(disease, AnnotationStatus.RETIRED, AnnotationStatus.RETIRED_PENDING);
                 return (List<PhenotypeAnnotation>) getLastUpdatedForAnnotation(annotations);
             } else {
                 throw new AnnotationSourceException(diseaseId);

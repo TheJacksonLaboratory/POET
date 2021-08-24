@@ -31,7 +31,13 @@ export class UtilityService {
   }
 
   displayFrequency(option){
-    return option && option.hasOwnProperty("id") ?  `${option.name} ${option.id}` : option;
+    if(option && option.hasOwnProperty("id")){
+      return `${option.name} ${option.id}`;
+    } else if(option && option.hasOwnProperty("ontologyId")) {
+      return `${option.name} ${option.ontologyId}`;
+    } else {
+      return option;
+    }
   }
 
   isDiseaseSource(publicationId){
