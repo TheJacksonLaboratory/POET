@@ -3,6 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { UtilityService } from './utility.service';
 import { Annotation } from "../models/models";
 import { MatDialogModule } from "@angular/material/dialog";
+import {UserService} from "./user/user.service";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 describe('UtilityService', () => {
   let service: UtilityService;
@@ -11,7 +13,8 @@ describe('UtilityService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MatDialogModule]
+      imports: [MatDialogModule, HttpClientTestingModule],
+      providers: [UserService]
     });
     service = TestBed.inject(UtilityService);
     fakeAnnotations = getFakeAnnotations();
@@ -52,9 +55,10 @@ describe('UtilityService', () => {
   });
 
   it('should return correct disease source boolean', () => {
-    expect(service.isDiseaseSource("PMID:01931")).toBeTrue();
+    expect(service.isDiseaseSource("OMIM:01931")).toBeTrue();
+    expect(service.isDiseaseSource("PMID:01931")).toBeFalse();
     expect(service.isDiseaseSource("")).toBeFalse();
-    expect(service.isDiseaseSource("PMID:009311")).toBeTrue();
+    expect(service.isDiseaseSource("PMID:009311")).toBeFalse();
   })
 
   it('it should return correct elevated actions boolean', () => {

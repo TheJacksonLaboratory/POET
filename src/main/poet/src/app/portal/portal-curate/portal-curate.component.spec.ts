@@ -6,6 +6,7 @@ import { SharedModule } from "../../shared/shared.module";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { AuthConfig, AuthModule } from "@auth0/auth0-angular";
+import {PortalDashboardComponent} from "../portal-dashboard/portal-dashboard.component";
 
 describe('PortalCurateComponent', () => {
   let component: PortalCurateComponent;
@@ -16,7 +17,8 @@ describe('PortalCurateComponent', () => {
   };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, SharedModule, HttpClientTestingModule, NoopAnimationsModule,
+      imports: [RouterTestingModule.withRoutes([
+        { path: 'portal/dashboard', component: PortalDashboardComponent }]), SharedModule, HttpClientTestingModule, NoopAnimationsModule,
         AuthModule.forRoot(authConfig)],
       declarations: [PortalCurateComponent]
     })

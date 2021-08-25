@@ -100,7 +100,7 @@ class AnnotationServiceSpec extends Specification {
     void "test get phenotype annotations #desc"(){
         given:
         diseaseStub.findDiseaseByDiseaseId(_ as String) >> diseaseResponse
-        phenotypeAnnotationStub.findAllByAnnotationSourceDiseaseAndStatusNot(_ as Disease, _ as AnnotationStatus) >> phenotypeAnnotationResponse
+        phenotypeAnnotationStub.findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(_ as Disease, _ as AnnotationStatus, _ as AnnotationStatus) >> phenotypeAnnotationResponse
         annotationStub.findByPublicationAndDisease(_ as Publication, _ as Disease) >> annotationSourceResponse
         userActivityStub.getMostRecentDateForAnnotationActivity(_ as Long) >> userActivityResponse
         def result = annotationService.getPhenotypeAnnotationsByDisease(inputParameters[0], inputParameters[2])
