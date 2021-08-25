@@ -1,5 +1,6 @@
 package org.monarchinitiative.poet.controller;
 
+import org.apache.commons.csv.CSVFormat;
 import org.monarchinitiative.poet.service.ExportService;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,16 +25,24 @@ public class ExportController {
      * @since 0.5.0
      */
     @GetMapping(value = "/{ontology}")
-    public void getPublicationById(HttpServletResponse httpServletResponse,
-                                          @PathVariable(value="ontology") String ontology) throws IOException {
+    public void getPublicationById(HttpServletResponse httpServletResponse, @PathVariable String ontology, @RequestParam(name="delim", defaultValue = "tsv") String delim) throws IOException {
+        String contentType = "text/tab-separated-values";
+        String fileExtension = ".tsv";
+        CSVFormat format = CSVFormat.MONGODB_TSV; 
+        if(delim.equals("csv")){
+            contentType = "text/csv";
+            fileExtension = ".csv";
+            format = CSVFormat.EXCEL;
+        }
+
         if(ontology.equals("hpo")){
-            httpServletResponse.setContentType("text/csv");
-            httpServletResponse.addHeader("Content-Disposition","attachment; filename=\"hpoa.csv\"");
-            exportService.exportHPOAnnotations(httpServletResponse.getWriter());
+            httpServletResponse.setContentType(contentType);
+            httpServletResponse.addHeader("Content-Disposition", String.format("attachment; filename=\"hpoa%s\"", fileExtension));
+            exportService.exportHPOAnnotations(httpServletResponse.getWriter(), format);
         } else if(ontology.equals("maxo")){
             httpServletResponse.setContentType("text/csv");
-            httpServletResponse.addHeader("Content-Disposition","attachment; filename=\"maxo.csv\"");
-            exportService.exportHPOAnnotations(httpServletResponse.getWriter());
+            httpServletResponse.addHeader("Content-Disposition",String.format("attachment; filename=\"maxo%s\"", fileExtension));
+            exportService.exportHPOAnnotations(httpServletResponse.getWriter(), format);
         }
     }
 

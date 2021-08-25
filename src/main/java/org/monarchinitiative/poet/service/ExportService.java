@@ -17,9 +17,9 @@ public class ExportService {
         this.annotationService = annotationService;
     }
 
-    public void exportHPOAnnotations(PrintWriter writer){
+    public void exportHPOAnnotations(PrintWriter writer, CSVFormat format){
         List<PhenotypeAnnotation> phenotypeAnnotationList = annotationService.getOfficialPhenotypes();
-        try(CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL)){
+        try(CSVPrinter csvPrinter = new CSVPrinter(writer, format)){
             for (PhenotypeAnnotation annotation : phenotypeAnnotationList) {
                 String reference;
                 if(annotation.getAnnotationSource().isDiseaseDatabaseSource()){
