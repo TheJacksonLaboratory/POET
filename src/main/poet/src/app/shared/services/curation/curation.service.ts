@@ -403,7 +403,9 @@ export class CurationService {
       "CREATE": "created",
       "UPDATE": "updated",
       "DELETE": "deleted",
-      "REVIEW": "reviewed"
+      "REVIEW": "reviewed",
+      "RESUBMIT": "resubmitted",
+      "OVERRIDE": "updated"
     }
     return actionMap[action];
   }
