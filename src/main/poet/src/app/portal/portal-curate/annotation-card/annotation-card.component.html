@@ -51,15 +51,7 @@
                      *ngFor="let treatment of treatmentAnnotations | async | filter: selectedStatuses:user:showAll:filteredAnnotationLength | sortBy: selectedSort:category | slice:lowValue:highValue ">
         <mat-icon [class]="{'statusApproved': treatment.status === 'ACCEPTED', 'statusReview': treatment.status === 'UNDER_REVIEW',
                       'statusOfficial': treatment.status === 'OFFICIAL', 'statusNeedsWork': treatment.status === 'NEEDS_WORK'}" matListIcon>health_and_safety</mat-icon>
-        <div class="selection-text" *ngIf="formOpen">
-          <span matLine>
-            <strong>{{treatment.maxoName}}</strong>
-          </span>
-          <span matLine>
-            {{treatment.relation}} <strong>{{treatment.hpoName}}</strong>
-          </span>
-        </div>
-        <div class="selection-text" *ngIf="!formOpen">
+        <div class="selection-text">
           <span matLine>
             <strong>{{treatment.maxoName}}</strong> {{treatment.relation}} <strong>{{treatment.hpoName}}</strong>
           </span>

@@ -3,6 +3,7 @@ import { Annotation, Message } from "../models/models";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogMessagesComponent } from "../../portal/portal-curate/dialog-messages/dialog-messages.component";
 import { UserService } from './user/user.service';
+import {MonarchSearchResult} from "../models/search-models";
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,14 @@ export class UtilityService {
     } else {
       return option;
     }
+  }
+
+  displayMonarchSearchFn(monarchSearchResult: MonarchSearchResult) {
+      return  monarchSearchResult ? monarchSearchResult.label : "";
+  }
+
+  displayChebiFn(monarchSearchResult: MonarchSearchResult) {
+    return monarchSearchResult && monarchSearchResult.label ? `${monarchSearchResult.id} - ${monarchSearchResult.label}` : '';
   }
 
   isDiseaseSource(publicationId: string){

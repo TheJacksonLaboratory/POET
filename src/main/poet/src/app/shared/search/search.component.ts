@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import { FormControl } from "@angular/forms";
 import { catchError, debounceTime, filter, finalize, map } from "rxjs/operators";
 import { tap } from "rxjs/internal/operators/tap";
@@ -11,6 +11,7 @@ import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
 import { MonarchService } from "../services/external/monarch.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { forkJoin } from "rxjs";
+import {UtilityService} from "../services/utility.service";
 
 @Component({
   selector: 'app-search',
@@ -21,13 +22,14 @@ export class SearchComponent implements OnInit {
 
   @Input() role: string;
   @ViewChild(MatAutocompleteTrigger, {read: MatAutocompleteTrigger}) searchBar: MatAutocompleteTrigger;
+  @ViewChild("search") searchInput: ElementRef<HTMLInputElement>;
   searchControl = new FormControl();
   diseaseOptions: MonarchSearchResult[];
   isLoading = false;
   errorMsg: string;
 
   constructor(private curationService: CurationService, private monarchService: MonarchService,
-              private router: Router, private _snackBar: MatSnackBar) {
+              public utilityService: UtilityService, private router: Router, private _snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
@@ -66,6 +68,7 @@ export class SearchComponent implements OnInit {
 
   resetSearchForm(){
     this.searchControl.reset();
+    this.searchInput.nativeElement.blur();
     this.isLoading = false;
     this.diseaseOptions = [];
   }
@@ -89,6 +92,7 @@ export class SearchComponent implements OnInit {
         // if response does not include equivalent id or description
         if(poetResponse.description == null && poetResponse.equivalentId == null){
           this.curationService.updateDisease(diseaseToSave).subscribe(() => {
+            this.resetSearchForm();
             this.router.navigate(['/portal/curate/' + poetResponse.diseaseId]);
           }, error =>    this._snackBar.open('Error Silently Updating Disease!', 'Close', {
             duration: 3000,
@@ -96,11 +100,13 @@ export class SearchComponent implements OnInit {
           })); // TODO: fix error handling here
         } else {
           // Forward to disease page
+          this.resetSearchForm();
           this.router.navigate(['/portal/curate/' + poetResponse.diseaseId]);
         }
       } else {
         // we insert into database
         this.curationService.saveDisease(diseaseToSave).subscribe(() => {
+          this.resetSearchForm();
           this.router.navigate(['/portal/curate/' + diseaseToSave.diseaseId]);
         }, () => {
           this._snackBar.open('Error Saving New Disease!', 'Close', {
@@ -115,12 +121,6 @@ export class SearchComponent implements OnInit {
   hasValidInput(val: string) {
     if (val && val.length >= 3) {
       return val;
-    }
-  }
-
-  displayFn(monarchSearchResult: MonarchSearchResult) {
-    if (monarchSearchResult) {
-      return monarchSearchResult.label[0];
     }
   }
 }

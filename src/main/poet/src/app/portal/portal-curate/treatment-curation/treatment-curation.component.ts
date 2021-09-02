@@ -142,7 +142,6 @@ export class TreatmentCurationComponent implements OnInit {
           });
         }
       });
-    this.formControlGroup.get('evidenceFormControl').setValue('TAS');
   }
 
   getFormTreatmentAnnotation(){
@@ -228,12 +227,6 @@ export class TreatmentCurationComponent implements OnInit {
   resetTreatmentForm() {
     this.formControlGroup.reset();
     this.formControlGroup.get('evidenceFormControl').setValue('TAS');
-  }
-
-  displayMonarchSearchFn(monarchSearchResult: MonarchSearchResult) {
-    if (monarchSearchResult) {
-      return monarchSearchResult.label[0];
-    }
   }
 
   remove(publication: Publication): void {

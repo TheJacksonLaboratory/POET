@@ -50,18 +50,21 @@ export class MonarchService {
             return mappedResponse;
           });
         }
-      ), map( responses => {
-        return responses.filter(response => {
-          return response.leaf
-        }).sort((a, b) => {
-          if (a.label < b.label) {
-            return -1;
-          } else if (a.label > b.label) {
-            return 1;
-          } else {
-            return 0;
-          }
-        })
+      ), map( (responses: any[]) => {
+        if(prefix === "OMIM"){
+          responses = responses.filter(response => {
+            return response.leaf
+          }).sort((a, b) => {
+            if (a.label < b.label) {
+              return -1;
+            } else if (a.label > b.label) {
+              return 1;
+            } else {
+              return 0;
+            }
+          })
+        }
+        return responses;
       })
     );
   }

@@ -143,12 +143,12 @@
             <mat-icon>close</mat-icon>
           </button>
           <mat-autocomplete #extensionAuto="matAutocomplete"
-                            [displayWith]="displayMonarchSearchFn.bind(this)">
+                            [displayWith]="utilityService.displayChebiFn.bind(this)">
             <mat-option *ngIf="loadingExtensionSuggestions">
               <mat-progress-bar mode="query"></mat-progress-bar>
             </mat-option>
             <mat-option class="auto-complete-option" *ngFor="let option of chebiOptions" [value]="option">
-              <span class="option-name">{{option.label[0]}}</span>
+              <span class="option-name">{{option.label}}</span>
               &nbsp;
               <span class="option-id">{{option.id}}</span>
             </mat-option>

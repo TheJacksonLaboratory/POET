@@ -156,7 +156,6 @@ export class PhenotypeCurationComponent implements OnInit {
           });
         }
       });
-    this.formControlGroup.get('evidenceFormControl').setValue('TAS');
   }
 
   getFormPhenotypeAnnotation(){
