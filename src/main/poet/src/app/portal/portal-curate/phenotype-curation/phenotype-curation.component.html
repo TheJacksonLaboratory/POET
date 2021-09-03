@@ -128,9 +128,8 @@
           <mat-label>HPO Age Of Onset</mat-label>
           <mat-select formControlName="onsetFormControl">
             <mat-option>Not Specified</mat-option>
-            <mat-option *ngFor="let option of onsetOptions | async" [value]="option">
-              <span class="option-name">{{option.name}}</span>&nbsp;
-              <span class="option-id">{{option.ontologyId}}</span>
+            <mat-option *ngFor="let option of onsetOptions" [value]="option">
+              <span class="option-name">{{option.name}}</span>
             </mat-option>
           </mat-select>
         </mat-form-field>

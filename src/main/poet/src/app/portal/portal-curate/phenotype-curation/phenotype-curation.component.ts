@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { HpoService } from "../../../shared/services/external/hpo.service";
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, shareReplay } from "rxjs/operators";
 import { AnchorSearchResult, HpoTerm } from "../../../shared/models/search-models";
 import { AnnotationSource, PhenotypeAnnotation, Publication } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
@@ -11,7 +11,6 @@ import { DialogSourceComponent } from "../dialog-source/dialog-source.component"
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { COMMA, ENTER } from "@angular/cdk/keycodes";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
-import { Observable } from "rxjs";
 import { DialogReviewComponent } from "../dialog-review/dialog-review.component";
 import { UtilityService } from "../../../shared/services/utility.service";
 
@@ -32,7 +31,7 @@ export class PhenotypeCurationComponent implements OnInit {
   selectedHpo: HpoTerm;
   hpoOptions: HpoTerm[];
   modifierOptions: AnchorSearchResult[]
-  onsetOptions: Observable<AnchorSearchResult[]>;
+  onsetOptions: AnchorSearchResult[];
   frequencyOptions: AnchorSearchResult[];
   selectedPublications: Publication[] = [];
   selectedModifiers: string[] = [];
@@ -86,7 +85,10 @@ export class PhenotypeCurationComponent implements OnInit {
         this.resetPhenotypeForm();
       } else {
         this.selectedAnnotation = annotation;
-        this.setFormValues(annotation);
+        this.hpoService.searchDescendants("", 'HP:0003674').pipe(shareReplay(1)).subscribe((result) => {
+          this.onsetOptions = result;
+          this.setFormValues(annotation);
+        });
       }
     });
 
@@ -96,14 +98,11 @@ export class PhenotypeCurationComponent implements OnInit {
     this.stateService.selectedAnnotationMode.subscribe((mode) => {
       if (mode == 'view') {
         this.formControlGroup.disable();
+        return;
       } else if (mode == 'edit') {
         this.updating = true;
-        this.onsetOptions = this.hpoService.searchDescendants("", 'HP:0003674')
-        this.formControlGroup.enable();
-      } else {
-        this.onsetOptions = this.hpoService.searchDescendants("", 'HP:0003674')
-        this.formControlGroup.enable();
       }
+      this.formControlGroup.enable();
     });
 
     this.formControlGroup.get("hpoFormControl").valueChanges
@@ -217,7 +216,8 @@ export class PhenotypeCurationComponent implements OnInit {
     this.formControlGroup.get('descriptionFormControl').setValue(annotation.description);
     this.formControlGroup.get('frequencyFormControl').setValue(annotation.frequency);
     this.selectedFrequency = annotation.frequency;
-    this.formControlGroup.get('onsetFormControl').setValue({ontologyId: annotation.onset, name: ""});
+    const onset = this.onsetOptions?.find(onset => onset.ontologyId == annotation.onset)
+    this.formControlGroup.get('onsetFormControl').setValue(onset);
     this.selectedModifiers = annotation.modifier.length > 0 ?  annotation.modifier.split(";") : []
     this.formControlGroup.get('sexFormControl').setValue(annotation.sex);
     this.selectedQualifier = annotation.qualifier == "NOT";

@@ -1,6 +1,6 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from "@angular/forms";
-import { catchError, debounceTime, filter, finalize, map } from "rxjs/operators";
+import { catchError, debounceTime, finalize } from "rxjs/operators";
 import { tap } from "rxjs/internal/operators/tap";
 import { switchMap } from "rxjs/internal/operators/switchMap";
 import { CurationService } from "../services/curation/curation.service";
@@ -11,7 +11,7 @@ import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
 import { MonarchService } from "../services/external/monarch.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { forkJoin } from "rxjs";
-import {UtilityService} from "../services/utility.service";
+import { UtilityService } from "../services/utility.service";
 
 @Component({
   selector: 'app-search',
