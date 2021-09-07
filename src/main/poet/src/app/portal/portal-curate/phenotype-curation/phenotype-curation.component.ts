@@ -62,6 +62,10 @@ export class PhenotypeCurationComponent implements OnInit {
               public utilityService: UtilityService,
               public dialog: MatDialog,
               private _snackBar: MatSnackBar) {
+
+    this.hpoService.searchDescendants("", 'HP:0003674').pipe(shareReplay(1)).subscribe((result) => {
+      this.onsetOptions = result;
+    });
   }
 
   ngOnInit(): void {
@@ -85,10 +89,7 @@ export class PhenotypeCurationComponent implements OnInit {
         this.resetPhenotypeForm();
       } else {
         this.selectedAnnotation = annotation;
-        this.hpoService.searchDescendants("", 'HP:0003674').pipe(shareReplay(1)).subscribe((result) => {
-          this.onsetOptions = result;
-          this.setFormValues(annotation);
-        });
+        this.setFormValues(annotation);
       }
     });
 
