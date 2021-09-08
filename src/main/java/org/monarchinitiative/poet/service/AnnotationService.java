@@ -57,24 +57,6 @@ public class AnnotationService {
     /**
      * A function to get phenotype annotations from the database by just disease.
      *
-     * @param user a user entity making the request.
-     * @return a collection of phenotype annotations or an empty list.
-     * @since 0.5.0
-     */
-    public List<PhenotypeAnnotation> getPhenotypeAnnotationsByUser(User user, AnnotationStatus status) throws AnnotationSourceException {
-        List<PhenotypeAnnotation> annotations;
-        if(status != null){
-            annotations = this.phenotypeAnnotationRepository.findAllByOwnerAndStatus(user, status);
-        } else {
-            annotations = this.phenotypeAnnotationRepository.findAllByOwnerAndStatusNotAndStatusNot(user,
-                    AnnotationStatus.RETIRED, AnnotationStatus.RETIRED_PENDING);
-        }
-        return (List<PhenotypeAnnotation>) getLastUpdatedForAnnotation(annotations);
-    }
-
-    /**
-     * A function to get phenotype annotations from the database by just disease.
-     *
      * @return a collection of official phenotype annotations
      * @since 0.5.0
      */
@@ -232,23 +214,6 @@ public class AnnotationService {
             }
         }
         return false;
-    }
-
-    /**
-     * A function to get phenotype annotations from the database by just disease.
-     *
-     * @param user a user entity making the request.
-     * @return a collection of phenotype annotations or an empty list.
-     * @since 0.5.0
-     */
-    public List<TreatmentAnnotation> getTreatmentAnnotationByUser(User user, AnnotationStatus status) {
-        List<TreatmentAnnotation> annotations;
-        if (status != null){
-            annotations = this.treatmentAnnotationRepository.findAllByOwnerAndStatus(user, status);
-        } else {
-            annotations = this.treatmentAnnotationRepository.findAllByOwnerAndStatusNot(user, AnnotationStatus.RETIRED);
-        }
-        return (List<TreatmentAnnotation>) getLastUpdatedForAnnotation(annotations);
     }
 
     /**

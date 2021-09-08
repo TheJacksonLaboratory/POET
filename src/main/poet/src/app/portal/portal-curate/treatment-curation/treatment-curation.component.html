@@ -184,7 +184,7 @@
               (click)="makeAnnotationChanges()">
         {{elevatedButtonText.changes.display}}
       </button>
-      <button mat-raised-button color="primary" *ngIf="everythingValid()" (click)="submitForm()">SUBMIT</button>
+      <button mat-raised-button color="primary" *ngIf="everythingValid() && !utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="submitForm()">SUBMIT</button>
       <mat-spinner color="accent" [diameter]="20" mode="indeterminate" *ngIf="savingAnnotation"></mat-spinner>
     </div>
     <div class="right-actions">

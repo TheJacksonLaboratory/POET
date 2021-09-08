@@ -47,7 +47,7 @@ export class UtilityService {
   }
 
   displayChebiFn(monarchSearchResult: MonarchSearchResult) {
-    return monarchSearchResult && monarchSearchResult.label ? `${monarchSearchResult.id} - ${monarchSearchResult.label}` : '';
+    return monarchSearchResult && monarchSearchResult.label != null ? `${monarchSearchResult.id} - ${monarchSearchResult.label}` : '';
   }
 
   isDiseaseSource(publicationId: string){

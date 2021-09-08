@@ -183,7 +183,7 @@ export class TreatmentCurationComponent implements OnInit {
     this.formControlGroup.get('hpoFormControl').setValue({id: annotation.hpoId, name: annotation.hpoName});
     this.formControlGroup.get('evidenceFormControl').setValue(annotation.evidence);
     this.formControlGroup.get('relationFormControl').setValue(annotation.relation);
-    this.formControlGroup.get('extensionFormControl').setValue({id: annotation.extensionId, label :[annotation.extensionLabel]});
+    this.formControlGroup.get('extensionFormControl').setValue({id: annotation.extensionId, label: annotation.extensionLabel});
     this.formControlGroup.get('commentFormControl').setValue(annotation.comment);
     this.stateService.setSelectedSource(annotation.annotationSource);
   }

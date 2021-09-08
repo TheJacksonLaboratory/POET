@@ -65,6 +65,9 @@ export class PhenotypeCurationComponent implements OnInit {
 
     this.hpoService.searchDescendants("", 'HP:0003674').pipe(shareReplay(1)).subscribe((result) => {
       this.onsetOptions = result;
+      if(this.selectedAnnotation){
+        this.setFormValues(this.selectedAnnotation);
+      }
     });
   }
 
