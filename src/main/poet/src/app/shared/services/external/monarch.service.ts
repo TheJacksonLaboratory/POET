@@ -43,29 +43,18 @@ export class MonarchService {
               if(omim_index != -1){
                 mappedResponse.leaf = true;
                 mappedResponse.omim_id = response.equivalent_ids[omim_index];
+                return mappedResponse;
               }
-            }
-            // Throw out obsolete terms?, how do we handle this case in the future when a disease becomes obsoleted,
-            // Might need a job to update the annotation source monthly.. etc.
-            return mappedResponse;
-          });
-        }
-      ), map( (responses: any[]) => {
-        if(prefix === "OMIM"){
-          responses = responses.filter(response => {
-            return response.leaf
-          }).sort((a, b) => {
-            if (a.label < b.label) {
-              return -1;
-            } else if (a.label > b.label) {
-              return 1;
             } else {
-              return 0;
+              return mappedResponse;
             }
-          })
+          }).filter(this.notEmpty);
         }
-        return responses;
-      })
-    );
+      ));
   }
+
+   notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+    return value !== null && value !== undefined;
+  }
+
 }
