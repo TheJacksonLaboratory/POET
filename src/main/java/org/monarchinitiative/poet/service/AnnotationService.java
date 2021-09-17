@@ -399,7 +399,7 @@ public class AnnotationService {
     private void updateUserActivity(User user, User reviewer, CurationAction curationAction,
                                     Annotation annotation, Annotation oldAnnotation){
             UserActivity userActivity;
-            if(curationAction.equals(CurationAction.REVIEW)){
+            if(curationAction.equals(CurationAction.REVIEW) || curationAction.equals(CurationAction.OVERRIDE)){
               userActivity = new UserActivity(user, reviewer, curationAction, annotation, oldAnnotation);
             } else {
               userActivity = new UserActivity(user, curationAction, annotation, oldAnnotation);

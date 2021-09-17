@@ -145,6 +145,7 @@ export class TreatmentCurationComponent implements OnInit {
   }
 
   getFormTreatmentAnnotation(){
+    const extension = this.formControlGroup.get('extensionFormControl').value;
     return {
       id: this.selectedAnnotation && this.selectedAnnotation.id ? this.selectedAnnotation.id : null,
       maxoId: this.formControlGroup.get('maxoFormControl').value.ontologyId.toString(),
@@ -154,8 +155,8 @@ export class TreatmentCurationComponent implements OnInit {
       evidence: this.formControlGroup.get('evidenceFormControl').value,
       relation: this.formControlGroup.get('relationFormControl').value,
       comment: this.formControlGroup.get('commentFormControl').value,
-      extensionId: this.formControlGroup.get('extensionFormControl').value ? this.formControlGroup.get('extensionFormControl').value.id : null,
-      extensionLabel: this.formControlGroup.get('extensionFormControl').value ? this.formControlGroup.get('extensionFormControl').value.label[0] : null,
+      extensionId: extension && extension.id ? extension.id : null,
+      extensionLabel: extension && extension.laebl ? extension.label[0] : null,
       message: ""
     }
   }
@@ -247,11 +248,19 @@ export class TreatmentCurationComponent implements OnInit {
   reviewAnnotation(action: string){
     if(action === 'approve'){
       const treatmentAnnotation = this.getFormTreatmentAnnotation();
-      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', 'approve').subscribe(() => {
-        this.onSuccessfulTreatment('Treatment Annotation Approved!', true);
-      }, (err) => {
-        this.onErrorTreatment();
-      });
+      if(this.elevatedChanges){
+        this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', '').subscribe(() => {
+          this.onSuccessfulTreatment('Treatment Annotation Approved!', true);
+        }, (err) => {
+          this.onErrorTreatment();
+        });
+      } else {
+        this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', 'approve').subscribe(() => {
+          this.onSuccessfulTreatment('Treatment Annotation Approved!', true);
+        }, (err) => {
+          this.onErrorTreatment();
+        });
+      }
     } else if(action === 'deny') {
       this.dialog.open(DialogReviewComponent, {
         minWidth: 300,
