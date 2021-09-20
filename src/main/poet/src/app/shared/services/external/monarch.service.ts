@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
-import {filter, map, pluck} from "rxjs/operators";
+import { map, pluck} from "rxjs/operators";
 import {Observable} from "rxjs";
 import {MonarchSearchResult} from "../../models/search-models";
 
@@ -38,6 +38,11 @@ export class MonarchService {
             mappedResponse.omim_id = "";
             mappedResponse.leaf = false;
             mappedResponse.match = response.match;
+            // Always return chebi responses
+            if(prefix === "CHEBI"){
+              return mappedResponse;
+            }
+            // Filter the disease results
             if(!mappedResponse.id.includes("OMIM")){
               const omim_index = response.equivalent_ids.findIndex(element => element.includes("OMIM:"))
               if(omim_index != -1){
