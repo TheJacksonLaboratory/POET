@@ -26,7 +26,7 @@ public class TreatmentRequest {
     private String comment;
     @NotNull
     private String relation;
-    @Pattern(regexp = "CHEBI:[0-9]{5,8}", message = "extensionId should be a valid identifier from chemical entities of biological interest")
+    @Pattern(regexp = "CHEBI:[0-9]{2,8}", message = "extensionId should be a valid identifier from chemical entities of biological interest")
     private String extensionId;
     private String extensionLabel;
     private String publicationId;

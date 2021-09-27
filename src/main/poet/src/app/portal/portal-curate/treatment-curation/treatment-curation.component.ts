@@ -156,7 +156,7 @@ export class TreatmentCurationComponent implements OnInit {
       relation: this.formControlGroup.get('relationFormControl').value,
       comment: this.formControlGroup.get('commentFormControl').value,
       extensionId: extension && extension.id ? extension.id : null,
-      extensionLabel: extension && extension.laebl ? extension.label[0] : null,
+      extensionLabel: extension && extension.label ? extension.label : null,
       message: ""
     }
   }
