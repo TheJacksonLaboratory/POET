@@ -63,30 +63,23 @@ task clientTest(type: NpmTask, dependsOn: 'npmInstall') {
 	args = ['run', 'test']
 }
 
-task shouldClientTest(){
-	if(System.getProperty("clientTest")){
-		dependsOn(clientTest)
-	}
+task test_release(){
+	dependsOn(test)
+	dependsOn(clientTest)
 }
 
-bootWar.dependsOn {
-	buildClientProd
-}
 test {
 	systemProperty 'spring.profiles.active', 'test'
 }
-test.finalizedBy(jacocoTestReport)
 
-/*task testApp {
-	dependsOn(bootRun.dependsOn(buildClientProd))
-}*/
+test.finalizedBy(jacocoTestReport)
 
 clean {
 	delete fileTree(dir: "src/main/resources/static")
 }
 
 bootRun {
-	if(System.getProperty("initialize") == true){
+	if(System.getProperty("initialize") == "true"){
 		profile = "initialize"
 	}
 	systemProperty "spring.profiles.active", profile
