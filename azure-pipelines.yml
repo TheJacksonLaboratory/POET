@@ -20,6 +20,4 @@ steps:
     jdkArchitectureOption: 'x64'
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
-    tasks: 
-      -'test_release'
-      -'bootWar'
+    tasks:  'test_release bootWar'
