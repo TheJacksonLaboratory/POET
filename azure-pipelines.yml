@@ -4,7 +4,10 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
 trigger:
-- feature/official-annotation-edit
+- main
+- releases/*
+- feature/*
+- enhancements/*
 
 pool:
   vmImage: ubuntu-latest
