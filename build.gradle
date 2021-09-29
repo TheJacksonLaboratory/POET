@@ -78,6 +78,10 @@ clean {
 	delete fileTree(dir: "src/main/resources/static")
 }
 
+bootWar.dependsOn {
+	buildClientProd
+}
+
 bootRun {
 	if(System.getProperty("initialize") == "true"){
 		profile = "initialize"
