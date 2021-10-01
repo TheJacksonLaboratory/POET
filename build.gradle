@@ -57,6 +57,12 @@ task buildClientProd(type: NpmTask, dependsOn: 'npmInstall') {
 	args = ['run', 'buildProd']
 }
 
+task buildClientProd(type: NpmTask, dependsOn: 'npmInstall') {
+	group = 'build'
+	description = 'Compile client side assets for test env'
+	args = ['run', 'buildTest']
+}
+
 task clientTest(type: NpmTask, dependsOn: 'npmInstall') {
 	group = 'verification'
 	description = 'Executes client side unit tests'
@@ -79,7 +85,11 @@ clean {
 }
 
 bootWar.dependsOn {
-	buildClientProd
+	if(System.getProperty("release") == "true"){
+		buildClientProd
+	} else {
+		buildClientTest
+	}
 }
 
 bootRun {

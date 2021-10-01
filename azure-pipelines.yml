@@ -7,7 +7,9 @@ trigger:
 - main
 - releases/*
 - feature/*
-- enhancements/*
+- enhancement/*
+- bugfix/*
+- hotfix/*
 
 pool:
   vmImage: ubuntu-latest

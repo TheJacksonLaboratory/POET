@@ -10,43 +10,53 @@ Intellij
 - Import project as gradle project
 - Ensure the gradle runtime is the wrapper (usually defaults)
 
-
-# Running
-
-####Development (2 tabs)
-
 Requirements
 - Node
 - Npm
 
-In root directory provide args where necessary to initialize database: 
+# Running
+
+#### Development (2 tabs)
+
+To Initialize DB
+
 ` 
-./gradlew bootRun --args="--initializePoet=true" 
+    ./gradlew bootRun --args="--initializePoet=true" 
+`
+
+Run Default
+
+`
+    ./gradle bootRun
 `
 
 In src/main/poet
+
 `
-npm run start
+    npm run start
 `
 
 Navigate to http://localhost:4200/, endpoints will be served at http://localhost:8080/api/v1/
 
-#### Testing
 
-To test the app under a singular url
-
-`
-./gradlew testApp
-`
-
-Navigate to http://localhost:8080/
-
-
-# Building for deployment
+# Unit & Functional Testing Before Deployment
 
 `
-./gradlew war -DclientTest=true
+    ./gradlew test_release
 `
+
+# Building For Deployment
+Test Environment Internal Only
+
+`
+    ./gradlew bootWar
+`
+
+Production Environment Deployment
+`
+    ./gradlew bootWar --args="--release=true"
+`
+
 
 # Contributors
 
