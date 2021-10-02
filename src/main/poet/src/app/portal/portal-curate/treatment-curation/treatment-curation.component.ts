@@ -46,7 +46,7 @@ export class TreatmentCurationComponent implements OnInit {
     evidenceFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     relationFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     extensionFormControl: new FormControl({value: '', disabled: false}),
-    commentFormControl: new FormControl({value: '', disabled: false}),
+    commentFormControl: new FormControl({value: '', disabled: false}, Validators.maxLength(50)),
   });
 
   constructor(public hpoService: HpoService,

@@ -126,7 +126,7 @@
       </div>
       <div class="form-content-section">
         <mat-form-field class="treatment-form" appearance="fill">
-          <mat-label>CHEBI Extension</mat-label>
+          <mat-label>Ontology Extension</mat-label>
           <mat-hint *ngIf="!formControlGroup.get('extensionFormControl').hasError('notFound') &&
           !formControlGroup.get('extensionFormControl').hasError('apiError') && !formControlGroup.disabled">
             Try: CHEBI:27732</mat-hint>
@@ -157,8 +157,9 @@
       </div>
       <div class="form-content-section">
         <mat-form-field class="treatment-form" appearance="fill">
-          <mat-label>Additional Annotation Comment</mat-label>
-          <input matInput type="text" formControlName="commentFormControl">
+          <mat-label>Additional Comments</mat-label>
+          <input matInput type="text" formControlName="commentFormControl" maxlength="50">
+          <mat-hint *ngIf="this.formControlGroup.get('commentFormControl').value?.length == 50">Maximum Characters Reached.</mat-hint>
           <button mat-button *ngIf="formControlGroup.get('commentFormControl').value != ''" matSuffix mat-icon-button
                   aria-label="Clear"
                   (click)="formControlGroup.get('commentFormControl').reset()">

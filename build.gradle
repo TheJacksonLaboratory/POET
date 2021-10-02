@@ -51,13 +51,13 @@ node {
 
 }
 
-task buildClientProd(type: NpmTask, dependsOn: 'npmInstall') {
+task buildClientProdEnv(type: NpmTask, dependsOn: 'npmInstall') {
 	group = 'build'
 	description = 'Compile client side assets for production'
 	args = ['run', 'buildProd']
 }
 
-task buildClientProd(type: NpmTask, dependsOn: 'npmInstall') {
+task buildClientTestEnv(type: NpmTask, dependsOn: 'npmInstall') {
 	group = 'build'
 	description = 'Compile client side assets for test env'
 	args = ['run', 'buildTest']
@@ -86,9 +86,9 @@ clean {
 
 bootWar.dependsOn {
 	if(System.getProperty("release") == "true"){
-		buildClientProd
+		buildClientProdEnv
 	} else {
-		buildClientTest
+		buildClientTestEnv
 	}
 }
 

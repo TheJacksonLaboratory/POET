@@ -41,19 +41,22 @@ export class PortalDashboardComponent implements OnInit {
         this.curationService.getAnnotationsNeedingReview().subscribe((annotations) => {
           this.reviews = annotations;
         });
-      } else {
+      } else if(this.user) {
         this.curationService.getUserAnnotationsNeedingWork().subscribe((annotations)=>{
           this.userAnnotations = annotations;
         });
       }
     });
+
     this.loading = true;
     this.curationService.getGroupActivityFeed(true, 1,  null, null)
       .subscribe((recentActivity) => {
       this.recentActivity = recentActivity;
-    }, ()=>{},()=>{
+    }, (error)=>{
+      console.log(error);
+    }, ()=> {
         this.loading = false;
-      });
+    });
 
     this.curationService.getUserContributions().subscribe((contributions) => {
       if (contributions.every(obj => obj.value === 0)) {
@@ -62,8 +65,6 @@ export class PortalDashboardComponent implements OnInit {
         this.pieData = contributions;
       }
     });
-
-
   }
 
   graphUserActivity(userActivity: any) {

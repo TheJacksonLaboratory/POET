@@ -179,9 +179,10 @@
         </mat-form-field>
       </div>
       <div class="form-content-section">
-        <mat-form-field class="phenotype-form">
-          <mat-label>Additional Annotation Description</mat-label>
+        <mat-form-field class="phenotype-form" appearance="fill">
+          <mat-label>Additional Description</mat-label>
           <input matInput type="text" formControlName="descriptionFormControl">
+          <mat-hint *ngIf="this.formControlGroup.get('descriptionFormControl').value?.length == 50">Maximum Characters Reached.</mat-hint>
           <button mat-button *ngIf="formControlGroup.get('descriptionFormControl').value != ''" matSuffix mat-icon-button
                   aria-label="Clear"
                   (click)="formControlGroup.get('descriptionFormControl').reset()">

@@ -53,7 +53,7 @@ export class PhenotypeCurationComponent implements OnInit {
     qualifierFormControl: new FormControl({value: '', disabled: false}),
     sexFormControl: new FormControl({value: '', disabled: false}),
     frequencyFormControl: new FormControl({value: '', disabled: false}, this.frequencyValdiation()),
-    descriptionFormControl: new FormControl({value: '', disabled: false}),
+    descriptionFormControl: new FormControl({value: '', disabled: false}, Validators.maxLength(50)),
   });
 
   constructor(public hpoService: HpoService,
