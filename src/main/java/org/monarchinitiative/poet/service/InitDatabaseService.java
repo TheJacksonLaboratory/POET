@@ -104,11 +104,7 @@ public class InitDatabaseService {
                         Publication publication = null;
                         annotationSource = entityService.getAnnotationSource(publicationCitation.get(), disease.getDiseaseId());
                         if(annotationSource == null){
-                            try{
-                                publication = this.getPublication(publicationCitation.get());
-                            } catch(InterruptedException ex){
-                                System.exit(0);
-                            }
+                            publication = new Publication(publicationCitation.get(), "", "", "");
                             annotationSource = entityService.createAnnotationSource(new PublicationRequest(publication, disease));
                         }
                     } else if(diseaseCitation.isPresent()){
@@ -143,34 +139,42 @@ public class InitDatabaseService {
                     }
                 });
             });
+            List<Publication> publications = entityService.getAllPublications();
+            publications.forEach(publication -> {
+                try {
+                    if(publication.getPublicationId().contains("PMID:")){
+                        this.updatePublication(publication);
+                    }
+                } catch (InterruptedException e) {
+                    System.exit(0);
+                }
+            });
             System.out.println("Finished POET Initialization.");
         } else {
             System.out.println("Skipping POET Initialization.");
         }
     }
 
-   private Publication getPublication(String publicationId) throws InterruptedException {
+   private void updatePublication(Publication publication) throws InterruptedException {
        try {
-           publicationId = publicationId.replace("PMID:", "");
+           final String publicationId = publication.getPublicationId().replace("PMID:", "");
            final String urlString = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi" + "?db=pubmed&retmode=json&id=" + publicationId;
            URL url = new URL(urlString);
            // Convert to a JSON object to print data
            ObjectMapper mapper = new ObjectMapper();
            Map map = mapper.readValue(url, Map.class);
            Map result = (Map) map.get("result");
-           Map publication = (Map) result.get(publicationId);
+           Map publicationResult = (Map) result.get(publicationId);
 
-           if(publication == null){
-               return new Publication("PMID:" + publicationId, "",
-                       "", "");
-           } else {
-               String title = (String) publication.get("title");
-               return new Publication("PMID:" + publicationId, (String) publication.get("title"),
-                       (String) publication.get("pubdate"), (String) publication.get("sortfirstauthor"));
+           if(publicationResult != null) {
+               publication.setPublicationName((String) publicationResult.get("title"));
+               publication.setDate((String) publicationResult.get("pubdate"));
+               publication.setFirstAuthor((String) publicationResult.get("sortfirstauthor"));
+               this.entityService.updatePublication(publication);
            }
        } catch (IOException e) {
            TimeUnit.SECONDS.sleep(1);
-           return this.getPublication(publicationId);
+           this.updatePublication(publication);
        }
     }
 }

@@ -34,6 +34,10 @@ export class UtilityService {
     return option && option.hasOwnProperty("id") ?  `${option.name} ${option.id}` : option;
   }
 
+  isDiseaseSource(publicationId){
+    return publicationId.includes("OMIM");
+  }
+
   openMessagesDialog(messages: Message[]){
     this.dialog.open(DialogMessagesComponent, {
       data: {

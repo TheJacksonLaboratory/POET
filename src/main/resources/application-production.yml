@@ -1,24 +1,21 @@
 spring:
-  datasource:
-    url: jdbc:h2:file:./usr/local/svc-maxo/database/poet;mode=MYSQL
-  h2:
-    console:
-      enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: none
-    generate-ddl: false
-
+  profiles: production
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: https://dev-poet.us.auth0.com/
+  datasource:
+    url: jdbc:mariadb://localhost:3306/poet
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
 management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: mappings
 auth0:
   audience: poet-api-audience
   nickname: https://poet.jax.org/nickname
@@ -27,5 +24,4 @@ auth0:
 api:
   version: /api/v1
   client: /,/portal/**
-
 initializePoet: false

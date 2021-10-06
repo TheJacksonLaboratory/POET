@@ -97,6 +97,18 @@ public class Publication {
         return this.annotationSources.stream().map(AnnotationSource::getDisease).collect(Collectors.toList());
     }
 
+    public void setPublicationName(String publicationName) {
+        this.publicationName = publicationName;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setFirstAuthor(String firstAuthor) {
+        this.firstAuthor = firstAuthor;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

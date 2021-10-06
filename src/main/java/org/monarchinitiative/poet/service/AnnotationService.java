@@ -74,6 +74,16 @@ public class AnnotationService {
     /**
      * A function to get phenotype annotations from the database by just disease.
      *
+     * @return a collection of official phenotype annotations
+     * @since 0.5.0
+     */
+    public List<PhenotypeAnnotation> getOfficialPhenotypes() {
+        return this.phenotypeAnnotationRepository.findAllByStatus(AnnotationStatus.OFFICIAL);
+    }
+
+    /**
+     * A function to get phenotype annotations from the database by just disease.
+     *
      * @param diseaseId a OMIM disease id
      * @param sort a string composing of two parts both direction and field. TODO: Implement functionality
      *

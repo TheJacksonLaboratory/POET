@@ -14,11 +14,11 @@
                          *ngFor="let publication of annotatedPublications$ | async"
                          [value]="publication">
           <mat-icon matListIcon>library_books</mat-icon>
-          <div class="selection-text" *ngIf="!isDiseaseSource(publication.publicationId)">
+          <div class="selection-text" *ngIf="!utilityService.isDiseaseSource(publication.publicationId)">
             {{publication.publicationName}}
             <span class="selection-id">{{publication.publicationId}}</span>
           </div>
-          <div class="selection-text" *ngIf="isDiseaseSource(publication.publicationId)">
+          <div class="selection-text" *ngIf="utilityService.isDiseaseSource(publication.publicationId)">
             {{publication.publicationName}}{{publication.publicationId}}
           </div>
         </mat-list-option>

@@ -125,6 +125,26 @@ public class EntityService {
     }
 
     /**
+     * A function to get fetch all publications in the database
+     *
+     * @return a list of publications
+     * @since 0.5.0
+     */
+    public List<Publication> getAllPublications(){
+        return (List<Publication>) this.publicationRepository.findAll();
+    }
+
+    /**
+     * A function to update a publication given the updated publication
+     *
+     *
+     * @since 0.7.0
+     */
+    public void updatePublication(Publication publication){
+        this.publicationRepository.save(publication);
+    }
+
+    /**
      * A function to get a diseases associated to a publication from the publication repository
      *
      * @param id a PubMed id

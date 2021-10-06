@@ -17,6 +17,6 @@ public interface UserActivityRepository extends PagingAndSortingRepository<UserA
     Integer countAllByAnnotation_AnnotationTypeAndOwnerAuthId(String annotation_type, String authId);
     Page<UserActivity> findUserActivityByLocalDateTimeAfter(LocalDateTime dateTime, Pageable pageable);
     Page<UserActivity> findUserActivityByLocalDateTimeAfterAndOwnerAuthId(LocalDateTime dateTime, String authId, Pageable pageable);
-    @Query(nativeQuery = true, value = "SELECT *, max(a.datetime) FROM USER_ACTIVITY  a where a.annotation_id = ? group by a.id ORDER BY a.datetime desc LIMIT 1")
+    @Query(nativeQuery = true, value = "SELECT *, max(a.datetime) FROM user_activity  a where a.annotation_id = ? group by a.id ORDER BY a.datetime desc LIMIT 1")
     UserActivity getMostRecentDateForAnnotationActivity(@Param("id") Long id);
 }

@@ -51,6 +51,12 @@ describe('UtilityService', () => {
     expect(service.displayHpoFn(fakeOptions[3])).toEqual("");
   });
 
+  it('should return correct disease source boolean', () => {
+    expect(service.isDiseaseSource("PMID:01931")).toBeTrue();
+    expect(service.isDiseaseSource("")).toBeFalse();
+    expect(service.isDiseaseSource("PMID:009311")).toBeTrue();
+  })
+
   function getFakeAnnotations(): Annotation[]
   {
    return [{
