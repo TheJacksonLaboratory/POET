@@ -5,11 +5,11 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class FilterPipe implements PipeTransform {
 
-  transform(items: any[], statuses: any, user: any, showAll: boolean): any[] {
+  transform(items: any[], statuses: any, user: any, showAll: boolean, filteredAnnotationLength): any[] {
     if(statuses.length == 0){
       return [];
     } else if(items?.length > 0){
-        return items.filter(it => {
+        const filteredItems = items.filter(it => {
           return statuses.indexOf(it.status) != -1;
         }).filter( it => {
           if(it.status === "UNDER_REVIEW"){
@@ -24,6 +24,8 @@ export class FilterPipe implements PipeTransform {
             return true;
           }
         });
+        filteredAnnotationLength.count = filteredItems.length;
+        return filteredItems;
       }
   }
 }

@@ -148,6 +148,10 @@ export class DialogSourceComponent implements OnInit {
     return 'I have affirmed that this publication describes phenotypes for ' + this.selectedDisease.diseaseName;
   }
 
+  isDiseaseSource(publicationId){
+    return publicationId.includes("OMIM");
+  }
+
 }
 
 /** Error when invalid control is dirty, touched, or submitted. */

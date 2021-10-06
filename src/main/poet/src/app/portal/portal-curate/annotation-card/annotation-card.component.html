@@ -48,7 +48,7 @@
     <mat-list *ngIf="category === 'treatment'">
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': treatment == activeAnnotation}"
-                     *ngFor="let treatment of treatmentAnnotations | async | filter: selectedStatuses:user:showAll | sortBy: selectedSort:category | slice:lowValue:highValue ">
+                     *ngFor="let treatment of treatmentAnnotations | async | filter: selectedStatuses:user:showAll:filteredAnnotationLength | sortBy: selectedSort:category | slice:lowValue:highValue ">
         <mat-icon [class]="{'statusApproved': treatment.status === 'ACCEPTED', 'statusReview': treatment.status === 'UNDER_REVIEW',
                       'statusOfficial': treatment.status === 'OFFICIAL', 'statusNeedsWork': treatment.status === 'NEEDS_WORK'}" matListIcon>health_and_safety</mat-icon>
         <div class="selection-text" *ngIf="formOpen">
@@ -91,7 +91,7 @@
     <mat-list *ngIf="category === 'phenotype'" class="phenotype-list">
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': phenotype == activeAnnotation}"
-                     *ngFor="let phenotype of phenotypeAnnotations | async | filter: selectedStatuses : user : showAll | sortBy: selectedSort:category | slice:lowValue:highValue ">
+                     *ngFor="let phenotype of phenotypeAnnotations | async | filter: selectedStatuses:user:showAll:filteredAnnotationLength | sortBy: selectedSort:category | slice:lowValue:highValue ">
         <mat-icon matListIcon [class]="{'statusApproved': phenotype.status === 'ACCEPTED', 'statusReview': phenotype.status === 'UNDER_REVIEW',
                       'statusOfficial': phenotype.status === 'OFFICIAL', 'statusNeedsWork': phenotype.status === 'NEEDS_WORK'}">attribution</mat-icon>
         <div matLine class="selection-text" *ngIf="formOpen">
@@ -132,11 +132,13 @@
     </mat-list>
     <mat-paginator #treatmentPaginator *ngIf="(treatmentAnnotations | async)?.length > 0 && category === 'treatment'"
                    pageSize="10"
+                   [length]="filteredAnnotationLength.count"
                    (page)="getPaginatorData($event)"
                    showFirstLastButtons="false">
     </mat-paginator>
     <mat-paginator #phenotypePaginator *ngIf="(phenotypeAnnotations | async)?.length > 0 && category === 'phenotype'"
                    (page)="getPaginatorData($event)"
+                   [length]="filteredAnnotationLength.count"
                    pageSize="10"
                    showFirstLastButtons="false">
     </mat-paginator>
