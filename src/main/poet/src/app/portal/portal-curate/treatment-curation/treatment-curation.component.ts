@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { HpoService } from "../../../shared/services/external/hpo.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import {debounceTime, distinctUntilChanged, finalize, map, take} from "rxjs/operators";
+import {catchError, debounceTime, distinctUntilChanged, finalize, map, take} from "rxjs/operators";
 import { HpoTerm, MaxoSearchResult, MaxoTerm } from "../../../shared/models/search-models";
 import { AnnotationSource, Publication, TreatmentAnnotation } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
@@ -12,6 +12,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { MonarchService } from "../../../shared/services/external/monarch.service";
 import { DialogReviewComponent } from "../dialog-review/dialog-review.component";
 import { UtilityService } from "../../../shared/services/utility.service";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'poet-treatment-curation',
@@ -30,7 +31,7 @@ export class TreatmentCurationComponent implements OnInit {
   selectedTreatment: MaxoTerm;
   selectedHpo: HpoTerm;
   maxoOptions: MaxoSearchResult[];
-  hpoOptions: { name: string; id: string }[];
+  hpoOptions: Observable<{ name: string; id: string }[]>;
   chebiOptions: any;
   selectedPublications: Publication[] = [];
   loadingHpoSuggestions: boolean = false;
@@ -55,7 +56,7 @@ export class TreatmentCurationComponent implements OnInit {
               public stateService: StateService,
               public utilityService: UtilityService,
               public dialog: MatDialog,
-              private _snackBar: MatSnackBar) {
+              private _snackBar: MatSnackBar, private cdf: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -120,9 +121,17 @@ export class TreatmentCurationComponent implements OnInit {
         if (query && !this.formControlGroup.disabled) {
           this.loadingHpoSuggestions = true;
           // Get phenotypes to display in select box for treatments.
-          this.stateService.phenotypeAnnotations.pipe(map(
+          this.hpoOptions = this.stateService.phenotypeAnnotations.pipe(map(
             annotations => {
-              return annotations.map(annotation => {
+              return annotations.filter(annotation => {
+                // do the filter here
+                query = query.toLowerCase();
+                if(query.startsWith("hp:") && annotation.hpoId.toLowerCase().includes(query)){
+                  return annotation;
+                } else if(annotation.hpoName.toLowerCase().includes(query)){
+                  return annotation;
+                }
+              }).map(annotation => {
                 return {
                   id: annotation.hpoId,
                   name: annotation.hpoName
@@ -131,12 +140,11 @@ export class TreatmentCurationComponent implements OnInit {
             }
           ), take(1), finalize(() => {
             this.loadingHpoSuggestions = false
-          }))
-            .subscribe((annotations) => {
-            this.hpoOptions = annotations;
-          }, (err) => {
+            this.cdf.detectChanges();
+          }), catchError(() => {
             this.formControlGroup.get("hpoFormControl").setErrors({apiError: true});
-          });
+            return [];
+            }));
         }});
 
     this.formControlGroup.get("extensionFormControl").valueChanges
