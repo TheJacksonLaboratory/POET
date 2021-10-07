@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { HpoService } from "../../../shared/services/external/hpo.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import {catchError, debounceTime, distinctUntilChanged, finalize, map, take} from "rxjs/operators";
+import {catchError, debounceTime, distinctUntilChanged, finalize, map, startWith, take} from "rxjs/operators";
 import { HpoTerm, MaxoSearchResult, MaxoTerm } from "../../../shared/models/search-models";
 import { AnnotationSource, Publication, TreatmentAnnotation } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
@@ -116,9 +116,9 @@ export class TreatmentCurationComponent implements OnInit {
         }});
 
     this.formControlGroup.get("hpoFormControl").valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
+      .pipe(startWith(''), debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
-        if (query && !this.formControlGroup.disabled) {
+        if (!this.formControlGroup.disabled) {
           this.loadingHpoSuggestions = true;
           // Get phenotypes to display in select box for treatments.
           this.hpoOptions = this.stateService.phenotypeAnnotations.pipe(map(
@@ -129,6 +129,8 @@ export class TreatmentCurationComponent implements OnInit {
                 if(query.startsWith("hp:") && annotation.hpoId.toLowerCase().includes(query)){
                   return annotation;
                 } else if(annotation.hpoName.toLowerCase().includes(query)){
+                  return annotation;
+                } else if(query == ''){
                   return annotation;
                 }
               }).map(annotation => {

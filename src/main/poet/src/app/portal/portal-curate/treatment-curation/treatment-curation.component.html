@@ -67,7 +67,7 @@
             <mat-option *ngIf="loadingHpoSuggestions">
               <mat-progress-bar mode="query"></mat-progress-bar>
             </mat-option>
-            <mat-option class="auto-complete-option" *ngFor="let option of hpoOptions | async" [value]="option">
+            <mat-option class="auto-complete-option" *ngFor="let option of hpoOptions | async | sortBy: 'name':''" [value]="option">
               <span class="option-name">{{option.name}}</span>
               &nbsp;
               <span class="option-id">{{option.id}}</span>
