@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
-import { forkJoin, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import {
   Disease,
   PhenotypeAnnotation,
-  Publication, Status,
+  Publication,
   TreatmentAnnotation,
   UserActivityResponse
 } from "../../models/models";
 import { StateService } from "../state/state.service";
-import { map, shareReplay, tap } from "rxjs/operators";
+import { map, shareReplay } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ import { map, shareReplay, tap } from "rxjs/operators";
 export class CurationService {
 
 
-  constructor(private httpClient: HttpClient, private stateService: StateService) {
+  constructor(private httpClient: HttpClient) {
   }
 
   /**
@@ -92,16 +92,8 @@ export class CurationService {
    * @param sort
    * @param review
    */
-  getPhenotypeAnnotations(disease: Disease, publication: Publication, sort: string): Observable<PhenotypeAnnotation[]> {
-    let params;
-    if (sort) {
-      params = new HttpParams().set("sort", sort);
-    }
-    if (publication != null) {
-      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
-    } else {
-      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
-    }
+  getPhenotypeAnnotations(disease: Disease): Observable<PhenotypeAnnotation[]> {
+      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + disease.diseaseId).pipe(shareReplay());
   }
 
   getAnnotationsNeedingReview(): Observable<any> {
@@ -115,23 +107,10 @@ export class CurationService {
 
   /**
    * Get a list of Treatment Annotations
-   * @param publication
    * @param disease
-   * @param publication
-   * @param sort
-   * @param review
    */
-  getTreatmentAnnotations(disease: Disease, publication: Publication, sort: string): Observable<TreatmentAnnotation[]> {
-    let params;
-    if (sort) {
-      params = new HttpParams().set("sort", sort);
-    }
-
-    if (publication != null) {
-      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + `${disease.diseaseId}/${publication.publicationId}`, {params: params});
-    } else {
-      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + disease.diseaseId, {params: params}).pipe(shareReplay());
-    }
+  getTreatmentAnnotations(disease: Disease): Observable<TreatmentAnnotation[]> {
+      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + disease.diseaseId).pipe(shareReplay());
   }
 
   /**
@@ -141,11 +120,6 @@ export class CurationService {
    * @param review - whether this update is a review or not.
    */
   updateAnnotation(annotation: any, category: string, review: string) {
-    const annotationSource = this.stateService.getSelectedSource();
-    annotation.publicationId = annotationSource.publication.publicationId;
-    annotation.publicationName = annotationSource.publication.publicationName;
-    annotation.diseaseId = annotationSource.disease.diseaseId;
-    annotation.diseaseName = annotationSource.disease.diseaseName;
     let params = new HttpParams();
     if(review) {
      params = params.set("review", review);
@@ -164,11 +138,6 @@ export class CurationService {
    * @param category - the category we are curating
    */
   saveAnnotation(annotation: any, category: string) {
-    const annotationSource = this.stateService.getSelectedSource();
-    annotation.publicationId = annotationSource.publication.publicationId;
-    annotation.publicationName = annotationSource.publication.publicationName;
-    annotation.diseaseId = annotationSource.disease.diseaseId;
-    annotation.diseaseName = annotationSource.disease.diseaseName;
     if(category ==='treatment'){
       return this.httpClient.post(environment.POET_API_TREATMENTS_ANNOTATION, annotation);
     } else {

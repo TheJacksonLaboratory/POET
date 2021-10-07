@@ -73,7 +73,7 @@ public class AnnotationService {
      * @return a collection of phenotype annotations or an empty list.
      * @since 0.5.0
      */
-    public List<PhenotypeAnnotation> getPhenotypeAnnotationsByDisease(String diseaseId, String sort) throws AnnotationSourceException {
+    public List<PhenotypeAnnotation> getPhenotypeAnnotationsByDisease(String diseaseId) throws AnnotationSourceException {
             Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
             if(disease != null) {
                 List<PhenotypeAnnotation> annotations = this.phenotypeAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(disease, AnnotationStatus.RETIRED, AnnotationStatus.RETIRED_PENDING);

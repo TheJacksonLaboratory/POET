@@ -38,6 +38,14 @@ public class Disease {
     @JsonView(PublicationViews.Simple.class)
     private List<AnnotationSource> annotationSource;
 
+    @Transient
+    @JsonView({DiseaseViews.Simple.class})
+    private int phenotypeCount = 0;
+
+    @Transient
+    @JsonView({DiseaseViews.Simple.class})
+    private int treatmentCount = 0;
+
     protected Disease(){}
 
     public Disease(String diseaseId, String diseaseName) {
@@ -85,6 +93,22 @@ public class Disease {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getPhenotypeCount() {
+        return phenotypeCount;
+    }
+
+    public void setPhenotypeCount(int phenotypeCount) {
+        this.phenotypeCount = phenotypeCount;
+    }
+
+    public int getTreatmentCount() {
+        return treatmentCount;
+    }
+
+    public void setTreatmentCount(int treatmentCount) {
+        this.treatmentCount = treatmentCount;
     }
 
     @Override

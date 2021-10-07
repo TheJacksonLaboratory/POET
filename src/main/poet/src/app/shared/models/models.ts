@@ -27,6 +27,8 @@ export interface Disease {
   diseaseName: string;
   equivalentId: string;
   description: string;
+  phenotypeCount?: string;
+  treatmentCount?: string;
 }
 
 export interface PhenotypeAnnotation extends Annotation {

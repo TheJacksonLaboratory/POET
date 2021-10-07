@@ -5,7 +5,9 @@ import org.monarchinitiative.poet.exceptions.DiseaseNotFoundException;
 import org.monarchinitiative.poet.model.entities.Disease;
 import org.monarchinitiative.poet.model.entities.Publication;
 import org.monarchinitiative.poet.model.requests.DiseaseRequest;
+import org.monarchinitiative.poet.model.responses.AnnotationCount;
 import org.monarchinitiative.poet.service.EntityService;
+import org.monarchinitiative.poet.service.StatisticsService;
 import org.monarchinitiative.poet.views.DiseaseViews;
 import org.monarchinitiative.poet.views.PublicationViews;
 import org.springframework.http.HttpStatus;
@@ -26,9 +28,11 @@ import java.util.List;
 @RequestMapping(value = "${api.version}/entity/disease/")
 public class DiseaseController {
     private final EntityService entityService;
+    private final StatisticsService statisticsService;
 
-    public DiseaseController(EntityService entityService) {
+    public DiseaseController(EntityService entityService, StatisticsService statisticsService) {
         this.entityService = entityService;
+        this.statisticsService = statisticsService;
     }
 
     /**
@@ -45,6 +49,9 @@ public class DiseaseController {
     public Disease getDisease(@PathVariable(value="id") String id){
         Disease disease = this.entityService.getDisease(id);
         if(disease != null){
+            final AnnotationCount counts = this.statisticsService.summarizeAnnotations(disease.getDiseaseId());
+            disease.setPhenotypeCount(counts.getPhenotypeCount());
+            disease.setTreatmentCount(counts.getTreatmentCount());
             return disease;
         } else {
             throw new DiseaseNotFoundException(id);

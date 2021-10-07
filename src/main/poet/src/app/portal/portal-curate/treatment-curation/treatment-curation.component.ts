@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HpoService } from "../../../shared/services/external/hpo.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
-import { HpoTerm, MaxoSearchResult, MaxoTerm, MonarchSearchResult } from "../../../shared/models/search-models";
-import { AnnotationSource, Publication, Status, TreatmentAnnotation } from "../../../shared/models/models";
+import {debounceTime, distinctUntilChanged, finalize, map, take} from "rxjs/operators";
+import { HpoTerm, MaxoSearchResult, MaxoTerm } from "../../../shared/models/search-models";
+import { AnnotationSource, Publication, TreatmentAnnotation } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
 import { StateService } from "../../../shared/services/state/state.service";
 import { MatDialog } from "@angular/material/dialog";
@@ -30,7 +30,7 @@ export class TreatmentCurationComponent implements OnInit {
   selectedTreatment: MaxoTerm;
   selectedHpo: HpoTerm;
   maxoOptions: MaxoSearchResult[];
-  hpoOptions: HpoTerm[];
+  hpoOptions: { name: string; id: string }[];
   chebiOptions: any;
   selectedPublications: Publication[] = [];
   loadingHpoSuggestions: boolean = false;
@@ -78,6 +78,14 @@ export class TreatmentCurationComponent implements OnInit {
       }
     });
 
+    this.stateService.selectedPhenotypeAnnotation.subscribe((annotation) => {
+      if(annotation){
+        const preselect = {id: annotation.hpoId, name: annotation.hpoName};
+        this.selectedHpo = preselect
+        this.formControlGroup.get('hpoFormControl').setValue(preselect);
+      }
+    });
+
     this.stateService.selectedAnnotationMode.subscribe((mode) => {
       if (mode == 'view') {
         this.formControlGroup.disable();
@@ -94,58 +102,64 @@ export class TreatmentCurationComponent implements OnInit {
       .subscribe(query => {
         if (query && query.length >= 3 && !this.formControlGroup.disabled) {
           this.loadingMaxoSuggestions = true;
-          this.hpoService.searchMaxoTerms(query).subscribe((data) => {
+          this.maxoOptions = [];
+          this.hpoService.searchMaxoTerms(query).pipe(
+            finalize(() => this.loadingMaxoSuggestions = false)).subscribe((data) => {
             if (!data || data.length == 0) {
               this.formControlGroup.get("maxoFormControl").setErrors({notFound: true});
             }
             this.maxoOptions = data;
           }, (err) => {
             this.formControlGroup.get("maxoFormControl").setErrors({apiError: true});
-          }, () => {
-            this.loadingMaxoSuggestions = false;
-          });
-        }
-      });
+          })
+        }});
 
     this.formControlGroup.get("hpoFormControl").valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
-        if (query && query.length > 3 && !this.formControlGroup.disabled) {
+        if (query && !this.formControlGroup.disabled) {
           this.loadingHpoSuggestions = true;
-          this.hpoService.searchHPOTerms(query).subscribe((data) => {
-            if (!data || data.length == 0) {
-              this.formControlGroup.get("hpoFormControl").setErrors({notFound: true});
+          // Get phenotypes to display in select box for treatments.
+          this.stateService.phenotypeAnnotations.pipe(map(
+            annotations => {
+              return annotations.map(annotation => {
+                return {
+                  id: annotation.hpoId,
+                  name: annotation.hpoName
+                }
+              });
             }
-            this.hpoOptions = data;
+          ), take(1), finalize(() => {
+            this.loadingHpoSuggestions = false
+          }))
+            .subscribe((annotations) => {
+            this.hpoOptions = annotations;
           }, (err) => {
             this.formControlGroup.get("hpoFormControl").setErrors({apiError: true});
-          }, () => {
-            this.loadingHpoSuggestions = false;
           });
-        }
-      });
+        }});
 
     this.formControlGroup.get("extensionFormControl").valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
         if (query && query.length > 3 && !this.formControlGroup.disabled) {
           this.loadingExtensionSuggestions = true;
-          this.monarchService.searchMonarch(query, "CHEBI").subscribe((data) => {
+          this.monarchService.searchMonarch(query, "CHEBI").pipe(
+            finalize(() => this.loadingExtensionSuggestions = false)
+          ).subscribe((data) => {
             if (!data || data.length == 0) {
               this.formControlGroup.get("extensionFormControl").setErrors({notFound: true});
             }
             this.chebiOptions = data;
           }, (err) => {
             this.formControlGroup.get("extensionFormControl").setErrors({apiError: true});
-          }, () => {
-            this.loadingExtensionSuggestions = false;
           });
-        }
-      });
+        }});
   }
 
   getFormTreatmentAnnotation(){
     const extension = this.formControlGroup.get('extensionFormControl').value;
+    const annotationSource = this.stateService.getSelectedSource();
     return {
       id: this.selectedAnnotation && this.selectedAnnotation.id ? this.selectedAnnotation.id : null,
       maxoId: this.formControlGroup.get('maxoFormControl').value.ontologyId.toString(),
@@ -157,7 +171,11 @@ export class TreatmentCurationComponent implements OnInit {
       comment: this.formControlGroup.get('commentFormControl').value,
       extensionId: extension && extension.id ? extension.id : null,
       extensionLabel: extension && extension.label ? extension.label : null,
-      message: ""
+      message: "",
+      publicationId: annotationSource.publication.publicationId,
+      publicationName: annotationSource.publication.publicationName,
+      diseaseId: annotationSource.disease.diseaseId,
+      diseaseName: annotationSource.disease.diseaseName
     }
   }
 
@@ -191,7 +209,7 @@ export class TreatmentCurationComponent implements OnInit {
 
   onSuccessfulTreatment(message: string, close: boolean) {
     this.savingAnnotation = false;
-    this.stateService.triggerAnnotationReload(true);
+    this.stateService.triggerAnnotationReload(true, false);
     this.stateService.triggerAnnotationCountsReload(true);
     if(close){
       this.closeForm();

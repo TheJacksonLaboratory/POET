@@ -13,11 +13,11 @@ export interface MonarchSearchResult {
 }
 
 export interface HpoTerm {
-  childrenCount: number;
+  childrenCount?: number;
   id: string;
   name: string;
-  ontologyId: string;
-  synonym: string;
+  ontologyId?: string;
+  synonym?: string;
 }
 
 export interface MaxoTerm {

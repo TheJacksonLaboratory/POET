@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { HpoService } from "../../../shared/services/external/hpo.service";
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
-import { debounceTime, distinctUntilChanged, shareReplay } from "rxjs/operators";
+import {debounceTime, distinctUntilChanged, finalize, shareReplay, take} from "rxjs/operators";
 import { AnchorSearchResult, HpoTerm } from "../../../shared/models/search-models";
 import { AnnotationSource, PhenotypeAnnotation, Publication } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
@@ -114,15 +114,15 @@ export class PhenotypeCurationComponent implements OnInit {
       .subscribe(query => {
         if (query && query.length >= 3 && !this.formControlGroup.disabled) {
           this.loadingHpoSuggestions = true;
-          this.hpoService.searchHPOTerms(query).subscribe((data) => {
+          this.hpoService.searchHPOTerms(query).pipe(take(1), finalize(() => {
+            this.loadingHpoSuggestions = false;
+          })).subscribe((data) => {
             if (!data || data.length == 0) {
               this.formControlGroup.get("hpoFormControl").setErrors({notFound: true});
             }
             this.hpoOptions = data;
           }, (err) => {
             this.formControlGroup.get("hpoFormControl").setErrors({apiError: true});
-          }, () => {
-            this.loadingHpoSuggestions = false;
           });
         }
       });
@@ -133,15 +133,15 @@ export class PhenotypeCurationComponent implements OnInit {
         if (query && query.length >= 3 && !this.formControlGroup.disabled) {
           this.loadingModifierSuggestions = true;
           this.modifierOptions = [];
-          this.hpoService.searchDescendants(query, 'HP:0012823').subscribe((data) => {
+          this.hpoService.searchDescendants(query, 'HP:0012823').pipe(take(1), finalize(() => {
+            this.loadingModifierSuggestions = false;
+          })).subscribe((data) => {
             if (!data || data.length == 0) {
               this.formControlGroup.get("modifierFormControl").setErrors({notFound: true});
             }
             this.modifierOptions = data;
           }, (err) => {
             this.formControlGroup.get("modifierFormControl").setErrors({apiError: true});
-          }, () => {
-            this.loadingModifierSuggestions = false;
           });
         }
       });
@@ -162,6 +162,7 @@ export class PhenotypeCurationComponent implements OnInit {
   }
 
   getFormPhenotypeAnnotation(){
+    const annotationSource = this.stateService.getSelectedSource();
     return {
       id: this.selectedAnnotation && this.selectedAnnotation.id ? this.selectedAnnotation.id : null,
       hpoId: this.formControlGroup.get('hpoFormControl').value.id,
@@ -173,7 +174,11 @@ export class PhenotypeCurationComponent implements OnInit {
       frequency: this.getFrequencyValue(),
       modifiers: this.selectedModifiers.join(";"),
       onset: this.formControlGroup.get('onsetFormControl').value?.ontologyId,
-      message: ""
+      message: "",
+      publicationId: annotationSource.publication.publicationId,
+      publicationName: annotationSource.publication.publicationName,
+      diseaseId: annotationSource.disease.diseaseId,
+      diseaseName: annotationSource.disease.diseaseName
     };
   }
 
@@ -237,7 +242,7 @@ export class PhenotypeCurationComponent implements OnInit {
    */
   onSuccessfulPhenotype(message: string, close: boolean) {
     this.savingAnnotation = false;
-    this.stateService.triggerAnnotationReload(true);
+    this.stateService.triggerAnnotationReload(true, false);
     this.stateService.triggerAnnotationCountsReload(true);
     if(close) {
       this.closeForm();

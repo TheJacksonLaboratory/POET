@@ -49,7 +49,7 @@ public class TreatmentController {
      * @since 0.5.0
      */
     @JsonView(AnnotationViews.Simple.class)
-    @GetMapping(value = {"/{diseaseId}", "/{diseaseId}/{publicationId}"})
+    @GetMapping(value = {"/{diseaseId}"})
     public List<TreatmentAnnotation> getTreatmentAnnotation(@PathVariable("diseaseId")  String diseaseId,
                                                             @RequestParam(defaultValue = "desc date") String sort){
 

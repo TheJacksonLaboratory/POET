@@ -10,6 +10,7 @@ describe('UtilityService', () => {
   let service: UtilityService;
   let fakeAnnotations: Annotation[];
   let fakeOptions;
+  let fakeUsers;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -19,6 +20,7 @@ describe('UtilityService', () => {
     service = TestBed.inject(UtilityService);
     fakeAnnotations = getFakeAnnotations();
     fakeOptions = getFakeOptions();
+    fakeUsers = getFakeUsers();
   });
 
   it('should be created', () => {
@@ -33,6 +35,28 @@ describe('UtilityService', () => {
   it('should test under review', () => {
     expect(service.isUnderReview(fakeAnnotations[0])).toBeFalse();
     expect(service.isUnderReview(fakeAnnotations[1])).toBeTrue();
+  });
+
+  it('should test is accepted', ()=> {
+    expect(service.isAccepted(fakeAnnotations[0])).toBeFalse();
+    expect(service.isAccepted(fakeAnnotations[1])).toBeFalse();
+    expect(service.isAccepted(fakeAnnotations[2])).toBeTrue();
+    expect(service.isAccepted(fakeAnnotations[3])).toBeFalse();
+  });
+
+  it('should test is official', ()=> {
+    expect(service.isOfficial(fakeAnnotations[0])).toBeFalse();
+    expect(service.isOfficial(fakeAnnotations[1])).toBeFalse();
+    expect(service.isOfficial(fakeAnnotations[2])).toBeFalse();
+    expect(service.isOfficial(fakeAnnotations[3])).toBeTrue();
+  });
+
+  it('should test is retired', ()=> {
+    expect(service.isRetired(fakeAnnotations[0])).toBeFalse();
+    expect(service.isRetired(fakeAnnotations[1])).toBeFalse();
+    expect(service.isRetired(fakeAnnotations[2])).toBeFalse();
+    expect(service.isRetired(fakeAnnotations[3])).toBeFalse();
+    expect(service.isRetired(fakeAnnotations[4])).toBeTrue();
   });
 
   it('should test needs work', () => {
@@ -68,6 +92,34 @@ describe('UtilityService', () => {
     expect(service.showElevatedActions("CURATOR", getFakeAnnotations()[0])).toBeFalse();
   })
 
+  it('it should test if they own annotation', () => {
+    expect(service.ownsAnnotation(fakeUsers[0], fakeAnnotations[0].owner.nickname)).toBeTrue();
+    expect(service.ownsAnnotation(fakeUsers[1], fakeAnnotations[1].owner.nickname)).toBeTrue();
+    expect(service.ownsAnnotation(fakeUsers[1], fakeAnnotations[2].owner.nickname)).toBeTrue();
+    expect(service.ownsAnnotation(fakeUsers[0], fakeAnnotations[3].owner.nickname)).toBeFalse();
+    expect(service.ownsAnnotation(null, fakeAnnotations[4].owner.nickname)).toBeFalse();
+    expect(service.ownsAnnotation(undefined, fakeAnnotations[4].owner.nickname)).toBeFalse();
+    expect(service.ownsAnnotation({}, fakeAnnotations[4].owner.nickname)).toBeFalse();
+  })
+
+  it('it should test if they are an elevated curator', () => {
+    expect(service.isElevatedCurator(fakeUsers[0])).toBeTrue();
+    expect(service.isElevatedCurator(fakeUsers[1])).toBeFalse();
+    expect(service.isElevatedCurator(fakeUsers[2])).toBeFalse();
+    expect(service.isElevatedCurator({})).toBeFalse();
+    expect(service.isElevatedCurator(null)).toBeFalse();
+    expect(service.isElevatedCurator(undefined)).toBeFalse();
+  })
+
+  it('it should test if they are a user', () => {
+    expect(service.isUser(fakeUsers[0])).toBeTrue();
+    expect(service.isUser(fakeUsers[1])).toBeTrue();
+    expect(service.isUser(fakeUsers[2])).toBeFalse();
+    expect(service.isUser({})).toBeFalse();
+    expect(service.isUser(null)).toBeFalse();
+    expect(service.isUser(undefined)).toBeFalse();
+  })
+
   function getFakeAnnotations(): Annotation[]
   {
    return [{
@@ -77,7 +129,7 @@ describe('UtilityService', () => {
      status: "NEEDS_WORK",
      reviewMessages: [],
      owner: {
-       nickname: "curatr",
+       nickname: "Curator1",
        userRole: "Role"
      },
      annotationSource: {
@@ -97,9 +149,93 @@ describe('UtilityService', () => {
      }
    },
      {
-       id: "1",
+       id: "2",
        type: "phenotype",
        status: "UNDER_REVIEW",
+       owner: {
+         nickname: "Curator2",
+         userRole: "Role"
+       },
+       annotationSource: {
+         publication: {
+           publicationId: "some fake publication id",
+           publicationName: "some fake publication name",
+           date: "2019-4-06",
+           doi: "02392382",
+           firstAuthor: "alex jones"
+         },
+         disease: {
+           diseaseId: "OMIM:79384",
+           diseaseName: "some disease name",
+           equivalentId: "some id",
+           description: "disease description"
+         }
+       },
+       reviewMessages: [{ reviewer: {
+           nickname: "curatr",
+           userRole: "Role"
+         }, value: "the message"}],
+     },
+     {
+       id: "3",
+       type: "phenotype",
+       status: "ACCEPTED",
+       owner: {
+         nickname: "Curator2",
+         userRole: "Role"
+       },
+       annotationSource: {
+         publication: {
+           publicationId: "some fake publication id",
+           publicationName: "some fake publication name",
+           date: "2019-4-06",
+           doi: "02392382",
+           firstAuthor: "alex jones"
+         },
+         disease: {
+           diseaseId: "OMIM:79384",
+           diseaseName: "some disease name",
+           equivalentId: "some id",
+           description: "disease description"
+         }
+       },
+       reviewMessages: [{ reviewer: {
+           nickname: "curatr",
+           userRole: "Role"
+         }, value: "the message"}],
+     },
+     {
+       id: "4",
+       type: "phenotype",
+       status: "OFFICIAL",
+       owner: {
+         nickname: "curatr",
+         userRole: "Role"
+       },
+       annotationSource: {
+         publication: {
+           publicationId: "some fake publication id",
+           publicationName: "some fake publication name",
+           date: "2019-4-06",
+           doi: "02392382",
+           firstAuthor: "alex jones"
+         },
+         disease: {
+           diseaseId: "OMIM:79384",
+           diseaseName: "some disease name",
+           equivalentId: "some id",
+           description: "disease description"
+         }
+       },
+       reviewMessages: [{ reviewer: {
+           nickname: "curatr",
+           userRole: "Role"
+         }, value: "the message"}],
+     },
+     {
+       id: "5",
+       type: "phenotype",
+       status: "RETIRED",
        owner: {
          nickname: "curatr",
          userRole: "Role"
@@ -134,5 +270,22 @@ describe('UtilityService', () => {
       { name: "Name3", id: "Id3", ontologyId: "OntologyId3"},
       {}
     ];
+  }
+
+  function getFakeUsers(){
+    return [
+      {
+        role: "ELEVATED_CURATOR",
+        nickname: "Curator1"
+      },
+      {
+        role: "CURATOR",
+        nickname: "Curator2"
+      },
+      {
+        role: "GUEST",
+        nickname: "guest"
+      }
+    ]
   }
 });

@@ -53,7 +53,7 @@ export class PortalCurateComponent implements OnInit {
           ).subscribe((disease) => {
             this.selectedDisease = disease
             this.stateService.setSelectedDisease(disease);
-            this.stateService.triggerAnnotationCountsReload(true);
+            this.updateAnnotationCount(this.selectedDisease);
           }, (error) => {
             this.router.navigate(['/portal/dashboard'], {state: {error: true, message: error.text}});
           });
@@ -63,6 +63,14 @@ export class PortalCurateComponent implements OnInit {
       }
       if(type && this.stateService.isValidCategory(type)) {
         this.stateService.setSelectedCategory(type);
+      }
+    });
+
+    this.stateService.triggerReloadAnnotationCounts.subscribe((reload) => {
+      if(reload){
+        this.curationService.getAnnotationCounts(this.selectedDisease.diseaseId).subscribe((counts) => {
+          this.updateAnnotationCount(counts);
+        });
       }
     });
 
@@ -77,11 +85,7 @@ export class PortalCurateComponent implements OnInit {
       this.user = user;
     });
 
-    this.stateService.triggerReloadAnnotationCounts.subscribe((reload) => {
-      if(reload){
-        this.getAnnotationCount();
-      }
-    });
+
   }
 
   handleForm(value: boolean) {
@@ -118,16 +122,14 @@ export class PortalCurateComponent implements OnInit {
     this.showLoader = working;
   }
 
-  getAnnotationCount(){
-      this.curationService.getAnnotationCounts(this.selectedDisease.diseaseId).subscribe((counts) => {
-        this.annotationItems.forEach((item) => {
-          if(item.value == 'phenotype'){
-            item.count = counts.phenotypeCount;
-          } else if(item.value == 'treatment') {
-           item.count = counts.treatmentCount;
-          }
-        });
-      });
+  updateAnnotationCount(counts){
+    this.annotationItems.forEach((item) => {
+      if(item.value == 'phenotype'){
+        item.count = counts.phenotypeCount;
+      } else if(item.value == 'treatment') {
+        item.count = counts.treatmentCount;
+      }
+    });
   }
 
   shouldShowTreatmentCard() {
@@ -139,8 +141,10 @@ export class PortalCurateComponent implements OnInit {
   }
 
   changeCategory(ontology: string) {
-    this.stateService.setSelectedCategory(ontology);
-    this.handleForm(false);
+    if(this.selectedCategory != ontology){
+      this.stateService.setSelectedCategory(ontology);
+      this.handleForm(false);
+    }
   }
 
   navigateToPage(disease) {
