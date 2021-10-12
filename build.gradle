@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'org.monarchinitiative.poet'
-version = '0.8.2-SNAPSHOT'
+version = '0.8.3-SNAPSHOT'
 sourceCompatibility = '8'
 
 repositories {
