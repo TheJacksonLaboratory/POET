@@ -50,9 +50,6 @@
           <mat-hint *ngIf="!formControlGroup.get('hpoFormControl').hasError('notFound') &&
           !formControlGroup.get('hpoFormControl').hasError('apiError') && !formControlGroup.disabled">
             Try: arachnodactyly</mat-hint>
-          <mat-hint *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound') && !formControlGroup.disabled">
-            <span class="mat-error">Sorry we could not find what you were looking for!</span>
-          </mat-hint>
           <mat-hint *ngIf="formControlGroup.get('hpoFormControl').hasError('apiError') && !formControlGroup.disabled">
             <span class="mat-error">The connection for this data is broken, please contact us!</span>
           </mat-hint>

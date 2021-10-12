@@ -42,6 +42,7 @@ export class StateService {
       this.selectedAnnotationSourceSubject.getValue().disease != null){
       this.sourceAndOntologySelectedSubject.next(true);
     }
+    this.triggerAnnotationReload(true, false);
   }
 
   getSelectedCategory() {
@@ -68,7 +69,7 @@ export class StateService {
 
   triggerAnnotationReload(reload: boolean, all: boolean){
     const disease = this.selectedDiseaseSubject.getValue();
-    if(reload){
+    if(reload && disease !== null){
       if(all || this.selectedCategorySubject.getValue() === 'phenotype'){
         this.curationService.getPhenotypeAnnotations(disease).subscribe((annotations) => {
             this.phenotypeAnnotationsSubject.next(annotations);

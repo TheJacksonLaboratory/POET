@@ -118,7 +118,7 @@ export class TreatmentCurationComponent implements OnInit {
     this.formControlGroup.get("hpoFormControl").valueChanges
       .pipe(startWith(''), debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
-        if (!this.formControlGroup.disabled) {
+        if (!this.formControlGroup.disabled && !query?.hasOwnProperty("id")) {
           this.loadingHpoSuggestions = true;
           // Get phenotypes to display in select box for treatments.
           this.hpoOptions = this.stateService.phenotypeAnnotations.pipe(map(
@@ -130,7 +130,7 @@ export class TreatmentCurationComponent implements OnInit {
                   return annotation;
                 } else if(annotation.hpoName.toLowerCase().includes(query)){
                   return annotation;
-                } else if(query == ''){
+                } else {
                   return annotation;
                 }
               }).map(annotation => {
@@ -143,7 +143,8 @@ export class TreatmentCurationComponent implements OnInit {
           ), take(1), finalize(() => {
             this.loadingHpoSuggestions = false
             this.cdf.detectChanges();
-          }), catchError(() => {
+          }), catchError((err) => {
+            console.log(err);
             this.formControlGroup.get("hpoFormControl").setErrors({apiError: true});
             return [];
             }));
@@ -195,12 +196,14 @@ export class TreatmentCurationComponent implements OnInit {
     if (this.updating) {
       this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', '').subscribe(() => {
         this.onSuccessfulTreatment('Annotation Updated!', true);
+        this.stateService.triggerAnnotationReload(true, false);
       }, (err) => {
         this.onErrorTreatment();
       });
     } else {
       this.curationService.saveAnnotation(treatmentAnnotation, 'treatment').subscribe(() => {
         this.onSuccessfulTreatment('Annotation Saved!', false);
+        this.stateService.triggerAnnotationReload(true, false);
       }, (err) => {
         this.onErrorTreatment();
       });

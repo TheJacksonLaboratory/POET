@@ -18,6 +18,7 @@ public interface PhenotypeAnnotationRepository extends CrudRepository<PhenotypeA
     PhenotypeAnnotation findDistinctById(long id);
     boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifier(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String frequency, String modifier);
     boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndStatusNot(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String frequency, String modifier, AnnotationStatus status);
+    boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndStatus(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String frequency, String modifier, AnnotationStatus status);
     int countAllByAnnotationSourceDiseaseAndStatusNot(Disease disease, AnnotationStatus status);
     int countAllByStatusNot(AnnotationStatus status);
     List<PhenotypeAnnotation> findAllByStatus(AnnotationStatus status);
