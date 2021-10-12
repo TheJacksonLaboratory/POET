@@ -63,15 +63,15 @@ class AnnotationServiceSpec extends Specification {
         publicationStub.findByPublicationId(_ as String) >> publicationResponse
         annotationStub.findByPublicationAndDisease(_ as Publication, _ as Disease) >> annotationSourceResponse
         userActivityStub.getMostRecentDateForAnnotationActivity(_ as Long) >> userActivityResponse
-        def result = annotationService.getTreatmentAnnotationsByDisease(inputParameters[0], inputParameters[2])
+        def result = annotationService.getTreatmentAnnotationsByDisease(inputParameters[0])
         expect:
         result == expectedResponse
 
         where:
         inputParameters                               | diseaseResponse    | treatmentAnnotationResponse | publicationResponse    | annotationSourceResponse    | userActivityResponse | expectedResponse          | desc
-        ["OMIM:029983", "PMID: 0092303", "desc date"] | getSingleDisease() | getTreatmentAnnotations()   | getSinglePublication() | getSingleAnnotationSource() | getUserActivity()    | getTreatmentAnnotations() | "a disease and publication id, with annotation source and returns maxo"
-        ["OMIM:029983", "PMID: 0092303", "desc date"] | getSingleDisease() | []                          | getSinglePublication() | getSingleAnnotationSource() | getUserActivity()    | []                        | "a disease and publication id, with annotation source and returns empty list"
-        ["OMIM:029983", null, "desc date"]            | getSingleDisease() | []                          | getSinglePublication() | []                        | getUserActivity()    | []                        | "a disease and no publication id, with disease found and returns empty list"
+        ["OMIM:029983"] | getSingleDisease() | getTreatmentAnnotations()   | getSinglePublication() | getSingleAnnotationSource() | getUserActivity()    | getTreatmentAnnotations() | "a disease with annotation source and returns maxo"
+        ["OMIM:029983"] | getSingleDisease() | []                          | getSinglePublication() | getSingleAnnotationSource() | getUserActivity()    | []                        | "a disease with annotation source and returns empty list"
+        ["OMIM:029983"]            | getSingleDisease() | []                          | getSinglePublication() | []                        | getUserActivity()    | []                        | "a disease and no publication id, with disease found and returns empty list"
     }
 
     def getTreatmentAnnotations() {
@@ -103,15 +103,15 @@ class AnnotationServiceSpec extends Specification {
         phenotypeAnnotationStub.findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(_ as Disease, _ as AnnotationStatus, _ as AnnotationStatus) >> phenotypeAnnotationResponse
         annotationStub.findByPublicationAndDisease(_ as Publication, _ as Disease) >> annotationSourceResponse
         userActivityStub.getMostRecentDateForAnnotationActivity(_ as Long) >> userActivityResponse
-        def result = annotationService.getPhenotypeAnnotationsByDisease(inputParameters[0], inputParameters[2])
+        def result = annotationService.getPhenotypeAnnotationsByDisease(inputParameters[0])
         expect:
         result == expectedResponse
 
         where:
-        inputParameters                               | diseaseResponse    | phenotypeAnnotationResponse | annotationSourceResponse    | userActivityResponse | expectedResponse          | desc
-        ["OMIM:029983", "desc date"]                  | getSingleDisease() | getPhenotypeAnnotations()   | getSingleAnnotationSource() | getUserActivity()    | getPhenotypeAnnotations() | "a disease with annotation source and returns phenotypes"
-        ["OMIM:029983", "desc date"]                  | getSingleDisease() | []                          | getSingleAnnotationSource() | getUserActivity()    | []                        | "a disease with annotation source and returns empty list"
-        ["OMIM:029983", "desc date"]                  | getSingleDisease() | []                          | null                        | getUserActivity()    | []                        | "a disease with disease found and returns empty list"
+        inputParameters                  | diseaseResponse    | phenotypeAnnotationResponse | annotationSourceResponse    | userActivityResponse | expectedResponse          | desc
+        ["OMIM:029983"]                  | getSingleDisease() | getPhenotypeAnnotations()   | getSingleAnnotationSource() | getUserActivity()    | getPhenotypeAnnotations() | "a disease with annotation source and returns phenotypes"
+        ["OMIM:029983"]                  | getSingleDisease() | []                          | getSingleAnnotationSource() | getUserActivity()    | []                        | "a disease with annotation source and returns empty list"
+        ["OMIM:029983"]                  | getSingleDisease() | []                          | null                        | getUserActivity()    | []                        | "a disease with disease found and returns empty list"
     }
 
     def getPhenotypeAnnotations(){

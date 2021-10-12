@@ -225,7 +225,7 @@ public class AnnotationService {
      * @return a collection of maxo annotations or an empty list.
      * @since 0.5.0
      */
-    public List<TreatmentAnnotation> getTreatmentAnnotationsByDisease(String diseaseId, String sort) throws AnnotationSourceException {
+    public List<TreatmentAnnotation> getTreatmentAnnotationsByDisease(String diseaseId) throws AnnotationSourceException {
         Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
         if(disease != null) {
             List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(disease, AnnotationStatus.RETIRED, AnnotationStatus.RETIRED_PENDING);
