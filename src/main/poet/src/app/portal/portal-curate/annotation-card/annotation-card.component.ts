@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import {
   Disease,
   TreatmentAnnotation,
@@ -50,7 +50,7 @@ export class AnnotationCardComponent implements OnInit {
   filteredAnnotationLength = { count: 0 };
   showAll: boolean = false;
   selectedSort: string = 'recent';
-  loadingAnnotations: boolean = false;
+  loadingAnnotations: boolean = true;
 
 
   constructor(public stateService: StateService, public curationService: CurationService, public utilityService: UtilityService,
@@ -70,6 +70,7 @@ export class AnnotationCardComponent implements OnInit {
           this.annotationStatuses = [...new Set(statuses)].sort();
           this.selectedStatuses = this.annotationStatuses;
           this.cdk.detectChanges();
+          this.loadingAnnotations = false;
         }
       })
     );
@@ -84,6 +85,7 @@ export class AnnotationCardComponent implements OnInit {
           this.annotationStatuses = [...new Set(statuses)].sort();
           this.selectedStatuses = this.annotationStatuses;
           this.cdk.detectChanges();
+          this.loadingAnnotations = false;
         }
       }));
 

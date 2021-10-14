@@ -149,12 +149,12 @@
                    showFirstLastButtons="false">
     </mat-paginator>
     <div class="annotation-missing" *ngIf="((treatmentAnnotations | async)?.length == 0 && this.category == 'treatment')
-    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype')">
+    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype' && !loadingAnnotations)">
       No {{categoryToDisplay()}} Found.
     </div>
     <button class="add-annotation-btn" mat-mini-fab color="primary" aria-label="Add Annotation"
             *ngIf="isUser() && ((treatmentAnnotations | async)?.length == 0 && this.category == 'treatment')
-    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype')"
+    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype' && !loadingAnnotations)"
             (click)="annotationAction(null, 'create')">
       <mat-icon>add</mat-icon>
     </button>

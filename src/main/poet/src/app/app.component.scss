@@ -51,3 +51,12 @@
     opacity: 0.6;
   }
 }
+
+.beta-button {
+  background-color: indianred;
+  color: white;
+  cursor: default;
+  &:hover {
+
+  }
+}
