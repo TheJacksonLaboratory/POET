@@ -14,28 +14,13 @@
   }
 }
 
-.nav-btn {
-  text-transform: uppercase;
-}
-
 .content {
-  height: calc(100% - 64px);
   overflow: auto;
-  padding-top: 64px;
-
+  height: calc(100% - 64px);
   &.curate {
     background: #393939;
   }
-
   background: #2c3e4c;
-}
-
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 3;
 }
 
 .portal-actions {
@@ -56,7 +41,5 @@
   background-color: indianred;
   color: white;
   cursor: default;
-  &:hover {
-
-  }
+  text-transform: uppercase;
 }

@@ -53,7 +53,7 @@ export class PortalCurateComponent implements OnInit {
           ).subscribe((disease) => {
             this.selectedDisease = disease
             this.stateService.setSelectedDisease(disease);
-            this.updateAnnotationCount(this.selectedDisease);
+            this.stateService.triggerAnnotationCountsReload(true);
           }, (error) => {
             this.router.navigate(['/portal/dashboard'], {state: {error: true, message: error.text}});
           });
@@ -67,7 +67,7 @@ export class PortalCurateComponent implements OnInit {
     });
 
     this.stateService.triggerReloadAnnotationCounts.subscribe((reload) => {
-      if(reload){
+      if(reload && this.selectedDisease){
         this.curationService.getAnnotationCounts(this.selectedDisease.diseaseId).subscribe((counts) => {
           this.updateAnnotationCount(counts);
         });

@@ -1,70 +1,87 @@
 <div class="dashboard-wrapper">
-  <div class="flex-row dashboard" fxflexlayout="row wrap">
-    <mat-card class="dash-card" fxFlex="90" fxFlexOffset="5">
-      <mat-card-title>Phenomic Observation Explication Tool</mat-card-title>
-      <mat-card-content>
-        <div fxflexlayout="row">
-          <div class="search-wrapper">
-            <app-search [role]="userRole"></app-search>
-          </div>
-        </div>
-        <div class="card-row" fxflexlayout="row">
-          <div fxFlex="90" fxFlexOffset="5">
-            <mat-tab-group animationDuration="1ms">
-              <mat-tab label="Recent Activity">
-                <mat-list *ngFor="let recent of recentActivity | slice: lowValue:highValue">
-                  <mat-list-item [routerLink]="'/curate/' + recent.diseaseId" class="activity-item">
-                    <h4>{{recent.view}}</h4>
-                    <span class="spacer"></span>
-                    <button mat-stroked-button>View Disease</button>
-                  </mat-list-item>
-                </mat-list>
-                <mat-progress-bar *ngIf="loading"></mat-progress-bar>
-                <p class="no-activity" *ngIf="recentActivity?.length == 0">No Recent Activity.</p>
-                <mat-paginator *ngIf="recentActivity?.length > 0" [length]="recentActivity?.length" pageSize="5"
-                               (page)="getPaginatorData($event)"
-                               showFirstLastButtons="false" hidePageSize="true">
-                </mat-paginator>
-              </mat-tab>
-              <mat-tab label="Reviews" *ngIf="userService.isElevatedCurator(userRole) && reviews?.length > 0">
-                <mat-list *ngFor="let review of reviews">
-                  <mat-list-item class="activity-item">
-                    <h4>{{review.count}} {{review.type}} annotations ready to be reviewed for {{review.diseaseName}}.</h4>
-                    <span class="spacer"></span>
-                    <button mat-stroked-button [routerLink]="'/curate/' + review.diseaseId + '/' + review.type">View Disease</button>
-                  </mat-list-item>
-                </mat-list>
-              </mat-tab>
-              <mat-tab label="Needs Work" *ngIf="userAnnotations?.length > 0">
-                <mat-list *ngFor="let annotation of userAnnotations">
-                  <mat-list-item class="activity-item">
-                    <h4>{{annotation.count}} {{annotation.type}} annotations need work for {{annotation.diseaseName}}.</h4>
-                    <span class="spacer"></span>
-                    <button mat-stroked-button [routerLink]="'/curate/' + annotation.diseaseId + '/' + annotation.type">View Disease</button>
-                  </mat-list-item>
-                </mat-list>
-              </mat-tab>
-              <mat-tab label="Most Curated" [disabled]="true">Most Curated Diseases</mat-tab>
-              <mat-tab label="Contributions" [disabled]="noContributions()">
-                <div class="chart-wrapper" *ngIf="!noContributions()">
-                  <ngx-charts-pie-chart
-                    [results]="pieData"
-                    legend="true"
-                    legendTitle="Legend"
-                    legendPosition="bottom"
-                    explodeSlices="true"
-                    gradient="true"
-                    scheme="ocean"
-                  >
-                  </ngx-charts-pie-chart>
-                </div>
-              </mat-tab>
-        </mat-tab-group>
-        </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
+  <div class="dashboard-header" fxLayout="row wrap" fxLayoutAlign="center center">
+    <img class="logo-title" src="assets/poet-logo_white-banner.png" fxFlex="12"/>
+    <span fxFill></span>
+    <div fxFlex="35">
+      <div class="search-wrapper">
+        <app-search [role]="userRole"></app-search>
+      </div>
+    </div>
   </div>
+  <div class="dashboard">
+    <div fxLayout="row wrap" fxLayoutGap="10px grid">
+      <div fxFlex="50">
+        <mat-card class="review-card">
+          <mat-card-title>
+            Activity
+          </mat-card-title>
+          <mat-card-content>
+            <mat-list *ngFor="let recent of recentActivity | slice: lowValue:highValue">
+              <mat-list-item [routerLink]="'/curate/' + recent.diseaseId" class="activity-item">
+                <p>{{recent.view}}</p>
+              </mat-list-item>
+            </mat-list>
+            <mat-progress-bar *ngIf="loading"></mat-progress-bar>
+            <p class="no-activity" *ngIf="recentActivity?.length == 0">No Recent Activity.</p>
+            <mat-paginator *ngIf="recentActivity?.length > 0" [length]="recentActivity?.length" pageSize="5"
+                           (page)="getPaginatorData($event)"
+                           showFirstLastButtons="false" hidePageSize="true">
+            </mat-paginator>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div fxFlex="50">
+        <mat-card class="reviews" *ngIf="userService.isElevatedCurator(userRole)">
+          <mat-card-title>
+            Review Curation
+          </mat-card-title>
+          <mat-card-content>
+            <mat-list *ngFor="let review of reviews">
+              <mat-list-item class="activity-item">
+                <p>{{review.count}} {{review.type}} annotations ready to be reviewed for {{review.diseaseName}}.</p>
+                <span class="spacer"></span>
+                <button mat-stroked-button [routerLink]="'/curate/' + review.diseaseId + '/' + review.type">View</button>
+              </mat-list-item>
+            </mat-list>
+            <mat-progress-bar *ngIf="loading"></mat-progress-bar>
+            <p class="no-activity" *ngIf="reviews?.length == 0">You are all caught up on annotations that need a review!</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div fxFlex="50">
+        <mat-card class="reviews" *ngIf="!userService.isElevatedCurator(userRole)">
+          <mat-card-title>
+            Work Items
+          </mat-card-title>
+          <mat-card-content>
+              <mat-list *ngFor="let annotation of userAnnotations">
+                <mat-list-item class="activity-item">
+                  <p>{{annotation.count}} {{annotation.type}} annotations need work for {{annotation.diseaseName}}.</p>
+                  <span class="spacer"></span>
+                  <button mat-stroked-button [routerLink]="'/curate/' + annotation.diseaseId + '/' + annotation.type">View</button>
+                </mat-list-item>
+              </mat-list>
+            <mat-progress-bar *ngIf="loading"></mat-progress-bar>
+            <p class="no-activity" *ngIf="reviews?.length == 0">You have no annotations that need work!</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+<!--<mat-tab label="Contributions" [disabled]="noContributions()">
+  <div class="chart-wrapper" *ngIf="!noContributions()">
+    <ngx-charts-pie-chart
+      [results]="pieData"
+      legend="true"
+      legendTitle="Legend"
+      legendPosition="bottom"
+      explodeSlices="true"
+      gradient="true"
+      scheme="ocean"
+    >
+    </ngx-charts-pie-chart>
+  </div>
+</mat-tab>-->
 <!--  <div fxflexlayout="row" class="flex-row">-->
 <!--    <mat-card class="contribution-donut-card" fxFlex="40" fxFlexOffset="10">-->
 <!--      <mat-card-title>-->
@@ -72,7 +89,7 @@
 <!--      </mat-card-title>-->
 <!--      <mat-card-content>-->
 <!--        <div class="no-contributions" *ngIf="pieData?.length === 0">-->
-<!--          <h4>No official contributions yet!</h4>-->
+<!--          <p>No official contributions yet!</p>-->
 <!--          <button mat-raised-button color="accent">Get Started</button>-->
 <!--        </div>-->
 <!--      </mat-card-content>-->
@@ -98,4 +115,5 @@
 <!--      </mat-card-content>-->
 <!--    </mat-card>-->
 <!--  </div>-->
+  </div>
 </div>

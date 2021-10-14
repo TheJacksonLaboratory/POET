@@ -28,7 +28,7 @@ export class PortalDashboardComponent implements OnInit {
   highValue: number = 5;
   reviews: any;
   userAnnotations: any;
-  loading = false;
+  loading = true;
 
   constructor(public authService: AuthService, public curationService: CurationService, public userService: UserService) {
   }
@@ -48,7 +48,6 @@ export class PortalDashboardComponent implements OnInit {
       }
     });
 
-    this.loading = true;
     this.curationService.getGroupActivityFeed(true, 1,  null, null)
       .subscribe((recentActivity) => {
       this.recentActivity = recentActivity;

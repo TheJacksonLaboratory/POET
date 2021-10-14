@@ -88,9 +88,9 @@ export class SearchComponent implements OnInit {
         equivalentId: monarchSearchResult.id
       };
       // isnt an error
-      if(poetResponse){
+      if(poetResponse && !poetResponse.error){
         // if response does not include equivalent id or description
-        if(poetResponse.description == null && poetResponse.equivalentId == null){
+        if(poetResponse){
           this.curationService.updateDisease(diseaseToSave).subscribe(() => {
             this.resetSearchForm();
             this.router.navigate(['/portal/curate/' + poetResponse.diseaseId]);

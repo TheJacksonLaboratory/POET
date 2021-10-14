@@ -1,10 +1,10 @@
 <div class="search">
-  <mat-form-field>
-    <input matInput placeholder="Search for a disease" aria-label="State" [matAutocomplete]="auto"
+  <mat-form-field appearance="fill">
+    <input matInput
+           placeholder="Search for a disease"
+           aria-label="Disease"
+           [matAutocomplete]="auto"
            [formControl]="searchControl" #search>
-    <button mat-button *ngIf="searchControl.value != null" matSuffix mat-icon-button aria-label="Clear" (click)="resetSearchForm()">
-      <mat-icon>close</mat-icon>
-    </button>
     <mat-error *ngIf="searchControl.hasError('notFound')">
       Looks like there was an error with Monarch Services.
     </mat-error>
@@ -12,7 +12,7 @@
                       [displayWith]="utilityService.displayMonarchSearchFn.bind(this)">
       <mat-option *ngIf="isLoading" class="is-loading">Loading...</mat-option>
       <ng-container *ngIf="!isLoading">
-        <mat-option *ngFor="let disease of diseaseOptions" [value]="disease" [ngClass]="{'new-disease': disease.type == 'new'}">
+        <mat-option *ngFor="let disease of diseaseOptions" [value]="disease">
           <div class="result-name"><b>{{disease.label}}</b></div>&nbsp;
           <div class="result-id">
             {{disease.id}}<span *ngIf="disease.omim_id"> - </span> {{disease.omim_id}}

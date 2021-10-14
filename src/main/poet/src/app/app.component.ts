@@ -13,11 +13,11 @@ import {environment} from "../environments/environment";
 export class AppComponent implements OnInit {
   title = 'poet';
   portalActionItems =  [
-    {title: 'Review', route: '/portal/review', icon: 'list_alt', private: true, requiresElevated: true},
-    {title: 'Contact', route: '/portal/curate', icon: 'contact_support', private: false, requiresElevated: false},
-    {title: 'FAQ', route: '/portal/submissions', icon: 'view_list', private: false, requiresElevated: false}
+    {title: 'Contact', route: '/contact', icon: 'contact_support', private: false, requiresElevated: false},
+    {title: 'FAQ', route: '/faq', icon: 'view_list', private: false, requiresElevated: false}
   ];
   isElevated: boolean = false;
+  userRole: "GUEST"
 
   constructor(public auth: AuthService, @Inject(DOCUMENT) public document: Document, public router: Router
   , private http: HttpClient) {
@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
       this.auth.user$.subscribe((user) => {
+        this.userRole = user[environment.AUDIENCE_ROLE];
         this.isElevated = user[environment.AUDIENCE_ROLE] == "ELEVATED_CURATOR";
       });
     }

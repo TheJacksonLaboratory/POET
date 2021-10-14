@@ -9,7 +9,7 @@
           <span *ngIf="user.nickname">{{user.nickname}}</span>
           <span *ngIf="!user.nickname">GUEST</span>
     </div>
-    <div class="portal-actions" *ngIf="isPortalPage()">
+    <div class="portal-actions">
       <button mat-icon-button [matMenuTriggerFor]="menu">
         <mat-icon>more_vert</mat-icon>
       </button>
