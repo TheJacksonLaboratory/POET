@@ -30,8 +30,8 @@
           </mat-card-content>
         </mat-card>
       </div>
-      <div fxFlex="50">
-        <mat-card class="reviews" *ngIf="userService.isElevatedCurator(userRole)">
+      <div fxFlex="50" *ngIf="userService.isElevatedCurator(userRole)">
+        <mat-card class="reviews">
           <mat-card-title>
             Review Curation
           </mat-card-title>
@@ -48,8 +48,8 @@
           </mat-card-content>
         </mat-card>
       </div>
-      <div fxFlex="50">
-        <mat-card class="reviews" *ngIf="!userService.isElevatedCurator(userRole)">
+      <div fxFlex="50" *ngIf="!userService.isElevatedCurator(userRole)">
+        <mat-card class="reviews">
           <mat-card-title>
             Work Items
           </mat-card-title>
@@ -62,7 +62,7 @@
                 </mat-list-item>
               </mat-list>
             <mat-progress-bar *ngIf="loading"></mat-progress-bar>
-            <p class="no-activity" *ngIf="reviews?.length == 0">You have no annotations that need work!</p>
+            <p class="no-activity" *ngIf="userAnnotations?.length == 0">You have no annotations that need work!</p>
           </mat-card-content>
         </mat-card>
       </div>
