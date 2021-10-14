@@ -91,10 +91,4 @@ public class PhenotypeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-
-    @GetMapping(value = "/insert", headers = "Accept=application/json")
-    public void insert(){
-        annotationService.insertTestData();
-    }
 }

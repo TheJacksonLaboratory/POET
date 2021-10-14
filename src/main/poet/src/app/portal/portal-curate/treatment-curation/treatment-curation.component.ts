@@ -125,13 +125,15 @@ export class TreatmentCurationComponent implements OnInit {
             annotations => {
               return annotations.filter(annotation => {
                 // do the filter here
-                query = query.toLowerCase();
-                if(query.startsWith("hp:") && annotation.hpoId.toLowerCase().includes(query)){
+                if(query == ""){
                   return annotation;
-                } else if(annotation.hpoName.toLowerCase().includes(query)){
-                  return annotation;
-                } else {
-                  return annotation;
+                } else if(query){
+                  query = query.toLowerCase();
+                  if(query.startsWith("hp:") && annotation.hpoId.toLowerCase().includes(query)){
+                    return annotation;
+                  } else if(annotation.hpoName.toLowerCase().includes(query)){
+                    return annotation;
+                  }
                 }
               }).map(annotation => {
                 return {
@@ -196,16 +198,14 @@ export class TreatmentCurationComponent implements OnInit {
     if (this.updating) {
       this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', '').subscribe(() => {
         this.onSuccessfulTreatment('Annotation Updated!', true);
-        this.stateService.triggerAnnotationReload(true, false);
       }, (err) => {
-        this.onErrorTreatment();
+        this.onErrorTreatment(err.error);
       });
     } else {
       this.curationService.saveAnnotation(treatmentAnnotation, 'treatment').subscribe(() => {
         this.onSuccessfulTreatment('Annotation Saved!', false);
-        this.stateService.triggerAnnotationReload(true, false);
       }, (err) => {
-        this.onErrorTreatment();
+        this.onErrorTreatment(err.error);
       });
     }
   }
@@ -235,9 +235,9 @@ export class TreatmentCurationComponent implements OnInit {
     });
   }
 
-  onErrorTreatment() {
+  onErrorTreatment(err) {
     this.savingAnnotation = false;
-    this._snackBar.open('Annotation Action Error!', 'Close', {
+    this._snackBar.open(err.details, 'Close', {
       duration: 3000,
       horizontalPosition: "left"
     });
@@ -283,13 +283,13 @@ export class TreatmentCurationComponent implements OnInit {
         this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', '').subscribe(() => {
           this.onSuccessfulTreatment('Treatment Annotation Approved!', true);
         }, (err) => {
-          this.onErrorTreatment();
+          this.onErrorTreatment(err.error);
         });
       } else {
         this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', 'approve').subscribe(() => {
           this.onSuccessfulTreatment('Treatment Annotation Approved!', true);
         }, (err) => {
-          this.onErrorTreatment();
+          this.onErrorTreatment(err.error);
         });
       }
     } else if(action === 'deny') {
@@ -307,7 +307,7 @@ export class TreatmentCurationComponent implements OnInit {
           this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', "deny").subscribe(() => {
             this.onSuccessfulTreatment('Treatment Annotation Rejected!', true);
           }, (err) => {
-            this.onErrorTreatment();
+            this.onErrorTreatment(err.error);
           });
         }
       });

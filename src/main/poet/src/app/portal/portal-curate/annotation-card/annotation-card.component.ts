@@ -62,7 +62,8 @@ export class AnnotationCardComponent implements OnInit {
 
     this.phenotypeAnnotations = this.stateService.phenotypeAnnotations.pipe(
       tap(annotations => {
-        if(this.category == "phenotype" && this.annotationStatuses.length == 0 && annotations.length > 0){
+        if(this.category == "phenotype" && annotations.length > 0){
+          this.annotationStatuses = [];
           const statuses = annotations.map((annotation) => {
             return annotation.status;
           });
@@ -75,7 +76,8 @@ export class AnnotationCardComponent implements OnInit {
 
     this.treatmentAnnotations = this.stateService.treatmentAnnotations.pipe(
       tap(annotations => {
-        if(this.category == "treatment" && this.annotationStatuses.length == 0 && annotations.length > 0){
+        if(this.category == "treatment" && annotations.length > 0){
+          this.annotationStatuses = [];
           const statuses = annotations.map((annotation) => {
             return annotation.status;
           });
@@ -140,6 +142,7 @@ export class AnnotationCardComponent implements OnInit {
               this._snackBar.open('Annotation Deleted!', 'Close', {
                 duration: 3000,
               });
+              this.annotationStatuses = [];
               this.stateService.triggerAnnotationReload(true, false);
               this.stateService.triggerAnnotationCountsReload(true);
               this.formOpen = false;
@@ -177,15 +180,15 @@ export class AnnotationCardComponent implements OnInit {
     return (this.utilityService.isOfficial(annotation) && !this.utilityService.isElevatedCurator(this.user));
   }
 
-  showCreateAnnotation(annotation: Annotation){
+  showCreateAnnotation(annotation: Annotation) {
     return (this.utilityService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner))
-      || this.utilityService.isOfficial(annotation) || (this.utilityService.isElevatedCurator(this.user) &&
+      || (this.utilityService.isElevatedCurator(this.user) &&
       !this.utilityService.isUnderReview(annotation) && !this.utilityService.isNeedsWork(annotation));
   }
 
   showDeleteAnnotation(annotation: Annotation){
-    return (this.utilityService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) &&
-      (!this.utilityService.isOfficial(annotation) || this.utilityService.isRetired(annotation)));
+    return this.utilityService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) ||
+      this.utilityService.isElevatedCurator(this.user);
   }
 
   showAnnotationNeedsReview(annotation: Annotation){

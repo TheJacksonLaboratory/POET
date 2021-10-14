@@ -1,7 +1,11 @@
 package org.monarchinitiative.poet.controller;
 
 import org.apache.commons.csv.CSVFormat;
+import org.monarchinitiative.poet.model.entities.Version;
 import org.monarchinitiative.poet.service.ExportService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +16,9 @@ import java.io.IOException;
 @RequestMapping(value = "${api.version}/export/")
 public class ExportController {
     private final ExportService exportService;
+
+    @Value("${releasekey}")
+    private String releasekey;
 
     public ExportController(ExportService exportService) {
         this.exportService = exportService;
@@ -43,6 +50,20 @@ public class ExportController {
             httpServletResponse.setContentType("text/csv");
             httpServletResponse.addHeader("Content-Disposition",String.format("attachment; filename=\"maxo%s\"", fileExtension));
             exportService.exportHPOAnnotations(httpServletResponse.getWriter(), format);
+        }
+    }
+
+    @GetMapping(value = "/release")
+    public ResponseEntity<?> releaseAnnotations(@RequestParam(name="key") String key){
+        if(key.equals(releasekey)){
+            try {
+                exportService.releaseAnnotations();
+                return ResponseEntity.status(HttpStatus.OK).build();
+            } catch(Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 

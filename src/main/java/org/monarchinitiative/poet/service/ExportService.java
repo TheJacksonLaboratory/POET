@@ -3,18 +3,29 @@ package org.monarchinitiative.poet.service;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.monarchinitiative.poet.model.entities.PhenotypeAnnotation;
+import org.monarchinitiative.poet.model.entities.Version;
+import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
+import org.monarchinitiative.poet.repository.PhenotypeAnnotationRepository;
+import org.monarchinitiative.poet.repository.VersionRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class ExportService {
 
     private final AnnotationService annotationService;
-    public ExportService(AnnotationService annotationService) {
+    private final VersionRepository versionRepository;
+    private final PhenotypeAnnotationRepository phenotypeAnnotationRepository;
+
+    public ExportService(AnnotationService annotationService, VersionRepository versionRepository, PhenotypeAnnotationRepository phenotypeAnnotationRepository) {
         this.annotationService = annotationService;
+        this.versionRepository = versionRepository;
+        this.phenotypeAnnotationRepository = phenotypeAnnotationRepository;
     }
 
     public void exportHPOAnnotations(PrintWriter writer, CSVFormat format){
@@ -37,5 +48,25 @@ public class ExportService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    public void releaseAnnotations(){
+        // Create a new release version
+        Version version = createNewReleaseVersion();
+        List<PhenotypeAnnotation> annotations = phenotypeAnnotationRepository.findAllByStatus(AnnotationStatus.ACCEPTED);
+        // For all accepted phenotype annotations we want to check to see if an official one exists already as official
+        for(PhenotypeAnnotation annotation: annotations){
+            annotation.setStatus(AnnotationStatus.OFFICIAL);
+            // If not, change annotation to official status, tag with release
+            if(!annotationService.phenotypeAnnotationExists(annotation, null)){
+                annotation.setVersion(version);
+                phenotypeAnnotationRepository.save(annotation);
+            }
+        }
+    }
+
+    private Version createNewReleaseVersion(){
+        return versionRepository.save(new Version(LocalDateTime.now()));
     }
 }

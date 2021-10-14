@@ -48,7 +48,7 @@ export class UtilityService {
   }
 
   ownsAnnotation(user, annotationOwner){
-    return user?.nickname === annotationOwner;
+    return user?.nickname === annotationOwner.nickname;
   }
 
   displayMaxoFn(option) {
