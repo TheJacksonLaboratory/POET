@@ -93,13 +93,13 @@ describe('UtilityService', () => {
   })
 
   it('it should test if they own annotation', () => {
-    expect(service.ownsAnnotation(fakeUsers[0], fakeAnnotations[0].owner.nickname)).toBeTrue();
-    expect(service.ownsAnnotation(fakeUsers[1], fakeAnnotations[1].owner.nickname)).toBeTrue();
-    expect(service.ownsAnnotation(fakeUsers[1], fakeAnnotations[2].owner.nickname)).toBeTrue();
-    expect(service.ownsAnnotation(fakeUsers[0], fakeAnnotations[3].owner.nickname)).toBeFalse();
-    expect(service.ownsAnnotation(null, fakeAnnotations[4].owner.nickname)).toBeFalse();
-    expect(service.ownsAnnotation(undefined, fakeAnnotations[4].owner.nickname)).toBeFalse();
-    expect(service.ownsAnnotation({}, fakeAnnotations[4].owner.nickname)).toBeFalse();
+    expect(service.ownsAnnotation(fakeUsers[0], fakeAnnotations[0].owner)).toBeTrue();
+    expect(service.ownsAnnotation(fakeUsers[1], fakeAnnotations[1].owner)).toBeTrue();
+    expect(service.ownsAnnotation(fakeUsers[1], fakeAnnotations[2].owner)).toBeTrue();
+    expect(service.ownsAnnotation(fakeUsers[0], fakeAnnotations[3].owner)).toBeFalse();
+    expect(service.ownsAnnotation(null, fakeAnnotations[4].owner)).toBeFalse();
+    expect(service.ownsAnnotation(undefined, fakeAnnotations[4].owner)).toBeFalse();
+    expect(service.ownsAnnotation({}, fakeAnnotations[4].owner)).toBeFalse();
   })
 
   it('it should test if they are an elevated curator', () => {
