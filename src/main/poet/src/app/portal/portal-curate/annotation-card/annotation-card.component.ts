@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import {
   AnnotationSource,
   Disease,
@@ -13,8 +13,8 @@ import { finalize, tap } from "rxjs/operators";
 import { transition, trigger, useAnimation } from "@angular/animations";
 import { bounceInLeft } from "ng-animate";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { ActivatedRoute, Router } from '@angular/router';
-import {MatPaginator, PageEvent} from "@angular/material/paginator";
+import { ActivatedRoute } from '@angular/router';
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatBottomSheet } from "@angular/material/bottom-sheet";
 import { ConfirmSheetComponent } from "./confirm-sheet/confirm-sheet.component";
 
@@ -207,6 +207,10 @@ export class AnnotationCardComponent implements OnInit {
 
   needsWork(status: string): boolean {
     return status === "NEEDS_WORK";
+  }
+
+  isOfficial(status: string): boolean {
+    return status === "OFFICIAL";
   }
 
   ownsAnnotation(annotationUser){

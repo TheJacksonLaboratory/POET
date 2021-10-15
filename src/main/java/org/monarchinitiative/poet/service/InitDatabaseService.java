@@ -12,7 +12,6 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.monarchinitiative.poet.model.entities.*;
 import org.monarchinitiative.poet.model.requests.PhenotypeRequest;
 import org.monarchinitiative.poet.model.requests.PublicationRequest;
-import org.monarchinitiative.poet.utility.ContainsPubmed;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -52,7 +51,7 @@ public class InitDatabaseService {
     public void loadData() throws IOException, PhenolException {
         // if property has load data flag
         if(shouldLoad) {
-            System.out.println("Staring POET Initialization.");
+            System.out.println("Starting POET Initialization.");
             User user = userService.getHumanPhenotypeOntologyUser();
             Ontology ontology = OntologyLoader.loadOntology(new File(oboResource.getURI()));
             Map<TermId, Term> ontologyMap = ontology.getTermMap();
@@ -90,7 +89,7 @@ public class InitDatabaseService {
                 } else {
                     return;
                 }
-
+                
                 entry.getValue().forEach(phenotype -> {
                     Term term = ontologyMap.get(phenotype.getPhenotypeId());
                     List<String> publications = phenotype.getPublications();

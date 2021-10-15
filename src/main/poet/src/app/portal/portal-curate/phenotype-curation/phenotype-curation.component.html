@@ -112,7 +112,7 @@
               [matChipInputFor]="chipList"
               [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
           </mat-chip-list>
-          <mat-autocomplete #modifier="matAutocomplete" (optionSelected)="selected($event)">
+          <mat-autocomplete #modifier="matAutocomplete" (optionSelected)="selectedModifier($event)">
             <mat-option *ngIf="loadingModifierSuggestions">
               <mat-progress-bar mode="query"></mat-progress-bar>
             </mat-option>
@@ -127,9 +127,9 @@
         <mat-form-field appearance="fill">
           <mat-label>HPO Age Of Onset</mat-label>
           <mat-select formControlName="onsetFormControl">
-            <mat-option *ngFor="let option of onsetOptions | async" [value]="option">
-              <span class="option-name">{{option.name}}</span>&nbsp;
-              <span class="option-id">{{option.ontologyId}}</span>
+            <mat-option>Not Specified</mat-option>
+            <mat-option *ngFor="let option of onsetOptions" [value]="option">
+              <span class="option-name">{{option.name}}</span>
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -156,11 +156,14 @@
         <mat-form-field appearance="fill" class="ml1" >
           <mat-label>Sex</mat-label>
           <mat-select formControlName="sexFormControl">
-            <mat-option value="FEMALE">
-              FEMALE
+            <mat-option>
+              NOT SPECIFIED
             </mat-option>
             <mat-option value="MALE">
               MALE
+            </mat-option>
+            <mat-option value="FEMALE">
+              FEMALE
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -188,18 +191,22 @@
       </div>
     </form>
   </mat-card-content>
-
   <mat-card-actions>
     <div class="left-actions">
       <button class="approve-annotation" mat-raised-button aria-label="Approve Phenotype Annotation"
-              *ngIf="userService.isElevatedCurator(userRole) && utilityService.isUnderReview(this.selectedAnnotation)" (click)="reviewAnnotation('approve')">
-        Approve
+              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="reviewAnnotation('approve')">
+        {{elevatedButtonText.approve.display}}
       </button>
       <button class="deny-annotation" mat-raised-button aria-label="Deny Phenotype Annotation"
-              *ngIf="userService.isElevatedCurator(userRole) && utilityService.isUnderReview(this.selectedAnnotation)" (click)="reviewAnnotation('deny')">
-        Deny
+              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="reviewAnnotation('deny')">
+        {{elevatedButtonText.deny.display}}
       </button>
-      <button mat-raised-button color="primary" *ngIf="everythingValid()" (click)="submitForm()">SUBMIT</button>
+      <button class="edit-annotation" mat-raised-button aria-label="Edit Phenotype Annotation"
+              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && elevatedButtonText.changes.show"
+              (click)="makeAnnotationChanges()">
+        {{elevatedButtonText.changes.display}}
+      </button>
+      <button mat-raised-button color="primary" *ngIf="everythingValid() && !utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="submitForm()">SUBMIT</button>
       <mat-spinner color="accent" [diameter]="20" mode="indeterminate" *ngIf="savingAnnotation"></mat-spinner>
     </div>
     <div class="right-actions">

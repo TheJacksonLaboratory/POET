@@ -12,7 +12,6 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { MonarchService } from "../../../shared/services/external/monarch.service";
 import { DialogReviewComponent } from "../dialog-review/dialog-review.component";
 import { UtilityService } from "../../../shared/services/utility.service";
-import { UserService } from "../../../shared/services/user/user.service";
 
 @Component({
   selector: 'poet-treatment-curation',
@@ -37,6 +36,8 @@ export class TreatmentCurationComponent implements OnInit {
   loadingHpoSuggestions: boolean = false;
   loadingMaxoSuggestions: boolean = false;
   loadingExtensionSuggestions: boolean = false;
+  elevatedButtonText = {approve: {display: "Approve", show: true}, deny: {display: "Deny", show: true}, changes: {display: "Make changes", show: true}};
+  elevatedChanges: boolean = false;
 
   savingAnnotation: boolean = false;
   formControlGroup: FormGroup = new FormGroup({
@@ -53,7 +54,6 @@ export class TreatmentCurationComponent implements OnInit {
               public monarchService: MonarchService,
               public stateService: StateService,
               public utilityService: UtilityService,
-              public userService: UserService,
               public dialog: MatDialog,
               private _snackBar: MatSnackBar) {
   }
@@ -142,10 +142,10 @@ export class TreatmentCurationComponent implements OnInit {
           });
         }
       });
-    this.formControlGroup.get('evidenceFormControl').setValue('TAS');
   }
 
   getFormTreatmentAnnotation(){
+    const extension = this.formControlGroup.get('extensionFormControl').value;
     return {
       id: this.selectedAnnotation && this.selectedAnnotation.id ? this.selectedAnnotation.id : null,
       maxoId: this.formControlGroup.get('maxoFormControl').value.ontologyId.toString(),
@@ -155,8 +155,8 @@ export class TreatmentCurationComponent implements OnInit {
       evidence: this.formControlGroup.get('evidenceFormControl').value,
       relation: this.formControlGroup.get('relationFormControl').value,
       comment: this.formControlGroup.get('commentFormControl').value,
-      extensionId: this.formControlGroup.get('extensionFormControl').value ? this.formControlGroup.get('extensionFormControl').value.id : null,
-      extensionLabel: this.formControlGroup.get('extensionFormControl').value ? this.formControlGroup.get('extensionFormControl').value.label[0] : null,
+      extensionId: extension && extension.id ? extension.id : null,
+      extensionLabel: extension && extension.label ? extension.label : null,
       message: ""
     }
   }
@@ -184,7 +184,7 @@ export class TreatmentCurationComponent implements OnInit {
     this.formControlGroup.get('hpoFormControl').setValue({id: annotation.hpoId, name: annotation.hpoName});
     this.formControlGroup.get('evidenceFormControl').setValue(annotation.evidence);
     this.formControlGroup.get('relationFormControl').setValue(annotation.relation);
-    this.formControlGroup.get('extensionFormControl').setValue({id: annotation.extensionId, label :[annotation.extensionLabel]});
+    this.formControlGroup.get('extensionFormControl').setValue({id: annotation.extensionId, label: annotation.extensionLabel});
     this.formControlGroup.get('commentFormControl').setValue(annotation.comment);
     this.stateService.setSelectedSource(annotation.annotationSource);
   }
@@ -230,12 +230,6 @@ export class TreatmentCurationComponent implements OnInit {
     this.formControlGroup.get('evidenceFormControl').setValue('TAS');
   }
 
-  displayMonarchSearchFn(monarchSearchResult: MonarchSearchResult) {
-    if (monarchSearchResult) {
-      return monarchSearchResult.label[0];
-    }
-  }
-
   remove(publication: Publication): void {
     const index = this.selectedPublications.indexOf(publication);
 
@@ -246,17 +240,27 @@ export class TreatmentCurationComponent implements OnInit {
 
   closeForm() {
     this.stateService.setSelectedTreatmentAnnotation(null);
+    this.elevatedButtonText = {approve: {display: "Approve", show: true}, deny: {display: "Deny", show: true}, changes: {display: "Make changes", show: true}};
+    this.elevatedChanges = false;
     this.handleFormEmitter.emit(false);
   }
 
   reviewAnnotation(action: string){
     if(action === 'approve'){
       const treatmentAnnotation = this.getFormTreatmentAnnotation();
-      this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', 'approve').subscribe(() => {
-        this.onSuccessfulTreatment('Treatment Annotation Approved!', true);
-      }, (err) => {
-        this.onErrorTreatment();
-      });
+      if(this.elevatedChanges){
+        this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', '').subscribe(() => {
+          this.onSuccessfulTreatment('Treatment Annotation Approved!', true);
+        }, (err) => {
+          this.onErrorTreatment();
+        });
+      } else {
+        this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', 'approve').subscribe(() => {
+          this.onSuccessfulTreatment('Treatment Annotation Approved!', true);
+        }, (err) => {
+          this.onErrorTreatment();
+        });
+      }
     } else if(action === 'deny') {
       this.dialog.open(DialogReviewComponent, {
         minWidth: 300,
@@ -277,5 +281,15 @@ export class TreatmentCurationComponent implements OnInit {
         }
       });
     }
+  }
+
+  /**
+  * Elevated curator making changes to an annotation under_review
+  */
+  makeAnnotationChanges(){
+    this.elevatedChanges = true;
+    this.formControlGroup.enable();
+    this.elevatedButtonText.approve.display = "Save & Accept";
+    this.elevatedButtonText.changes.show = false;
   }
 }

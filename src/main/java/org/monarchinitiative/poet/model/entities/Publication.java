@@ -1,9 +1,7 @@
 package org.monarchinitiative.poet.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import org.monarchinitiative.poet.model.entities.AnnotationSource;
 import org.monarchinitiative.poet.views.AnnotationViews;
-import org.monarchinitiative.poet.views.DiseaseViews;
 import org.monarchinitiative.poet.views.PublicationViews;
 
 import javax.persistence.*;

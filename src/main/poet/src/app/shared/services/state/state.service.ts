@@ -5,7 +5,7 @@ import { AnnotationSource, Disease } from "../../models/models";
 @Injectable({
   providedIn: 'root'
 })
-export class StateService implements OnInit {
+export class StateService {
   private selectedAnnotationSourceSubject: BehaviorSubject<AnnotationSource> = new BehaviorSubject<AnnotationSource>({
     publication: null,
     disease: null
@@ -32,9 +32,6 @@ export class StateService implements OnInit {
 
   constructor() {
 
-  }
-
-  ngOnInit(){
   }
 
   setSelectedCategory(ontology: string): void {

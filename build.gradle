@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'org.monarchinitiative.poet'
-version = '0.8.0-SNAPSHOT'
+version = '0.8.2-SNAPSHOT'
 sourceCompatibility = '8'
 
 repositories {
@@ -63,26 +63,28 @@ task clientTest(type: NpmTask, dependsOn: 'npmInstall') {
 	args = ['run', 'test']
 }
 
-task shouldClientTest(){
-	if(System.getProperty("clientTest")){
-		dependsOn(clientTest)
-	}
+task test_release(){
+	dependsOn(test)
+	dependsOn(clientTest)
+}
+
+test {
+	systemProperty 'spring.profiles.active', 'test'
+}
+
+test.finalizedBy(jacocoTestReport)
+
+clean {
+	delete fileTree(dir: "src/main/resources/static")
 }
 
 bootWar.dependsOn {
 	buildClientProd
 }
 
-test.finalizedBy(jacocoTestReport)
-
-/*task testApp {
-	dependsOn(bootRun.dependsOn(buildClientProd))
-}*/
-
-clean {
-	delete fileTree(dir: "src/main/resources/static")
-}
-
 bootRun {
+	if(System.getProperty("initialize") == "true"){
+		profile = "initialize"
+	}
 	systemProperty "spring.profiles.active", profile
 }

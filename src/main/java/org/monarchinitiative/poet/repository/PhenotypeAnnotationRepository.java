@@ -12,8 +12,8 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface PhenotypeAnnotationRepository extends CrudRepository<PhenotypeAnnotation, Long> {
-    List<PhenotypeAnnotation> findAllByAnnotationSourceDiseaseAndStatusNot(Disease disease, AnnotationStatus status);
-    List<PhenotypeAnnotation> findAllByOwnerAndStatusNot(User owner, AnnotationStatus status);
+    List<PhenotypeAnnotation> findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(Disease disease, AnnotationStatus status, AnnotationStatus statusNot);
+    List<PhenotypeAnnotation> findAllByOwnerAndStatusNotAndStatusNot(User owner, AnnotationStatus status, AnnotationStatus status_two);
     List<PhenotypeAnnotation> findAllByOwnerAndStatus(User owner, AnnotationStatus status);
     PhenotypeAnnotation findDistinctById(long id);
     boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifier(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String frequency, String modifier);

@@ -4,7 +4,10 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
 trigger:
-- feature/official-annotation-edit
+- main
+- releases/*
+- feature/*
+- enhancements/*
 
 pool:
   vmImage: ubuntu-latest
@@ -20,6 +23,4 @@ steps:
     jdkArchitectureOption: 'x64'
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
-    tasks: 
-      -'test_release'
-      -'bootWar'
+    tasks:  'test_release bootWar'

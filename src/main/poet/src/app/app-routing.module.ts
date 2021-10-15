@@ -4,7 +4,7 @@ import { HomeComponent } from "./home/home.component";
 
 
 const routes: Routes = [
-  { path: '', component: HomeComponent},
+  { path: '', component: HomeComponent,  pathMatch: 'full'},
   { path: 'portal', loadChildren: () => import('./portal/portal.module').then(m => m.PortalModule)}
 ];
 

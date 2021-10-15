@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { HpoService } from "../../../shared/services/external/hpo.service";
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, shareReplay } from "rxjs/operators";
 import { AnchorSearchResult, HpoTerm } from "../../../shared/models/search-models";
 import { AnnotationSource, PhenotypeAnnotation, Publication } from "../../../shared/models/models";
 import { CurationService } from "../../../shared/services/curation/curation.service";
@@ -11,10 +11,8 @@ import { DialogSourceComponent } from "../dialog-source/dialog-source.component"
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { COMMA, ENTER } from "@angular/cdk/keycodes";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
-import { Observable } from "rxjs";
 import { DialogReviewComponent } from "../dialog-review/dialog-review.component";
 import { UtilityService } from "../../../shared/services/utility.service";
-import { UserService } from "../../../shared/services/user/user.service";
 
 @Component({
   selector: 'poet-phenotype-curation',
@@ -33,7 +31,7 @@ export class PhenotypeCurationComponent implements OnInit {
   selectedHpo: HpoTerm;
   hpoOptions: HpoTerm[];
   modifierOptions: AnchorSearchResult[]
-  onsetOptions: Observable<AnchorSearchResult[]>;
+  onsetOptions: AnchorSearchResult[];
   frequencyOptions: AnchorSearchResult[];
   selectedPublications: Publication[] = [];
   selectedModifiers: string[] = [];
@@ -42,6 +40,8 @@ export class PhenotypeCurationComponent implements OnInit {
   selectedFrequency: any;
   loadingHpoSuggestions: boolean = false;
   loadingModifierSuggestions: boolean = false;
+  elevatedButtonText = {approve: {display: "Approve", show: true}, deny: {display: "Deny", show: true}, changes: {display: "Make changes", show: true}};
+  elevatedChanges: boolean = false;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   savingAnnotation: boolean = false;
@@ -60,20 +60,32 @@ export class PhenotypeCurationComponent implements OnInit {
               public curationService: CurationService,
               public stateService: StateService,
               public utilityService: UtilityService,
-              public userService: UserService,
               public dialog: MatDialog,
               private _snackBar: MatSnackBar) {
 
-
+    this.hpoService.searchDescendants("", 'HP:0003674').pipe(shareReplay(1)).subscribe((result) => {
+      this.onsetOptions = result;
+      if(this.selectedAnnotation){
+        this.setFormValues(this.selectedAnnotation);
+      }
+    });
   }
 
   ngOnInit(): void {
+
+    /**
+     * Subscribe to our state service to get the current annotation source
+     * (disease + publications)
+     */
     this.stateService.selectedAnnotationSource.subscribe(source => {
       if (source?.publication) {
         this.selectedPublications = [source.publication];
       }
     });
 
+    /**
+     * Subscribe to our state service to get the selected phenotype annotation.
+     */
     this.stateService.selectedPhenotypeAnnotation.subscribe((annotation) => {
       if (!annotation) {
         this.selectedPublications = [];
@@ -84,17 +96,17 @@ export class PhenotypeCurationComponent implements OnInit {
       }
     });
 
+    /**
+     * Subscribe to our state service to figure out the state of the form.
+     */
     this.stateService.selectedAnnotationMode.subscribe((mode) => {
       if (mode == 'view') {
         this.formControlGroup.disable();
+        return;
       } else if (mode == 'edit') {
         this.updating = true;
-        this.onsetOptions = this.hpoService.searchDescendants("", 'HP:0003674')
-        this.formControlGroup.enable();
-      } else {
-        this.onsetOptions = this.hpoService.searchDescendants("", 'HP:0003674')
-        this.formControlGroup.enable();
       }
+      this.formControlGroup.enable();
     });
 
     this.formControlGroup.get("hpoFormControl").valueChanges
@@ -147,7 +159,6 @@ export class PhenotypeCurationComponent implements OnInit {
           });
         }
       });
-    this.formControlGroup.get('evidenceFormControl').setValue('TAS');
   }
 
   getFormPhenotypeAnnotation(){
@@ -166,6 +177,10 @@ export class PhenotypeCurationComponent implements OnInit {
     };
   }
 
+  /**
+   * Gets the frequency value from the form group. It can take on a few values,
+   * either an hpo id, a fraction, or a percentage.
+   */
   getFrequencyValue(): any {
     const freqOntology = this.formControlGroup.get('frequencyFormControl').value?.ontologyId
     if (freqOntology) {
@@ -174,7 +189,9 @@ export class PhenotypeCurationComponent implements OnInit {
     return this.formControlGroup.get('frequencyFormControl').value;
   }
 
-
+  /**
+   * Submit the form to our service.
+   */
   submitForm(): void {
     const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
     this.savingAnnotation = true;
@@ -193,13 +210,18 @@ export class PhenotypeCurationComponent implements OnInit {
     }
   }
 
+  /**
+   * Helper function to set form values when viewing a specific annotation.
+   * @param annotation the selected phenotype annotation
+   */
   setFormValues(annotation: PhenotypeAnnotation) {
     this.formControlGroup.get('hpoFormControl').setValue({id: annotation.hpoId, name: annotation.hpoName});
     this.formControlGroup.get('evidenceFormControl').setValue(annotation.evidence);
     this.formControlGroup.get('descriptionFormControl').setValue(annotation.description);
     this.formControlGroup.get('frequencyFormControl').setValue(annotation.frequency);
     this.selectedFrequency = annotation.frequency;
-    this.formControlGroup.get('onsetFormControl').setValue({ontologyId: annotation.onset, name: ""});
+    const onset = this.onsetOptions?.find(onset => onset.ontologyId == annotation.onset)
+    this.formControlGroup.get('onsetFormControl').setValue(onset);
     this.selectedModifiers = annotation.modifier.length > 0 ?  annotation.modifier.split(";") : []
     this.formControlGroup.get('sexFormControl').setValue(annotation.sex);
     this.selectedQualifier = annotation.qualifier == "NOT";
@@ -207,6 +229,12 @@ export class PhenotypeCurationComponent implements OnInit {
     this.formControlGroup.markAsPristine();
   }
 
+  /**
+   * Anytime we make successful changes to a phenotype we want to trigger
+   * a reload of counts and the annotations themselves
+   * @param message - the message to display in the snackbar
+   * @param close - whether to close the form or not for this post op.
+   */
   onSuccessfulPhenotype(message: string, close: boolean) {
     this.savingAnnotation = false;
     this.stateService.triggerAnnotationReload(true);
@@ -222,6 +250,10 @@ export class PhenotypeCurationComponent implements OnInit {
     });
   }
 
+  /**
+   * Anytime we have an error when processing the phenotype changes we want to show a message
+   * TODO: make this more verbose with the returned error.
+   */
   onErrorPhenotype() {
     this.savingAnnotation = false;
     this._snackBar.open('Error Saving Annotation!', 'Close', {
@@ -230,6 +262,10 @@ export class PhenotypeCurationComponent implements OnInit {
     });
   }
 
+  /**
+   * Allowing a curator to select the active publication from our publication
+   * dialog for their annotation.
+   */
   selectPublication() {
     this.dialog.open(DialogSourceComponent, {
       minWidth: 300,
@@ -239,6 +275,9 @@ export class PhenotypeCurationComponent implements OnInit {
     });
   }
 
+  /**
+   * Is our form group fully valid? Used to show action buttons.
+   */
   everythingValid() {
     return this.formControlGroup.valid && this.selectedPublications.length > 0 && !this.formControlGroup.disabled && this.formControlGroup.dirty
   }
@@ -293,7 +332,7 @@ export class PhenotypeCurationComponent implements OnInit {
     }
   }
 
-  selected(event: MatAutocompleteSelectedEvent): void {
+  selectedModifier(event: MatAutocompleteSelectedEvent): void {
     this.selectedModifiers.push(event.option.value);
     this.modifierInput.nativeElement.value = '';
     this.formControlGroup.get("modifierFormControl").setValue(null);
@@ -301,17 +340,31 @@ export class PhenotypeCurationComponent implements OnInit {
 
   closeForm() {
     this.stateService.setSelectedPhenotypeAnnotation(null);
+    this.elevatedButtonText = {approve: {display: "Approve", show: true}, deny: {display: "Deny", show: true}, changes: {display: "Make changes", show: true}};
+    this.elevatedChanges = false;
     this.handleFormEmitter.emit(false);
   }
 
+  /**
+   * A function to handle an elevated curators review of an annotation.
+   * @param action - either approve or deny
+   */
   reviewAnnotation(action: string){
     if(action === 'approve'){
       const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
-      this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "approve").subscribe(() => {
-        this.onSuccessfulPhenotype('Phenotype Annotation Approved!', true);
-      }, (err) => {
-        this.onErrorPhenotype();
-      });
+      if(this.elevatedChanges){
+        this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "").subscribe(() => {
+          this.onSuccessfulPhenotype('Phenotype Annotation Approved!', true);
+        }, (err) => {
+          this.onErrorPhenotype();
+        });
+      } else {
+        this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "approve").subscribe(() => {
+          this.onSuccessfulPhenotype('Phenotype Annotation Approved!', true);
+        }, (err) => {
+          this.onErrorPhenotype();
+        });
+      }
     } else if(action === 'deny') {
       this.dialog.open(DialogReviewComponent, {
         minWidth: 300,
@@ -332,5 +385,15 @@ export class PhenotypeCurationComponent implements OnInit {
         }
       });
     }
+  }
+
+  /**
+   * Elevated curator making changes to an annotation under_review
+   */
+  makeAnnotationChanges(){
+    this.elevatedChanges = true;
+    this.formControlGroup.enable();
+    this.elevatedButtonText.approve.display = "Save & Accept";
+    this.elevatedButtonText.changes.show = false;
   }
 }

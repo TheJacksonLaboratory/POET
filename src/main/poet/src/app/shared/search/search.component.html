@@ -9,7 +9,7 @@
       Looks like there was an error with Monarch Services.
     </mat-error>
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelection($event.option.value)"
-                      [displayWith]="displayFn.bind(this)">
+                      [displayWith]="utilityService.displayMonarchSearchFn.bind(this)">
       <mat-option *ngIf="isLoading" class="is-loading">Loading...</mat-option>
       <ng-container *ngIf="!isLoading">
         <mat-option *ngFor="let disease of diseaseOptions" [value]="disease" [ngClass]="{'new-disease': disease.type == 'new'}">

@@ -57,8 +57,7 @@ class ServiceTestConfig {
     }
     @Bean
     EntityService entityService(){
-        EntityService entityService = new EntityService(diseaseStub(), publicationStub(), annotationSourceStub(),
-                userStub())
+        EntityService entityService = new EntityService(diseaseStub(), publicationStub(), annotationSourceStub())
         return entityService
     }
 

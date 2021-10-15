@@ -9,7 +9,6 @@ import org.monarchinitiative.poet.model.entities.UserActivity;
 import org.monarchinitiative.poet.model.responses.ReviewCount;
 import org.monarchinitiative.poet.service.StatisticsService;
 import org.monarchinitiative.poet.service.UserService;
-import org.monarchinitiative.poet.views.DiseaseViews;
 import org.monarchinitiative.poet.views.UserActivityViews;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -53,11 +52,11 @@ public class StatisticsController {
                                               @RequestParam(value = "limit", defaultValue = "250") int limit,
                                               Authentication authentication){
         Pageable pageable = PageRequest.of(offset, limit);
-        return statisticsService.getUserActivity(all, weeks, pageable, authentication).stream().map(activity -> {
-            if(activity.getCurationAction().equals(CurationAction.REVIEW)){
+        return statisticsService.getUserActivity(all, weeks, pageable, authentication).stream().peek(activity -> {
+            if(activity.getCurationAction().equals(CurationAction.REVIEW) ||
+                    activity.getCurationAction().equals(CurationAction.OVERRIDE)){
                 activity.ownerSwap();
             }
-            return activity;
         }).collect(Collectors.toList());
     }
 

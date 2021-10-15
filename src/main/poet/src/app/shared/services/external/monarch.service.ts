@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
-import {filter, map, pluck} from "rxjs/operators";
+import { map, pluck} from "rxjs/operators";
 import {Observable} from "rxjs";
 import {MonarchSearchResult} from "../../models/search-models";
 
@@ -38,31 +38,28 @@ export class MonarchService {
             mappedResponse.omim_id = "";
             mappedResponse.leaf = false;
             mappedResponse.match = response.match;
+            // Always return chebi responses
+            if(prefix === "CHEBI"){
+              return mappedResponse;
+            }
+            // Filter the disease results
             if(!mappedResponse.id.includes("OMIM")){
               const omim_index = response.equivalent_ids.findIndex(element => element.includes("OMIM:"))
               if(omim_index != -1){
                 mappedResponse.leaf = true;
                 mappedResponse.omim_id = response.equivalent_ids[omim_index];
+                return mappedResponse;
               }
+            } else {
+              return mappedResponse;
             }
-            // Throw out obsolete terms?, how do we handle this case in the future when a disease becomes obsoleted,
-            // Might need a job to update the annotation source monthly.. etc.
-            return mappedResponse;
-          });
+          }).filter(this.notEmpty);
         }
-      ), map( responses => {
-        return responses.filter(response => {
-          return response.leaf
-        }).sort((a, b) => {
-          if (a.label < b.label) {
-            return -1;
-          } else if (a.label > b.label) {
-            return 1;
-          } else {
-            return 0;
-          }
-        })
-      })
-    );
+      ));
   }
+
+   notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+    return value !== null && value !== undefined;
+  }
+
 }

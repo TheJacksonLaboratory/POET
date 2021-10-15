@@ -27,7 +27,6 @@ public class PhenotypeRequest {
     private final String modifiers;
     private final String qualifier;
     private final String frequency;
-    @Pattern(regexp = "MALE|FEMALE", message = "sex be one of (MALE, FEMALE)")
     private final String sex;
     private final String message;
 
