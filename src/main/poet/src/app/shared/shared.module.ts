@@ -30,6 +30,7 @@ import { FilterPipe } from './pipes/filter.pipe';
 import { MatChipsModule } from "@angular/material/chips";
 import { MatRadioModule } from "@angular/material/radio";
 import { SortPipe } from './pipes/sort.pipe';
+import { MatExpansionModule } from "@angular/material/expansion";
 
 @NgModule({
   declarations: [SearchComponent, FilterPipe, SortPipe],
@@ -67,6 +68,7 @@ import { SortPipe } from './pipes/sort.pipe';
     MatChipsModule,
     MatCheckboxModule,
     MatRadioModule,
+    MatExpansionModule
   ],
     exports: [
         MatToolbarModule,
@@ -102,7 +104,8 @@ import { SortPipe } from './pipes/sort.pipe';
         MatCheckboxModule,
         FilterPipe,
         MatRadioModule,
-        SortPipe
+        SortPipe,
+        MatExpansionModule
     ]
 })
 export class SharedModule {

@@ -15,8 +15,6 @@
 }
 
 .content {
-  overflow: auto;
-  height: calc(100% - 64px);
   &.curate {
     background: #393939;
   }
@@ -42,4 +40,14 @@
   color: white;
   cursor: default;
   text-transform: uppercase;
+}
+
+.footer {
+  background-color: #393939;
+  color: white;
+  height: 48px;
+
+  & > div {
+    height: 100%;
+  }
 }

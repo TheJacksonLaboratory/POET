@@ -28,7 +28,8 @@ export class PortalDashboardComponent implements OnInit {
   highValue: number = 5;
   reviews: any;
   userAnnotations: any;
-  loading = true;
+  loading: boolean = true;
+  loadingAnnotationsNeedingAction: boolean = true;
 
   constructor(public authService: AuthService, public curationService: CurationService, public userService: UserService) {
   }
@@ -40,10 +41,12 @@ export class PortalDashboardComponent implements OnInit {
       if(this.userService.isElevatedCurator(this.userRole)){
         this.curationService.getAnnotationsNeedingReview().subscribe((annotations) => {
           this.reviews = annotations;
+          this.loadingAnnotationsNeedingAction = false;
         });
       } else if(this.user) {
         this.curationService.getUserAnnotationsNeedingWork().subscribe((annotations)=>{
           this.userAnnotations = annotations;
+          this.loadingAnnotationsNeedingAction = false;
         });
       }
     });

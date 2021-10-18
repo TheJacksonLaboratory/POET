@@ -8,9 +8,8 @@
       </div>
     </div>
   </div>
-  <div class="dashboard">
-    <div fxLayout="row wrap" fxLayoutGap="10px grid">
-      <div fxFlex="50">
+  <div class="dashboard" fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="flex-start">
+      <div fxFlex="45" fxFlexOffset="5">
         <mat-card class="review-card">
           <mat-card-title>
             Activity
@@ -30,7 +29,7 @@
           </mat-card-content>
         </mat-card>
       </div>
-      <div fxFlex="50" *ngIf="userService.isElevatedCurator(userRole)">
+      <div fxFlex="45" *ngIf="userService.isElevatedCurator(userRole)">
         <mat-card class="reviews">
           <mat-card-title>
             Review Curation
@@ -48,7 +47,7 @@
           </mat-card-content>
         </mat-card>
       </div>
-      <div fxFlex="50" *ngIf="!userService.isElevatedCurator(userRole)">
+      <div fxFlex="45" *ngIf="!userService.isElevatedCurator(userRole)">
         <mat-card class="reviews">
           <mat-card-title>
             Work Items
@@ -62,11 +61,10 @@
                 </mat-list-item>
               </mat-list>
             <mat-progress-bar *ngIf="loading"></mat-progress-bar>
-            <p class="no-activity" *ngIf="userAnnotations?.length == 0">You have no annotations that need work!</p>
+            <p class="no-activity" *ngIf="userAnnotations?.length == 0 && !loading">You have no annotations that need work!</p>
           </mat-card-content>
         </mat-card>
       </div>
-    </div>
 
 <!--<mat-tab label="Contributions" [disabled]="noContributions()">
   <div class="chart-wrapper" *ngIf="!noContributions()">

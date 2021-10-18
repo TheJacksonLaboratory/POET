@@ -70,8 +70,8 @@ export class AnnotationCardComponent implements OnInit {
           this.annotationStatuses = [...new Set(statuses)].sort();
           this.selectedStatuses = this.annotationStatuses;
           this.cdk.detectChanges();
-          this.loadingAnnotations = false;
         }
+        this.loadingAnnotations = false;
       })
     );
 
@@ -85,8 +85,8 @@ export class AnnotationCardComponent implements OnInit {
           this.annotationStatuses = [...new Set(statuses)].sort();
           this.selectedStatuses = this.annotationStatuses;
           this.cdk.detectChanges();
-          this.loadingAnnotations = false;
         }
+        this.loadingAnnotations = false;
       }));
 
     this.stateService.selectedDisease.subscribe((disease: Disease) => {

@@ -13,8 +13,10 @@ import { AuthHttpInterceptor } from '@auth0/auth0-angular';
 import { AuthConfig, AuthModule } from "@auth0/auth0-angular";
 import { environment as env} from "../environments/environment";
 import { MAT_DIALOG_DEFAULT_OPTIONS } from "@angular/material/dialog";
-import { ContactComponent } from './contact/contact.component';
-import { FaqComponent } from './faq/faq.component';
+import { ResourcesComponent } from "./resources/resources/resources.component";
+import { FaqComponent } from "./resources/faq/faq.component";
+import { ContactComponent } from "./resources/contact/contact.component";
+import { DocumentationComponent } from './resources/documentation/documentation.component';
 const config: AuthConfig = {
   ...env.auth,
   httpInterceptor: {
@@ -25,8 +27,10 @@ const config: AuthConfig = {
   declarations: [
     AppComponent,
     HomeComponent,
+    ResourcesComponent,
+    FaqComponent,
     ContactComponent,
-    FaqComponent
+    DocumentationComponent
   ],
   imports: [
     BrowserModule,

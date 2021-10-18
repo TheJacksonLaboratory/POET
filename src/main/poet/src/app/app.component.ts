@@ -1,9 +1,9 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { AuthService } from "@auth0/auth0-angular";
 import { DOCUMENT } from "@angular/common";
 import { Router } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
-import {environment} from "../environments/environment";
+import { environment } from "../environments/environment";
+import { version } from '../../package.json';
 
 @Component({
   selector: 'app-root',
@@ -11,16 +11,16 @@ import {environment} from "../environments/environment";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'poet';
+  title: string = 'poet';
   portalActionItems =  [
     {title: 'Contact', route: '/contact', icon: 'contact_support', private: false, requiresElevated: false},
     {title: 'FAQ', route: '/faq', icon: 'view_list', private: false, requiresElevated: false}
   ];
   isElevated: boolean = false;
-  userRole: "GUEST"
+  userRole: string = "GUEST";
+  version: string = version + ".beta";
 
-  constructor(public auth: AuthService, @Inject(DOCUMENT) public document: Document, public router: Router
-  , private http: HttpClient) {
+  constructor(public auth: AuthService, @Inject(DOCUMENT) public document: Document, public router: Router) {
   }
 
   ngOnInit(): void {
@@ -44,12 +44,6 @@ export class AppComponent implements OnInit {
 
   isCuratePage(){
     return this.router.url.includes('curate');
-  }
-
-  testApi(){
-    this.http.get("http://localhost:8080/api/v1/private/").subscribe(
-      response => console.log(response)
-    );
   }
 
   loginWithRedirect(): void {

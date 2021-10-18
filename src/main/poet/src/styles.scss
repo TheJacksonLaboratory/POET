@@ -566,6 +566,31 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   }
 }
 
+a:not(.mat-tab-link) {
+  color: skyblue !important;
+}
+
+.mat-tabheader {
+  a {
+    color: unset;
+  }
+}
 .mat-autocomplete-panel {
   background: #354555 !important;
 }
+
+.resources-tabs {
+  & .mat-tab-header {
+    background: #393939;
+  }
+
+  & .mat-ink-bar {
+    background-color: whitesmoke !important;
+  }
+
+  & .mat-tab-body {
+      padding: 2rem;
+  }
+}
+
+
