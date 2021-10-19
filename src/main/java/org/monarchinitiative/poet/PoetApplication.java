@@ -50,11 +50,11 @@ public class PoetApplication {
 			
 			@Override
 			public void addViewControllers(ViewControllerRegistry registry) {
-				registry.addViewController("/{spring:\\w+}")
+				registry.addViewController("/{spring:(?!assets)\\w+}")
 						.setViewName("forward:/");
 				registry.addViewController("/**/{spring:\\w+}")
 						.setViewName("forward:/");
-				registry.addViewController("/{spring:\\w+}/**{spring:?!(\\.js|\\.css)$}")
+				registry.addViewController("/{spring:(?!assets)\\w+}/**{spring:?!(\\.js|\\.css)$}")
 						.setViewName("forward:/");
 			}
 		};

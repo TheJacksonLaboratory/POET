@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'org.monarchinitiative.poet'
-version = '0.8.3-SNAPSHOT'
+version = '0.8.5-SNAPSHOT'
 sourceCompatibility = '8'
 
 repositories {
@@ -86,6 +86,7 @@ clean {
 
 bootWar.dependsOn {
 	if(System.getProperty("release") == "true"){
+		profile = "production"
 		buildClientProdEnv
 	} else {
 		buildClientTestEnv
