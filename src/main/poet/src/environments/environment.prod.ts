@@ -7,8 +7,8 @@ const HPO_BASE_URL = 'https://hpo.jax.org/api/';
 export const environment = {
   production: true,
   auth: {
-    domain: "dev-poet.us.auth0.com",
-    clientId: "zAquxh5T1sPsoqBmSd8R7UasuFCcl9LY",
+    domain: "thejacksonlaboratory.auth0.com",
+    clientId: "eRgMZH2x9xaVTpnOrf4V3R82214QCtRh",
     audience: "poet-api-audience"
   },
   httpInterceptor: {
