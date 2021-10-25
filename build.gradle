@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'org.monarchinitiative.poet'
-version = '0.8.2-SNAPSHOT'
+version = '0.8.5-SNAPSHOT'
 sourceCompatibility = '8'
 
 repositories {
@@ -51,10 +51,16 @@ node {
 
 }
 
-task buildClientProd(type: NpmTask, dependsOn: 'npmInstall') {
+task buildClientProdEnv(type: NpmTask, dependsOn: 'npmInstall') {
 	group = 'build'
 	description = 'Compile client side assets for production'
 	args = ['run', 'buildProd']
+}
+
+task buildClientTestEnv(type: NpmTask, dependsOn: 'npmInstall') {
+	group = 'build'
+	description = 'Compile client side assets for test env'
+	args = ['run', 'buildTest']
 }
 
 task clientTest(type: NpmTask, dependsOn: 'npmInstall') {
@@ -79,7 +85,12 @@ clean {
 }
 
 bootWar.dependsOn {
-	buildClientProd
+	if(System.getProperty("release") == "true"){
+		profile = "production"
+		buildClientProdEnv
+	} else {
+		buildClientTestEnv
+	}
 }
 
 bootRun {

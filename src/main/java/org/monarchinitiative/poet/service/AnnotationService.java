@@ -68,12 +68,11 @@ public class AnnotationService {
      * A function to get phenotype annotations from the database by just disease.
      *
      * @param diseaseId a OMIM disease id
-     * @param sort a string composing of two parts both direction and field. TODO: Implement functionality
      *
      * @return a collection of phenotype annotations or an empty list.
      * @since 0.5.0
      */
-    public List<PhenotypeAnnotation> getPhenotypeAnnotationsByDisease(String diseaseId, String sort) throws AnnotationSourceException {
+    public List<PhenotypeAnnotation> getPhenotypeAnnotationsByDisease(String diseaseId) throws AnnotationSourceException {
             Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
             if(disease != null) {
                 List<PhenotypeAnnotation> annotations = this.phenotypeAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(disease, AnnotationStatus.RETIRED, AnnotationStatus.RETIRED_PENDING);
@@ -157,7 +156,7 @@ public class AnnotationService {
                 // Build the new annotation, do a check for duplicated data 
                 final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, oldAnnotation.getAnnotationSource(),
                 AnnotationStatus.ACCEPTED, oldAnnotation.getOwner());
-                if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndStatusNot(
+                if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndStatus(
                     annotation.getAnnotationSource(), annotation.getHpoId(), annotation.getSex(), annotation.getEvidence(), 
                     annotation.getOnset(), annotation.getFrequency(), annotation.getModifier(), annotation.getStatus())){
                         throw new DuplicateAnnotationException("phenotype", annotation.getAnnotationSource().getDisease().getDiseaseId());
@@ -177,7 +176,7 @@ public class AnnotationService {
             // Updating their own annotations that are accepted or under review
             } else if(oldAnnotation.getStatus().equals(AnnotationStatus.ACCEPTED) || oldAnnotation.getStatus().equals(AnnotationStatus.UNDER_REVIEW)) {
                 final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, oldAnnotation.getAnnotationSource(),
-                        oldAnnotation.getStatus(), oldAnnotation.getOwner());
+                        AnnotationStatus.UNDER_REVIEW, oldAnnotation.getOwner());
 
                 // See if we already have an annotation that exists from the one we are trying to update to.
                 if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndStatusNot(
@@ -220,12 +219,11 @@ public class AnnotationService {
      * A function to get maxo annotations from the database by either both publication and  disease or just disease.
      *
      * @param diseaseId a OMIM disease id
-     * @param sort a string composing of two parts both direction and field. TODO: Implement functionality
      *
      * @return a collection of maxo annotations or an empty list.
      * @since 0.5.0
      */
-    public List<TreatmentAnnotation> getTreatmentAnnotationsByDisease(String diseaseId, String sort) throws AnnotationSourceException {
+    public List<TreatmentAnnotation> getTreatmentAnnotationsByDisease(String diseaseId) throws AnnotationSourceException {
         Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
         if(disease != null) {
             List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(disease, AnnotationStatus.RETIRED, AnnotationStatus.RETIRED_PENDING);
@@ -262,8 +260,7 @@ public class AnnotationService {
             final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, annotationSource, status, user);
             // Check if we have a duplicate annotation, if so throw an error
             // See if we already have an annotation like this.
-            if(treatmentAnnotationRepository.existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
-                    annotation.getAnnotationSource(), annotation.getMaxoId(), annotation.getHpoId(), annotation.getExtensionId(), annotation.getEvidence(), annotation.getRelation(), AnnotationStatus.RETIRED)){
+            if(treatmentAnnotationExists(annotation, AnnotationStatus.RETIRED)){
                 throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseName());
             }
             treatmentAnnotationRepository.save(annotation);
@@ -325,15 +322,13 @@ public class AnnotationService {
                     // Build the new annotation, do a check for duplicated data 
                     final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, oldAnnotation.getAnnotationSource(),
                     AnnotationStatus.ACCEPTED, oldAnnotation.getOwner());
-                    if(treatmentAnnotationRepository.existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
-                        annotation.getAnnotationSource(), annotation.getMaxoId(), annotation.getHpoId(), annotation.getExtensionId(), annotation.getEvidence(), 
-                        annotation.getRelation(), annotation.getStatus())){
+                    if(treatmentAnnotationExists(annotation, null)){
                             throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseId());
-                        }
+                    }
                     // Save the new annotation as accepted, retire the current under review one
-                    treatmentAnnotationRepository.save(annotation);
                     oldAnnotation.setStatus(AnnotationStatus.RETIRED);
                     treatmentAnnotationRepository.save(oldAnnotation);
+                    treatmentAnnotationRepository.save(annotation);
                     updateUserActivity(oldAnnotation.getOwner(), user, CurationAction.OVERRIDE, annotation, oldAnnotation);
                 }
             } else if(user.equals(owner)){
@@ -345,14 +340,12 @@ public class AnnotationService {
                 // Updating their own annotations that are accepted or under review
                 } else if(oldAnnotation.getStatus().equals(AnnotationStatus.ACCEPTED) || oldAnnotation.getStatus().equals(AnnotationStatus.UNDER_REVIEW)){
                     final TreatmentAnnotation annotation = new TreatmentAnnotation(oldAnnotation.getAnnotationSource(),
-                            oldAnnotation.getStatus(), oldAnnotation.getOwner(), treatmentRequest.getMaxoId(), treatmentRequest.getMaxoName(),
+                            AnnotationStatus.UNDER_REVIEW, oldAnnotation.getOwner(), treatmentRequest.getMaxoId(), treatmentRequest.getMaxoName(),
                             treatmentRequest.getHpoName(), treatmentRequest.getHpoId(), treatmentRequest.getEvidence(),
                             treatmentRequest.getComment(), treatmentRequest.getRelation(), treatmentRequest.getExtensionId(), treatmentRequest.getExtensionLabel());
 
                     // See if we already have an annotation that exists from the one we are trying to update to.
-                    if (treatmentAnnotationRepository.existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
-                            annotation.getAnnotationSource(), annotation.getMaxoId(), annotation.getHpoId(), annotation.getExtensionId(),
-                            annotation.getEvidence(), annotation.getRelation(), AnnotationStatus.RETIRED)) {
+                    if (treatmentAnnotationExists(annotation, AnnotationStatus.RETIRED)) {
                         throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseName());
                     }
                     oldAnnotation.setStatus(AnnotationStatus.RETIRED);
@@ -387,6 +380,25 @@ public class AnnotationService {
         return false;
     }
 
+    public boolean phenotypeAnnotationExists(PhenotypeAnnotation phenotypeAnnotation, AnnotationStatus status){
+        return false;
+    }
+
+    public boolean treatmentAnnotationExists(TreatmentAnnotation treatmentAnnotation, AnnotationStatus status){
+        if(status != null){
+            // Negative test against a specific status
+            return treatmentAnnotationRepository.existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
+                    treatmentAnnotation.getAnnotationSource(), treatmentAnnotation.getMaxoId(), treatmentAnnotation.getHpoId(), treatmentAnnotation.getExtensionId(),
+                    treatmentAnnotation.getEvidence(), treatmentAnnotation.getRelation(), status);
+        } else {
+            // Positive test with the treatments status
+            return treatmentAnnotationRepository.existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatus(
+                    treatmentAnnotation.getAnnotationSource(), treatmentAnnotation.getMaxoId(), treatmentAnnotation.getHpoId(), treatmentAnnotation.getExtensionId(),
+                    treatmentAnnotation.getEvidence(), treatmentAnnotation.getRelation(), treatmentAnnotation.getStatus());
+        }
+    }
+
+
     /**
      * A function to track user activity that happens when creating, editing or deleting annotations.
      *
@@ -420,22 +432,5 @@ public class AnnotationService {
 
     private boolean isValidReview(String review){
         return review.equals("approve") || review.equals("deny");
-    }
-
-
-    public void insertTestData(){
-        Publication publication = new Publication("PMID:31479590", "Encoding Clinical Data with the Human Phenotype Ontology for Computational Differential Diagnostics.", "2019 Sept", "Kohler S");
-        Publication publication2 = new Publication("PMID:30476213", "Expansion of the Human Phenotype Ontology (HPO) knowledge base and resources", "2019 Jan", "Kohler S");
-        Publication publication3 = new Publication("PMID:30323234", "Mikes future first author paper", "2020 Jan", "Gargano M");
-        publicationRepository.save(publication);
-        publicationRepository.save(publication2);
-        publicationRepository.save(publication3);
-        Disease disease = new Disease("OMIM:154700", "Marfan Syndrome");
-        Disease disease2 = new Disease("OMIM:300200", "Adrenal Hypoplasia, Congenital");
-        diseaseRepository.save(disease);
-        diseaseRepository.save(disease2);
-        annotationSourceRepository.save(new AnnotationSource(publication3, disease));
-        annotationSourceRepository.save(new AnnotationSource(publication, disease));
-        annotationSourceRepository.save(new AnnotationSource(publication2, disease));
     }
 }

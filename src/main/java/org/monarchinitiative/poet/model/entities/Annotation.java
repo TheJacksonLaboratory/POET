@@ -31,8 +31,12 @@ public class Annotation {
     @Enumerated(EnumType.STRING)
     private AnnotationStatus status;
 
+    @JsonView(UserActivityViews.Simple.class)
     @Column(name="annotation_type", insertable = false, updatable = false)
     protected String annotationType;
+
+    @OneToOne
+    private Version version;
 
     @OneToMany
     @JsonView(AnnotationViews.Simple.class)
@@ -68,7 +72,6 @@ public class Annotation {
         this.annotationSource = annotationSource;
     }
 
-    @JsonView(AnnotationViews.Simple.class)
     public AnnotationStatus getStatus() {
         return status;
     }
@@ -77,7 +80,8 @@ public class Annotation {
         this.status = status;
     }
 
-    @JsonView(UserActivityViews.Simple.class)
+    public void setVersion(Version version){this.version = version;}
+
     public String getAnnotationType() {
         return annotationType;
     }

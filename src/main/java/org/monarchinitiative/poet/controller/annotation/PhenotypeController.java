@@ -35,15 +35,13 @@ public class PhenotypeController {
     /**
      * The endpoint to get phenotype annotations
      * @param diseaseId the diseaseId for the creation
-     * @param sort the way to sort the response
      * @return a list of phenotype annotations
      */
     @JsonView(AnnotationViews.Simple.class)
-    @GetMapping(value = {"/{diseaseId}", "/{diseaseId}/{publicationId}"})
-    public List<PhenotypeAnnotation> getPhenotypeAnnotation(@PathVariable("diseaseId")  String diseaseId,
-                                                            @RequestParam(defaultValue = "desc date") String sort){
+    @GetMapping(value = {"/{diseaseId}"})
+    public List<PhenotypeAnnotation> getPhenotypeAnnotation(@PathVariable("diseaseId")  String diseaseId){
 
-       return this.annotationService.getPhenotypeAnnotationsByDisease(diseaseId, sort);
+       return this.annotationService.getPhenotypeAnnotationsByDisease(diseaseId);
     }
 
     /**
@@ -54,7 +52,8 @@ public class PhenotypeController {
      * @since 0.5.0
      */
     @PostMapping(value = "/", headers = "Accept=application/json")
-    public ResponseEntity<?> createPhenotypeAnnotation(@Valid @RequestBody PhenotypeRequest phenotypeRequest, Authentication authentication) {
+    public ResponseEntity<?> createPhenotypeAnnotation(@Valid @RequestBody PhenotypeRequest phenotypeRequest,
+                                                       Authentication authentication) {
         final User user = userService.getExistingUser(authentication);
         annotationService.createPhenotypeAnnotation(phenotypeRequest, user, false);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -91,11 +90,5 @@ public class PhenotypeController {
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }
-
-
-    @GetMapping(value = "/insert", headers = "Accept=application/json")
-    public void insert(){
-        annotationService.insertTestData();
     }
 }

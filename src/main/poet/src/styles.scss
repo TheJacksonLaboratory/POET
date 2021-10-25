@@ -307,28 +307,9 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 
 .ngx-charts text { fill: #fff; }
 
-.maxo-card {
-  & .mat-select-panel mat-option.mat-option {
-    height: 3.5em;
-  }
-
-  & .mat-select-panel mat-option.mat-option {
-    height: 3.5em;
-  }
-}
-
-
 .mat-option-text.mat-option-text {
   white-space: normal;
   line-height: 1.25rem;
-  cursor: pointer;
-}
-
-.maxo-card .mat-list-item .mat-list-item-content {
-  justify-content: space-between;
-}
-
-.maxo-card .mat-icon {
   cursor: pointer;
 }
 
@@ -367,20 +348,6 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 
 .right {
   float: right;
-}
-
-.mat-option.new-disease {
-  text-align: center;
-  color: #43b9da;
-  height: 30px;
-
-  & .mat-option-text {
-    padding: .5rem 0 0 0;
-
-    & .result-name {
-      float: unset !important;
-    }
-  }
 }
 
 .remove-icon {
@@ -500,7 +467,6 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   }
 }
 
-
 .page-title {
   padding: 1rem;
   margin-top: 1rem !important;
@@ -562,6 +528,11 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
     margin-bottom: 5px;
   }
 }
+.search {
+  & .mat-form-field-infix {
+    border-top: 0;
+  }
+}
 
 .form-card {
     & .evidence.mat-form-field, .evidence .mat-form-field-infix {
@@ -594,3 +565,32 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
     margin: 0 6px !important;
   }
 }
+
+a:not(.mat-tab-link) {
+  color: skyblue !important;
+}
+
+.mat-tabheader {
+  a {
+    color: unset;
+  }
+}
+.mat-autocomplete-panel {
+  background: #354555 !important;
+}
+
+.resources-tabs {
+  & .mat-tab-header {
+    background: #393939;
+  }
+
+  & .mat-ink-bar {
+    background-color: whitesmoke !important;
+  }
+
+  & .mat-tab-body {
+      padding: 2rem;
+  }
+}
+
+

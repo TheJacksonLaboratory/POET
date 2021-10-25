@@ -40,17 +40,17 @@ class TreatmentControllerSpec extends Specification {
     @Unroll
     def "when we test get treatment annotations"() {
         given:
-        annotationService.getTreatmentAnnotationsByDisease(_, _, _) >> Collections.emptyList()
+        annotationService.getTreatmentAnnotationsByDisease(_) >> Collections.emptyList()
 
 
         expect: "an annotation state"
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/annotation/treatments/${inputDiseaseId}/${inputPublicationId}")).andExpect((ResultMatcher) expectedResponse);
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/annotation/treatments/${inputDiseaseId}")).andExpect((ResultMatcher) expectedResponse);
 
         where:
-        inputDiseaseId  | inputPublicationId | inputSort | expectedResponse                                    | desc
-        "OMIM:20391892" | "PMID:20391892"    | ""        | MockMvcResultMatchers.status().isOk()               | "test get maxo with pub"
-        "OMIM:20391891" | ""                 | ""        | MockMvcResultMatchers.status().isOk()               | "test get maxo with pub"
-        ""              | ""                 | ""        | MockMvcResultMatchers.status().isMethodNotAllowed() | "test get maxo bad  uri params"
+        inputDiseaseId  | expectedResponse                                    | desc
+        "OMIM:20391892" | MockMvcResultMatchers.status().isOk()               | "test get maxo with disease"
+        "OMIM:20391891" | MockMvcResultMatchers.status().isOk()               | "test get maxo with disease"
+        ""              | MockMvcResultMatchers.status().isMethodNotAllowed() | "test get maxo bad  uri params"
     }
 
     @Unroll

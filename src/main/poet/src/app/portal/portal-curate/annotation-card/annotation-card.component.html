@@ -57,21 +57,21 @@
           </span>
         </div>
         <div class="spacer"></div>
-        <a mat-icon-button aria-label="Report Treatment Annotation" *ngIf="isOfficial(treatment.status)"
+        <a mat-icon-button aria-label="Report Treatment Annotation" *ngIf="showBugReport(treatment)"
            href="https://github.com/monarch-initiative/MAxO/issues/new" target="_blank">
           <mat-icon>bug_report</mat-icon>
         </a>
-        <button mat-icon-button aria-label="Edit Treatment Annotation" *ngIf="(isUser() && ownsAnnotation(treatment.owner.nickname)
-        && !isOfficial(treatment.status) || isElevatedCurator() && !isUnderReview(treatment.status))" [disabled]="!isUser()"
-                (click)="annotationAction(treatment, 'edit')">
-          <mat-icon>create</mat-icon>
-        </button>
-        <button mat-icon-button aria-label="Delete Treatment Annotation" *ngIf="(isUser() && ownsAnnotation(treatment.owner.nickname) && !isOfficial(treatment.status))"
-                [disabled]="!isUser()"
+        <button mat-icon-button aria-label="Delete Treatment Annotation" *ngIf="showDeleteAnnotation(treatment)"
+                [disabled]="!this.utilityService.isUser(this.user)"
                 (click)="annotationAction(treatment, 'delete')">
           <mat-icon>delete</mat-icon>
         </button>
-        <button *ngIf="isElevatedCurator() && isUnderReview(treatment.status) else elseBlock"
+        <button mat-icon-button aria-label="Edit Treatment Annotation" *ngIf="showCreateAnnotation(treatment)"
+                [disabled]="!this.utilityService.isUser(this.user)"
+                (click)="annotationAction(treatment, 'edit')">
+          <mat-icon>create</mat-icon>
+        </button>
+        <button *ngIf="showAnnotationNeedsReview(treatment) else elseBlock"
                 mat-flat-button color="warn" aria-label="Review Treatment Annotation"
                 (click)="annotationAction(treatment, 'view')"
         class="needs-review-btn">
@@ -79,7 +79,7 @@
         </button>
         <ng-template #elseBlock>
           <button mat-icon-button aria-label="View Treatment Annotation"
-                  (click)="annotationAction(treatment, 'view')" *ngIf="!needsWork(treatment.status)">
+                  (click)="annotationAction(treatment, 'view')" *ngIf="!this.utilityService.isRetired(treatment)">
             <mat-icon>launch</mat-icon>
           </button>
         </ng-template>
@@ -104,22 +104,24 @@
           </span>
         </div>
         <div class="spacer"></div>
-        <a mat-icon-button aria-label="Report Phenotype Annotation" *ngIf="isOfficial(phenotype.status) && !isElevatedCurator()"
+        <a mat-icon-button aria-label="Report Phenotype Annotation" *ngIf="showBugReport(phenotype)"
            href="https://github.com/monarch-initiative/hpo-annotation-data/issues/new" target="_blank">
           <mat-icon>bug_report</mat-icon>
         </a>
-        <button mat-icon-button aria-label="Edit Phenotype Annotation" *ngIf="(isUser() && ownsAnnotation(phenotype.owner.nickname)
-        && !isOfficial(phenotype.status) || isElevatedCurator() && !isUnderReview(phenotype.status))" [disabled]="!isUser()"
-                (click)="annotationAction(phenotype, 'edit')">
-          <mat-icon>create</mat-icon>
-        </button>
-        <button mat-icon-button aria-label="Delete Phenotype Annotation" *ngIf="(isUser() && ownsAnnotation(phenotype.owner.nickname)
-        && !isOfficial(phenotype.status))"
-                [disabled]="!isUser()"
+        <button mat-icon-button aria-label="Delete Phenotype Annotation" *ngIf="showDeleteAnnotation(phenotype)"
+                [disabled]="!this.utilityService.isUser(this.user)"
                 (click)="annotationAction(phenotype, 'delete')">
           <mat-icon>delete</mat-icon>
         </button>
-        <button *ngIf="isElevatedCurator() && isUnderReview(phenotype.status) else elseBlock"
+        <button mat-icon-button aria-label="Create Treament For Phenotype Annotation" *ngIf="showCreateTreatment(phenotype)"
+                [disabled]="!isUser()" (click)="createTreatmentForPhenotype(phenotype)">
+          <mat-icon>healing</mat-icon>
+        </button>
+        <button mat-icon-button aria-label="Edit Phenotype Annotation" *ngIf="showCreateAnnotation(phenotype)" [disabled]="!isUser()"
+                (click)="annotationAction(phenotype, 'edit')">
+          <mat-icon>create</mat-icon>
+        </button>
+        <button *ngIf="showAnnotationNeedsReview(phenotype) else elseBlock"
                 mat-flat-button color="warn" aria-label="Review Phenotype Annotation"
                 (click)="annotationAction(phenotype, 'view')"
                 class="needs-review-btn">
@@ -127,7 +129,8 @@
         </button>
         <ng-template #elseBlock>
           <button mat-icon-button aria-label="View Phenotype Annotation"
-                  (click)="annotationAction(phenotype, 'view')" *ngIf="!needsWork(phenotype.status)">
+                  (click)="annotationAction(phenotype, 'view')"
+                  *ngIf="!this.utilityService.isRetired(phenotype)">
             <mat-icon>launch</mat-icon>
           </button>
         </ng-template>
@@ -146,12 +149,12 @@
                    showFirstLastButtons="false">
     </mat-paginator>
     <div class="annotation-missing" *ngIf="((treatmentAnnotations | async)?.length == 0 && this.category == 'treatment')
-    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype')">
+    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype' && !loadingAnnotations)">
       No {{categoryToDisplay()}} Found.
     </div>
     <button class="add-annotation-btn" mat-mini-fab color="primary" aria-label="Add Annotation"
             *ngIf="isUser() && ((treatmentAnnotations | async)?.length == 0 && this.category == 'treatment')
-    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype')"
+    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype' && !loadingAnnotations)"
             (click)="annotationAction(null, 'create')">
       <mat-icon>add</mat-icon>
     </button>

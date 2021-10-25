@@ -1,10 +1,11 @@
 {
   "name": "poet",
-  "version": "0.8.2",
+  "version": "0.8.5",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "buildTest": "ng build --aot -c test",
     "buildProd": "ng build --prod --aot",
     "test": "ng test --browsers ChromeHeadless --watch false --progress=false",
     "lint": "ng lint",

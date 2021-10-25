@@ -27,3 +27,4 @@ api:
   version: /api/v1
   client: /,/portal/**
 initializePoet: false
+releasekey: release

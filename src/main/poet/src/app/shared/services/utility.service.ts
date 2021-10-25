@@ -16,12 +16,39 @@ export class UtilityService {
     return  annotation && annotation.reviewMessages.length > 0;
   }
 
+  isElevatedCurator(user): boolean  {
+    return user?.role === 'ELEVATED_CURATOR';
+  }
+
+  isUser(user): boolean  {
+    if(user && user.role !== 'GUEST' && Object.keys(user).length !== 0){
+      return true;
+    }
+    return false;
+  }
+
+  isAccepted(annotation: Annotation): boolean {
+    return annotation && annotation.status === "ACCEPTED";
+  }
+
   isUnderReview(annotation: Annotation): boolean {
       return annotation && annotation.status === "UNDER_REVIEW";
   }
 
   isNeedsWork(annotation: Annotation): boolean {
     return annotation && annotation.status === "NEEDS_WORK";
+  }
+
+  isOfficial(annotation: Annotation): boolean {
+    return annotation && annotation.status === "OFFICIAL";
+  }
+
+  isRetired(annotation: Annotation): boolean {
+    return annotation && annotation.status === "RETIRED"
+  }
+
+  ownsAnnotation(user, annotationOwner){
+    return user?.nickname === annotationOwner.nickname;
   }
 
   displayMaxoFn(option) {
@@ -64,5 +91,13 @@ export class UtilityService {
 
   showElevatedActions(userRole: string, selectedAnnotation: Annotation){
     return this.isUnderReview(selectedAnnotation) && this.userService.isElevatedCurator(userRole);
+  }
+
+  addSourceToAnnotation(annotationSource, annotation){
+    annotation.publicationId = annotationSource.publication.publicationId;
+    annotation.publicationName = annotationSource.publication.publicationName;
+    annotation.diseaseId = annotationSource.disease.diseaseId;
+    annotation.diseaseName = annotationSource.disease.diseaseName;
+    return annotation;
   }
 }

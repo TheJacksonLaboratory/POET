@@ -9,6 +9,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
@@ -45,6 +46,16 @@ public class PoetApplication {
 							}
 						});
 				registry.setOrder(Integer.MAX_VALUE);
+			}
+			
+			@Override
+			public void addViewControllers(ViewControllerRegistry registry) {
+				registry.addViewController("/{spring:(?!assets)\\w+}")
+						.setViewName("forward:/");
+				registry.addViewController("/**/{spring:\\w+}")
+						.setViewName("forward:/");
+				registry.addViewController("/{spring:(?!assets)\\w+}/**{spring:?!(\\.js|\\.css)$}")
+						.setViewName("forward:/");
 			}
 		};
 	}

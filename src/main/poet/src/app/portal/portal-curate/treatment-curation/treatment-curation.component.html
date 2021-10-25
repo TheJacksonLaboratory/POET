@@ -50,9 +50,6 @@
           <mat-hint *ngIf="!formControlGroup.get('hpoFormControl').hasError('notFound') &&
           !formControlGroup.get('hpoFormControl').hasError('apiError') && !formControlGroup.disabled">
             Try: arachnodactyly</mat-hint>
-          <mat-hint *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound') && !formControlGroup.disabled">
-            <span class="mat-error">Sorry we could not find what you were looking for!</span>
-          </mat-hint>
           <mat-hint *ngIf="formControlGroup.get('hpoFormControl').hasError('apiError') && !formControlGroup.disabled">
             <span class="mat-error">The connection for this data is broken, please contact us!</span>
           </mat-hint>
@@ -67,7 +64,7 @@
             <mat-option *ngIf="loadingHpoSuggestions">
               <mat-progress-bar mode="query"></mat-progress-bar>
             </mat-option>
-            <mat-option class="auto-complete-option" *ngFor="let option of hpoOptions" [value]="option">
+            <mat-option class="auto-complete-option" *ngFor="let option of hpoOptions | async | sortBy: 'name':''" [value]="option">
               <span class="option-name">{{option.name}}</span>
               &nbsp;
               <span class="option-id">{{option.id}}</span>
@@ -126,7 +123,7 @@
       </div>
       <div class="form-content-section">
         <mat-form-field class="treatment-form" appearance="fill">
-          <mat-label>CHEBI Extension</mat-label>
+          <mat-label>Ontology Extension</mat-label>
           <mat-hint *ngIf="!formControlGroup.get('extensionFormControl').hasError('notFound') &&
           !formControlGroup.get('extensionFormControl').hasError('apiError') && !formControlGroup.disabled">
             Try: CHEBI:27732</mat-hint>
@@ -157,8 +154,9 @@
       </div>
       <div class="form-content-section">
         <mat-form-field class="treatment-form" appearance="fill">
-          <mat-label>Additional Annotation Comment</mat-label>
-          <input matInput type="text" formControlName="commentFormControl">
+          <mat-label>Additional Comments</mat-label>
+          <input matInput type="text" formControlName="commentFormControl" maxlength="50">
+          <mat-hint *ngIf="this.formControlGroup.get('commentFormControl').value?.length == 50">Maximum Characters Reached.</mat-hint>
           <button mat-button *ngIf="formControlGroup.get('commentFormControl').value != ''" matSuffix mat-icon-button
                   aria-label="Clear"
                   (click)="formControlGroup.get('commentFormControl').reset()">
