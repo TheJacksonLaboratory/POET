@@ -566,7 +566,7 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   }
 }
 
-a:not(.mat-tab-link) {
+a:not(.mat-tab-link, .mat-icon-button) {
   color: skyblue !important;
 }
 
