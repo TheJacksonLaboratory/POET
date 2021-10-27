@@ -23,8 +23,8 @@ class UserSpec extends Specification {
             user.hashCode() == user2.hashCode()
         where:
             authId  |   curationRole    |   email   |   nickname    |   orcId
-            "auth|1039" |   CurationRole.CURATOR    |   "curator@gmail.com" | "the best curator" | "orcid:029323"
-            "auth|103920" |   CurationRole.ELEVATED_CURATOR    |   "elevated. @gmail.com" | "even better curator" | "orcid:029344"
+            "auth|1039" |   CurationRole.POET_CURATOR |   "curator@gmail.com" | "the best curator" | "orcid:029323"
+            "auth|103920" |   CurationRole.POET_ADMIN |   "elevated. @gmail.com" | "even better curator" | "orcid:029344"
 
     }
 
@@ -37,7 +37,7 @@ class UserSpec extends Specification {
 
         where:
         authId  |   curationRole    |   email   |   nickname    |   orcId   |  expectedRole
-        "auth|1039" |   CurationRole.CURATOR    |   "curator@gmail.com" | "the best curator" | "orcid:029323" | CurationRole.ELEVATED_CURATOR
-        "auth|103920" |   null    |   "elevated. @gmail.com" | "even better curator" | "orcid:029344"   | CurationRole.CURATOR
+        "auth|1039" |   CurationRole.POET_CURATOR |   "curator@gmail.com"    | "the best curator"    | "orcid:029323" | CurationRole.POET_ADMIN
+        "auth|103920" |   null                    |   "elevated. @gmail.com" | "even better curator" | "orcid:029344" | CurationRole.POET_CURATOR
     }
 }

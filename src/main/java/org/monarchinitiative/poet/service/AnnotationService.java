@@ -93,7 +93,7 @@ public class AnnotationService {
     public void createPhenotypeAnnotation(PhenotypeRequest phenotypeRequest, User user, boolean initialize) throws DuplicateAnnotationException {
         final AnnotationSource annotationSource = entityService.getAnnotationSource(phenotypeRequest.getPublicationId(), phenotypeRequest.getDiseaseId());
         if(annotationSource != null){
-            AnnotationStatus status = user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR) ? AnnotationStatus.ACCEPTED : AnnotationStatus.UNDER_REVIEW;
+            AnnotationStatus status = user.getCurationRole().equals(CurationRole.POET_ADMIN) ? AnnotationStatus.ACCEPTED : AnnotationStatus.UNDER_REVIEW;
             if(initialize){
                 status = AnnotationStatus.OFFICIAL;
             }
@@ -121,7 +121,7 @@ public class AnnotationService {
 
         PhenotypeAnnotation oldAnnotation = phenotypeAnnotationRepository.findDistinctById(phenotypeRequest.getId());
         User owner = userActivityRespository.getMostRecentDateForAnnotationActivity(oldAnnotation.getId()).getOwner();
-        if(user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)){
+        if(user.getCurationRole().equals(CurationRole.POET_ADMIN)){
             // An elevated curator reviewing an annotation.
             if(isValidReview(review)){
                 oldAnnotation.setStatus(reviewToStatus(review));
@@ -256,7 +256,7 @@ public class AnnotationService {
         // We have a valid publication and a valid disease, do we have an annotation source for them?
         final AnnotationSource annotationSource = entityService.getAnnotationSource(treatmentRequest.getPublicationId(), treatmentRequest.getDiseaseId());
         if(annotationSource != null){
-            AnnotationStatus status = user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR) ? AnnotationStatus.ACCEPTED : AnnotationStatus.UNDER_REVIEW;
+            AnnotationStatus status = user.getCurationRole().equals(CurationRole.POET_ADMIN) ? AnnotationStatus.ACCEPTED : AnnotationStatus.UNDER_REVIEW;
             final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, annotationSource, status, user);
             // Check if we have a duplicate annotation, if so throw an error
             // See if we already have an annotation like this.
@@ -284,7 +284,7 @@ public class AnnotationService {
             TreatmentAnnotation oldAnnotation = treatmentAnnotationRepository.findDistinctById(treatmentRequest.getId());
             User owner = userActivityRespository.getMostRecentDateForAnnotationActivity(oldAnnotation.getId()).getOwner();
 
-            if(user.getCurationRole().equals(CurationRole.ELEVATED_CURATOR)) {
+            if(user.getCurationRole().equals(CurationRole.POET_ADMIN)) {
                 if(isValidReview(review)){
                     // Review, check that the authentication is a valid user and that they are an elevated curator
                         oldAnnotation.setStatus(reviewToStatus(review));

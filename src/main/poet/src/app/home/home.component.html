@@ -8,7 +8,7 @@
           POET helps curators bridge ontologies with annotations from the literature.
         </h1>
         <button class="first-btn" (click)="signupWithredirect()" *ngIf="!user" mat-raised-button color="accent">Sign up for Free</button>
-        <button mat-stroked-button routerLink="/portal/dashboard" *ngIf="!user">Tour Portal</button>
+       <!--<button mat-stroked-button routerLink="/portal/dashboard" *ngIf="!user">Tour Portal</button>-->
         <button class="first-btn" [routerLink]="['/portal/dashboard']" *ngIf="user"  mat-raised-button color="accent">Dashboard</button>
       </div>
     </div>
