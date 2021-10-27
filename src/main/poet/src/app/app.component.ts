@@ -4,6 +4,8 @@ import { DOCUMENT } from "@angular/common";
 import { Router } from "@angular/router";
 import { environment } from "../environments/environment";
 import { version } from '../../package.json';
+import {UtilityService} from "./shared/services/utility.service";
+import {UserService} from "./shared/services/user/user.service";
 
 @Component({
   selector: 'app-root',
@@ -17,18 +19,17 @@ export class AppComponent implements OnInit {
     {title: 'FAQ', route: '/faq', icon: 'view_list', private: false, requiresElevated: false}
   ];
   isElevated: boolean = false;
-  userRole: string = "GUEST";
   version: string = version + ".beta";
 
-  constructor(public auth: AuthService, @Inject(DOCUMENT) public document: Document, public router: Router) {
+  constructor(public auth: AuthService, @Inject(DOCUMENT) public document: Document,
+              public router: Router, public userService: UserService) {
   }
 
   ngOnInit(): void {
       this.auth.user$.subscribe((user) => {
-        this.userRole = user[environment.AUDIENCE_ROLE];
-        this.isElevated = user[environment.AUDIENCE_ROLE] == "ELEVATED_CURATOR";
+        this.isElevated = this.userService.isUserAdmin(user);
       });
-    }
+  }
 
   isHomePage(){
     return this.router.url === '/';

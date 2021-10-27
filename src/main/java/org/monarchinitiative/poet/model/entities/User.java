@@ -20,19 +20,16 @@ public class User {
     @Column(unique = true, nullable = false)
     private String authId;
     private String email;
-    @JsonView(UserActivityViews.Simple.class)
-    private String orcId;
 
     @Enumerated(EnumType.ORDINAL)
     private CurationRole curationRole;
 
     public User(){}
 
-    public User(String authId, String nickname, String email, String orcId, CurationRole role) {
+    public User(String authId, String nickname, String email, CurationRole role) {
         this.authId = authId;
         this.nickname = nickname;
         this.email = email;
-        this.orcId = orcId;
         this.curationRole = role;
     }
 
@@ -52,17 +49,13 @@ public class User {
         return email;
     }
 
-    public String getOrcId() {
-        return orcId;
-    }
-
 
     public CurationRole getCurationRole() {
         return curationRole;
     }
 
     public void setCurationRole(CurationRole curationRole) {
-        this.curationRole = curationRole == null ? CurationRole.CURATOR : curationRole;
+        this.curationRole = curationRole == null ? CurationRole.POET_CURATOR : curationRole;
     }
 
     @Override
@@ -74,12 +67,11 @@ public class User {
                 Objects.equals(nickname, user.nickname) &&
                 Objects.equals(authId, user.authId) &&
                 Objects.equals(email, user.email) &&
-                Objects.equals(orcId, user.orcId) &&
                 curationRole == user.curationRole;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nickname, authId, email, orcId, curationRole);
+        return Objects.hash(id, nickname, authId, email, curationRole);
     }
 }

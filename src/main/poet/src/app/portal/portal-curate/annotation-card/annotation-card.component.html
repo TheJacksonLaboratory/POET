@@ -62,12 +62,12 @@
           <mat-icon>bug_report</mat-icon>
         </a>
         <button mat-icon-button aria-label="Delete Treatment Annotation" *ngIf="showDeleteAnnotation(treatment)"
-                [disabled]="!this.utilityService.isUser(this.user)"
+                [disabled]="!this.userService.isUser(this.user)"
                 (click)="annotationAction(treatment, 'delete')">
           <mat-icon>delete</mat-icon>
         </button>
         <button mat-icon-button aria-label="Edit Treatment Annotation" *ngIf="showCreateAnnotation(treatment)"
-                [disabled]="!this.utilityService.isUser(this.user)"
+                [disabled]="!this.userService.isUser(this.user)"
                 (click)="annotationAction(treatment, 'edit')">
           <mat-icon>create</mat-icon>
         </button>
@@ -109,7 +109,7 @@
           <mat-icon>bug_report</mat-icon>
         </a>
         <button mat-icon-button aria-label="Delete Phenotype Annotation" *ngIf="showDeleteAnnotation(phenotype)"
-                [disabled]="!this.utilityService.isUser(this.user)"
+                [disabled]="!this.userService.isUser(this.user)"
                 (click)="annotationAction(phenotype, 'delete')">
           <mat-icon>delete</mat-icon>
         </button>
