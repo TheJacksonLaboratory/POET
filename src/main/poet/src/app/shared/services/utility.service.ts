@@ -3,7 +3,8 @@ import { Annotation, Message } from "../models/models";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogMessagesComponent } from "../../portal/portal-curate/dialog-messages/dialog-messages.component";
 import { UserService } from './user/user.service';
-import {MonarchSearchResult} from "../models/search-models";
+import { MonarchSearchResult } from "../models/search-models";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -14,17 +15,6 @@ export class UtilityService {
 
   hasReviewerComments(annotation: Annotation){
     return  annotation && annotation.reviewMessages.length > 0;
-  }
-
-  isElevatedCurator(user): boolean  {
-    return user?.role === 'ELEVATED_CURATOR';
-  }
-
-  isUser(user): boolean  {
-    if(user && user.role !== 'GUEST' && Object.keys(user).length !== 0){
-      return true;
-    }
-    return false;
   }
 
   isAccepted(annotation: Annotation): boolean {
@@ -90,7 +80,7 @@ export class UtilityService {
   }
 
   showElevatedActions(userRole: string, selectedAnnotation: Annotation){
-    return this.isUnderReview(selectedAnnotation) && this.userService.isElevatedCurator(userRole);
+    return this.isUnderReview(selectedAnnotation) && this.userService.isRoleAdmin(userRole);
   }
 
   addSourceToAnnotation(annotationSource, annotation){

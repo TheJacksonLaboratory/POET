@@ -59,5 +59,6 @@ export const environment = {
   MONARCH_SEARCH_URL: MONARCH_BASE_URL + '/search/entity/autocomplete/',
   MONARCH_ENTITY_URL: MONARCH_BASE_URL + '/bioentity/',
   PUBMED_SUMMARY_URL: PUBMED_BASE_URL + 'esummary.fcgi',
-  AUDIENCE_ROLE: "https://poet.jax.org/role"
+  AUTH0_ROLE_CLAIM: "https://poet.jax.org/role",
+  AUTH0_ADMIN_ROLE: "POET_ADMIN"
 };

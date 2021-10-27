@@ -80,7 +80,7 @@ export class PortalCurateComponent implements OnInit {
       if(!user){
         user = {nickname: 'GUEST', role: 'GUEST'};
       } else {
-        user.role = user[environment.AUDIENCE_ROLE];
+        user.role = user[environment.AUTH0_ROLE_CLAIM];
       }
       this.user = user;
     });

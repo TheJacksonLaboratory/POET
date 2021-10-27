@@ -37,8 +37,8 @@ export class PortalDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.authService.user$.subscribe((user) => {
       this.user = user;
-      this.userRole = user[environment.AUDIENCE_ROLE];
-      if(this.userService.isElevatedCurator(this.userRole)){
+      this.userRole = user[environment.AUTH0_ROLE_CLAIM];
+      if(this.userService.isRoleAdmin(this.userRole)){
         this.curationService.getAnnotationsNeedingReview().subscribe((annotations) => {
           this.reviews = annotations;
           this.loadingAnnotationsNeedingAction = false;

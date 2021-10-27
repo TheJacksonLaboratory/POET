@@ -22,7 +22,6 @@ auth0:
   audience: poet-api-audience
   nickname: https://poet.jax.org/nickname
   email: https://poet.jax.org/email
-  role: https://poet.jax.org/role
 api:
   version: /api/v1
   client: /,/portal/**

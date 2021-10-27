@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -19,9 +21,6 @@ public class UserService {
 
     @Value( "${auth0.email}" )
     private String email_claim;
-
-    @Value( "${auth0.role}" )
-    private String role_claim;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -37,20 +36,17 @@ public class UserService {
      */
     public boolean saveOrUpdateUser(Authentication authentication){
         final User user = getUserFromAuthentication(authentication);
-        if(user != null){
-            final User existing = userRepository.findDistinctByAuthId(user.getAuthId());
-            if (existing != null) {
-                // Check to see if role changed
-                if(!existing.getCurationRole().equals(user.getCurationRole())){
-                    existing.setCurationRole(user.getCurationRole());
-                    userRepository.save(existing);
-                }
-                return true;
+        final User existing = userRepository.findDistinctByAuthId(user.getAuthId());
+        if (existing != null) {
+            // Check to see if role changed
+            if(!existing.getCurationRole().equals(user.getCurationRole())){
+                existing.setCurationRole(user.getCurationRole());
+                userRepository.save(existing);
             }
-            userRepository.save(user);
             return true;
         }
-        return false;
+        userRepository.save(user);
+        return true;
     }
 
     /***
@@ -77,13 +73,13 @@ public class UserService {
      * This functions should only be run once before the switch to POET.
      */
     public User getHumanPhenotypeOntologyUser(){
-        final User user = new User("auth:00000", "hpoteam", "dr.sebastian.koehler@gmail.com", "00000", CurationRole.ELEVATED_CURATOR);
+        final User user = new User("auth:00000", "hpoteam", "dr.sebastian.koehler@gmail.com", CurationRole.POET_ADMIN);
         return userRepository.save(user);
     }
 
 
     /**
-     * A functon to transform an authentication object to a user entity
+     * A function to transform an authentication object to a user entity
      *
      * @param authentication the spring authentication object
      *
@@ -96,10 +92,13 @@ public class UserService {
             String authId = authentication.getName();
             String nickname = credentials.getClaim(nickname_claim);
             String email = credentials.getClaim(email_claim);
-            String orcid = "";
-            CurationRole curationRole = CurationRole.valueOf(credentials.getClaim(role_claim));
+            List<String> permissions = credentials.getClaim("permissions");
+            CurationRole curationRole = CurationRole.POET_CURATOR;
+            if(permissions.contains("poet:admin")){
+                curationRole = CurationRole.POET_ADMIN;
+            }
             if(authId != null && nickname != null && email != null){
-                return new User(authId, nickname, email, orcid, curationRole);
+                return new User(authId, nickname, email, curationRole);
             } else {
                 throw new AuthenticationException(true);
             }

@@ -86,10 +86,10 @@ describe('UtilityService', () => {
   })
 
   it('it should return correct elevated actions boolean', () => {
-    expect(service.showElevatedActions("ELEVATED_CURATOR", getFakeAnnotations()[1])).toBeTrue();
-    expect(service.showElevatedActions("ELEVATED_CURATOR", getFakeAnnotations()[0])).toBeFalse();
-    expect(service.showElevatedActions("CURATOR", getFakeAnnotations()[1])).toBeFalse();
-    expect(service.showElevatedActions("CURATOR", getFakeAnnotations()[0])).toBeFalse();
+    expect(service.showElevatedActions("POET_ADMIN", getFakeAnnotations()[1])).toBeTrue();
+    expect(service.showElevatedActions("POET_ADMIN", getFakeAnnotations()[0])).toBeFalse();
+    expect(service.showElevatedActions("POET_CURATOR", getFakeAnnotations()[1])).toBeFalse();
+    expect(service.showElevatedActions("POET_CURATOR", getFakeAnnotations()[0])).toBeFalse();
   })
 
   it('it should test if they own annotation', () => {
@@ -102,23 +102,7 @@ describe('UtilityService', () => {
     expect(service.ownsAnnotation({}, fakeAnnotations[4].owner)).toBeFalse();
   })
 
-  it('it should test if they are an elevated curator', () => {
-    expect(service.isElevatedCurator(fakeUsers[0])).toBeTrue();
-    expect(service.isElevatedCurator(fakeUsers[1])).toBeFalse();
-    expect(service.isElevatedCurator(fakeUsers[2])).toBeFalse();
-    expect(service.isElevatedCurator({})).toBeFalse();
-    expect(service.isElevatedCurator(null)).toBeFalse();
-    expect(service.isElevatedCurator(undefined)).toBeFalse();
-  })
 
-  it('it should test if they are a user', () => {
-    expect(service.isUser(fakeUsers[0])).toBeTrue();
-    expect(service.isUser(fakeUsers[1])).toBeTrue();
-    expect(service.isUser(fakeUsers[2])).toBeFalse();
-    expect(service.isUser({})).toBeFalse();
-    expect(service.isUser(null)).toBeFalse();
-    expect(service.isUser(undefined)).toBeFalse();
-  })
 
   function getFakeAnnotations(): Annotation[]
   {

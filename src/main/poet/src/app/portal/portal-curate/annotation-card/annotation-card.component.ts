@@ -17,6 +17,7 @@ import { MatBottomSheet } from "@angular/material/bottom-sheet";
 import { ConfirmSheetComponent } from "./confirm-sheet/confirm-sheet.component";
 import { UtilityService } from "../../../shared/services/utility.service";
 import { tap } from "rxjs/operators";
+import {UserService} from "../../../shared/services/user/user.service";
 
 @Component({
   selector: 'poet-annotation-card',
@@ -55,7 +56,7 @@ export class AnnotationCardComponent implements OnInit {
 
   constructor(public stateService: StateService, public curationService: CurationService, public utilityService: UtilityService,
               private _snackBar: MatSnackBar, private route: ActivatedRoute, private _bottomSheet: MatBottomSheet,
-              private cdk: ChangeDetectorRef) {
+              private cdk: ChangeDetectorRef, public userService: UserService) {
   }
 
   ngOnInit(): void {
@@ -179,22 +180,22 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   showBugReport(annotation: Annotation){
-    return (this.utilityService.isOfficial(annotation) && !this.utilityService.isElevatedCurator(this.user));
+    return (this.utilityService.isOfficial(annotation) && !this.userService.isUserAdmin(this.user));
   }
 
   showCreateAnnotation(annotation: Annotation) {
-    return (this.utilityService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner))
-      || (this.utilityService.isElevatedCurator(this.user) &&
+    return (this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner))
+      || (this.userService.isUserAdmin(this.user) &&
       !this.utilityService.isUnderReview(annotation) && !this.utilityService.isNeedsWork(annotation));
   }
 
   showDeleteAnnotation(annotation: Annotation){
-    return this.utilityService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) ||
-      this.utilityService.isElevatedCurator(this.user);
+    return this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) ||
+      this.userService.isUserAdmin(this.user);
   }
 
   showAnnotationNeedsReview(annotation: Annotation){
-    return (this.utilityService.isElevatedCurator(this.user) && this.utilityService.isUnderReview(annotation));
+    return (this.userService.isUserAdmin(this.user) && this.utilityService.isUnderReview(annotation));
   }
 
   showCreateTreatment(phenotype: PhenotypeAnnotation){
@@ -202,7 +203,7 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   isUser(){
-    return this.utilityService.isUser(this.user);
+    return this.userService.isUser(this.user);
   }
 
   createTreatmentForPhenotype(phenotype: PhenotypeAnnotation){

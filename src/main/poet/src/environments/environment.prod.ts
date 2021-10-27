@@ -7,8 +7,8 @@ const HPO_BASE_URL = 'https://hpo.jax.org/api/';
 export const environment = {
   production: true,
   auth: {
-    domain: "dev-poet.us.auth0.com",
-    clientId: "zAquxh5T1sPsoqBmSd8R7UasuFCcl9LY",
+    domain: "thejacksonlaboratory.auth0.com",
+    clientId: "eRgMZH2x9xaVTpnOrf4V3R82214QCtRh",
     audience: "poet-api-audience"
   },
   httpInterceptor: {
@@ -59,5 +59,6 @@ export const environment = {
   MONARCH_SEARCH_URL: MONARCH_BASE_URL + '/search/entity/autocomplete/',
   MONARCH_ENTITY_URL: MONARCH_BASE_URL + '/bioentity/',
   PUBMED_SUMMARY_URL: PUBMED_BASE_URL + 'esummary.fcgi',
-  AUDIENCE_ROLE: "https://poet.jax.org/role"
+  AUTH0_ROLE_CLAIM: "https://poet.jax.org/role",
+  AUTH0_ADMIN_ROLE: "POET_ADMIN"
 };

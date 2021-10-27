@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
-import { User } from "../../models/models";
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +13,18 @@ export class UserService {
     this.http.get(environment.POET_API_CHECK_USER_URL).subscribe();
   }
 
-  isElevatedCurator(userRole: string): boolean {
-    return userRole === 'ELEVATED_CURATOR';
+  isUserAdmin(user): boolean {
+    return user?.role === environment.AUTH0_ADMIN_ROLE;
   }
 
+  isRoleAdmin(userRole): boolean {
+    return userRole === environment.AUTH0_ADMIN_ROLE;
+  }
+
+  isUser(user): boolean  {
+    if(user == null){
+      return false;
+    }
+    return user && user.role !== 'GUEST' && Object.keys(user).length !== 0;
+  }
 }
