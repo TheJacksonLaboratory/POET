@@ -204,13 +204,13 @@ export class PhenotypeCurationComponent implements OnInit {
       this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', '').subscribe(() => {
         this.onSuccessfulPhenotype('Annotation Updated!', false);
       }, (err) => {
-        this.onErrorPhenotype();
+        this.onErrorPhenotype(err.error);
       });
     } else {
       this.curationService.saveAnnotation(phenotypeAnnotation, 'phenotype').subscribe(() => {
         this.onSuccessfulPhenotype('Annotation Saved!', false);
       }, (err) => {
-        this.onErrorPhenotype();
+        this.onErrorPhenotype(err.error);
       });
     }
   }
@@ -259,10 +259,9 @@ export class PhenotypeCurationComponent implements OnInit {
    * Anytime we have an error when processing the phenotype changes we want to show a message
    * TODO: make this more verbose with the returned error.
    */
-  onErrorPhenotype() {
+  onErrorPhenotype(err) {
     this.savingAnnotation = false;
-    this._snackBar.open('Error Saving Annotation!', 'Close', {
-      duration: 3000,
+    this._snackBar.open(err.details, 'Close', {
       horizontalPosition: "left"
     });
   }
@@ -361,13 +360,13 @@ export class PhenotypeCurationComponent implements OnInit {
         this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "").subscribe(() => {
           this.onSuccessfulPhenotype('Phenotype Annotation Approved!', true);
         }, (err) => {
-          this.onErrorPhenotype();
+          this.onErrorPhenotype(err.error);
         });
       } else {
         this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "approve").subscribe(() => {
           this.onSuccessfulPhenotype('Phenotype Annotation Approved!', true);
         }, (err) => {
-          this.onErrorPhenotype();
+          this.onErrorPhenotype(err.error);
         });
       }
     } else if(action === 'deny') {
@@ -385,7 +384,7 @@ export class PhenotypeCurationComponent implements OnInit {
           this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "deny").subscribe(() => {
             this.onSuccessfulPhenotype('Phenotype Annotation Rejected!', true);
           }, (err) => {
-            this.onErrorPhenotype();
+            this.onErrorPhenotype(err.error);
           });
         }
       });

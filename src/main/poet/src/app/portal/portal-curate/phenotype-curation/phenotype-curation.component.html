@@ -127,7 +127,7 @@
         <mat-form-field appearance="fill">
           <mat-label>HPO Age Of Onset</mat-label>
           <mat-select formControlName="onsetFormControl">
-            <mat-option>Not Specified</mat-option>
+            <mat-option>Unset</mat-option>
             <mat-option *ngFor="let option of onsetOptions" [value]="option">
               <span class="option-name">{{option.name}}</span>
             </mat-option>
@@ -157,7 +157,7 @@
           <mat-label>Sex</mat-label>
           <mat-select formControlName="sexFormControl">
             <mat-option>
-              NOT SPECIFIED
+              UNSET
             </mat-option>
             <mat-option value="MALE">
               MALE

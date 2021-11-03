@@ -238,7 +238,6 @@ export class TreatmentCurationComponent implements OnInit {
   onErrorTreatment(err) {
     this.savingAnnotation = false;
     this._snackBar.open(err.details, 'Close', {
-      duration: 3000,
       horizontalPosition: "left"
     });
   }
