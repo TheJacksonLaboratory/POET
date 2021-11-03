@@ -55,7 +55,7 @@
           </mat-hint>
           <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
                  [matAutocomplete]="hpo" required>
-          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null" matSuffix mat-icon-button
+          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null && !formControlGroup.disabled" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
@@ -86,7 +86,7 @@
           </mat-hint>
           <input matInput placeholder="Search for a MAxO Term" formControlName="maxoFormControl" ngDefaultControl
                  [matAutocomplete]="maxoAuto" required>
-          <button mat-button *ngIf="formControlGroup.get('maxoFormControl').value != null"
+          <button mat-button *ngIf="formControlGroup.get('maxoFormControl').value != null && !formControlGroup.disabled"
                   matSuffix mat-icon-button aria-label="Clear" (click)="formControlGroup.get('maxoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
@@ -135,7 +135,7 @@
           </mat-hint>
           <input matInput placeholder="..." formControlName="extensionFormControl" ngDefaultControl
                  [matAutocomplete]="extensionAuto">
-          <button mat-button *ngIf="formControlGroup.get('extensionFormControl').value != null"
+          <button mat-button *ngIf="formControlGroup.get('extensionFormControl').value != null && !formControlGroup.disabled"
                   matSuffix mat-icon-button aria-label="Clear" (click)="formControlGroup.get('extensionFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
@@ -156,8 +156,8 @@
         <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>Additional Comments</mat-label>
           <input matInput type="text" formControlName="commentFormControl" maxlength="50">
-          <mat-hint *ngIf="this.formControlGroup.get('commentFormControl').value?.length == 50">Maximum Characters Reached.</mat-hint>
-          <button mat-button *ngIf="formControlGroup.get('commentFormControl').value != ''" matSuffix mat-icon-button
+          <mat-hint *ngIf="this.formControlGroup.get('commentFormControl').value?.length >= 50">Maximum Characters Reached.</mat-hint>
+          <button mat-button *ngIf="formControlGroup.get('commentFormControl').value != '' && !formControlGroup.disabled" matSuffix mat-icon-button
                   aria-label="Clear"
                   (click)="formControlGroup.get('commentFormControl').reset()">
             <mat-icon>close</mat-icon>
