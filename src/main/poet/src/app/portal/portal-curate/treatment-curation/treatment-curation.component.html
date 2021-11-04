@@ -174,8 +174,12 @@
         {{elevatedButtonText.approve.display}}
       </button>
       <button class="deny-annotation" mat-raised-button aria-label="Deny Treatment Annotation"
-              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="reviewAnnotation('deny')">
+              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && !elevatedChanges" (click)="reviewAnnotation('deny')">
         {{elevatedButtonText.deny.display}}
+      </button>
+      <button class="deny-annotation" mat-raised-button aria-label="Cancel Current Review"
+              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && elevatedChanges" (click)="toggleAnnotationChanges(false)">
+        Cancel
       </button>
       <button class="edit-annotation" mat-raised-button aria-label="Edit Treatment Annotation"
               *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && elevatedButtonText.changes.show"

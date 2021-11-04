@@ -198,6 +198,11 @@ export class AnnotationCardComponent implements OnInit {
     return (this.userService.isUserAdmin(this.user) && this.utilityService.isUnderReview(annotation));
   }
 
+  showAnnotationNeedsWork(annotation: Annotation){
+    return (this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation)
+      && this.utilityService.isNeedsWork(annotation));
+  }
+
   showCreateTreatment(phenotype: PhenotypeAnnotation){
     return this.isUser() && (this.utilityService.isOfficial(phenotype) || this.utilityService.isAccepted(phenotype));
   }

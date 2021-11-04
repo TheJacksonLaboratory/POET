@@ -316,10 +316,18 @@ export class TreatmentCurationComponent implements OnInit {
   /**
   * Elevated curator making changes to an annotation under_review
   */
-  makeAnnotationChanges(){
-    this.elevatedChanges = true;
-    this.formControlGroup.enable();
-    this.elevatedButtonText.approve.display = "Save & Accept";
-    this.elevatedButtonText.changes.show = false;
+  toggleAnnotationChanges(shouldShow: boolean){
+    if(shouldShow){
+      this.elevatedChanges = true;
+      this.formControlGroup.enable();
+      this.elevatedButtonText.approve.display = "Save & Accept";
+      this.elevatedButtonText.changes.show = false;
+    } else {
+      this.elevatedChanges = false;
+      this.formControlGroup.disable();
+      this.elevatedButtonText.approve.display = "Approve";
+      this.elevatedButtonText.changes.show = true;
+    }
+
   }
 }

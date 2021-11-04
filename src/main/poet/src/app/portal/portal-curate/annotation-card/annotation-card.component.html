@@ -84,12 +84,18 @@
                 (click)="annotationAction(treatment, 'edit')">
           <mat-icon>create</mat-icon>
         </button>
-        <button *ngIf="showAnnotationNeedsReview(treatment) else elseBlock"
+        <button *ngIf="showAnnotationNeedsReview(treatment) else elseWorkBlock"
                 mat-flat-button color="warn" aria-label="Review Treatment Annotation"
                 (click)="annotationAction(treatment, 'view')"
         class="needs-review-btn">
           Needs Review
         </button>
+        <ng-template #elseWorkBlock>
+          <button *ngIf="showAnnotationNeedsWork(treatment) else elseBlock"
+            mat-flat-button color="warn" aria-label="Needs Work Annotation"
+            (click)="annotationAction(treatment, 'edit')">
+          </button>
+        </ng-template>
         <ng-template #elseBlock>
           <button mat-icon-button
                   aria-label="View Treatment Annotation"
@@ -152,12 +158,18 @@
                 (click)="annotationAction(phenotype, 'edit')">
           <mat-icon>create</mat-icon>
         </button>
-        <button *ngIf="showAnnotationNeedsReview(phenotype) else elseBlock"
+        <button *ngIf="showAnnotationNeedsReview(phenotype) else elseWorkBlock"
                 mat-flat-button color="warn" aria-label="Review Phenotype Annotation"
                 (click)="annotationAction(phenotype, 'view')"
                 class="needs-review-btn">
           Needs Review
         </button>
+        <ng-template #elseWorkBlock>
+          <button *ngIf="showAnnotationNeedsWork(phenotype) else elseBlock"
+                  mat-flat-button color="warn" aria-label="Needs Work Annotation"
+                  (click)="annotationAction(phenotype, 'edit')">
+          </button>
+        </ng-template>
         <ng-template #elseBlock>
           <button mat-icon-button aria-label="View Phenotype Annotation"
                   (click)="annotationAction(phenotype, 'view')"
@@ -183,12 +195,12 @@
                    showFirstLastButtons="false">
     </mat-paginator>
     <div class="annotation-missing" *ngIf="((treatmentAnnotations | async)?.length == 0 && this.category == 'treatment')
-    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype' && !loadingAnnotations)">
+    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype') && !loadingAnnotations">
       No {{categoryToDisplay()}} Found.
     </div>
     <button class="add-annotation-btn" mat-mini-fab color="primary" aria-label="Add Annotation"
             *ngIf="isUser() && ((treatmentAnnotations | async)?.length == 0 && this.category == 'treatment')
-    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype' && !loadingAnnotations)"
+    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype') && !loadingAnnotations"
             (click)="annotationAction(null, 'create')">
       <mat-icon>add</mat-icon>
     </button>
