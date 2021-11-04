@@ -183,7 +183,7 @@
       </button>
       <button class="edit-annotation" mat-raised-button aria-label="Edit Treatment Annotation"
               *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && elevatedButtonText.changes.show"
-              (click)="makeAnnotationChanges()">
+              (click)="toggleAnnotationChanges(true)">
         {{elevatedButtonText.changes.display}}
       </button>
       <button mat-raised-button color="primary" *ngIf="everythingValid() && !utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="submitForm()">SUBMIT</button>

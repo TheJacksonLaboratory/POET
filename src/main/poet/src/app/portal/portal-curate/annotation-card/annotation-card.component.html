@@ -93,7 +93,8 @@
         <ng-template #elseWorkBlock>
           <button *ngIf="showAnnotationNeedsWork(treatment) else elseBlock"
             mat-flat-button color="warn" aria-label="Needs Work Annotation"
-            (click)="annotationAction(treatment, 'edit')">
+            (click)="annotationAction(treatment, 'edit')" class="needs-work-btn">
+            Needs Work
           </button>
         </ng-template>
         <ng-template #elseBlock>
@@ -167,7 +168,9 @@
         <ng-template #elseWorkBlock>
           <button *ngIf="showAnnotationNeedsWork(phenotype) else elseBlock"
                   mat-flat-button color="warn" aria-label="Needs Work Annotation"
-                  (click)="annotationAction(phenotype, 'edit')">
+                  (click)="annotationAction(phenotype, 'edit')"
+                  class="needs-work-btn">
+            Needs Work
           </button>
         </ng-template>
         <ng-template #elseBlock>
