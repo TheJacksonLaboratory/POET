@@ -170,7 +170,7 @@ export class PhenotypeCurationComponent implements OnInit {
       evidence: this.formControlGroup.get('evidenceFormControl').value,
       description: this.formControlGroup.get('descriptionFormControl').value,
       sex: this.formControlGroup.get('sexFormControl').value,
-      qualifier: this.selectedQualifier == true ? "NOT" : '',
+      qualifier: this.selectedQualifier === true ? "NOT" : '',
       frequency: this.getFrequencyValue(),
       modifiers: this.selectedModifiers.join(";"),
       onset: this.formControlGroup.get('onsetFormControl').value?.ontologyId,
@@ -229,7 +229,7 @@ export class PhenotypeCurationComponent implements OnInit {
     this.formControlGroup.get('onsetFormControl').setValue(onset);
     this.selectedModifiers = annotation.modifier.length > 0 ?  annotation.modifier.split(";") : []
     this.formControlGroup.get('sexFormControl').setValue(annotation.sex);
-    this.selectedQualifier = annotation.qualifier == "NOT";
+    this.selectedQualifier = annotation.qualifier === "NOT";
     this.stateService.setSelectedSource(annotation.annotationSource);
     this.formControlGroup.markAsPristine();
   }
