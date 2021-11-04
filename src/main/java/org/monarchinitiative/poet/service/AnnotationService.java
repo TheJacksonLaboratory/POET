@@ -178,12 +178,9 @@ public class AnnotationService {
             } else if(oldAnnotation.getStatus().equals(AnnotationStatus.ACCEPTED) || oldAnnotation.getStatus().equals(AnnotationStatus.UNDER_REVIEW)) {
                 final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, oldAnnotation.getAnnotationSource(),
                         AnnotationStatus.UNDER_REVIEW, oldAnnotation.getOwner());
-
-                // See if we already have an annotation that exists from the one we are trying to update
-                //
-                if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndQualifierAndStatusNot(
+                if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndQualifierAndStatusNotAndIdNot(
                         annotation.getAnnotationSource(), annotation.getHpoId(), annotation.getSex(),
-                        annotation.getEvidence(), annotation.getOnset(), annotation.getFrequency(), annotation.getModifier(), annotation.getQualifier(), AnnotationStatus.RETIRED)){
+                        annotation.getEvidence(), annotation.getOnset(), annotation.getFrequency(), annotation.getModifier(), annotation.getQualifier(), AnnotationStatus.RETIRED,  oldAnnotation.getId())){
                     throw new DuplicateAnnotationException("phenotype", annotation.getAnnotationSource().getDisease().getDiseaseName());
                 }
                 oldAnnotation.setStatus(AnnotationStatus.RETIRED);
