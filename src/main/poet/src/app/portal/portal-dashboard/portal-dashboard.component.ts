@@ -6,6 +6,8 @@ import { fadeIn } from "ng-animate";
 import { CurationService } from "../../shared/services/curation/curation.service";
 import { environment } from "../../../environments/environment";
 import { UserService } from "../../shared/services/user/user.service";
+import {Router} from "@angular/router";
+import {StateService} from "../../shared/services/state/state.service";
 
 @Component({
   selector: 'app-portal-home',
@@ -31,7 +33,8 @@ export class PortalDashboardComponent implements OnInit {
   loading: boolean = true;
   loadingAnnotationsNeedingAction: boolean = true;
 
-  constructor(public authService: AuthService, public curationService: CurationService, public userService: UserService) {
+  constructor(public authService: AuthService, public curationService: CurationService,
+              public userService: UserService, public stateService: StateService, public router: Router) {
   }
 
   ngOnInit(): void {
@@ -96,5 +99,11 @@ export class PortalDashboardComponent implements OnInit {
 
   noContributions(){
     return this.pieData?.length == 0;
+  }
+
+  navigateToDisease(disease, category) {
+    this.stateService.setSelectedCategory(category);
+    const urlSegment = `/curate/${disease}`;
+    this.router.navigateByUrl(urlSegment);
   }
 }

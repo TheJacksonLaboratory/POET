@@ -16,7 +16,7 @@
           </mat-card-title>
           <mat-card-content>
             <mat-list *ngFor="let recent of recentActivity | slice: lowValue:highValue">
-              <mat-list-item [routerLink]="'/curate/' + recent.diseaseId" class="activity-item">
+              <mat-list-item (click)="navigateToDisease(recent.diseaseId, recent.type)" class="activity-item">
                 <p>{{recent.view}}</p>
               </mat-list-item>
             </mat-list>
@@ -39,7 +39,7 @@
               <mat-list-item class="activity-item">
                 <p>{{review.count}} {{review.type}} annotations ready to be reviewed for {{review.diseaseName}}.</p>
                 <span class="spacer"></span>
-                <button mat-stroked-button [routerLink]="'/curate/' + review.diseaseId + '/' + review.type">View</button>
+                <button mat-stroked-button (click)="navigateToDisease(review.diseaseId, review.type)">View</button>
               </mat-list-item>
             </mat-list>
             <mat-progress-bar *ngIf="loading"></mat-progress-bar>
@@ -57,7 +57,7 @@
                 <mat-list-item class="activity-item">
                   <p>{{annotation.count}} {{annotation.type}} annotations need work for {{annotation.diseaseName}}.</p>
                   <span class="spacer"></span>
-                  <button mat-stroked-button [routerLink]="'/curate/' + annotation.diseaseId + '/' + annotation.type">View</button>
+                  <button mat-stroked-button (click)="navigateToDisease(annotation.diseaseId, annotation.type)">View</button>
                 </mat-list-item>
               </mat-list>
             <mat-progress-bar *ngIf="loading"></mat-progress-bar>

@@ -291,7 +291,8 @@ export class CurationService {
                     activities.push({
                       "view": view,
                       "diseaseId": diseaseId,
-                      "date": mostRecent
+                      "date": mostRecent,
+                      "type": type
                     });
                   });
 
@@ -308,7 +309,8 @@ export class CurationService {
                   activities.push({
                     "view": view,
                     "diseaseId": diseaseId,
-                    "date": mostRecent
+                    "date": mostRecent,
+                    "type": type
                   });
                 }
               });
@@ -333,7 +335,8 @@ export class CurationService {
           activities.push({
             "view": view,
             "diseaseId": diseaseId,
-            "date": mostRecent
+            "date": mostRecent,
+            "type": "phenotype"
           });
         }
       });
