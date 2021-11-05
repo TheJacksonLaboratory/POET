@@ -21,7 +21,7 @@
   <mat-card-subtitle>
     Human Phenotype Ontology [ HPO ]
     <p class="extra-information" *ngIf="selectedAnnotation?.owner.nickname">
-      {{selectedAnnotation.owner.nickname}} updated on {{selectedAnnotation.lastUpdatedDate | date: 'medium':"EST"}} </p>
+      {{selectedAnnotation.owner.nickname}} updated on {{selectedAnnotation.lastUpdatedDate}} </p>
   </mat-card-subtitle>
   <mat-card-content>
     <button mat-raised-button color="primary" (click)="selectPublication()"

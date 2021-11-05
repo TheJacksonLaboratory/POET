@@ -75,6 +75,7 @@ export class TreatmentCurationComponent implements OnInit {
         this.resetTreatmentForm();
       } else {
         this.selectedAnnotation = annotation;
+        this.selectedAnnotation.lastUpdatedDate = new Date(this.selectedAnnotation.lastUpdatedDate + "Z").toLocaleString();
         this.setFormValues(annotation);
       }
     });
