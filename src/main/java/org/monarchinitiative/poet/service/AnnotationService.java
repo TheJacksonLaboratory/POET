@@ -236,7 +236,7 @@ public class AnnotationService {
         if(annotations.size() > 0){
                 return annotations.stream().peek(annotation -> {
                     UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
-                    annotation.setLastUpdatedDate(activity.getLocalDateTime());
+                    annotation.setLastUpdatedDate(activity.getDateTime());
                 }).sorted(Comparator.comparing(Annotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
         } else {
             return Collections.emptyList();

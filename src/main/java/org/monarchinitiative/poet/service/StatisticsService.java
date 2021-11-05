@@ -60,13 +60,13 @@ public class StatisticsService {
             if(weeks == 0){
                 return this.userActivityRepository.findAll(pageable);
             } else {
-                return this.userActivityRepository.findUserActivityByLocalDateTimeAfter(compare, pageable);
+                return this.userActivityRepository.findUserActivityByDateTimeAfter(compare, pageable);
             }
         } else {
             if(weeks == 0){
                 return this.userActivityRepository.findUserActivityByOwnerAuthId(authentication.getName(), pageable);
             } else {
-                return this.userActivityRepository.findUserActivityByLocalDateTimeAfterAndOwnerAuthId(compare, authentication.getName(), pageable);
+                return this.userActivityRepository.findUserActivityByDateTimeAfterAndOwnerAuthId(compare, authentication.getName(), pageable);
             }
         }
     }
