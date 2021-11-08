@@ -85,8 +85,7 @@ clean {
 }
 
 bootWar.dependsOn {
-	if(System.getProperty("release") == "true"){
-		profile = "production"
+	if(System.getProperty('spring.profiles.active') == "production"){
 		buildClientProdEnv
 	} else {
 		buildClientTestEnv
