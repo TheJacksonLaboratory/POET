@@ -139,7 +139,7 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   annotationAction(annotation: any, action: any) {
-    if (action == 'delete') {
+    if (action === 'delete') {
         this._bottomSheet.open(ConfirmSheetComponent, {
           restoreFocus: false,
           disableClose: true

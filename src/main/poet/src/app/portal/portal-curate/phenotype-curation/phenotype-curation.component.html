@@ -15,7 +15,7 @@
               (click)="utilityService.openMessagesDialog(this.selectedAnnotation.reviewMessages)">
       mark_chat_unread
     </mat-icon>
-    New Phenotype
+    {{title}}
     <mat-icon class="help-icon" (click)="closeForm()">cancel</mat-icon>
   </mat-card-title>
   <mat-card-subtitle>
@@ -195,7 +195,8 @@
   <mat-card-actions>
     <div class="left-actions">
       <button class="approve-annotation" mat-raised-button aria-label="Approve Phenotype Annotation"
-              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="reviewAnnotation('approve')">
+              *ngIf="(utilityService.showElevatedActions(userRole, selectedAnnotation) && !elevatedChanges) ||
+              (elevatedChanges && !this.formControlGroup.pristine && this.formControlGroup.valid)" (click)="reviewAnnotation('approve')">
         {{elevatedButtonText.approve.display}}
       </button>
       <button class="deny-annotation" mat-raised-button aria-label="Deny Phenotype Annotation"
@@ -215,7 +216,7 @@
       <mat-spinner color="accent" [diameter]="20" mode="indeterminate" *ngIf="savingAnnotation"></mat-spinner>
     </div>
     <div class="right-actions">
-      <button mat-stroked-button (click)="resetPhenotypeForm()" *ngIf="!formControlGroup.disabled">Clear</button>
+      <button mat-stroked-button (click)="resetPhenotypeForm()" *ngIf="!formControlGroup.disabled && !elevatedChanges">Clear</button>
     </div>
   </mat-card-actions>
 </mat-card>

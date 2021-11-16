@@ -1,18 +1,18 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { HpoService } from "../../../shared/services/external/hpo.service";
-import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
-import {debounceTime, distinctUntilChanged, finalize, shareReplay, take} from "rxjs/operators";
-import { AnchorSearchResult, HpoTerm } from "../../../shared/models/search-models";
-import { AnnotationSource, PhenotypeAnnotation, Publication } from "../../../shared/models/models";
-import { CurationService } from "../../../shared/services/curation/curation.service";
-import { StateService } from "../../../shared/services/state/state.service";
-import { MatDialog } from "@angular/material/dialog";
-import { DialogSourceComponent } from "../dialog-source/dialog-source.component";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { COMMA, ENTER } from "@angular/cdk/keycodes";
-import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
-import { DialogReviewComponent } from "../dialog-review/dialog-review.component";
-import { UtilityService } from "../../../shared/services/utility.service";
+import { HpoService } from '../../../shared/services/external/hpo.service';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import {debounceTime, distinctUntilChanged, finalize, shareReplay, take} from 'rxjs/operators';
+import { AnchorSearchResult, HpoTerm } from '../../../shared/models/search-models';
+import { AnnotationSource, PhenotypeAnnotation, Publication } from '../../../shared/models/models';
+import { CurationService } from '../../../shared/services/curation/curation.service';
+import { StateService } from '../../../shared/services/state/state.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogSourceComponent } from '../dialog-source/dialog-source.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { DialogReviewComponent } from '../dialog-review/dialog-review.component';
+import { UtilityService } from '../../../shared/services/utility.service';
 
 @Component({
   selector: 'poet-phenotype-curation',
@@ -30,7 +30,7 @@ export class PhenotypeCurationComponent implements OnInit {
   updating: boolean;
   selectedHpo: HpoTerm;
   hpoOptions: HpoTerm[];
-  modifierOptions: AnchorSearchResult[]
+  modifierOptions: AnchorSearchResult[];
   onsetOptions: AnchorSearchResult[];
   frequencyOptions: AnchorSearchResult[];
   selectedPublications: Publication[] = [];
@@ -38,13 +38,14 @@ export class PhenotypeCurationComponent implements OnInit {
   selectedOnset: any;
   selectedQualifier: any;
   selectedFrequency: any;
-  loadingHpoSuggestions: boolean = false;
-  loadingModifierSuggestions: boolean = false;
-  elevatedButtonText = {approve: {display: "Approve", show: true}, deny: {display: "Deny", show: true}, changes: {display: "Make changes", show: true}};
-  elevatedChanges: boolean = false;
+  loadingHpoSuggestions = false;
+  loadingModifierSuggestions = false;
+  elevatedButtonText = {approve: {display: 'Approve', show: true}, deny: {display: 'Deny', show: true}, changes: {display: 'Make changes', show: true}};
+  elevatedChanges = false;
+  title = 'Phenotype';
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
-  savingAnnotation: boolean = false;
+  savingAnnotation = false;
   formControlGroup: FormGroup = new FormGroup({
     hpoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     onsetFormControl: new FormControl({value: '', disabled: false}),
@@ -63,9 +64,9 @@ export class PhenotypeCurationComponent implements OnInit {
               public dialog: MatDialog,
               private _snackBar: MatSnackBar) {
 
-    this.hpoService.searchDescendants("", 'HP:0003674').pipe(shareReplay(1)).subscribe((result) => {
+    this.hpoService.searchDescendants('', 'HP:0003674').pipe(shareReplay(1)).subscribe((result) => {
       this.onsetOptions = result;
-      if(this.selectedAnnotation){
+      if (this.selectedAnnotation){
         this.setFormValues(this.selectedAnnotation);
       }
     });
@@ -92,7 +93,7 @@ export class PhenotypeCurationComponent implements OnInit {
         this.resetPhenotypeForm();
       } else {
         this.selectedAnnotation = annotation;
-        this.selectedAnnotation.lastUpdatedDate = new Date(this.selectedAnnotation.lastUpdatedDate + "Z").toLocaleString();
+        this.selectedAnnotation.lastUpdatedDate = new Date(this.selectedAnnotation.lastUpdatedDate + 'Z').toLocaleString();
         this.setFormValues(annotation);
       }
     });
@@ -101,16 +102,20 @@ export class PhenotypeCurationComponent implements OnInit {
      * Subscribe to our state service to figure out the state of the form.
      */
     this.stateService.selectedAnnotationMode.subscribe((mode) => {
-      if (mode == 'view') {
+      if (mode === 'view') {
         this.formControlGroup.disable();
+        this.title = 'Phenotype';
         return;
-      } else if (mode == 'edit') {
+      } else if (mode === 'edit') {
         this.updating = true;
+        this.title = 'Phenotype';
+      } else if (mode === 'create'){
+        this.title = 'New Phenotype';
       }
       this.formControlGroup.enable();
     });
 
-    this.formControlGroup.get("hpoFormControl").valueChanges
+    this.formControlGroup.get('hpoFormControl').valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
         if (query && query.length >= 3 && !this.formControlGroup.disabled) {
@@ -119,16 +124,16 @@ export class PhenotypeCurationComponent implements OnInit {
             this.loadingHpoSuggestions = false;
           })).subscribe((data) => {
             if (!data || data.length == 0) {
-              this.formControlGroup.get("hpoFormControl").setErrors({notFound: true});
+              this.formControlGroup.get('hpoFormControl').setErrors({notFound: true});
             }
             this.hpoOptions = data;
           }, (err) => {
-            this.formControlGroup.get("hpoFormControl").setErrors({apiError: true});
+            this.formControlGroup.get('hpoFormControl').setErrors({apiError: true});
           });
         }
       });
 
-    this.formControlGroup.get("modifierFormControl").valueChanges
+    this.formControlGroup.get('modifierFormControl').valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
         if (query && query.length >= 3 && !this.formControlGroup.disabled) {
@@ -138,25 +143,25 @@ export class PhenotypeCurationComponent implements OnInit {
             this.loadingModifierSuggestions = false;
           })).subscribe((data) => {
             if (!data || data.length == 0) {
-              this.formControlGroup.get("modifierFormControl").setErrors({notFound: true});
+              this.formControlGroup.get('modifierFormControl').setErrors({notFound: true});
             }
             this.modifierOptions = data;
           }, (err) => {
-            this.formControlGroup.get("modifierFormControl").setErrors({apiError: true});
+            this.formControlGroup.get('modifierFormControl').setErrors({apiError: true});
           });
         }
       });
 
-    this.formControlGroup.get("frequencyFormControl").valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
+    this.formControlGroup.get('frequencyFormControl').valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
         if (query && query.length >= 3 && !this.formControlGroup.disabled && isNaN(query)) {
           this.hpoService.searchDescendants(query, 'HP:0040279').subscribe((data) => {
-            if ((!data || data.length == 0) && (query.startsWith("HP:") || query.match(/^[A-Za-z]{3}/))) {
-              this.formControlGroup.get("frequencyFormControl").setErrors({notFound: true});
+            if ((!data || data.length == 0) && (query.startsWith('HP:') || query.match(/^[A-Za-z]{3}/))) {
+              this.formControlGroup.get('frequencyFormControl').setErrors({notFound: true});
             }
             this.frequencyOptions = data;
           }, (err) => {
-            this.formControlGroup.get("frequencyFormControl").setErrors({apiError: true});
+            this.formControlGroup.get('frequencyFormControl').setErrors({apiError: true});
           });
         }
       });
@@ -171,11 +176,11 @@ export class PhenotypeCurationComponent implements OnInit {
       evidence: this.formControlGroup.get('evidenceFormControl').value,
       description: this.formControlGroup.get('descriptionFormControl').value,
       sex: this.formControlGroup.get('sexFormControl').value,
-      qualifier: this.selectedQualifier === true ? "NOT" : '',
+      qualifier: this.selectedQualifier === true ? 'NOT' : '',
       frequency: this.getFrequencyValue(),
-      modifiers: this.selectedModifiers.join(";"),
+      modifiers: this.selectedModifiers.join(';'),
       onset: this.formControlGroup.get('onsetFormControl').value?.ontologyId,
-      message: "",
+      message: '',
       publicationId: annotationSource.publication.publicationId,
       publicationName: annotationSource.publication.publicationName,
       diseaseId: annotationSource.disease.diseaseId,
@@ -188,9 +193,9 @@ export class PhenotypeCurationComponent implements OnInit {
    * either an hpo id, a fraction, or a percentage.
    */
   getFrequencyValue(): any {
-    const freqOntology = this.formControlGroup.get('frequencyFormControl').value?.ontologyId
+    const freqOntology = this.formControlGroup.get('frequencyFormControl').value?.ontologyId;
     if (freqOntology) {
-      return freqOntology
+      return freqOntology;
     }
     return this.formControlGroup.get('frequencyFormControl').value;
   }
@@ -226,11 +231,11 @@ export class PhenotypeCurationComponent implements OnInit {
     this.formControlGroup.get('descriptionFormControl').setValue(annotation.description);
     this.formControlGroup.get('frequencyFormControl').setValue(annotation.frequency);
     this.selectedFrequency = annotation.frequency;
-    const onset = this.onsetOptions?.find(onset => onset.ontologyId == annotation.onset)
+    const onset = this.onsetOptions?.find(onset => onset.ontologyId == annotation.onset);
     this.formControlGroup.get('onsetFormControl').setValue(onset);
-    this.selectedModifiers = annotation.modifier.length > 0 ?  annotation.modifier.split(";") : []
+    this.selectedModifiers = annotation.modifier.length > 0 ?  annotation.modifier.split(';') : [];
     this.formControlGroup.get('sexFormControl').setValue(annotation.sex);
-    this.selectedQualifier = annotation.qualifier === "NOT";
+    this.selectedQualifier = annotation.qualifier === 'NOT';
     this.stateService.setSelectedSource(annotation.annotationSource);
     this.formControlGroup.markAsPristine();
   }
@@ -245,14 +250,14 @@ export class PhenotypeCurationComponent implements OnInit {
     this.savingAnnotation = false;
     this.stateService.triggerAnnotationReload(true, false);
     this.stateService.triggerAnnotationCountsReload(true);
-    if(close) {
+    if (close) {
       this.closeForm();
     } else {
       this.resetPhenotypeForm();
     }
     this._snackBar.open(message, 'Close', {
       duration: 3000,
-      horizontalPosition: "left"
+      horizontalPosition: 'left'
     });
   }
 
@@ -263,7 +268,7 @@ export class PhenotypeCurationComponent implements OnInit {
   onErrorPhenotype(err) {
     this.savingAnnotation = false;
     this._snackBar.open(err.details, 'Close', {
-      horizontalPosition: "left"
+      horizontalPosition: 'left'
     });
   }
 
@@ -275,7 +280,7 @@ export class PhenotypeCurationComponent implements OnInit {
     this.dialog.open(DialogSourceComponent, {
       minWidth: 300,
       data: {
-        "userRole": this.userRole
+        userRole: this.userRole
       }
     });
   }
@@ -284,7 +289,7 @@ export class PhenotypeCurationComponent implements OnInit {
    * Is our form group fully valid? Used to show action buttons.
    */
   everythingValid() {
-    return this.formControlGroup.valid && this.selectedPublications.length > 0 && !this.formControlGroup.disabled && this.formControlGroup.dirty
+    return this.formControlGroup.valid && this.selectedPublications.length > 0 && !this.formControlGroup.disabled && this.formControlGroup.dirty;
   }
 
   resetPhenotypeForm() {
@@ -310,24 +315,24 @@ export class PhenotypeCurationComponent implements OnInit {
    */
   frequencyValdiation(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      if(control.value && typeof control.value !== 'object'){
-        if(control.value.includes("/") && new RegExp("\\d+\\/\\d+").test(control.value)){
-          const nums = control.value.split("/");
-          return parseFloat(nums[0].trim()) > parseFloat(nums[1].trim()) ? { notValid: {value: "M Greater than M"}} : null;
-        } else if(new RegExp("\d{0,3}%").test(control.value)) {
-          let number = parseInt(control.value.split("%")[0]);
-          if(number <= 100){
+      if (control.value && typeof control.value !== 'object'){
+        if (control.value.includes('/') && new RegExp('\\d+\\/\\d+').test(control.value)){
+          const nums = control.value.split('/');
+          return parseFloat(nums[0].trim()) > parseFloat(nums[1].trim()) ? { notValid: {value: 'M Greater than M'}} : null;
+        } else if (new RegExp('\d{0,3}%').test(control.value)) {
+          const number = parseInt(control.value.split('%')[0]);
+          if (number <= 100){
             return null;
           } else {
-            return {notValid: {value: "Percentage greater than 100%"}};
+            return {notValid: {value: 'Percentage greater than 100%'}};
           }
         } else {
-          return {notValid: {value: "Not a valid frequency"}};
+          return {notValid: {value: 'Not a valid frequency'}};
         }
-      } else if(!this.selectedFrequency) {
+      } else if (!this.selectedFrequency) {
         return null;
       }
-    }
+    };
   }
 
   removeModifiers(modifier: string): void {
@@ -340,12 +345,12 @@ export class PhenotypeCurationComponent implements OnInit {
   selectedModifier(event: MatAutocompleteSelectedEvent): void {
     this.selectedModifiers.push(event.option.value);
     this.modifierInput.nativeElement.value = '';
-    this.formControlGroup.get("modifierFormControl").setValue(null);
+    this.formControlGroup.get('modifierFormControl').setValue(null);
   }
 
   closeForm() {
     this.stateService.setSelectedPhenotypeAnnotation(null);
-    this.elevatedButtonText = {approve: {display: "Approve", show: true}, deny: {display: "Deny", show: true}, changes: {display: "Make changes", show: true}};
+    this.elevatedButtonText = {approve: {display: 'Approve', show: true}, deny: {display: 'Deny', show: true}, changes: {display: 'Make changes', show: true}};
     this.elevatedChanges = false;
     this.handleFormEmitter.emit(false);
   }
@@ -355,34 +360,34 @@ export class PhenotypeCurationComponent implements OnInit {
    * @param action - either approve or deny
    */
   reviewAnnotation(action: string){
-    if(action === 'approve'){
+    if (action === 'approve'){
       const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
-      if(this.elevatedChanges){
-        this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "").subscribe(() => {
+      if (this.elevatedChanges){
+        this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', '').subscribe(() => {
           this.onSuccessfulPhenotype('Phenotype Annotation Approved!', true);
         }, (err) => {
           this.onErrorPhenotype(err.error);
         });
       } else {
-        this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "approve").subscribe(() => {
+        this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', 'approve').subscribe(() => {
           this.onSuccessfulPhenotype('Phenotype Annotation Approved!', true);
         }, (err) => {
           this.onErrorPhenotype(err.error);
         });
       }
-    } else if(action === 'deny') {
+    } else if (action === 'deny') {
       this.dialog.open(DialogReviewComponent, {
         minWidth: 300,
         minHeight: 250,
         data: {
-          title: "Deny Phenotype Annotation.",
+          title: 'Deny Phenotype Annotation.',
           approve: false
         }
       }).afterClosed().subscribe((data) => {
-        if(data.confirmed){
+        if (data.confirmed){
           const phenotypeAnnotation = this.getFormPhenotypeAnnotation();
           phenotypeAnnotation.message = data.message;
-          this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', "deny").subscribe(() => {
+          this.curationService.updateAnnotation(phenotypeAnnotation, 'phenotype', 'deny').subscribe(() => {
             this.onSuccessfulPhenotype('Phenotype Annotation Rejected!', true);
           }, (err) => {
             this.onErrorPhenotype(err.error);
@@ -396,15 +401,15 @@ export class PhenotypeCurationComponent implements OnInit {
    * Elevated curator making changes to an annotation under_review
    */
   toggleAnnotationChanges(shouldShow: boolean){
-    if(shouldShow){
+    if (shouldShow){
       this.elevatedChanges = true;
       this.formControlGroup.enable();
-      this.elevatedButtonText.approve.display = "Save & Accept";
+      this.elevatedButtonText.approve.display = 'Save & Accept';
       this.elevatedButtonText.changes.show = false;
     } else {
       this.elevatedChanges = false;
       this.formControlGroup.disable();
-      this.elevatedButtonText.approve.display = "Approve";
+      this.elevatedButtonText.approve.display = 'Approve';
       this.elevatedButtonText.changes.show = true;
     }
   }
