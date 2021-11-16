@@ -2,7 +2,7 @@
   <mat-toolbar class="mat-elevation-z2 navbar" color="primary">
     <mat-toolbar-row>
       <div class="brand" routerLink="/">
-        <img class="icon" src="assets/poet-logo_white-icon-only.png"/>
+        <img matTooltip="Homepage" matTooltipShowDelay="775" class="icon" src="assets/poet-logo_white-icon-only.png"/>
       </div>
       <button mat-button *ngIf="auth.isAuthenticated$ | async" [routerLink]="['/dashboard']">Dashboard</button>
       <button mat-button [routerLink]="['/resources']">Resources</button>

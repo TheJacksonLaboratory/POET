@@ -40,6 +40,10 @@
       font-size: 1rem;
       text-transform: capitalize;
     }
+
+    & .mat-list-icon {
+      cursor: default;
+    }
   }
 
   & .phenotype-list {

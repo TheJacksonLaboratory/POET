@@ -4,27 +4,27 @@ import {
   TreatmentAnnotation,
   Publication,
   PhenotypeAnnotation, Annotation,
-} from "../../../shared/models/models";
-import { StateService } from "../../../shared/services/state/state.service";
-import { CurationService } from "../../../shared/services/curation/curation.service";
-import { Observable } from "rxjs";
-import { transition, trigger, useAnimation } from "@angular/animations";
-import { bounceInLeft } from "ng-animate";
-import { MatSnackBar } from "@angular/material/snack-bar";
+} from '../../../shared/models/models';
+import { StateService } from '../../../shared/services/state/state.service';
+import { CurationService } from '../../../shared/services/curation/curation.service';
+import { Observable } from 'rxjs';
+import { transition, trigger, useAnimation } from '@angular/animations';
+import { bounceInLeft } from 'ng-animate';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { MatPaginator, PageEvent } from "@angular/material/paginator";
-import { MatBottomSheet } from "@angular/material/bottom-sheet";
-import { ConfirmSheetComponent } from "./confirm-sheet/confirm-sheet.component";
-import { UtilityService } from "../../../shared/services/utility.service";
-import { tap } from "rxjs/operators";
-import {UserService} from "../../../shared/services/user/user.service";
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { ConfirmSheetComponent } from './confirm-sheet/confirm-sheet.component';
+import { UtilityService } from '../../../shared/services/utility.service';
+import { tap } from 'rxjs/operators';
+import {UserService} from '../../../shared/services/user/user.service';
 
 @Component({
   selector: 'poet-annotation-card',
   templateUrl: './annotation-card.component.html',
   styleUrls: ['./annotation-card.component.scss'],
   animations: [
-    trigger('bounceInLeft', [transition("0 => 1", useAnimation(bounceInLeft, {
+    trigger('bounceInLeft', [transition('0 => 1', useAnimation(bounceInLeft, {
       params: {timing: .5}
     }))])
   ]
@@ -33,9 +33,9 @@ export class AnnotationCardComponent implements OnInit {
 
   @Output('openForm') openAnnotationForm: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Input('user') user: any;
-  @Input('formOpen') formOpen: boolean = false;
+  @Input('formOpen') formOpen = false;
   @ViewChild('phenotypePaginator') phenotypePagination: MatPaginator;
-  @ViewChild('treatmentPaginator') treatmentPagination:MatPaginator;
+  @ViewChild('treatmentPaginator') treatmentPagination: MatPaginator;
   disease: Disease;
   publication: Publication;
   category: string;
@@ -46,12 +46,12 @@ export class AnnotationCardComponent implements OnInit {
   activeAnnotation: any;
   annotationStatuses: any[] = [];
   selectedStatuses: any[] = [];
-  lowValue: number = 0;
-  highValue: number = 10;
+  lowValue = 0;
+  highValue = 10;
   filteredAnnotationLength = { count: 0 };
-  showAll: boolean = false;
-  selectedSort: string = 'recent';
-  loadingAnnotations: boolean = true;
+  showAll = false;
+  selectedSort = 'recent';
+  loadingAnnotations = true;
 
 
   constructor(public stateService: StateService, public curationService: CurationService, public utilityService: UtilityService,
@@ -63,7 +63,7 @@ export class AnnotationCardComponent implements OnInit {
 
     this.phenotypeAnnotations = this.stateService.phenotypeAnnotations.pipe(
       tap(annotations => {
-        if(this.category == "phenotype" && annotations.length > 0){
+        if (this.category === 'phenotype' && annotations.length > 0){
           this.annotationStatuses = [];
           const statuses = annotations.map((annotation) => {
             return annotation.status;
@@ -78,7 +78,7 @@ export class AnnotationCardComponent implements OnInit {
 
     this.treatmentAnnotations = this.stateService.treatmentAnnotations.pipe(
       tap(annotations => {
-        if(this.category == "treatment" && annotations.length > 0){
+        if (this.category === 'treatment' && annotations.length > 0){
           this.annotationStatuses = [];
           const statuses = annotations.map((annotation) => {
             return annotation.status;
@@ -106,23 +106,27 @@ export class AnnotationCardComponent implements OnInit {
     });
 
     this.stateService.selectedPhenotypeAnnotation.subscribe((annotation) => {
-      if(!annotation){
+      if (annotation){
+        this.activeAnnotation = annotation;
+      } else {
         this.activeAnnotation = null;
       }
     });
 
     this.stateService.selectedTreatmentAnnotation.subscribe((annotation) => {
-      if(!annotation){
-        this.activeAnnotation = null;
+      if (annotation){
+        this.activeAnnotation = annotation;
+      } else {
+        this .activeAnnotation = null;
       }
     });
   }
 
   categoryToDisplay() {
-    if (this.category == 'treatment') {
-      return "Treatments";
-    } else if (this.category == 'phenotype') {
-      return "Phenotypes";
+    if (this.category === 'treatment') {
+      return 'Treatments';
+    } else if (this.category === 'phenotype') {
+      return 'Phenotypes';
     }
   }
 
@@ -140,7 +144,7 @@ export class AnnotationCardComponent implements OnInit {
           restoreFocus: false,
           disableClose: true
         }).afterDismissed().subscribe(shouldDelete => {
-          if(shouldDelete){
+          if (shouldDelete){
             this.curationService.deleteAnnotation(annotation.id, this.category).subscribe(() => {
               this._snackBar.open('Annotation Deleted!', 'Close', {
                 duration: 3000,
@@ -172,7 +176,7 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   resetPaginator(){
-    if(this.category == 'phenotype'){
+    if (this.category === 'phenotype'){
       this.lowValue = 0;
       this.highValue = 10;
       this.phenotypePagination.pageIndex = 0;
@@ -212,8 +216,24 @@ export class AnnotationCardComponent implements OnInit {
 
   createTreatmentForPhenotype(phenotype: PhenotypeAnnotation){
     this.stateService.setSelectedPhenotypeAnnotation(phenotype);
-    this.stateService.setSelectedAnnotationMode("create");
+    this.stateService.setSelectedAnnotationMode('create');
     this.openAnnotationForm.emit(true);
     this.stateService.setSelectedCategory('treatment');
+  }
+
+  getStatusTooltipText(status){
+    if (status === 'ACCEPTED'){
+      return 'Annotation is accepted.';
+    } else if (status === 'UNDER_REVIEW'){
+      return 'Annotation is under review.';
+    } else if (status === 'OFFICIAL'){
+      return 'Annotation is official.';
+    } else if (status === 'NEEDS_WORK'){
+      return 'Annotation needs work.';
+    }
+  }
+
+  isActive(annotation){
+    return this.activeAnnotation === annotation;
   }
 }

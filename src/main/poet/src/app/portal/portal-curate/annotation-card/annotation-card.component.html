@@ -15,6 +15,7 @@
     <span *ngIf="category == 'phenotype'">A list of curated phenotypes of this disease</span><br><br>
   </mat-card-subtitle>
   <mat-card-content>
+    <!-- Filters -->
     <mat-progress-bar mode="buffer" *ngIf="loadingAnnotations"></mat-progress-bar>
     <div class="filter-wrapper" *ngIf="(category === 'phenotype' && (phenotypeAnnotations | async)?.length > 0) ||
                                         (category === 'treatment' && (treatmentAnnotations | async)?.length > 0)">
@@ -45,13 +46,14 @@
         <mat-checkbox [(ngModel)]="showAll" (change)="resetPaginator()"> Show Other Curators </mat-checkbox>
       </div>
     </div>
-
+    <!------>
     <mat-list *ngIf="category === 'treatment'">
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': treatment == activeAnnotation}"
                      *ngFor="let treatment of treatmentAnnotations | async | filter: selectedStatuses:user:showAll:filteredAnnotationLength | sortBy: selectedSort:category | slice:lowValue:highValue ">
         <mat-icon [class]="{'statusApproved': treatment.status === 'ACCEPTED', 'statusReview': treatment.status === 'UNDER_REVIEW',
-                      'statusOfficial': treatment.status === 'OFFICIAL', 'statusNeedsWork': treatment.status === 'NEEDS_WORK'}" matListIcon>health_and_safety</mat-icon>
+                      'statusOfficial': treatment.status === 'OFFICIAL', 'statusNeedsWork': treatment.status === 'NEEDS_WORK'}"
+                  [matTooltip]="getStatusTooltipText(treatment.status) " matTooltipShowDelay="775" matListIcon>health_and_safety</mat-icon>
         <div class="selection-text">
           <span matLine>
             <strong>{{treatment.maxoName}}</strong> {{treatment.relation}} <strong>{{treatment.hpoName}}</strong>
@@ -110,10 +112,11 @@
     </mat-list>
     <mat-list *ngIf="category === 'phenotype'" class="phenotype-list">
       <mat-list-item class="selection-wrapper mat-elevation-z3"
-                     [ngClass]="{'active': phenotype == activeAnnotation}"
-                     *ngFor="let phenotype of phenotypeAnnotations | async | filter: selectedStatuses:user:showAll:filteredAnnotationLength | sortBy: selectedSort:category | slice:lowValue:highValue ">
+                     *ngFor="let phenotype of phenotypeAnnotations | async | filter: selectedStatuses:user:showAll:filteredAnnotationLength | sortBy: selectedSort:category | slice:lowValue:highValue "
+                     [ngClass]="{'active': isActive(phenotype)}">
         <mat-icon matListIcon [class]="{'statusApproved': phenotype.status === 'ACCEPTED', 'statusReview': phenotype.status === 'UNDER_REVIEW',
-                      'statusOfficial': phenotype.status === 'OFFICIAL', 'statusNeedsWork': phenotype.status === 'NEEDS_WORK'}">attribution</mat-icon>
+                      'statusOfficial': phenotype.status === 'OFFICIAL', 'statusNeedsWork': phenotype.status === 'NEEDS_WORK'}"
+                  [matTooltip]="getStatusTooltipText(phenotype.status) " matTooltipShowDelay="775">attribution</mat-icon>
         <div matLine class="selection-text" *ngIf="formOpen">
           <strong>{{phenotype.hpoName}}</strong>
           <span class="selection-id">
