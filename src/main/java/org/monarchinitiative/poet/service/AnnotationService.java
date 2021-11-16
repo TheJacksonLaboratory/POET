@@ -29,24 +29,19 @@ import java.util.stream.Collectors;
 @Service
 public class AnnotationService {
 
-    private PublicationRepository publicationRepository;
     private DiseaseRepository diseaseRepository;
-    private AnnotationSourceRepository annotationSourceRepository;
     private TreatmentAnnotationRepository treatmentAnnotationRepository;
     private UserActivityRepository userActivityRespository;
     private PhenotypeAnnotationRepository phenotypeAnnotationRepository;
     private MessageRepository messageRepository;
     private EntityService entityService;
 
-    public AnnotationService(PublicationRepository publicationRepository,
-                             DiseaseRepository diseaseRepository, AnnotationSourceRepository annotationSourceRepository,
+    public AnnotationService(DiseaseRepository diseaseRepository,
                              TreatmentAnnotationRepository treatmentAnnotationRepository,
                              UserActivityRepository userActivityRepository,
                              PhenotypeAnnotationRepository phenotypeAnnotationRepository,
                              MessageRepository messageRepository, EntityService entityService) {
-        this.publicationRepository = publicationRepository;
         this.diseaseRepository = diseaseRepository;
-        this.annotationSourceRepository = annotationSourceRepository;
         this.treatmentAnnotationRepository = treatmentAnnotationRepository;
         this.userActivityRespository = userActivityRepository;
         this.phenotypeAnnotationRepository = phenotypeAnnotationRepository;
@@ -99,10 +94,10 @@ public class AnnotationService {
             }
             final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, annotationSource,
                     status, user);
-            if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndQualifierAndStatusNot(
+            if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndQualifierAndStatusNotAndStatusNot(
                     annotation.getAnnotationSource(), annotation.getHpoId(), annotation.getSex(),
                     annotation.getEvidence(), annotation.getOnset(), annotation.getFrequency(), annotation.getQualifier(),
-                    annotation.getModifier(), AnnotationStatus.RETIRED)){
+                    annotation.getModifier(), AnnotationStatus.RETIRED, AnnotationStatus.OFFICIAL)){
                 throw new DuplicateAnnotationException("phenotype", annotation.getAnnotationSource().getDisease().getDiseaseName());
             }
             phenotypeAnnotationRepository.save(annotation);
@@ -260,7 +255,7 @@ public class AnnotationService {
             final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, annotationSource, status, user);
             // Check if we have a duplicate annotation, if so throw an error
             // See if we already have an annotation like this.
-            if(treatmentAnnotationExists(annotation, AnnotationStatus.RETIRED)){
+            if(treatmentAnnotationExists(annotation, AnnotationStatus.RETIRED, AnnotationStatus.OFFICIAL)){
                 throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseName());
             }
             treatmentAnnotationRepository.save(annotation);
@@ -322,7 +317,7 @@ public class AnnotationService {
                     // Build the new annotation, do a check for duplicated data 
                     final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, oldAnnotation.getAnnotationSource(),
                     AnnotationStatus.ACCEPTED, oldAnnotation.getOwner());
-                    if(treatmentAnnotationExists(annotation, null)){
+                    if(treatmentAnnotationExists(annotation, null, null)){
                             throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseId());
                     }
                     // Save the new annotation as accepted, retire the current under review one
@@ -346,7 +341,7 @@ public class AnnotationService {
                             treatmentRequest.getComment(), treatmentRequest.getRelation(), treatmentRequest.getExtensionId(), treatmentRequest.getExtensionLabel());
 
                     // See if we already have an annotation that exists from the one we are trying to update to.
-                    if (treatmentAnnotationExists(annotation, AnnotationStatus.RETIRED)) {
+                    if (treatmentAnnotationExists(annotation, AnnotationStatus.RETIRED, null)) {
                         throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseName());
                     }
                     oldAnnotation.setStatus(AnnotationStatus.RETIRED);
@@ -385,9 +380,13 @@ public class AnnotationService {
         return false;
     }
 
-    public boolean treatmentAnnotationExists(TreatmentAnnotation treatmentAnnotation, AnnotationStatus status){
-        if(status != null){
+    public boolean treatmentAnnotationExists(TreatmentAnnotation treatmentAnnotation, AnnotationStatus status, AnnotationStatus status2){
+        if(status != null && status2 != null){
             // Negative test against a specific status
+            return treatmentAnnotationRepository.existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNotAndStatusNot(
+                    treatmentAnnotation.getAnnotationSource(), treatmentAnnotation.getMaxoId(), treatmentAnnotation.getHpoId(), treatmentAnnotation.getExtensionId(),
+                    treatmentAnnotation.getEvidence(), treatmentAnnotation.getRelation(), status, status2);
+        } else if(status != null){
             return treatmentAnnotationRepository.existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
                     treatmentAnnotation.getAnnotationSource(), treatmentAnnotation.getMaxoId(), treatmentAnnotation.getHpoId(), treatmentAnnotation.getExtensionId(),
                     treatmentAnnotation.getEvidence(), treatmentAnnotation.getRelation(), status);
