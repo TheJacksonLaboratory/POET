@@ -93,7 +93,9 @@ export class PhenotypeCurationComponent implements OnInit {
         this.resetPhenotypeForm();
       } else {
         this.selectedAnnotation = annotation;
-        this.selectedAnnotation.lastUpdatedDate = new Date(this.selectedAnnotation.lastUpdatedDate + 'Z').toLocaleString();
+        if(this.selectedAnnotation.lastUpdatedDate.includes('T')){
+          this.selectedAnnotation.lastUpdatedDate = new Date(this.selectedAnnotation.lastUpdatedDate + 'Z').toLocaleString();
+        }
         this.setFormValues(annotation);
       }
     });
