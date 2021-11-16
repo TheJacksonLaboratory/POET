@@ -133,6 +133,9 @@
           <mat-hint *ngIf="formControlGroup.get('extensionFormControl').hasError('apiError') && !formControlGroup.disabled">
             <span class="mat-error">The connection for this data is broken, please contact us!</span>
           </mat-hint>
+          <mat-error>
+            Not a valid CHEBI.
+          </mat-error>
           <input matInput placeholder="..." formControlName="extensionFormControl" ngDefaultControl
                  [matAutocomplete]="extensionAuto">
           <button mat-button *ngIf="formControlGroup.get('extensionFormControl').value != null && !formControlGroup.disabled"

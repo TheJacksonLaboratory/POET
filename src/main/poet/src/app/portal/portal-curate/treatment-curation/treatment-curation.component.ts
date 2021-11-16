@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { HpoService } from '../../../shared/services/external/hpo.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {catchError, debounceTime, distinctUntilChanged, finalize, map, startWith, take} from 'rxjs/operators';
 import { HpoTerm, MaxoSearchResult, MaxoTerm } from '../../../shared/models/search-models';
 import { AnnotationSource, Publication, TreatmentAnnotation } from '../../../shared/models/models';
@@ -47,7 +47,7 @@ export class TreatmentCurationComponent implements OnInit {
     hpoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     evidenceFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     relationFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    extensionFormControl: new FormControl({value: '', disabled: false}),
+    extensionFormControl: new FormControl({value: '', disabled: false}, this.extensionValidation()),
     commentFormControl: new FormControl({value: '', disabled: false}, Validators.maxLength(50)),
   });
 
@@ -334,6 +334,16 @@ export class TreatmentCurationComponent implements OnInit {
       this.elevatedButtonText.approve.display = 'Approve';
       this.elevatedButtonText.changes.show = true;
     }
-
   }
+
+  extensionValidation(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if ((control.value && typeof control.value === 'object') || (control.value === null || control.value === '')) {
+        return null;
+      } else {
+        return {notValid: {value: 'Please select a valid chebi extension'}};
+      }
+    };
+  }
+
 }
