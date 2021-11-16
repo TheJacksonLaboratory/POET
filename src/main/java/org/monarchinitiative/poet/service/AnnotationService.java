@@ -170,12 +170,13 @@ public class AnnotationService {
             }
         } else if(user.equals(owner)){
             // Resubmitting after needs work
-            if(oldAnnotation.getStatus().equals(AnnotationStatus.NEEDS_WORK)){
+            if(oldAnnotation.getStatus().equals(AnnotationStatus.NEEDS_WORK) || oldAnnotation.getStatus().equals(AnnotationStatus.UNDER_REVIEW)){
                 oldAnnotation.setStatus(AnnotationStatus.UNDER_REVIEW);
+                oldAnnotation.updateAnnotation(phenotypeRequest);
                 phenotypeAnnotationRepository.save(oldAnnotation);
                 updateUserActivity(user, null, CurationAction.RESUBMIT, oldAnnotation, null);
             // Updating their own annotations that are accepted or under review
-            } else if(oldAnnotation.getStatus().equals(AnnotationStatus.ACCEPTED) || oldAnnotation.getStatus().equals(AnnotationStatus.UNDER_REVIEW)) {
+            } else if(oldAnnotation.getStatus().equals(AnnotationStatus.ACCEPTED)) {
                 final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, oldAnnotation.getAnnotationSource(),
                         AnnotationStatus.UNDER_REVIEW, oldAnnotation.getOwner());
                 if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndQualifierAndStatusNotAndIdNot(
@@ -332,12 +333,13 @@ public class AnnotationService {
                 }
             } else if(user.equals(owner)){
                 // Resubmitting after needs work
-                if(oldAnnotation.getStatus().equals(AnnotationStatus.NEEDS_WORK)){
+                if(oldAnnotation.getStatus().equals(AnnotationStatus.NEEDS_WORK) || oldAnnotation.getStatus().equals(AnnotationStatus.UNDER_REVIEW)){
                     oldAnnotation.setStatus(AnnotationStatus.UNDER_REVIEW);
+                    oldAnnotation.updateAnnotation(treatmentRequest);
                     treatmentAnnotationRepository.save(oldAnnotation);
                     updateUserActivity(user,null, CurationAction.RESUBMIT, oldAnnotation, null);
                 // Updating their own annotations that are accepted or under review
-                } else if(oldAnnotation.getStatus().equals(AnnotationStatus.ACCEPTED) || oldAnnotation.getStatus().equals(AnnotationStatus.UNDER_REVIEW)){
+                } else if(oldAnnotation.getStatus().equals(AnnotationStatus.ACCEPTED)){
                     final TreatmentAnnotation annotation = new TreatmentAnnotation(oldAnnotation.getAnnotationSource(),
                             AnnotationStatus.UNDER_REVIEW, oldAnnotation.getOwner(), treatmentRequest.getMaxoId(), treatmentRequest.getMaxoName(),
                             treatmentRequest.getHpoName(), treatmentRequest.getHpoId(), treatmentRequest.getEvidence(),
