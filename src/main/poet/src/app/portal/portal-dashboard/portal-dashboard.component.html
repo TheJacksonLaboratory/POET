@@ -20,7 +20,7 @@
                 <p>{{recent.view}}</p>
               </mat-list-item>
             </mat-list>
-            <mat-progress-bar *ngIf="loading"></mat-progress-bar>
+            <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
             <p class="no-activity" *ngIf="recentActivity?.length == 0">No Recent Activity.</p>
             <mat-paginator *ngIf="recentActivity?.length > 0" [length]="recentActivity?.length" pageSize="5"
                            (page)="getPaginatorData($event)"
@@ -42,8 +42,8 @@
                 <button mat-stroked-button (click)="navigateToDisease(review.diseaseId, review.type)">View</button>
               </mat-list-item>
             </mat-list>
-            <mat-progress-bar *ngIf="loading"></mat-progress-bar>
-            <p class="no-activity" *ngIf="reviews?.length == 0">You are all caught up on annotations that need a review!</p>
+            <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+            <p class="no-activity" *ngIf="reviews?.length == 0  && !loading">You are all caught up on annotations that need a review!</p>
           </mat-card-content>
         </mat-card>
       </div>
@@ -60,7 +60,7 @@
                   <button mat-stroked-button (click)="navigateToDisease(annotation.diseaseId, annotation.type)">View</button>
                 </mat-list-item>
               </mat-list>
-            <mat-progress-bar *ngIf="loading"></mat-progress-bar>
+            <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
             <p class="no-activity" *ngIf="userAnnotations?.length == 0 && !loading">You have no annotations that need work!</p>
           </mat-card-content>
         </mat-card>
