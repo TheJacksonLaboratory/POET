@@ -22,7 +22,6 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatMenuModule } from "@angular/material/menu";
-import { NgxChartsModule } from "@swimlane/ngx-charts";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { FlexLayoutModule } from "@angular/flex-layout";
@@ -60,7 +59,6 @@ import { MatExpansionModule } from "@angular/material/expansion";
     MatTabsModule,
     MatTooltipModule,
     MatMenuModule,
-    NgxChartsModule,
     MatPaginatorModule,
     MatCheckboxModule,
     MatTooltipModule,
@@ -95,7 +93,6 @@ import { MatExpansionModule } from "@angular/material/expansion";
         MatTabsModule,
         MatTooltipModule,
         MatMenuModule,
-        NgxChartsModule,
         MatPaginatorModule,
         MatCheckboxModule,
         MatTooltipModule,
