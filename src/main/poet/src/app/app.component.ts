@@ -25,7 +25,10 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
       this.auth.user$.subscribe((user) => {
-        this.isElevated = this.userService.isUserAdmin(user);
+        if (user) {
+          this.userService.checkUser();
+          this.isElevated = this.userService.isUserAdmin(user);
+        }
       });
   }
 
@@ -46,7 +49,7 @@ export class AppComponent implements OnInit {
   }
 
   loginWithRedirect(): void {
-    const target = '/portal/dashboard'
+    const target = '/portal/dashboard';
     const redirect_uri = window.location.origin + target;
     this.auth.loginWithRedirect(  {
       redirect_uri: redirect_uri,

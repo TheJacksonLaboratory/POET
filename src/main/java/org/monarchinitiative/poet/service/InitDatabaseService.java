@@ -75,7 +75,7 @@ public class InitDatabaseService {
 
             diseaseAnnotationMap.entrySet().forEach(entry -> {
                 Optional<String> diseaseNameOptional = entry.getValue().stream().map(
-                        line -> line.getDbObjectName().replaceAll("\\d{6}|^#\\d{6}|^\\d{6}|^\\+\\d{6}", "").trim().split(";")[0]).min(Comparator.comparingInt(String::length));
+                        line -> line.getDbObjectName().replaceAll("\\d{6}|^%\\d{6}|^#\\d{6}|^\\d{6}|^\\+\\d{6}", "").trim().split(";")[0]).min(Comparator.comparingInt(String::length));
                 final String diseaseId = entry.getKey().toString();
                 final Disease disease;
                 if(diseaseNameOptional.isPresent()){
