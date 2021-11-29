@@ -40,6 +40,10 @@
       font-size: 1rem;
       text-transform: capitalize;
     }
+
+    & .mat-list-icon {
+      cursor: default;
+    }
   }
 
   & .phenotype-list {
@@ -91,7 +95,7 @@
     margin-left: .5rem;
   }
 
-  .needs-review-btn {
+  .needs-review-btn, .needs-work-btn {
     color: white;
     height: 28px;
     line-height: 28px;

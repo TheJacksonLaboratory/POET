@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'org.monarchinitiative.poet'
-version = '0.8.7-SNAPSHOT'
+version = '0.8.9-SNAPSHOT'
 sourceCompatibility = '8'
 
 repositories {
@@ -85,8 +85,7 @@ clean {
 }
 
 bootWar.dependsOn {
-	if(System.getProperty("release") == "true"){
-		profile = "production"
+	if(System.getProperty('spring.profiles.active') == "production"){
 		buildClientProdEnv
 	} else {
 		buildClientTestEnv

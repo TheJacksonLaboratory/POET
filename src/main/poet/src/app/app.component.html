@@ -2,8 +2,9 @@
   <mat-toolbar class="mat-elevation-z2 navbar" color="primary">
     <mat-toolbar-row>
       <div class="brand" routerLink="/">
-        <img class="icon" src="assets/poet-logo_white-icon-only.png"/>
+        <img matTooltip="Homepage" matTooltipShowDelay="775" class="icon" src="assets/poet-logo_white-icon-only.png"/>
       </div>
+      <button mat-button *ngIf="auth.isAuthenticated$ | async" [routerLink]="['/dashboard']">Dashboard</button>
       <button mat-button [routerLink]="['/resources']">Resources</button>
       <div fxFlex class="toolbar-spacer"></div>
       <div class="nickname" *ngIf="auth.user$ | async as user;" [routerLink]="['/portal/dashboard']">
@@ -34,7 +35,7 @@
   <footer class="footer mat-elevation-z4">
     <div fxLayout="column" fxLayoutAlign="center">
       <div class="footer-row" fxLayout="row" fxLayoutAlign="center center">
-        <small><i>{{version}}</i></small>
+        <small><i>{{version}} - <a href="https://github.com/TheJacksonLaboratory/POET/issues/new">Report an issue</a></i></small>
       </div>
     </div>
   </footer>

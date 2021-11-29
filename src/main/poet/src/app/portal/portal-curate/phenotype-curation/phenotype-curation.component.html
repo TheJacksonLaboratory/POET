@@ -15,13 +15,13 @@
               (click)="utilityService.openMessagesDialog(this.selectedAnnotation.reviewMessages)">
       mark_chat_unread
     </mat-icon>
-    New Phenotype
+    {{title}}
     <mat-icon class="help-icon" (click)="closeForm()">cancel</mat-icon>
   </mat-card-title>
   <mat-card-subtitle>
     Human Phenotype Ontology [ HPO ]
     <p class="extra-information" *ngIf="selectedAnnotation?.owner.nickname">
-      {{selectedAnnotation.owner.nickname}} updated on {{selectedAnnotation.lastUpdatedDate | date: 'medium':"EST"}} </p>
+      {{selectedAnnotation.owner.nickname}} updated on {{selectedAnnotation.lastUpdatedDate}} </p>
   </mat-card-subtitle>
   <mat-card-content>
     <button mat-raised-button color="primary" (click)="selectPublication()"
@@ -57,7 +57,7 @@
           </mat-hint>
           <input matInput formControlName="hpoFormControl" ngDefaultControl
                  [matAutocomplete]="hpo" required>
-          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null" matSuffix mat-icon-button
+          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null && !formControlGroup.disabled" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
@@ -77,7 +77,7 @@
           <mat-checkbox aria-label="Is Qualified?" formControlName="qualifierFormControl"
                         [(ngModel)]="selectedQualifier">
             NOT CHARACTERIZED <span class="form-field-help-icon material-icons"
-                                    matTooltip="Checking this will negate the annotation for this disease."
+                                    matTooltip="Select if this phenotype is not observed in the disease."
                                     matTooltipPosition="below">
               help_outline
             </span>
@@ -127,7 +127,7 @@
         <mat-form-field appearance="fill">
           <mat-label>HPO Age Of Onset</mat-label>
           <mat-select formControlName="onsetFormControl">
-            <mat-option>Not Specified</mat-option>
+            <mat-option>Unset</mat-option>
             <mat-option *ngFor="let option of onsetOptions" [value]="option">
               <span class="option-name">{{option.name}}</span>
             </mat-option>
@@ -137,7 +137,7 @@
           <mat-label>HPO Frequency</mat-label>
           <input matInput placeholder="..." formControlName="frequencyFormControl" ngDefaultControl
                  [matAutocomplete]="frequency">
-          <button mat-button *ngIf="formControlGroup.get('frequencyFormControl').value != null" matSuffix mat-icon-button
+          <button mat-button *ngIf="formControlGroup.get('frequencyFormControl').value != null && !formControlGroup.disabled" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('frequencyFormControl').reset(); frequencyOptions = []; selectedFrequency = null ">
             <mat-icon>close</mat-icon>
           </button>
@@ -157,7 +157,7 @@
           <mat-label>Sex</mat-label>
           <mat-select formControlName="sexFormControl">
             <mat-option>
-              NOT SPECIFIED
+              UNSET
             </mat-option>
             <mat-option value="MALE">
               MALE
@@ -181,9 +181,9 @@
       <div class="form-content-section">
         <mat-form-field class="phenotype-form" appearance="fill">
           <mat-label>Additional Description</mat-label>
-          <input matInput type="text" formControlName="descriptionFormControl">
-          <mat-hint *ngIf="this.formControlGroup.get('descriptionFormControl').value?.length == 50">Maximum Characters Reached.</mat-hint>
-          <button mat-button *ngIf="formControlGroup.get('descriptionFormControl').value != ''" matSuffix mat-icon-button
+          <input matInput type="text" formControlName="descriptionFormControl" maxlength="50">
+          <mat-hint *ngIf="this.formControlGroup.get('descriptionFormControl').value?.length >= 50">Maximum Characters Reached.</mat-hint>
+          <button mat-button *ngIf="formControlGroup.get('descriptionFormControl').value != '' && !formControlGroup.disabled" matSuffix mat-icon-button
                   aria-label="Clear"
                   (click)="formControlGroup.get('descriptionFormControl').reset()">
             <mat-icon>close</mat-icon>
@@ -195,23 +195,28 @@
   <mat-card-actions>
     <div class="left-actions">
       <button class="approve-annotation" mat-raised-button aria-label="Approve Phenotype Annotation"
-              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="reviewAnnotation('approve')">
+              *ngIf="(utilityService.showElevatedActions(userRole, selectedAnnotation) && !elevatedChanges) ||
+              (elevatedChanges && !this.formControlGroup.pristine && this.formControlGroup.valid)" (click)="reviewAnnotation('approve')">
         {{elevatedButtonText.approve.display}}
       </button>
       <button class="deny-annotation" mat-raised-button aria-label="Deny Phenotype Annotation"
-              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="reviewAnnotation('deny')">
+              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && !elevatedChanges" (click)="reviewAnnotation('deny')">
         {{elevatedButtonText.deny.display}}
+      </button>
+      <button class="deny-annotation" mat-raised-button aria-label="Cancel Current Review"
+              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && elevatedChanges" (click)="toggleAnnotationChanges(false)">
+        Cancel
       </button>
       <button class="edit-annotation" mat-raised-button aria-label="Edit Phenotype Annotation"
               *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && elevatedButtonText.changes.show"
-              (click)="makeAnnotationChanges()">
+              (click)="toggleAnnotationChanges(true)">
         {{elevatedButtonText.changes.display}}
       </button>
       <button mat-raised-button color="primary" *ngIf="everythingValid() && !utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="submitForm()">SUBMIT</button>
       <mat-spinner color="accent" [diameter]="20" mode="indeterminate" *ngIf="savingAnnotation"></mat-spinner>
     </div>
     <div class="right-actions">
-      <button mat-stroked-button (click)="resetPhenotypeForm()" *ngIf="!formControlGroup.disabled">Clear</button>
+      <button mat-stroked-button (click)="resetPhenotypeForm()" *ngIf="!formControlGroup.disabled && !elevatedChanges">Clear</button>
     </div>
   </mat-card-actions>
 </mat-card>

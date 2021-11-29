@@ -44,7 +44,6 @@ export class PortalCurateComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       let id = params['id'];
-      let type = params['type'];
       if (id) {
         if (this.determineIdType(id) == 'disease') {
           this.doingWork(true);
@@ -60,9 +59,6 @@ export class PortalCurateComponent implements OnInit {
         }
       } else {
         this.router.navigate(['/portal/dashboard']);
-      }
-      if(type && this.stateService.isValidCategory(type)) {
-        this.stateService.setSelectedCategory(type);
       }
     });
 

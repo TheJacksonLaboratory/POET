@@ -182,8 +182,8 @@ export class CurationService {
           newData.category = activity.annotation["annotationType"].toUpperCase();
           newData.curationAction = activity.curationAction;
           newData.curator = activity.owner["nickname"];
-          newData.date = new Date(activity.localDateTime).toLocaleDateString();
-          newData.time = new Date(activity.localDateTime).toLocaleTimeString();
+          newData.date = new Date(activity.dateTime);
+          newData.time = new Date(activity.dateTime);
           newData.annotationId = activity.annotation.id;
           return newData;
         })
@@ -223,7 +223,7 @@ export class CurationService {
     let activities = [];
     let that = this;
     let dayMap = activityList.reduce(function (r, a) {
-      let date = new Date(a.localDateTime);
+      let date = new Date(Date.parse(a.dateTime + "Z"));
       const dayDifference = that.daysFromNow(date);
       r[dayDifference] = r[dayDifference] || [];
       r[dayDifference].push(a);
@@ -260,7 +260,7 @@ export class CurationService {
               // Group by hours from now
               dayMap[daysFromNow][diseaseJoined][user][type] = dayMap[daysFromNow][diseaseJoined][user][type].reduce((r, a) => {
                 // Group by hours from now
-                let date = new Date(a.localDateTime);
+                let date = new Date(Date.parse(a.dateTime + "Z"));
                 const hourDifference = that.hoursFromNow(date);
                 r[hourDifference] = r[hourDifference] || [];
                 r[hourDifference].push(a);
@@ -291,7 +291,8 @@ export class CurationService {
                     activities.push({
                       "view": view,
                       "diseaseId": diseaseId,
-                      "date": mostRecent
+                      "date": mostRecent,
+                      "type": type
                     });
                   });
 
@@ -308,7 +309,8 @@ export class CurationService {
                   activities.push({
                     "view": view,
                     "diseaseId": diseaseId,
-                    "date": mostRecent
+                    "date": mostRecent,
+                    "type": type
                   });
                 }
               });
@@ -333,7 +335,8 @@ export class CurationService {
           activities.push({
             "view": view,
             "diseaseId": diseaseId,
-            "date": mostRecent
+            "date": mostRecent,
+            "type": "phenotype"
           });
         }
       });
@@ -343,7 +346,7 @@ export class CurationService {
 
   private getMostRecentDate(annotations) {
     let dates = annotations.map(a => {
-      return new Date(a.localDateTime);
+      return new Date(a.dateTime + "Z");
     });
     return new Date(Math.max(...dates));
   }
@@ -353,18 +356,18 @@ export class CurationService {
   }
 
   private daysFromNow(dateToCheck: Date): number {
-    const today = new Date();
-    return Math.round((today.getTime() - dateToCheck.getTime()) / (24 * 3600 * 1000));
+    const today = Date.now();
+    return Math.round((today - dateToCheck.getTime()) / (24 * 3600 * 1000));
   }
 
   private hoursFromNow(dateToCheck): number {
-    const now = new Date();
-    return Math.round((now.getTime() - dateToCheck.getTime()) / (1000 * 60 * 60))
+    const now = Date.now();
+    return Math.round((now - dateToCheck.getTime()) / (1000 * 60 * 60))
   }
 
   private minutesFromNow(dateToCheck): number {
-    const now = new Date();
-    return Math.round((now.getTime() - dateToCheck.getTime()) / (1000 * 60))
+    const now = Date.now();
+    return Math.round((now - dateToCheck.getTime()) / (1000 * 60))
   }
 
   private actionLookup(action): string {

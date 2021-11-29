@@ -59,7 +59,7 @@ export interface TreatmentAnnotation extends Annotation {
 export interface UserActivityResponse {
   annotation: any;
   curationAction: string;
-  localDateTime: string;
+  dateTime: string;
   owner: object;
 }
 

@@ -47,7 +47,7 @@ class ServiceTestConfig {
     }
 
     @Bean
-    PhenotypeAnnotationRepository  phenotypeAnnotationStub(){
+    PhenotypeAnnotationRepository phenotypeAnnotationStub(){
         return mockFactory.Stub(PhenotypeAnnotationRepository)
     }
 
@@ -63,8 +63,7 @@ class ServiceTestConfig {
 
     @Bean
     AnnotationService annotationService(){
-        AnnotationService annotationService = new AnnotationService(
-                publicationStub(), diseaseStub(), annotationSourceStub(),
+        AnnotationService annotationService = new AnnotationService(diseaseStub(),
                 treatmentAnnotationStub(), userActivityStub(), phenotypeAnnotationStub(),
                 messageRepositoryStub(), entityService())
         return annotationService

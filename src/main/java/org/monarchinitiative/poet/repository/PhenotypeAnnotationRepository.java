@@ -1,9 +1,6 @@
 package org.monarchinitiative.poet.repository;
 
-import org.monarchinitiative.poet.model.entities.AnnotationSource;
-import org.monarchinitiative.poet.model.entities.Disease;
-import org.monarchinitiative.poet.model.entities.PhenotypeAnnotation;
-import org.monarchinitiative.poet.model.entities.User;
+import org.monarchinitiative.poet.model.entities.*;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.model.responses.ReviewCount;
 import org.springframework.data.jpa.repository.Query;
@@ -17,9 +14,10 @@ public interface PhenotypeAnnotationRepository extends CrudRepository<PhenotypeA
     List<PhenotypeAnnotation> findAllByOwnerAndStatus(User owner, AnnotationStatus status);
     List<PhenotypeAnnotation> findAllByStatus(AnnotationStatus status);
     PhenotypeAnnotation findDistinctById(long id);
-    boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifier(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String frequency, String modifier);
-    boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndStatusNot(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String frequency, String modifier, AnnotationStatus status);
-    boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndStatus(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String frequency, String modifier, AnnotationStatus status);
+    boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndQualifierAndStatusNotAndIdNot(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String frequency, String modifier, String qualifier, AnnotationStatus status, long id);
+    boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndQualifierAndStatusNot(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String frequency, String modifier, String qualifier, AnnotationStatus status);
+    boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndQualifierAndStatusNotAndStatusNot(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String frequency, String modifier, String qualifier, AnnotationStatus status, AnnotationStatus status2);
+    boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndQualifierAndStatus(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String frequency, String modifier, String qualifier, AnnotationStatus status);
     int countAllByAnnotationSourceDiseaseAndStatusNot(Disease disease, AnnotationStatus status);
     int countAllByStatusNot(AnnotationStatus status);
     @Query("select new org.monarchinitiative.poet.model.responses.ReviewCount(a.annotationSource.disease, count(a), 'phenotype') from PhenotypeAnnotation a where a.status = ?1 group by a.annotationSource.disease")

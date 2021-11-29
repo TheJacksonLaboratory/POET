@@ -54,7 +54,7 @@ Test Environment Internal Only
 
 Production Environment Deployment
 `
-    ./gradlew bootWar --args="--release=true"
+    ./gradlew bootWar  -Dspring.profiles.active=production
 `
 
 

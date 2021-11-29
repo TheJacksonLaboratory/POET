@@ -22,16 +22,22 @@ export class HomeComponent implements OnInit {
   bounceInLeft; any;
   supported: HomeIcon[] =  [
     {
-      imageSrc: "assets/hpo_logo_stacked-white.svg",
-      name: "Human Phenotype Ontology",
-      dateAdded: "10/07/2020",
-      link: "https://hpo.jax.org"
+      imageSrc: 'assets/HPO-logo-white.svg',
+      name: 'Human Phenotype Ontology',
+      dateAdded: '10/07/2020',
+      link: 'https://hpo.jax.org'
     },
     {
-      imageSrc: "assets/maxo_logo_stacked-white.svg",
-      name: "Medical Action Ontology",
-      dateAdded: "10/07/2020",
-      link: "https://github.com/monarch-initiative/MAxO"
+      imageSrc: 'assets/maxo_logo_white-banner.svg',
+      name: 'Medical Action Ontology',
+      dateAdded: '10/07/2020',
+      link: 'https://github.com/monarch-initiative/MAxO'
+    },
+    {
+      imageSrc: 'assets/mondo_logo_white-banner.svg',
+      name: 'Mondo Disease Ontology',
+      dateAdded: '10/07/2020',
+      link: 'https://github.com/monarch-initiative/mondo'
     }
   ];
   user: any;

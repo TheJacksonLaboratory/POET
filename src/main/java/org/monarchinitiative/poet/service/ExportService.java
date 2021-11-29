@@ -76,7 +76,7 @@ public class ExportService {
         for(TreatmentAnnotation annotation: treatmentAnnotations) {
             annotation.setStatus(AnnotationStatus.OFFICIAL);
             // If not, change annotation to official status, tag with release
-            if (!annotationService.treatmentAnnotationExists(annotation, null)) {
+            if (!annotationService.treatmentAnnotationExists(annotation, null, null)) {
                 annotation.setVersion(version);
                 treatmentAnnotationRepository.save(annotation);
                 // TODO: Add useractivity update

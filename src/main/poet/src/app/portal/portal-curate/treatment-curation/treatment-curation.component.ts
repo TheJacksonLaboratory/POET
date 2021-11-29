@@ -1,18 +1,18 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import { HpoService } from "../../../shared/services/external/hpo.service";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import {catchError, debounceTime, distinctUntilChanged, finalize, map, startWith, take} from "rxjs/operators";
-import { HpoTerm, MaxoSearchResult, MaxoTerm } from "../../../shared/models/search-models";
-import { AnnotationSource, Publication, TreatmentAnnotation } from "../../../shared/models/models";
-import { CurationService } from "../../../shared/services/curation/curation.service";
-import { StateService } from "../../../shared/services/state/state.service";
-import { MatDialog } from "@angular/material/dialog";
-import { DialogSourceComponent } from "../dialog-source/dialog-source.component";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { MonarchService } from "../../../shared/services/external/monarch.service";
-import { DialogReviewComponent } from "../dialog-review/dialog-review.component";
-import { UtilityService } from "../../../shared/services/utility.service";
-import {Observable} from "rxjs";
+import { HpoService } from '../../../shared/services/external/hpo.service';
+import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {catchError, debounceTime, distinctUntilChanged, finalize, map, startWith, take} from 'rxjs/operators';
+import { HpoTerm, MaxoSearchResult, MaxoTerm } from '../../../shared/models/search-models';
+import { AnnotationSource, Publication, TreatmentAnnotation } from '../../../shared/models/models';
+import { CurationService } from '../../../shared/services/curation/curation.service';
+import { StateService } from '../../../shared/services/state/state.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogSourceComponent } from '../dialog-source/dialog-source.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MonarchService } from '../../../shared/services/external/monarch.service';
+import { DialogReviewComponent } from '../dialog-review/dialog-review.component';
+import { UtilityService } from '../../../shared/services/utility.service';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'poet-treatment-curation',
@@ -34,19 +34,20 @@ export class TreatmentCurationComponent implements OnInit {
   hpoOptions: Observable<{ name: string; id: string }[]>;
   chebiOptions: any;
   selectedPublications: Publication[] = [];
-  loadingHpoSuggestions: boolean = false;
-  loadingMaxoSuggestions: boolean = false;
-  loadingExtensionSuggestions: boolean = false;
-  elevatedButtonText = {approve: {display: "Approve", show: true}, deny: {display: "Deny", show: true}, changes: {display: "Make changes", show: true}};
-  elevatedChanges: boolean = false;
+  loadingHpoSuggestions = false;
+  loadingMaxoSuggestions = false;
+  loadingExtensionSuggestions = false;
+  elevatedButtonText = {approve: {display: 'Approve', show: true}, deny: {display: 'Deny', show: true}, changes: {display: 'Make changes', show: true}};
+  elevatedChanges = false;
+  title = 'Treatment';
 
-  savingAnnotation: boolean = false;
+  savingAnnotation = false;
   formControlGroup: FormGroup = new FormGroup({
     maxoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     hpoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     evidenceFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     relationFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    extensionFormControl: new FormControl({value: '', disabled: false}),
+    extensionFormControl: new FormControl({value: '', disabled: false}, this.extensionValidation()),
     commentFormControl: new FormControl({value: '', disabled: false}, Validators.maxLength(50)),
   });
 
@@ -63,7 +64,7 @@ export class TreatmentCurationComponent implements OnInit {
 
     this.stateService.selectedAnnotationSource.subscribe(source => {
       if (source?.publication) {
-        const id = source.publication.publicationId.split(":")[1];
+        const id = source.publication.publicationId.split(':')[1];
         source.publication.url = `https://pubmed.ncbi.nlm.nih.gov/${id}/`;
         this.selectedPublications = [source.publication];
       }
@@ -75,30 +76,37 @@ export class TreatmentCurationComponent implements OnInit {
         this.resetTreatmentForm();
       } else {
         this.selectedAnnotation = annotation;
+        if (this.selectedAnnotation.lastUpdatedDate.includes('T')){
+          this.selectedAnnotation.lastUpdatedDate = new Date(this.selectedAnnotation.lastUpdatedDate + 'Z').toLocaleString();
+        }
         this.setFormValues(annotation);
       }
     });
 
     this.stateService.selectedPhenotypeAnnotation.subscribe((annotation) => {
-      if(annotation){
+      if (annotation){
         const preselect = {id: annotation.hpoId, name: annotation.hpoName};
-        this.selectedHpo = preselect
+        this.selectedHpo = preselect;
         this.formControlGroup.get('hpoFormControl').setValue(preselect);
       }
     });
 
     this.stateService.selectedAnnotationMode.subscribe((mode) => {
-      if (mode == 'view') {
+      if (mode === 'view') {
         this.formControlGroup.disable();
-      } else if (mode == 'edit') {
+        this.title = 'Treatment';
+        return;
+      } else if (mode === 'edit') {
         this.updating = true;
         this.formControlGroup.enable();
-      } else {
-        this.formControlGroup.enable();
+        this.title = 'Treatment';
+      } else if (mode === 'create') {
+        this.title = 'New Treatment';
       }
+      this.formControlGroup.enable();
     });
 
-    this.formControlGroup.get("maxoFormControl").valueChanges
+    this.formControlGroup.get('maxoFormControl').valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
         if (query && query.length >= 3 && !this.formControlGroup.disabled) {
@@ -107,31 +115,31 @@ export class TreatmentCurationComponent implements OnInit {
           this.hpoService.searchMaxoTerms(query).pipe(
             finalize(() => this.loadingMaxoSuggestions = false)).subscribe((data) => {
             if (!data || data.length == 0) {
-              this.formControlGroup.get("maxoFormControl").setErrors({notFound: true});
+              this.formControlGroup.get('maxoFormControl').setErrors({notFound: true});
             }
             this.maxoOptions = data;
           }, (err) => {
-            this.formControlGroup.get("maxoFormControl").setErrors({apiError: true});
-          })
+            this.formControlGroup.get('maxoFormControl').setErrors({apiError: true});
+          });
         }});
 
-    this.formControlGroup.get("hpoFormControl").valueChanges
+    this.formControlGroup.get('hpoFormControl').valueChanges
       .pipe(startWith(''), debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
-        if (!this.formControlGroup.disabled && !query?.hasOwnProperty("id")) {
+        if (!this.formControlGroup.disabled && !query?.hasOwnProperty('id')) {
           this.loadingHpoSuggestions = true;
           // Get phenotypes to display in select box for treatments.
           this.hpoOptions = this.stateService.phenotypeAnnotations.pipe(map(
             annotations => {
               return annotations.filter(annotation => {
                 // do the filter here
-                if(query == ""){
+                if (query === ''){
                   return annotation;
-                } else if(query){
+                } else if (query){
                   query = query.toLowerCase();
-                  if(query.startsWith("hp:") && annotation.hpoId.toLowerCase().includes(query)){
+                  if (query.startsWith('hp:') && annotation.hpoId.toLowerCase().includes(query)){
                     return annotation;
-                  } else if(annotation.hpoName.toLowerCase().includes(query)){
+                  } else if (annotation.hpoName.toLowerCase().includes(query)){
                     return annotation;
                   }
                 }
@@ -139,33 +147,33 @@ export class TreatmentCurationComponent implements OnInit {
                 return {
                   id: annotation.hpoId,
                   name: annotation.hpoName
-                }
+                };
               });
             }
           ), take(1), finalize(() => {
-            this.loadingHpoSuggestions = false
+            this.loadingHpoSuggestions = false;
             this.cdf.detectChanges();
           }), catchError((err) => {
             console.log(err);
-            this.formControlGroup.get("hpoFormControl").setErrors({apiError: true});
+            this.formControlGroup.get('hpoFormControl').setErrors({apiError: true});
             return [];
             }));
         }});
 
-    this.formControlGroup.get("extensionFormControl").valueChanges
+    this.formControlGroup.get('extensionFormControl').valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
         if (query && query.length > 3 && !this.formControlGroup.disabled) {
           this.loadingExtensionSuggestions = true;
-          this.monarchService.searchMonarch(query, "CHEBI").pipe(
+          this.monarchService.searchMonarch(query, 'CHEBI').pipe(
             finalize(() => this.loadingExtensionSuggestions = false)
           ).subscribe((data) => {
             if (!data || data.length == 0) {
-              this.formControlGroup.get("extensionFormControl").setErrors({notFound: true});
+              this.formControlGroup.get('extensionFormControl').setErrors({notFound: true});
             }
             this.chebiOptions = data;
           }, (err) => {
-            this.formControlGroup.get("extensionFormControl").setErrors({apiError: true});
+            this.formControlGroup.get('extensionFormControl').setErrors({apiError: true});
           });
         }});
   }
@@ -184,12 +192,12 @@ export class TreatmentCurationComponent implements OnInit {
       comment: this.formControlGroup.get('commentFormControl').value,
       extensionId: extension && extension.id ? extension.id : null,
       extensionLabel: extension && extension.label ? extension.label : null,
-      message: "",
+      message: '',
       publicationId: annotationSource.publication.publicationId,
       publicationName: annotationSource.publication.publicationName,
       diseaseId: annotationSource.disease.diseaseId,
       diseaseName: annotationSource.disease.diseaseName
-    }
+    };
   }
 
   submitForm(): void {
@@ -224,22 +232,21 @@ export class TreatmentCurationComponent implements OnInit {
     this.savingAnnotation = false;
     this.stateService.triggerAnnotationReload(true, false);
     this.stateService.triggerAnnotationCountsReload(true);
-    if(close){
+    if (close){
       this.closeForm();
     } else {
       this.resetTreatmentForm();
     }
     this._snackBar.open(message, 'Close', {
       duration: 3000,
-      horizontalPosition: "left"
+      horizontalPosition: 'left'
     });
   }
 
   onErrorTreatment(err) {
     this.savingAnnotation = false;
     this._snackBar.open(err.details, 'Close', {
-      duration: 3000,
-      horizontalPosition: "left"
+      horizontalPosition: 'left'
     });
   }
 
@@ -247,7 +254,7 @@ export class TreatmentCurationComponent implements OnInit {
     this.dialog.open(DialogSourceComponent, {
       minWidth: 300,
       data: {
-        "userRole": this.userRole
+        userRole: this.userRole
       }
     });
   }
@@ -271,15 +278,15 @@ export class TreatmentCurationComponent implements OnInit {
 
   closeForm() {
     this.stateService.setSelectedTreatmentAnnotation(null);
-    this.elevatedButtonText = {approve: {display: "Approve", show: true}, deny: {display: "Deny", show: true}, changes: {display: "Make changes", show: true}};
+    this.elevatedButtonText = {approve: {display: 'Approve', show: true}, deny: {display: 'Deny', show: true}, changes: {display: 'Make changes', show: true}};
     this.elevatedChanges = false;
     this.handleFormEmitter.emit(false);
   }
 
   reviewAnnotation(action: string){
-    if(action === 'approve'){
+    if (action === 'approve'){
       const treatmentAnnotation = this.getFormTreatmentAnnotation();
-      if(this.elevatedChanges){
+      if (this.elevatedChanges){
         this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', '').subscribe(() => {
           this.onSuccessfulTreatment('Treatment Annotation Approved!', true);
         }, (err) => {
@@ -292,19 +299,19 @@ export class TreatmentCurationComponent implements OnInit {
           this.onErrorTreatment(err.error);
         });
       }
-    } else if(action === 'deny') {
+    } else if (action === 'deny') {
       this.dialog.open(DialogReviewComponent, {
         minWidth: 300,
         minHeight: 250,
         data: {
-          title: "Deny Treatment Annotation",
+          title: 'Deny Treatment Annotation',
           approve: false
         }
       }).afterClosed().subscribe((data) => {
         if (data.confirmed) {
           const treatmentAnnotation = this.getFormTreatmentAnnotation();
           treatmentAnnotation.message = data.message;
-          this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', "deny").subscribe(() => {
+          this.curationService.updateAnnotation(treatmentAnnotation, 'treatment', 'deny').subscribe(() => {
             this.onSuccessfulTreatment('Treatment Annotation Rejected!', true);
           }, (err) => {
             this.onErrorTreatment(err.error);
@@ -317,10 +324,28 @@ export class TreatmentCurationComponent implements OnInit {
   /**
   * Elevated curator making changes to an annotation under_review
   */
-  makeAnnotationChanges(){
-    this.elevatedChanges = true;
-    this.formControlGroup.enable();
-    this.elevatedButtonText.approve.display = "Save & Accept";
-    this.elevatedButtonText.changes.show = false;
+  toggleAnnotationChanges(shouldShow: boolean){
+    if (shouldShow){
+      this.elevatedChanges = true;
+      this.formControlGroup.enable();
+      this.elevatedButtonText.approve.display = 'Save & Accept';
+      this.elevatedButtonText.changes.show = false;
+    } else {
+      this.elevatedChanges = false;
+      this.formControlGroup.disable();
+      this.elevatedButtonText.approve.display = 'Approve';
+      this.elevatedButtonText.changes.show = true;
+    }
   }
+
+  extensionValidation(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if ((control.value && typeof control.value === 'object') || (control.value === null || control.value === '')) {
+        return null;
+      } else {
+        return {notValid: {value: 'Please select a valid chebi extension'}};
+      }
+    };
+  }
+
 }
