@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PortalComponent } from './portal.component';
 import { AuthConfig, AuthModule } from "@auth0/auth0-angular";
@@ -14,7 +14,7 @@ describe('PortalComponent', () => {
     domain: "fake",
     clientId: "fake"
   };
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, AuthModule.forRoot(authConfig), SharedModule, NoopAnimationsModule,
         RouterTestingModule],

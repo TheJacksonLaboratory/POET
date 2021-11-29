@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DialogReviewComponent } from './dialog-review.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
@@ -7,7 +7,7 @@ describe('DialogReviewComponent', () => {
   let component: DialogReviewComponent;
   let fixture: ComponentFixture<DialogReviewComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DialogReviewComponent ],
       providers: [
