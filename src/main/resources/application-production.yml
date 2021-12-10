@@ -6,7 +6,7 @@ spring:
         jwt:
           issuer-uri: https://thejacksonlaboratory.auth0.com/
   datasource:
-    url: jdbc:mariadb://localhost:3306/poet
+    url: jdbc:mariadb://localhost:3306/poet?autoReconnect=true&allowPublicKeyRetrieval=true
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:

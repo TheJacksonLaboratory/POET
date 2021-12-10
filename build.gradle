@@ -84,6 +84,30 @@ clean {
 	delete fileTree(dir: "src/main/resources/static")
 }
 
+// Our war files will be versions and tagged with the env
+bootWar {
+	archiveFileName = "POET-${project.version}-${getActiveProfileTag()}.war_"
+}
+
+static def getActiveProfileTag() {
+	def profile = System.getProperty('spring.profiles.active')
+	switch(profile) {
+		case "test":
+			profile = "test"
+			break
+		case "stage":
+			profile = "stage"
+			break
+		case "production":
+			profile = "prod"
+			break
+		default:
+			profile = "dev"
+			break
+	}
+	return profile
+}
+
 bootWar.dependsOn {
 	if(System.getProperty('spring.profiles.active') == "production"){
 		buildClientProdEnv
@@ -91,6 +115,8 @@ bootWar.dependsOn {
 		buildClientTestEnv
 	}
 }
+
+bootWar.finalizedBy()
 
 bootRun {
 	if(System.getProperty("initialize") == "true"){
