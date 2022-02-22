@@ -17,8 +17,22 @@ class AnnotationSourceExceptionSpec extends Specification {
 
         where:
         publicationId  | diseaseId      | expectedMessage
-        "PMID:0929293" | "OMIM:2883903" | "Could not find a valid disease with id PMID:0929293 or publication with id OMIM:2883903."
-        "PMID:2883903" | "OMIM:0929293" | "Could not find a valid disease with id PMID:2883903 or publication with id OMIM:0929293."
-        "PMID:1111111" | "OMIM:2222222" | "Could not find a valid disease with id PMID:1111111 or publication with id OMIM:2222222."
+        "PMID:0929293" | "OMIM:2883903" | "Could not find a valid disease with id OMIM:2883903 or publication with id PMID:0929293."
+        "PMID:2883903" | "OMIM:0929293" | "Could not find a valid disease with id OMIM:0929293 or publication with id PMID:2883903."
+        "PMID:1111111" | "OMIM:2222222" | "Could not find a valid disease with id OMIM:2222222 or publication with id PMID:1111111."
+    }
+
+    void "test exception message for disease only #desc"() {
+        given:
+        def exception = new AnnotationSourceException(diseaseId)
+
+        expect:
+        exception.getMessage() == expectedMessage
+
+        where:
+        diseaseId      | expectedMessage
+        "OMIM:2883903" | "Could not find a valid disease with id OMIM:2883903."
+        "OMIM:0929293" | "Could not find a valid disease with id OMIM:0929293."
+        "OMIM:2222222" | "Could not find a valid disease with id OMIM:2222222."
     }
 }

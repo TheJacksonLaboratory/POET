@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
-import { MatDialog } from "@angular/material/dialog";
 import { CurationService } from "../../shared/services/curation/curation.service";
 import { AuthService } from "@auth0/auth0-angular";
 import { transition, trigger, useAnimation } from "@angular/animations";
@@ -21,25 +20,24 @@ import { environment } from "../../../environments/environment";
 export class PortalCurateComponent implements OnInit {
 
   selectionType: string;
-  selectedOntology: string;
+  selectedCategory: string;
   selectedDisease: Disease;
   showLoader: boolean = false;
   fxLayout: string = "row";
   fxLayoutAlign: string = "start stretch";
-  fxFlexAnnotations: string = "50";
-  fxFlexForm: string = "42";
-  fxFlexFormOffset: string = "5"
-  fxFlexAnnotationOffset: string = "25";
+  fxFlexAnnotations: string = "60";
+  fxFlexAnnotationOffset: string = "20";
+  fxFlexForm: string = "45";
+  fxFlexFormOffset: string = "2.5"
   sourceAndOntologySelected: boolean = false;
   showForm: boolean = false;
   annotationItems = [
-    {value: 'hpo', display: 'Phenotypes', icon: 'assignment', disabled: true, count: 0},
-    {value: 'maxo', display: 'Treatments', icon: 'healing', disabled: false, count: 0}
+    {value: 'phenotype', display: 'Phenotypes', icon: 'assignment', disabled: false, count: 0, reason:""},
+    {value: 'treatment', display: 'Treatments', icon: 'healing', disabled: false, count: 0, reason: ""}
   ];
-  userRole: string = 'GUEST';
+  user: any;
 
-  constructor(private route: ActivatedRoute, public dialog: MatDialog,
-              public curationService: CurationService, public stateService: StateService,
+  constructor(private route: ActivatedRoute, public curationService: CurationService, public stateService: StateService,
               public authService: AuthService, public router: Router) {
   }
 
@@ -54,7 +52,7 @@ export class PortalCurateComponent implements OnInit {
           ).subscribe((disease) => {
             this.selectedDisease = disease
             this.stateService.setSelectedDisease(disease);
-            this.getAnnotationCount();
+            this.stateService.triggerAnnotationCountsReload(true);
           }, (error) => {
             this.router.navigate(['/portal/dashboard'], {state: {error: true, message: error.text}});
           });
@@ -64,28 +62,33 @@ export class PortalCurateComponent implements OnInit {
       }
     });
 
-    this.stateService.selectedOntology.subscribe((ontology) => this.selectedOntology = ontology);
-
-    this.authService.user$.subscribe((user) => {
-      this.userRole = user[environment.AUDIENCE_ROLE];
-    });
-
     this.stateService.triggerReloadAnnotationCounts.subscribe((reload) => {
-      if(reload){
-        this.getAnnotationCount();
+      if(reload && this.selectedDisease){
+        this.curationService.getAnnotationCounts(this.selectedDisease.diseaseId).subscribe((counts) => {
+          this.updateAnnotationCount(counts);
+        });
       }
     });
-  }
 
-  /**
-   * Display Form
-   */
+    this.stateService.selectedCategory.subscribe((category) => this.selectedCategory = category);
+
+    this.authService.user$.subscribe((user) => {
+      if(!user){
+        user = {nickname: 'GUEST', role: 'GUEST'};
+      } else {
+        user.role = user[environment.AUTH0_ROLE_CLAIM];
+      }
+      this.user = user;
+    });
+
+
+  }
 
   handleForm(value: boolean) {
     if (value) {
       this.showForm = true;
-      this.fxFlexAnnotations = "42";
-      this.fxFlexAnnotationOffset = "5";
+      this.fxFlexAnnotations = "45";
+      this.fxFlexAnnotationOffset = "2.5";
     } else {
       this.showForm = false;
       this.fxFlexAnnotations = "50";
@@ -115,28 +118,29 @@ export class PortalCurateComponent implements OnInit {
     this.showLoader = working;
   }
 
-  getAnnotationCount(){
-      this.curationService.getAnnotationCounts(this.selectedDisease.diseaseId).subscribe((counts) => {
-        this.annotationItems.forEach((item) => {
-          if(item.value == 'hpo'){
-            item.count = counts.phenotypeCount;
-          } else if(item.value == 'maxo') {
-           item.count = counts.treatmentCount;
-          }
-        });
-      });
+  updateAnnotationCount(counts){
+    this.annotationItems.forEach((item) => {
+      if(item.value == 'phenotype'){
+        item.count = counts.phenotypeCount;
+      } else if(item.value == 'treatment') {
+        item.count = counts.treatmentCount;
+      }
+    });
   }
 
-  shouldShowMaxoCard() {
-    return this.selectedDisease && this.selectedOntology === 'maxo' && this.showForm;
+  shouldShowTreatmentCard() {
+    return this.selectedDisease && this.selectedCategory === 'treatment' && this.showForm;
   }
 
-  shouldShowHpoCard() {
-    return this.selectedDisease && this.selectedOntology === 'hpo' && this.showForm;
+  shouldShowPhenotypeCard() {
+    return this.selectedDisease && this.selectedCategory === 'phenotype' && this.showForm;
   }
 
-  changeOntology(ontology: string) {
-    this.stateService.setSelectedOntology(ontology);
+  changeCategory(ontology: string) {
+    if(this.selectedCategory != ontology){
+      this.stateService.setSelectedCategory(ontology);
+      this.handleForm(false);
+    }
   }
 
   navigateToPage(disease) {

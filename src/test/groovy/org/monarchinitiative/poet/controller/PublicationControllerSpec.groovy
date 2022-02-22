@@ -1,9 +1,9 @@
 package org.monarchinitiative.poet.controller
 
-import groovy.json.JsonBuilder
-import org.monarchinitiative.poet.controller.publication.PublicationController
+
 import org.monarchinitiative.poet.model.entities.Publication
 import org.monarchinitiative.poet.service.EntityService
+import org.monarchinitiative.poet.service.UserService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -27,6 +27,9 @@ class PublicationControllerSpec extends Specification {
 
     @SpringBean
     private EntityService entityService = Stub()
+
+    @SpringBean
+    private UserService userService = Stub()
 
     def setup() {
     }

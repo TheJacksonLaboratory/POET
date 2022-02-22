@@ -1,6 +1,7 @@
 package org.monarchinitiative.poet.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.monarchinitiative.poet.model.requests.DiseaseRequest;
 import org.monarchinitiative.poet.views.AnnotationViews;
 import org.monarchinitiative.poet.views.DiseaseViews;
 import org.monarchinitiative.poet.views.PublicationViews;
@@ -17,22 +18,46 @@ public class Disease {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class, UserActivityViews.Simple.class})
+    @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class, UserActivityViews.Simple.class,
+            AnnotationViews.UserSpecific.class})
     @Column(nullable = false, unique = true)
     private String diseaseId;
 
-    @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class, UserActivityViews.Simple.class})
+    @JsonView({DiseaseViews.Simple.class})
+    private String equivalentId;
+
+    @JsonView({DiseaseViews.Simple.class, AnnotationViews.Simple.class, UserActivityViews.Simple.class,
+            AnnotationViews.UserSpecific.class})
     private String diseaseName;
+
+    @JsonView({DiseaseViews.Simple.class})
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @OneToMany(mappedBy = "disease")
     @JsonView(PublicationViews.Simple.class)
     private List<AnnotationSource> annotationSource;
+
+    @Transient
+    @JsonView({DiseaseViews.Simple.class})
+    private int phenotypeCount = 0;
+
+    @Transient
+    @JsonView({DiseaseViews.Simple.class})
+    private int treatmentCount = 0;
 
     protected Disease(){}
 
     public Disease(String diseaseId, String diseaseName) {
         this.diseaseId = diseaseId;
         this.diseaseName = diseaseName;
+    }
+
+    public Disease(DiseaseRequest diseaseRequest){
+        this.diseaseId = diseaseRequest.getDiseaseId();
+        this.diseaseName = diseaseRequest.getDiseaseName();
+        this.equivalentId = diseaseRequest.getEquivalentId();
+        this.description = diseaseRequest.getDescription();
     }
 
     public Disease(String diseaseId, String diseaseName, List<AnnotationSource> annotationSources) {
@@ -50,8 +75,40 @@ public class Disease {
         return diseaseName;
     }
 
+    public String getEquivalentId() {
+        return equivalentId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public List<Publication> getPublications(){
         return this.annotationSource.stream().map(AnnotationSource::getPublication).collect(Collectors.toList());
+    }
+
+    public void setEquivalentId(String equivalentId) {
+        this.equivalentId = equivalentId;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getPhenotypeCount() {
+        return phenotypeCount;
+    }
+
+    public void setPhenotypeCount(int phenotypeCount) {
+        this.phenotypeCount = phenotypeCount;
+    }
+
+    public int getTreatmentCount() {
+        return treatmentCount;
+    }
+
+    public void setTreatmentCount(int treatmentCount) {
+        this.treatmentCount = treatmentCount;
     }
 
     @Override

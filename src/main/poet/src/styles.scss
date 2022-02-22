@@ -50,7 +50,7 @@ $mat-light-theme-foreground: (
   hint-text:         $dark-disabled-text,
   accent-text:       $dark-accent-text,
   icon:              $dark-accent-text,
-  icons:             $dark-accent-text,
+  icons:             $dark-accent-text,required
   text:              $dark-primary-text,
   slider-min:        $dark-primary-text,
   slider-off:        rgba($dark-text, 0.26),
@@ -307,28 +307,9 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 
 .ngx-charts text { fill: #fff; }
 
-.maxo-card {
-  & .mat-select-panel mat-option.mat-option {
-    height: 3.5em;
-  }
-
-  & .mat-select-panel mat-option.mat-option {
-    height: 3.5em;
-  }
-}
-
-
 .mat-option-text.mat-option-text {
   white-space: normal;
   line-height: 1.25rem;
-  cursor: pointer;
-}
-
-.maxo-card .mat-list-item .mat-list-item-content {
-  justify-content: space-between;
-}
-
-.maxo-card .mat-icon {
   cursor: pointer;
 }
 
@@ -369,16 +350,247 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   float: right;
 }
 
-.mat-option.new-disease {
-  text-align: center;
-  color: #43b9da;
-  height: 30px;
+.remove-icon {
+  cursor: pointer;
+  padding: .25rem;
+}
 
-  & .mat-option-text {
-    padding: .5rem 0 0 0;
 
-    & .result-name {
-      float: unset !important;
+.form-card {
+  box-shadow: none !important;
+  background-color: #393939;
+  margin-left: 5px;
+  border: 1px solid gray;
+  font-size: 11px;
+
+  & .mat-card-title, .mat-card-subtitle {
+    text-align: center;
+  }
+
+  & .mat-card-subtitle {
+    margin-bottom: 0;
+  }
+
+  & .publication-list .mat-list-item {
+    background-color: #2b3f4e;
+    padding-top: 0;
+
+    & .mat-list-icon {
+      order: 10;
     }
   }
+
+  & .mat-card-content, .mat-card-actions {
+    min-width: 300px;
+    margin: 0 auto 0 auto;
+  }
+
+  & .mat-card-actions {
+    margin: .5rem auto .5rem auto !important;
+    min-width: 300px;
+
+
+    & .left-actions {
+      display: inline-flex;
+
+      & .mat-progress-spinner {
+        margin-left: 1rem;
+        margin-top: .5rem;
+      }
+    }
+
+    & .right-actions {
+      float: right;
+      display: inline-flex;
+    }
+  }
+
+  & .form-icon-left {
+    float: left;
+
+    &.lock {
+      color: indianred;
+      cursor: default;
+    }
+
+    &.unlock {
+      color: lightgreen;
+      cursor: default;
+    }
+
+    &.messages {
+      margin-left: .5rem;
+      color: gold;
+      cursor: pointer;
+      opacity: .6;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  & .extra-information {
+    font-size: 11px;
+    margin-bottom: 0;
+  }
+
+  & .form-content-section {
+    margin: .5rem 0 .5rem 0;
+
+    & .treatment-form, .phenotype-form {
+      width: 100%;
+    }
+
+    & .chebi-id {
+      margin-right: .5rem;
+    }
+  }
+
+  & .relation {
+    margin-left: 1rem;
+  }
+
+  & .help-icon {
+    cursor: pointer;
+    float: right;
+  }
 }
+.dash-card {
+  & .mat-tab-label-active {
+    background: #296a7c;
+    color: white;
+    opacity: 1;
+  }
+
+  & .mat-tab-body-wrapper {
+    margin: 1.5rem;
+  }
+}
+
+.page-title {
+  padding: 1rem;
+  margin-top: 1rem !important;
+  background: #296b7c;
+  color: whitesmoke;
+  text-transform: uppercase;
+  font-weight: bold !important;
+}
+
+.mat-tab-link.mat-tab-disabled {
+  pointer-events: unset !important;
+}
+
+.capitalize, .mat-select-value-text {
+  text-transform: capitalize;
+}
+
+.mat-option.statusApproved .mat-pseudo-checkbox-checked {
+    background: limegreen !important;
+}
+
+.mat-option.statusReview .mat-pseudo-checkbox-checked {
+  background: gold !important;
+}
+
+.mat-option.statusNeedsWork .mat-pseudo-checkbox-checked {
+  background: indianred !important;
+}
+
+.mat-icon.statusApproved {
+  color: limegreen !important;
+}
+
+.mat-icon.statusReview {
+  color: gold !important;
+}
+
+.mat-icon.statusNeedsWork{
+  color: indianred;
+}
+
+
+.approve-annotation {
+  background: forestgreen;
+}
+
+.deny-annotation {
+  background: indianred;
+}
+
+.edit-annotation {
+  background: #296a7c;
+  color: white;
+}
+
+.portal-curate {
+  .mat-card-title {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+}
+.search {
+  & .mat-form-field-infix {
+    border-top: 0;
+  }
+}
+
+.form-card {
+    & .evidence.mat-form-field, .evidence .mat-form-field-infix {
+      width: auto !important;
+      & .mat-select-value {
+        max-width: 100%;
+        width: auto;
+      }
+    }
+}
+
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+  color: #59c9e8;
+}
+
+.source-required {
+  font-size: 12px;
+  margin-left: .5rem;
+  color: #ff4a4a;
+}
+
+.filter-container {
+  & .mat-select-value-text, .mat-checkbox-label {
+    font-size: 12px;
+  }
+}
+
+.mat-card-actions .left-actions {
+  & .mat-raised-button, .mat-stroked-button, .mat-flat-button, .mat-button {
+    margin: 0 6px !important;
+  }
+}
+
+a:not(.mat-tab-link, .mat-icon-button) {
+  color: skyblue !important;
+}
+
+.mat-tabheader {
+  a {
+    color: unset;
+  }
+}
+.mat-autocomplete-panel {
+  background: #354555 !important;
+}
+
+.resources-tabs {
+  & .mat-tab-header {
+    background: #393939;
+  }
+
+  & .mat-ink-bar {
+    background-color: whitesmoke !important;
+  }
+
+  & .mat-tab-body {
+      padding: 2rem;
+  }
+}
+
+

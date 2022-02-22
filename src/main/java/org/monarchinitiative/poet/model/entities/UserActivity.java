@@ -6,6 +6,7 @@ import org.monarchinitiative.poet.views.UserActivityViews;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 
 @Entity
@@ -16,7 +17,10 @@ public class UserActivity {
 
     @JsonView(UserActivityViews.Simple.class)
     @ManyToOne
-    private User user;
+    private User owner;
+
+    @ManyToOne
+    private User reviewer;
 
     @JsonView(UserActivityViews.Simple.class)
     @OneToOne
@@ -27,7 +31,7 @@ public class UserActivity {
 
     @JsonView(UserActivityViews.Simple.class)
     @Column(name = "datetime", columnDefinition = "TIMESTAMP")
-    private LocalDateTime localDateTime;
+    private LocalDateTime dateTime;
 
     @JsonView(UserActivityViews.Simple.class)
     @Enumerated(EnumType.ORDINAL)
@@ -36,24 +40,39 @@ public class UserActivity {
     protected UserActivity() {
     }
 
-    public UserActivity(User user, CurationAction curationAction, Annotation annotation, Annotation oldAnnotation) {
-        this.user = user;
+    public UserActivity(User owner, CurationAction curationAction, Annotation annotation, Annotation oldAnnotation) {
+        this.owner = owner;
         this.annotation = annotation;
         this.oldAnnotation = oldAnnotation;
         this.curationAction = curationAction;
-        this.localDateTime = LocalDateTime.now();
+        this.dateTime = LocalDateTime.now(ZoneId.of("UTC"));
     }
 
-    public User getUser() {
-        return user;
+    public UserActivity(User owner, User reviewer, CurationAction curationAction, Annotation annotation, Annotation oldAnnotation) {
+        this.owner = owner;
+        this.reviewer = reviewer;
+        this.annotation = annotation;
+        this.oldAnnotation = oldAnnotation;
+        this.curationAction = curationAction;
+        this.dateTime = LocalDateTime.now(ZoneId.of("UTC"));
+    }
+
+    public User getOwner() {
+        return owner;
     }
 
     public Annotation getAnnotation() {
         return annotation;
     }
 
-    public LocalDateTime getLocalDateTime() {
-        return localDateTime;
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public CurationAction getCurationAction() { return curationAction;}
+
+    public void ownerSwap() {
+        this.owner = this.reviewer;
     }
 
     @Override
@@ -62,14 +81,14 @@ public class UserActivity {
         if (o == null || getClass() != o.getClass()) return false;
         UserActivity that = (UserActivity) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(user, that.user) &&
+                Objects.equals(owner, that.owner) &&
                 Objects.equals(annotation, that.annotation) &&
-                Objects.equals(localDateTime, that.localDateTime) &&
+                Objects.equals(dateTime, that.dateTime) &&
                 curationAction == that.curationAction;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, annotation, localDateTime, curationAction);
+        return Objects.hash(id, owner, annotation, dateTime, curationAction);
     }
 }

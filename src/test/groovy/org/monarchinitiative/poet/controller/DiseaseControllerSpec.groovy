@@ -1,8 +1,8 @@
 package org.monarchinitiative.poet.controller
 
-import org.monarchinitiative.poet.controller.disease.DiseaseController
 import org.monarchinitiative.poet.model.entities.Disease
 import org.monarchinitiative.poet.service.EntityService
+import org.monarchinitiative.poet.service.StatisticsService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -27,6 +27,9 @@ class DiseaseControllerSpec extends Specification {
 
     @SpringBean
     private EntityService entityService = Stub()
+
+    @SpringBean
+    private StatisticsService statisticsService = Stub()
 
     def setup(){
     }

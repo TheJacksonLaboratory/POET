@@ -9,6 +9,8 @@ import { StateService } from "../../../shared/services/state/state.service";
 import { Publication } from "../../../shared/models/models";
 import { Observable } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { UserService } from "../../../shared/services/user/user.service";
+import { UtilityService } from "../../../shared/services/utility.service";
 
 @Component({
   selector: 'app-dialog-curation',
@@ -19,7 +21,7 @@ export class DialogSourceComponent implements OnInit {
 
   annotationSourceControl = new FormControl('', [
     Validators.required]);
-  selectedOntology: string;
+  selectedCategory: string;
   selectedPublication: any;
   selectedDisease: any = {diseaseName: "", diseaseId: ""};
   selectedType: string;
@@ -31,7 +33,8 @@ export class DialogSourceComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<DialogSourceComponent>,
               private curationService: CurationService, private pubmedService: PubmedService,
-              private stateService: StateService,
+              private stateService: StateService, public userService: UserService,
+              public utilityService: UtilityService,
               @Inject(MAT_DIALOG_DATA) public data: any, private _snackBar: MatSnackBar) {
   }
 
@@ -50,8 +53,8 @@ export class DialogSourceComponent implements OnInit {
         this.annotatedPublications$ = this.curationService.getDiseasePublications(disease.diseaseId);
       }
     });
-    this.stateService.selectedOntology.subscribe((ontology) => {
-      this.selectedOntology = ontology;
+    this.stateService.selectedCategory.subscribe((category) => {
+      this.selectedCategory = category;
     })
     this.annotationSourceControl.valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
@@ -119,10 +122,6 @@ export class DialogSourceComponent implements OnInit {
     }
   }
 
-  isElevatedCurator() {
-    return this.data.userRole == "ELEVATED_CURATOR";
-  }
-
   dialogRequirementsMet() {
     return this.selectedPublication != null;
   }
@@ -133,6 +132,7 @@ export class DialogSourceComponent implements OnInit {
       this.newPublication = true;
     } else {
       this.selectedPublication = publication;
+      this.closeDialog();
     }
   }
 
@@ -141,12 +141,11 @@ export class DialogSourceComponent implements OnInit {
   }
 
   getSecondAffirmation() {
-    if (this.selectedOntology == 'maxo') {
+    if (this.selectedCategory == 'treatment') {
       return 'I have affirmed that this publication describes medical actions for ' + this.selectedDisease.diseaseName;
     }
     return 'I have affirmed that this publication describes phenotypes for ' + this.selectedDisease.diseaseName;
   }
-
 }
 
 /** Error when invalid control is dirty, touched, or submitted. */

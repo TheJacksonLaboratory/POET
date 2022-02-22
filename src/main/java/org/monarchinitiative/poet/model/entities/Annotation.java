@@ -9,6 +9,7 @@ import org.monarchinitiative.poet.views.UserActivityViews;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,34 +20,48 @@ public class Annotation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView({AnnotationViews.Simple.class, UserActivityViews.Simple.class})
+    @JsonView({AnnotationViews.Simple.class, UserActivityViews.Simple.class, AnnotationViews.UserSpecific.class})
     private long id;
 
     @ManyToOne
-    @JsonView({AnnotationViews.Simple.class, UserActivityViews.Simple.class})
+    @JsonView({AnnotationViews.Simple.class, UserActivityViews.Simple.class, AnnotationViews.UserSpecific.class})
     private AnnotationSource annotationSource;
 
+    @JsonView({AnnotationViews.Simple.class, AnnotationViews.UserSpecific.class})
     @Enumerated(EnumType.STRING)
     private AnnotationStatus status;
 
+    @JsonView(UserActivityViews.Simple.class)
     @Column(name="annotation_type", insertable = false, updatable = false)
     protected String annotationType;
 
-    @Transient
-    @JsonInclude()
+    @OneToOne
+    private Version version;
+
+    @OneToMany
     @JsonView(AnnotationViews.Simple.class)
-    private LocalDateTime lastUpdatedDate;
+    private List<Message> reviewMessages;
 
     @Transient
     @JsonInclude()
-    @JsonView(AnnotationViews.Simple.class)
-    private String owner;
+    @JsonView({AnnotationViews.Simple.class, AnnotationViews.UserSpecific.class})
+    private LocalDateTime lastUpdatedDate;
+
+    @OneToOne
+    @JsonView({AnnotationViews.Simple.class, AnnotationViews.UserSpecific.class})
+    private User owner;
 
     public Annotation(){}
 
     public Annotation(AnnotationSource annotationSource, AnnotationStatus status) {
         this.annotationSource = annotationSource;
         this.status = status;
+    }
+
+    public Annotation(AnnotationSource annotationSource, AnnotationStatus status, User user) {
+        this.annotationSource = annotationSource;
+        this.status = status;
+        this.owner = user;
     }
 
     public AnnotationSource getAnnotationSource() {
@@ -57,7 +72,6 @@ public class Annotation {
         this.annotationSource = annotationSource;
     }
 
-    @JsonView(AnnotationViews.Simple.class)
     public AnnotationStatus getStatus() {
         return status;
     }
@@ -66,13 +80,22 @@ public class Annotation {
         this.status = status;
     }
 
-    @JsonView(UserActivityViews.Simple.class)
+    public void setVersion(Version version){this.version = version;}
+
     public String getAnnotationType() {
         return annotationType;
     }
 
     public long getId() {
         return id;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public List<Message> getReviewMessages() {
+        return reviewMessages;
     }
 
     public LocalDateTime getLastUpdatedDate() {
@@ -83,12 +106,8 @@ public class Annotation {
         this.lastUpdatedDate = lastUpdatedDate;
     }
 
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void newMessage(Message message){
+        this.reviewMessages.add(message);
     }
 
     @Override

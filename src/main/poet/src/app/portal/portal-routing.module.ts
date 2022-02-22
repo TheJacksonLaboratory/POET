@@ -10,7 +10,8 @@ const routes: Routes = [
     path: '', component: PortalComponent, children: [
       {path: 'dashboard', component: PortalDashboardComponent},
       {path: 'curate', component: PortalCurateComponent},
-      {path: 'curate/:id', component: PortalCurateComponent}
+      {path: 'curate/:id', component: PortalCurateComponent},
+      {path: 'curate/:id/:type', component: PortalCurateComponent}
     ]
   },
 ];

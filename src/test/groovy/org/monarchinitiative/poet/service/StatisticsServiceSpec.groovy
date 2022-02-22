@@ -6,6 +6,10 @@ import org.monarchinitiative.poet.model.entities.UserActivity
 import org.monarchinitiative.poet.model.enumeration.CurationAction
 import org.monarchinitiative.poet.repository.UserActivityRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.security.core.Authentication
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -31,10 +35,10 @@ class StatisticsServiceSpec extends Specification {
 
     void "test that user activities #desc"() {
         given:
-        userActivityStub.findAll() >> repositoryResponse
-        userActivityStub.findUserActivityByUserAuthId(_) >> repositoryResponse
+        userActivityStub.findAll(_ as Pageable) >> repositoryResponse
+        userActivityStub.findUserActivityByOwnerAuthId(_ as String, _ as Pageable) >> repositoryResponse
         authentication.getName() >> "fakename"
-        def result = statisticsService.getUserActivity(all, inputAuthentication)
+        def result = statisticsService.getUserActivity(all, 0, PageRequest.of(0,10), inputAuthentication);
 
         expect:
         result.size() == expectedResultSize
@@ -51,11 +55,11 @@ class StatisticsServiceSpec extends Specification {
 
     void "test that user contribution #desc"() {
         given:
-        userActivityStub.countAllByAnnotation_AnnotationTypeAndUserAuthId(_, _) >> repositoryResponse
+        userActivityStub.countAllByAnnotation_AnnotationTypeAndOwnerAuthId(_ as String, _ as String) >> repositoryResponse
         def result = statisticsService.summarizeUserContributions(inputAuthentication)
         expect:
-        result.getMaxo() == repositoryResponse
-        result.getHpo() == 0
+        result.getTreatment() == repositoryResponse
+        result.getPhenotype() == 0
         result.getPhenopackets() == 0;
         where:
         inputAuthentication | repositoryResponse
@@ -66,7 +70,7 @@ class StatisticsServiceSpec extends Specification {
     }
 
     def getFakeUserActivity() {
-        return [new UserActivity(
+        return new PageImpl<>([new UserActivity(
                 new User(),
                 CurationAction.CREATE,
                 new Annotation(),
@@ -78,18 +82,18 @@ class StatisticsServiceSpec extends Specification {
                 new User(),
                 CurationAction.UPDATE,
                 new Annotation(), new Annotation())
-        ]
+        ])
     }
 
     def getSpecificUserActivity() {
-        return [new UserActivity(
+        return new PageImpl<>([new UserActivity(
                 new User(),
                 CurationAction.CREATE,
                 new Annotation(), new Annotation())
-        ]
+        ])
     }
 
     def getEmptyList() {
-        return Collections.emptyList();
+        return Page.empty()
     }
 }

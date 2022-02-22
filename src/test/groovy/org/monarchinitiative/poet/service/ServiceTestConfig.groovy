@@ -2,6 +2,8 @@ package org.monarchinitiative.poet.service
 
 import org.monarchinitiative.poet.repository.AnnotationSourceRepository
 import org.monarchinitiative.poet.repository.DiseaseRepository
+import org.monarchinitiative.poet.repository.MessageRepository
+import org.monarchinitiative.poet.repository.PhenotypeAnnotationRepository
 import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository
 import org.monarchinitiative.poet.repository.PublicationRepository
 import org.monarchinitiative.poet.repository.UserActivityRepository
@@ -40,24 +42,31 @@ class ServiceTestConfig {
     }
 
     @Bean
-    TreatmentAnnotationRepository maxoAnnotationStub(){
+    TreatmentAnnotationRepository treatmentAnnotationStub(){
         return mockFactory.Stub(TreatmentAnnotationRepository)
     }
 
     @Bean
-    AnnotationService annotationService(){
-        AnnotationService annotationService = new AnnotationService(
-                publicationStub(), diseaseStub(), annotationSourceStub(),
-                maxoAnnotationStub(), userStub(), userActivityStub()
-        )
-        return annotationService
+    PhenotypeAnnotationRepository phenotypeAnnotationStub(){
+        return mockFactory.Stub(PhenotypeAnnotationRepository)
     }
 
     @Bean
+    MessageRepository messageRepositoryStub() {
+        return mockFactory.Stub(MessageRepository)
+    }
+    @Bean
     EntityService entityService(){
-        EntityService entityService = new EntityService(diseaseStub(), publicationStub(), annotationSourceStub(),
-                userStub())
+        EntityService entityService = new EntityService(diseaseStub(), publicationStub(), annotationSourceStub())
         return entityService
+    }
+
+    @Bean
+    AnnotationService annotationService(){
+        AnnotationService annotationService = new AnnotationService(diseaseStub(),
+                treatmentAnnotationStub(), userActivityStub(), phenotypeAnnotationStub(),
+                messageRepositoryStub(), entityService())
+        return annotationService
     }
 
     @Bean
@@ -68,8 +77,9 @@ class ServiceTestConfig {
 
 
     @Bean
-    StatisticsService orderService() {
-            StatisticsService statisticsService = new StatisticsService(userActivityStub());
+    StatisticsService statisticService() {
+            StatisticsService statisticsService = new StatisticsService(userActivityStub(), treatmentAnnotationStub(), diseaseStub(),
+                    phenotypeAnnotationStub());
             return statisticsService;
     }
 }

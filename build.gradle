@@ -6,10 +6,11 @@ plugins {
 	id 'groovy'
 	id "com.github.node-gradle.node" version "2.2.4"
 	id "com.dorongold.task-tree" version "1.5"
+	id 'jacoco'
 }
 
 group = 'org.monarchinitiative.poet'
-version = '0.6.0-SNAPSHOT'
+version = '0.9.0-SNAPSHOT'
 sourceCompatibility = '8'
 
 repositories {
@@ -26,7 +27,10 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-config'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation group: 'org.monarchinitiative.phenol', name: 'phenol-core', version: '1.6.1'
-	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.21'
+	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
+	implementation 'org.monarchinitiative.phenol:phenol-annotations:1.6.2'
+	implementation 'org.monarchinitiative.phenol:phenol-io:1.6.2'
+	implementation 'org.apache.commons:commons-csv:1.9.0'
 
 	runtimeOnly 'com.h2database:h2'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
@@ -40,17 +44,23 @@ dependencies {
 def profile = 'development'
 
 node {
-	version = '12.0.0'
-	npmVersion = '6.9.0'
+	version = '16.3.0'
+	npmVersion = '7.0.3'
 	download = true
 	nodeModulesDir = file("src/main/poet")
 
 }
 
-task buildClientProd(type: NpmTask, dependsOn: 'npmInstall') {
+task buildClientProdEnv(type: NpmTask, dependsOn: 'npmInstall') {
 	group = 'build'
 	description = 'Compile client side assets for production'
 	args = ['run', 'buildProd']
+}
+
+task buildClientTestEnv(type: NpmTask, dependsOn: 'npmInstall') {
+	group = 'build'
+	description = 'Compile client side assets for test env'
+	args = ['run', 'buildTest']
 }
 
 task clientTest(type: NpmTask, dependsOn: 'npmInstall') {
@@ -59,24 +69,58 @@ task clientTest(type: NpmTask, dependsOn: 'npmInstall') {
 	args = ['run', 'test']
 }
 
-task shouldClientTest(){
-	if(System.getProperty("clientTest")){
-		dependsOn(clientTest)
-	}
+task test_release(){
+	dependsOn(test)
+	dependsOn(clientTest)
 }
 
-bootWar.dependsOn {
-	buildClientProd
+test {
+	systemProperty 'spring.profiles.active', 'test'
 }
 
-task testApp {
-	dependsOn(bootRun.dependsOn(buildClientProd))
-}
+test.finalizedBy(jacocoTestReport)
 
 clean {
 	delete fileTree(dir: "src/main/resources/static")
 }
 
+// Our war files will be versions and tagged with the env
+bootWar {
+	archiveFileName = "POET-${project.version}-${getActiveProfileTag()}.war_"
+}
+
+static def getActiveProfileTag() {
+	def profile = System.getProperty('spring.profiles.active')
+	switch(profile) {
+		case "test":
+			profile = "test"
+			break
+		case "stage":
+			profile = "stage"
+			break
+		case "production":
+			profile = "prod"
+			break
+		default:
+			profile = "dev"
+			break
+	}
+	return profile
+}
+
+bootWar.dependsOn {
+	if(System.getProperty('spring.profiles.active') == "production"){
+		buildClientProdEnv
+	} else {
+		buildClientTestEnv
+	}
+}
+
+bootWar.finalizedBy()
+
 bootRun {
+	if(System.getProperty("initialize") == "true"){
+		profile = "initialize"
+	}
 	systemProperty "spring.profiles.active", profile
 }

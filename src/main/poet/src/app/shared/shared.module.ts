@@ -15,7 +15,6 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
-import { MonarchSearchComponent } from './monarch-search/monarch-search.component';
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
@@ -23,15 +22,17 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatMenuModule } from "@angular/material/menu";
-import { NgxChartsModule } from "@swimlane/ngx-charts";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatCheckboxModule } from "@angular/material/checkbox";
-import { DialogDiseaseComponent } from './dialog-disease/dialog-disease.component';
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { FilterPipe } from './pipes/filter.pipe';
+import { MatChipsModule } from "@angular/material/chips";
+import { MatRadioModule } from "@angular/material/radio";
+import { SortPipe } from './pipes/sort.pipe';
+import { MatExpansionModule } from "@angular/material/expansion";
 
 @NgModule({
-  declarations: [SearchComponent, MonarchSearchComponent, DialogDiseaseComponent, FilterPipe],
+  declarations: [SearchComponent, FilterPipe, SortPipe],
   providers: [FilterPipe],
   imports: [
     CommonModule,
@@ -58,47 +59,51 @@ import { FilterPipe } from './pipes/filter.pipe';
     MatTabsModule,
     MatTooltipModule,
     MatMenuModule,
-    NgxChartsModule,
     MatPaginatorModule,
     MatCheckboxModule,
     MatTooltipModule,
     FlexLayoutModule,
-    MatCheckboxModule
+    MatChipsModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatExpansionModule
   ],
-  exports: [
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatListModule,
-    MatDividerModule,
-    MatIconModule,
-    MatTableModule,
-    MatCardModule,
-    MatDialogModule,
-    MatSelectModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatProgressBarModule,
-    MatDividerModule,
-    SearchComponent,
-    MatProgressSpinnerModule,
-    MatBottomSheetModule,
-    MatSnackBarModule,
-    MonarchSearchComponent,
-    MatTabsModule,
-    MatTooltipModule,
-    MatMenuModule,
-    NgxChartsModule,
-    MatPaginatorModule,
-    MatCheckboxModule,
-    MatTooltipModule,
-    FlexLayoutModule,
-    MatCheckboxModule,
-    FilterPipe
-  ]
+    exports: [
+        MatToolbarModule,
+        MatButtonModule,
+        MatSidenavModule,
+        MatListModule,
+        MatDividerModule,
+        MatIconModule,
+        MatTableModule,
+        MatCardModule,
+        MatDialogModule,
+        MatSelectModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatProgressBarModule,
+        MatDividerModule,
+        SearchComponent,
+        MatProgressSpinnerModule,
+        MatBottomSheetModule,
+        MatSnackBarModule,
+        MatTabsModule,
+        MatTooltipModule,
+        MatMenuModule,
+        MatPaginatorModule,
+        MatCheckboxModule,
+        MatTooltipModule,
+        MatChipsModule,
+        FlexLayoutModule,
+        MatCheckboxModule,
+        FilterPipe,
+        MatRadioModule,
+        SortPipe,
+        MatExpansionModule
+    ]
 })
 export class SharedModule {
 }

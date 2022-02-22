@@ -1,31 +1,47 @@
 package org.monarchinitiative.poet.model.requests;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
+/**
+ * The model for the JSON requests for treatment endpoints with validation
+ */
 public class TreatmentRequest {
 
 
     private Long id;
+    @NotNull
+    @Pattern(regexp = "MAXO:[0-9]{7}$", message = "maxoId should be a valid identifier from medical action ontology")
     private String maxoId;
+    @NotNull
     private String maxoName;
+    @NotNull
     private String hpoName;
+    @NotNull
+    @Pattern(regexp = "HP:[0-9]{7}$", message = "hpoId should be a valid identifier from human phenotype ontology")
     private String hpoId;
+    @NotNull
     private String evidence;
     private String comment;
+    @NotNull
     private String relation;
+    @Pattern(regexp = "CHEBI:[0-9]{2,8}", message = "extensionId should be a valid identifier from chemical entities of biological interest")
     private String extensionId;
     private String extensionLabel;
     private String publicationId;
     private String publicationName;
     private String diseaseId;
     private String diseaseName;
+    private String message;
 
 
     TreatmentRequest(){}
 
     public TreatmentRequest(Long id, String maxoId, String maxoName, String hpoName, String hpoId, String evidence,
-                            String comment, String relation, String extensionId, String extensionLabel, String publicationId, String publicationName,
-                            String diseaseId, String diseaseName) {
+                            String comment, String relation, String extensionId, String extensionLabel,
+                            String publicationId, String publicationName, String diseaseId, String diseaseName,
+                            String message) {
         this.id = id;
         this.maxoId = maxoId;
         this.maxoName = maxoName;
@@ -40,6 +56,7 @@ public class TreatmentRequest {
         this.publicationName = publicationName;
         this.diseaseId = diseaseId;
         this.diseaseName = diseaseName;
+        this.message = message;
     }
 
     public Long getId() {
@@ -96,6 +113,10 @@ public class TreatmentRequest {
         return diseaseName;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -120,6 +141,4 @@ public class TreatmentRequest {
     public int hashCode() {
         return Objects.hash(id, maxoId, maxoName, hpoName, hpoId, evidence, comment, relation, extensionId, publicationId, publicationName, diseaseId, diseaseName);
     }
-
-
 }

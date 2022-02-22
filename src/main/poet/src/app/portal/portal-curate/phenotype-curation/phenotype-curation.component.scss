@@ -1,0 +1,25 @@
+.phenotype-card {
+  & .ml1 {
+    margin-left: 1rem;
+  }
+
+  & .mat-radio-button {
+    margin-left: 1rem;
+  }
+
+  & .mr1 {
+    margin-right: 1rem;
+  }
+
+  & .qualifier {
+    margin: .5rem 0 0 0;
+  }
+
+  & .form-field-help-icon{
+    font-size: 16px;
+  }
+
+  & .fr {
+    float: right;
+  }
+}

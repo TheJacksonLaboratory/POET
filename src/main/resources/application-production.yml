@@ -1,0 +1,26 @@
+spring:
+  profiles: production
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://thejacksonlaboratory.auth0.com/
+  datasource:
+    url: jdbc:mariadb://localhost:3306/poet?autoReconnect=true&allowPublicKeyRetrieval=true
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+management:
+  endpoints:
+    web:
+      exposure:
+        include: mappings
+auth0:
+  audience: poet-api-audience
+  nickname: https://poet.jax.org/nickname
+  email: https://poet.jax.org/email
+api:
+  version: /api/v1
+  client: /,/portal/**
+initializePoet: false

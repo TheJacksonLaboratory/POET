@@ -1,17 +1,22 @@
 package org.monarchinitiative.poet.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import org.monarchinitiative.poet.model.response.AnnotationCount;
-import org.monarchinitiative.poet.model.response.Contribution;
+import org.monarchinitiative.poet.model.entities.User;
+import org.monarchinitiative.poet.model.enumeration.CurationAction;
+import org.monarchinitiative.poet.model.responses.AnnotationCount;
+import org.monarchinitiative.poet.model.responses.Contribution;
 import org.monarchinitiative.poet.model.entities.UserActivity;
+import org.monarchinitiative.poet.model.responses.ReviewCount;
 import org.monarchinitiative.poet.service.StatisticsService;
+import org.monarchinitiative.poet.service.UserService;
 import org.monarchinitiative.poet.views.UserActivityViews;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This class is an implementation of Spring's Rest Controller. It provides RESTful API's to get useful
@@ -25,9 +30,11 @@ import java.util.Map;
 public class StatisticsController {
 
     private StatisticsService statisticsService;
+    private UserService userService;
 
-    public StatisticsController(StatisticsService statisticsService) {
+    public StatisticsController(StatisticsService statisticsService, UserService userService) {
         this.statisticsService = statisticsService;
+        this.userService = userService;
     }
 
     /**
@@ -41,8 +48,16 @@ public class StatisticsController {
     @GetMapping(value = "/activity", headers = "Accept=application/json")
     public List<UserActivity> getUserActivity(@RequestParam(value = "all", defaultValue = "true") boolean all,
                                               @RequestParam(value = "weeks", defaultValue = "0") int weeks,
+                                              @RequestParam(value = "offset", defaultValue = "0") int offset,
+                                              @RequestParam(value = "limit", defaultValue = "250") int limit,
                                               Authentication authentication){
-        return statisticsService.getUserActivity(all, weeks, authentication);
+        Pageable pageable = PageRequest.of(offset, limit);
+        return statisticsService.getUserActivity(all, weeks, pageable, authentication).stream().peek(activity -> {
+            if(activity.getCurationAction().equals(CurationAction.REVIEW) ||
+                    activity.getCurationAction().equals(CurationAction.OVERRIDE)){
+                activity.ownerSwap();
+            }
+        }).collect(Collectors.toList());
     }
 
     /**
@@ -56,8 +71,32 @@ public class StatisticsController {
         return statisticsService.summarizeUserContributions(authentication);
     }
 
+    /**
+     * The endpoint to get annotation summary statistics by type.
+     * @param diseaseId a disease id
+     * @return
+     */
     @GetMapping(value = "/annotation/{diseaseId}")
     public AnnotationCount getAnnotationStatistics(@PathVariable(value = "diseaseId", required = false)  String diseaseId){
         return this.statisticsService.summarizeAnnotations(diseaseId);
+    }
+
+    /**
+     * The endpoint to get annotation summary statistics by type.
+     * @return
+     */
+    @GetMapping(value = "/annotation/review")
+    public List<ReviewCount> getAnnotationsNeedingReview(){
+        return this.statisticsService.summarizeAnnotationNeedReview();
+    }
+
+    /**
+     * The endpoint to get annotation summary statistics by type.
+     * @return
+     */
+    @GetMapping(value = "/annotation/work")
+    public List<ReviewCount> getAnnotationsNeedWorkByUser(Authentication authentication){
+        final User user = userService.getExistingUser(authentication);
+        return this.statisticsService.summarizeAnnotationNeedWork(user);
     }
 }

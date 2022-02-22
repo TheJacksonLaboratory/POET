@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DialogSourceComponent } from './dialog-source.component';
 import { CurationService } from "../../../shared/services/curation/curation.service";
@@ -12,7 +12,7 @@ describe('DialogSourceComponent', () => {
   let component: DialogSourceComponent;
   let fixture: ComponentFixture<DialogSourceComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule, HttpClientTestingModule, NoopAnimationsModule],
       declarations: [DialogSourceComponent],

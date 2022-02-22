@@ -16,6 +16,10 @@
 
   & .mat-list-item {
     margin: 0 0 .5rem 0;
+    height: 38px;
+    &.sm {
+      height: 42px;
+    }
   }
 
   .source-subtitle {
@@ -34,6 +38,18 @@
 
     & .selection-id {
       font-size: 1rem;
+      text-transform: capitalize;
+    }
+
+    & .mat-list-icon {
+      cursor: default;
+    }
+  }
+
+  & .phenotype-list {
+    & .selection-id {
+      font-size: .8rem;
+      color: lightgray;
       text-transform: capitalize;
     }
   }
@@ -71,6 +87,17 @@
   }
 
   .selection-text {
-    margin-left: 1rem;
+    font-size: .9rem !important;
+    text-transform: capitalize;
+  }
+
+  .filter-container:not(:first-child){
+    margin-left: .5rem;
+  }
+
+  .needs-review-btn, .needs-work-btn {
+    color: white;
+    height: 28px;
+    line-height: 28px;
   }
 }

@@ -6,15 +6,18 @@ export interface SearchResult {
 
 export interface MonarchSearchResult {
   match: string;
+  label: string;
   id: string;
+  omim_id: string;
+  leaf: boolean;
 }
 
 export interface HpoTerm {
-  childrenCount: number;
+  childrenCount?: number;
   id: string;
   name: string;
-  ontologyId: string;
-  synonym: string;
+  ontologyId?: string;
+  synonym?: string;
 }
 
 export interface MaxoTerm {
@@ -37,3 +40,7 @@ export interface MaxoSearchResult extends MaxoTerm{
   synonymMatched: boolean;
 }
 
+export interface AnchorSearchResult {
+  ontologyId: string;
+  name: string;
+}

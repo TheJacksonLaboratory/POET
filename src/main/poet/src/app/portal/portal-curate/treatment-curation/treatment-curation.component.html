@@ -1,50 +1,70 @@
-<mat-card class="maxo-card">
+<mat-card class="treatment-card form-card">
   <mat-card-title>
-    <mat-icon class="mode-icon lock" *ngIf="formControlGroup.disabled"
+    <mat-icon class="form-icon-left lock" *ngIf="formControlGroup.disabled"
               matTooltip="View Mode Only"
               matTooltipPosition="below">
       lock
     </mat-icon>
-    <mat-icon class="mode-icon unlock" *ngIf="!formControlGroup.disabled"
+    <mat-icon class="form-icon-left unlock" *ngIf="!formControlGroup.disabled"
               matTooltip="Editing Mode"
               matTooltipPosition="below">
       lock_open
     </mat-icon>
-    New Treatment
-    <!--<mat-icon class="help-icon" matTooltip="View Previous Versions"
-              matTooltipPosition="below">history</mat-icon>-->
+    <mat-icon class="form-icon-left messages"
+              *ngIf="utilityService.hasReviewerComments(selectedAnnotation) &&
+              utilityService.isNeedsWork(this.selectedAnnotation)"
+              (click)="utilityService.openMessagesDialog(this.selectedAnnotation.reviewMessages)">
+      mark_chat_unread
+    </mat-icon>
+    {{title}}
     <mat-icon class="help-icon" (click)="closeForm()">cancel</mat-icon>
   </mat-card-title>
   <mat-card-subtitle>
-    Medical Action Ontology [ MAxO ] <br><br>
+    Medical Action Ontology [ MAxO ] <br>
+    <p class="extra-information" *ngIf="selectedAnnotation?.owner.nickname">
+      {{selectedAnnotation.owner.nickname}} updated on {{selectedAnnotation.lastUpdatedDate}} </p>
   </mat-card-subtitle>
   <mat-card-content>
-    <button mat-raised-button color="primary" (click)="selectPublication()"
-            *ngIf="selectedPublications.length === 0">Select Publication
+    <button mat-raised-button color="primary" (click)="selectPublication()" class="required"
+            *ngIf="selectedPublications.length === 0">Select Source
     </button>
+    <span class="source-required" *ngIf="selectedPublications.length === 0">
+       * A source is required to submit this annotation.
+    </span>
     <mat-list class="publication-list" aria-label="publication selection">
       <mat-list-item *ngFor="let publication of selectedPublications">
-          {{publication.publicationName}} {{publication.publicationId}}
-        <mat-icon matListIcon (click)="remove(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
+          <span *ngIf="!utilityService.isDiseaseSource(publication.publicationId)">
+            {{publication.publicationName}} {{publication.publicationId}}
+          </span>
+          <span *ngIf="utilityService.isDiseaseSource(publication.publicationId)">
+            {{publication.publicationName}}{{publication.publicationId}}
+          </span>
+        <span class="spacer"></span>
+        <mat-icon class="remove-icon" matListIcon (click)="remove(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
     <form [formGroup]="formControlGroup">
       <div class="form-content-section">
-        <mat-form-field class="maxo-form" appearance="fill">
+        <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>HPO Term</mat-label>
+          <mat-hint *ngIf="!formControlGroup.get('hpoFormControl').hasError('notFound') &&
+          !formControlGroup.get('hpoFormControl').hasError('apiError') && !formControlGroup.disabled">
+            Try: arachnodactyly</mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('hpoFormControl').hasError('apiError') && !formControlGroup.disabled">
+            <span class="mat-error">The connection for this data is broken, please contact us!</span>
+          </mat-hint>
           <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
-                 [matAutocomplete]="hpo">
-          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null" matSuffix mat-icon-button
-                  aria-label="Clear" (click)="resetHpoTermSelect()">
+                 [matAutocomplete]="hpo" required>
+          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null && !formControlGroup.disabled" matSuffix mat-icon-button
+                  aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
-          <mat-hint *ngIf="!selectedHpo">Try: arachnodactyly</mat-hint>
-          <mat-error *ngIf="formControlGroup.get('hpoFormControl').hasError('notFound')">
-            Looks like there was an error with the HPO API.
-          </mat-error>
           <mat-autocomplete #hpo="matAutocomplete" (optionSelected)="selectedHpo = $event.option.value"
-                            [displayWith]="displayHpoFn">
-            <mat-option class="auto-complete-option" *ngFor="let option of hpoOptions" [value]="option">
+                            [displayWith]="utilityService.displayHpoFn">
+            <mat-option *ngIf="loadingHpoSuggestions">
+              <mat-progress-bar mode="query"></mat-progress-bar>
+            </mat-option>
+            <mat-option class="auto-complete-option" *ngFor="let option of hpoOptions | async | sortBy: 'name':''" [value]="option">
               <span class="option-name">{{option.name}}</span>
               &nbsp;
               <span class="option-id">{{option.id}}</span>
@@ -53,20 +73,28 @@
         </mat-form-field>
       </div>
       <div class="form-content-section">
-        <mat-form-field class="maxo-form" appearance="fill">
+        <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>MAxO Term</mat-label>
+          <mat-hint *ngIf="!formControlGroup.get('maxoFormControl').hasError('notFound') &&
+          !formControlGroup.get('maxoFormControl').hasError('apiError') && !formControlGroup.disabled">
+            Try: calcium assessment</mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('maxoFormControl').hasError('notFound') && !formControlGroup.disabled">
+            <span class="mat-error">Sorry we could not find what you were looking for!</span>
+          </mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('maxoFormControl').hasError('apiError') && !formControlGroup.disabled">
+            <span class="mat-error">The connection for this data is broken, please contact us!</span>
+          </mat-hint>
           <input matInput placeholder="Search for a MAxO Term" formControlName="maxoFormControl" ngDefaultControl
-                 [matAutocomplete]="maxoAuto">
-          <button mat-button *ngIf="formControlGroup.get('maxoFormControl').value != null"
-                  matSuffix mat-icon-button aria-label="Clear" (click)="resetMaxoTermSelect()">
+                 [matAutocomplete]="maxoAuto" required>
+          <button mat-button *ngIf="formControlGroup.get('maxoFormControl').value != null && !formControlGroup.disabled"
+                  matSuffix mat-icon-button aria-label="Clear" (click)="formControlGroup.get('maxoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
-          <mat-hint *ngIf="!selectedTreatment">Try: cognitive therapy</mat-hint>
-          <mat-error *ngIf="formControlGroup.get('maxoFormControl').hasError('notFound')">
-            Looks like there was an error with the MAxO API.
-          </mat-error>
           <mat-autocomplete #maxoAuto="matAutocomplete" (optionSelected)="selectedTreatment = $event.option.value"
-                            [displayWith]="displayMaxoFn">
+                            [displayWith]="utilityService.displayMaxoFn">
+            <mat-option *ngIf="loadingMaxoSuggestions">
+              <mat-progress-bar mode="query"></mat-progress-bar>
+            </mat-option>
             <mat-option class="auto-complete-option" *ngFor="let option of maxoOptions" [value]="option">
               <span class="option-name">{{option.name}}</span>
               &nbsp;
@@ -76,47 +104,63 @@
         </mat-form-field>
       </div>
       <div class="form-content-section">
-        <mat-form-field appearance="fill">
-          <mat-label>Evidence</mat-label>
-          <mat-select formControlName="evidenceFormControl">
-            <mat-option [value]="'TAS'">TAS</mat-option>
-            <mat-option [value]="'PCS'">PCS</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="fill" class="relation">
+        <mat-form-field appearance="fill" >
           <mat-label>Relation</mat-label>
-          <mat-select formControlName="relationFormControl">
+          <mat-select formControlName="relationFormControl" required>
             <mat-option [value]="'TREATS'">TREATS</mat-option>
             <mat-option [value]="'PREVENTS'">PREVENTS</mat-option>
             <mat-option [value]="'INVESTIGATES'">INVESTIGATES</mat-option>
           </mat-select>
         </mat-form-field>
-      </div>
-      <div class="form-content-section">
-        <mat-form-field class="chebi-id" appearance="fill">
-          <mat-label>CHEBI Identifier</mat-label>
-          <input matInput type="text" formControlName="extensionIdFormControl">
-          <button mat-button *ngIf="formControlGroup.get('extensionIdFormControl').value != ''" matSuffix mat-icon-button
-                  aria-label="Clear"
-                  (click)="formControlGroup.get('extensionIdFormControl').reset()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>CHEBI Label</mat-label>
-          <input matInput type="text" formControlName="extensionLabelFormControl">
-          <button mat-button *ngIf="formControlGroup.get('extensionLabelFormControl').value != ''" matSuffix mat-icon-button
-                  aria-label="Clear"
-                  (click)="formControlGroup.get('extensionLabelFormControl').reset()">
-            <mat-icon>close</mat-icon>
-          </button>
+        <mat-form-field appearance="fill" class="ml1 evidence">
+          <mat-label>Evidence</mat-label>
+          <mat-select formControlName="evidenceFormControl">
+            <mat-option value="TAS">Traceable Author Statement</mat-option>
+            <mat-option value="PCS">Published Clinical Study</mat-option>
+            <mat-option value="IEA" [disabled]="true">Inferred Electronic Annotation</mat-option>
+          </mat-select>
         </mat-form-field>
       </div>
       <div class="form-content-section">
-        <mat-form-field class="maxo-form" appearance="fill">
-          <mat-label>Additional Annotation Comment</mat-label>
-          <input matInput type="text" formControlName="commentFormControl">
-          <button mat-button *ngIf="formControlGroup.get('commentFormControl').value != ''" matSuffix mat-icon-button
+        <mat-form-field class="treatment-form" appearance="fill">
+          <mat-label>Ontology Extension</mat-label>
+          <mat-hint *ngIf="!formControlGroup.get('extensionFormControl').hasError('notFound') &&
+          !formControlGroup.get('extensionFormControl').hasError('apiError') && !formControlGroup.disabled">
+            Try: CHEBI:27732</mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('extensionFormControl').hasError('notFound') && !formControlGroup.disabled">
+            <span class="mat-error">Sorry we could not find what you were looking for!</span>
+          </mat-hint>
+          <mat-hint *ngIf="formControlGroup.get('extensionFormControl').hasError('apiError') && !formControlGroup.disabled">
+            <span class="mat-error">The connection for this data is broken, please contact us!</span>
+          </mat-hint>
+          <mat-error>
+            Not a valid CHEBI.
+          </mat-error>
+          <input matInput placeholder="..." formControlName="extensionFormControl" ngDefaultControl
+                 [matAutocomplete]="extensionAuto">
+          <button mat-button *ngIf="formControlGroup.get('extensionFormControl').value != null && !formControlGroup.disabled"
+                  matSuffix mat-icon-button aria-label="Clear" (click)="formControlGroup.get('extensionFormControl').reset()">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-autocomplete #extensionAuto="matAutocomplete"
+                            [displayWith]="utilityService.displayChebiFn.bind(this)">
+            <mat-option *ngIf="loadingExtensionSuggestions">
+              <mat-progress-bar mode="query"></mat-progress-bar>
+            </mat-option>
+            <mat-option class="auto-complete-option" *ngFor="let option of chebiOptions" [value]="option">
+              <span class="option-name">{{option.label}}</span>
+              &nbsp;
+              <span class="option-id">{{option.id}}</span>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="form-content-section">
+        <mat-form-field class="treatment-form" appearance="fill">
+          <mat-label>Additional Comments</mat-label>
+          <input matInput type="text" formControlName="commentFormControl" maxlength="50">
+          <mat-hint *ngIf="this.formControlGroup.get('commentFormControl').value?.length >= 50">Maximum Characters Reached.</mat-hint>
+          <button mat-button *ngIf="formControlGroup.get('commentFormControl').value != '' && !formControlGroup.disabled" matSuffix mat-icon-button
                   aria-label="Clear"
                   (click)="formControlGroup.get('commentFormControl').reset()">
             <mat-icon>close</mat-icon>
@@ -124,17 +168,33 @@
         </mat-form-field>
       </div>
     </form>
-    <p class="extra-information left" *ngIf="selectedAnnotation?.owner">Owner: {{selectedAnnotation.owner}} </p>
-    <p class="extra-information right" *ngIf="selectedAnnotation?.lastUpdatedDate">Last Updated: {{selectedAnnotation.lastUpdatedDate}} </p>
   </mat-card-content>
 
   <mat-card-actions>
     <div class="left-actions">
-      <button mat-raised-button color="primary" *ngIf="everythingValid()" (click)="submitForm()">SUBMIT</button>
+      <button class="approve-annotation" mat-raised-button aria-label="Approve Treatment Annotation"
+              *ngIf="(utilityService.showElevatedActions(userRole, selectedAnnotation) && !elevatedChanges) ||
+              (elevatedChanges && !this.formControlGroup.pristine && this.formControlGroup.valid)" (click)="reviewAnnotation('approve')">
+        {{elevatedButtonText.approve.display}}
+      </button>
+      <button class="deny-annotation" mat-raised-button aria-label="Deny Treatment Annotation"
+              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && !elevatedChanges" (click)="reviewAnnotation('deny')">
+        {{elevatedButtonText.deny.display}}
+      </button>
+      <button class="deny-annotation" mat-raised-button aria-label="Cancel Current Review"
+              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && elevatedChanges" (click)="toggleAnnotationChanges(false)">
+        Cancel
+      </button>
+      <button class="edit-annotation" mat-raised-button aria-label="Edit Treatment Annotation"
+              *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && elevatedButtonText.changes.show"
+              (click)="toggleAnnotationChanges(true)">
+        {{elevatedButtonText.changes.display}}
+      </button>
+      <button mat-raised-button color="primary" *ngIf="everythingValid() && !utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="submitForm()">SUBMIT</button>
       <mat-spinner color="accent" [diameter]="20" mode="indeterminate" *ngIf="savingAnnotation"></mat-spinner>
     </div>
     <div class="right-actions">
-      <button mat-stroked-button (click)="resetMaxoForm()" *ngIf="!formControlGroup.disabled">Clear</button>
+      <button mat-stroked-button (click)="resetTreatmentForm()" *ngIf="!formControlGroup.disabled && !elevatedChanges">Clear</button>
     </div>
   </mat-card-actions>
 </mat-card>

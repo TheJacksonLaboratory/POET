@@ -1,6 +1,6 @@
 package org.monarchinitiative.poet.controller
 
-import org.monarchinitiative.poet.model.response.SearchResponse
+import org.monarchinitiative.poet.model.responses.SearchResponse
 import org.monarchinitiative.poet.service.SearchService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired

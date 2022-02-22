@@ -1,15 +1,18 @@
 package org.monarchinitiative.poet.service;
 
 import org.monarchinitiative.poet.exceptions.AnnotationSourceException;
+import org.monarchinitiative.poet.exceptions.AuthenticationException;
 import org.monarchinitiative.poet.exceptions.DuplicateAnnotationException;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
+import org.monarchinitiative.poet.model.requests.PhenotypeRequest;
 import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.model.entities.*;
 import org.monarchinitiative.poet.model.enumeration.CurationAction;
+import org.monarchinitiative.poet.model.enumeration.CurationRole;
 import org.monarchinitiative.poet.repository.*;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -26,70 +29,214 @@ import java.util.stream.Collectors;
 @Service
 public class AnnotationService {
 
-    private PublicationRepository publicationRepository;
     private DiseaseRepository diseaseRepository;
-    private AnnotationSourceRepository annotationSourceRepository;
     private TreatmentAnnotationRepository treatmentAnnotationRepository;
-    private UserRepository userRepository;
     private UserActivityRepository userActivityRespository;
+    private PhenotypeAnnotationRepository phenotypeAnnotationRepository;
+    private MessageRepository messageRepository;
+    private EntityService entityService;
 
-    public AnnotationService(PublicationRepository publicationRepository,
-                             DiseaseRepository diseaseRepository, AnnotationSourceRepository annotationSourceRepository,
-                             TreatmentAnnotationRepository treatmentAnnotationRepository, UserRepository userRepository,
-                             UserActivityRepository userActivityRepository) {
-        this.publicationRepository = publicationRepository;
+    public AnnotationService(DiseaseRepository diseaseRepository,
+                             TreatmentAnnotationRepository treatmentAnnotationRepository,
+                             UserActivityRepository userActivityRepository,
+                             PhenotypeAnnotationRepository phenotypeAnnotationRepository,
+                             MessageRepository messageRepository, EntityService entityService) {
         this.diseaseRepository = diseaseRepository;
-        this.annotationSourceRepository = annotationSourceRepository;
         this.treatmentAnnotationRepository = treatmentAnnotationRepository;
-        this.userRepository = userRepository;
         this.userActivityRespository = userActivityRepository;
+        this.phenotypeAnnotationRepository = phenotypeAnnotationRepository;
+        this.messageRepository = messageRepository;
+        this.entityService = entityService;
+    }
+
+    /**
+     * A function to get phenotype annotations from the database by just disease.
+     *
+     * @return a collection of official phenotype annotations
+     * @since 0.5.0
+     */
+    public List<PhenotypeAnnotation> getOfficialPhenotypes() {
+        return this.phenotypeAnnotationRepository.findAllByStatus(AnnotationStatus.OFFICIAL);
+    }
+
+    /**
+     * A function to get phenotype annotations from the database by just disease.
+     *
+     * @param diseaseId a OMIM disease id
+     *
+     * @return a collection of phenotype annotations or an empty list.
+     * @since 0.5.0
+     */
+    public List<PhenotypeAnnotation> getPhenotypeAnnotationsByDisease(String diseaseId) throws AnnotationSourceException {
+            Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
+            if(disease != null) {
+                List<PhenotypeAnnotation> annotations = this.phenotypeAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(disease, AnnotationStatus.RETIRED, AnnotationStatus.RETIRED_PENDING);
+                return (List<PhenotypeAnnotation>) getLastUpdatedForAnnotation(annotations);
+            } else {
+                throw new AnnotationSourceException(diseaseId);
+            }
+    }
+
+    /**
+     * Create a phenotype annotation with a pending review status.
+     * enforcing business rules with the status of the annotation
+     *
+     * @param phenotypeRequest a phenotype request body
+     * @param user the user making the request
+     */
+    @Transactional()
+    public void createPhenotypeAnnotation(PhenotypeRequest phenotypeRequest, User user, boolean initialize) throws DuplicateAnnotationException {
+        final AnnotationSource annotationSource = entityService.getAnnotationSource(phenotypeRequest.getPublicationId(), phenotypeRequest.getDiseaseId());
+        if(annotationSource != null){
+            AnnotationStatus status = user.getCurationRole().equals(CurationRole.POET_ADMIN) ? AnnotationStatus.ACCEPTED : AnnotationStatus.UNDER_REVIEW;
+            if(initialize){
+                status = AnnotationStatus.OFFICIAL;
+            }
+            final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, annotationSource,
+                    status, user);
+            if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndQualifierAndStatusNotAndStatusNot(
+                    annotation.getAnnotationSource(), annotation.getHpoId(), annotation.getSex(),
+                    annotation.getEvidence(), annotation.getOnset(), annotation.getFrequency(), annotation.getQualifier(),
+                    annotation.getModifier(), AnnotationStatus.RETIRED, AnnotationStatus.OFFICIAL)){
+                throw new DuplicateAnnotationException("phenotype", annotation.getAnnotationSource().getDisease().getDiseaseName());
+            }
+            phenotypeAnnotationRepository.save(annotation);
+            updateUserActivity(user, null, CurationAction.CREATE, annotation, null);
+        } else {
+            throw new AnnotationSourceException(phenotypeRequest.getPublicationId(), phenotypeRequest.getDiseaseId());
+        }
+    }
+
+    /**
+     * Update a phenotype annotation enforcing business rules with the status of the annotation
+     *
+     * @param phenotypeRequest a phenotype request body
+     * @param user the user making the request
+     */
+    public void updatePhenotypeAnnotation(PhenotypeRequest phenotypeRequest, User user, String review) throws DuplicateAnnotationException {
+
+        PhenotypeAnnotation oldAnnotation = phenotypeAnnotationRepository.findDistinctById(phenotypeRequest.getId());
+        User owner = userActivityRespository.getMostRecentDateForAnnotationActivity(oldAnnotation.getId()).getOwner();
+        if(user.getCurationRole().equals(CurationRole.POET_ADMIN)){
+            // An elevated curator reviewing an annotation.
+            if(isValidReview(review)){
+                oldAnnotation.setStatus(reviewToStatus(review));
+                if(review.equals("deny")){
+                    Message reviewMessage = new Message(phenotypeRequest.getMessage(), user, oldAnnotation);
+                    messageRepository.save(reviewMessage);
+                    oldAnnotation.newMessage(reviewMessage);
+                }
+                phenotypeAnnotationRepository.save(oldAnnotation);
+                updateUserActivity(owner, user, CurationAction.REVIEW, oldAnnotation, null);
+            }
+
+            // Allow official annotations to be updated by elevated users
+            if(oldAnnotation.getStatus().equals(AnnotationStatus.OFFICIAL)){
+                final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, oldAnnotation.getAnnotationSource(),
+                        AnnotationStatus.ACCEPTED, oldAnnotation.getOwner());
+                oldAnnotation.setStatus(AnnotationStatus.RETIRED_PENDING);
+                phenotypeAnnotationRepository.save(oldAnnotation);
+                phenotypeAnnotationRepository.save(annotation);
+                updateUserActivity(oldAnnotation.getOwner(), user, CurationAction.OVERRIDE, annotation, oldAnnotation);
+            // Allow accepted annotations to be updated by elevated users
+            } else if(oldAnnotation.getStatus().equals(AnnotationStatus.ACCEPTED)){
+                final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, oldAnnotation.getAnnotationSource(),
+                        AnnotationStatus.ACCEPTED, oldAnnotation.getOwner());
+                oldAnnotation.setStatus(AnnotationStatus.RETIRED);
+                phenotypeAnnotationRepository.save(oldAnnotation);
+                phenotypeAnnotationRepository.save(annotation);
+                updateUserActivity(oldAnnotation.getOwner(), user, CurationAction.OVERRIDE, annotation, oldAnnotation);
+            // An elevated curators annotations can never be under review, must be someone elses
+            } else if(oldAnnotation.getStatus().equals(AnnotationStatus.UNDER_REVIEW)){
+                // Most likely editing someones annotation
+                // Build the new annotation, do a check for duplicated data 
+                final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, oldAnnotation.getAnnotationSource(),
+                AnnotationStatus.ACCEPTED, oldAnnotation.getOwner());
+                if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndQualifierAndStatus(
+                    annotation.getAnnotationSource(), annotation.getHpoId(), annotation.getSex(), annotation.getEvidence(), 
+                    annotation.getOnset(), annotation.getFrequency(), annotation.getModifier(), annotation.getQualifier(), annotation.getStatus())){
+                        throw new DuplicateAnnotationException("phenotype", annotation.getAnnotationSource().getDisease().getDiseaseId());
+                    }
+                // Save the new annotation as accepted, retire the current under review one
+                phenotypeAnnotationRepository.save(annotation);
+                oldAnnotation.setStatus(AnnotationStatus.RETIRED);
+                phenotypeAnnotationRepository.save(oldAnnotation);
+                updateUserActivity(oldAnnotation.getOwner(), user, CurationAction.OVERRIDE, annotation, oldAnnotation);
+            }
+        } else if(user.equals(owner)){
+            // Resubmitting after needs work
+            if(oldAnnotation.getStatus().equals(AnnotationStatus.NEEDS_WORK) || oldAnnotation.getStatus().equals(AnnotationStatus.UNDER_REVIEW)){
+                oldAnnotation.setStatus(AnnotationStatus.UNDER_REVIEW);
+                oldAnnotation.updateAnnotation(phenotypeRequest);
+                phenotypeAnnotationRepository.save(oldAnnotation);
+                updateUserActivity(user, null, CurationAction.RESUBMIT, oldAnnotation, null);
+            // Updating their own annotations that are accepted or under review
+            } else if(oldAnnotation.getStatus().equals(AnnotationStatus.ACCEPTED)) {
+                final PhenotypeAnnotation annotation = new PhenotypeAnnotation(phenotypeRequest, oldAnnotation.getAnnotationSource(),
+                        AnnotationStatus.UNDER_REVIEW, oldAnnotation.getOwner());
+                if(phenotypeAnnotationRepository.existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndQualifierAndStatusNotAndIdNot(
+                        annotation.getAnnotationSource(), annotation.getHpoId(), annotation.getSex(),
+                        annotation.getEvidence(), annotation.getOnset(), annotation.getFrequency(), annotation.getModifier(), annotation.getQualifier(), AnnotationStatus.RETIRED,  oldAnnotation.getId())){
+                    throw new DuplicateAnnotationException("phenotype", annotation.getAnnotationSource().getDisease().getDiseaseName());
+                }
+                oldAnnotation.setStatus(AnnotationStatus.RETIRED);
+                phenotypeAnnotationRepository.save(oldAnnotation);
+                phenotypeAnnotationRepository.save(annotation);
+                updateUserActivity(user, null, CurationAction.UPDATE, annotation, oldAnnotation);
+            }
+        } else {
+            throw new AuthenticationException(user.getNickname());
+        }
+    }
+
+    /**
+     * Delete a phenotype annotation with a pending review status.
+     * enforcing business rules with the status of the annotation
+     *
+     * @param id a phenotype annotation id
+     * @param user the user making the request
+     * @return a boolean wherther the annotation was created or not.
+     */
+    public boolean deletePhenotypeAnnotation(Long id, User user) {
+        if(id != null){
+            PhenotypeAnnotation annotation = phenotypeAnnotationRepository.findDistinctById(id);
+            if(annotation != null){
+                annotation.setStatus(AnnotationStatus.RETIRED);
+                phenotypeAnnotationRepository.save(annotation);
+                updateUserActivity(user, null, CurationAction.DELETE, annotation, null);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * A function to get maxo annotations from the database by either both publication and  disease or just disease.
      *
      * @param diseaseId a OMIM disease id
-     * @param publicationId a PubMed id
-     * @param sort a string composing of two parts both direction and field. TODO: Implement functionality
      *
      * @return a collection of maxo annotations or an empty list.
      * @since 0.5.0
      */
-    public List<TreatmentAnnotation> getTreatmentAnnotations(String diseaseId, String publicationId, String sort) {
-            // If publication get source, then annotations for that source
-            // Otherwise get all annotationSource
-            if(publicationId != null){
-                final AnnotationSource annotationSource = getAnnotationSource(publicationId, diseaseId);
-                if(annotationSource != null){
-                    List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findDistinctByAnnotationSourceAndStatusNot(annotationSource, AnnotationStatus.RETIRED);
-                    if(annotations.size() > 0){
-                        return annotations.stream().peek(annotation -> {
-                            UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
-                            annotation.setLastUpdatedDate(activity.getLocalDateTime());
-                            annotation.setOwner(activity.getUser().getNickname());
-                        }).sorted(Comparator.comparing(TreatmentAnnotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
-                    } else {
-                        return Collections.emptyList();
-                    }
-                }
-            } else {
-                Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
-                if(disease != null) {
-                    List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNot(disease, AnnotationStatus.RETIRED);
-                    if(annotations.size() > 0){
-                        return annotations.stream().peek(annotation -> {
-                            UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
-                            annotation.setLastUpdatedDate(activity.getLocalDateTime());
-                            annotation.setOwner(activity.getUser().getNickname());
-                        }).sorted(Comparator.comparing(TreatmentAnnotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
-                    } else {
-                        return Collections.emptyList();
-                    }
-                } else {
-                    return null;
-                }
-            }
-            return null;
+    public List<TreatmentAnnotation> getTreatmentAnnotationsByDisease(String diseaseId) throws AnnotationSourceException {
+        Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
+        if(disease != null) {
+            List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(disease, AnnotationStatus.RETIRED, AnnotationStatus.RETIRED_PENDING);
+            return (List<TreatmentAnnotation>) getLastUpdatedForAnnotation(annotations);
+        }
+        throw new AnnotationSourceException(diseaseId);
+    }
+
+
+    private List<? extends Annotation> getLastUpdatedForAnnotation(List<? extends Annotation> annotations) {
+        if(annotations.size() > 0){
+                return annotations.stream().peek(annotation -> {
+                    UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
+                    annotation.setLastUpdatedDate(activity.getDateTime());
+                }).sorted(Comparator.comparing(Annotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     /**
@@ -97,22 +244,22 @@ public class AnnotationService {
      * enforcing business rules with the status of the annotation
      *
      * @param treatmentRequest a maxo request body
+     * @param user the user making the request
      *
-     * @return a boolean whether the annotation was created or not.
      */
-    public void createTreatmentAnnotation(TreatmentRequest treatmentRequest, Authentication authentication) throws DuplicateAnnotationException {
+    public void createTreatmentAnnotation(TreatmentRequest treatmentRequest, User user) throws DuplicateAnnotationException {
         // We have a valid publication and a valid disease, do we have an annotation source for them?
-        final AnnotationSource annotationSource = getAnnotationSource(treatmentRequest.getPublicationId(), treatmentRequest.getDiseaseId());
+        final AnnotationSource annotationSource = entityService.getAnnotationSource(treatmentRequest.getPublicationId(), treatmentRequest.getDiseaseId());
         if(annotationSource != null){
-            final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, annotationSource);
+            AnnotationStatus status = user.getCurationRole().equals(CurationRole.POET_ADMIN) ? AnnotationStatus.ACCEPTED : AnnotationStatus.UNDER_REVIEW;
+            final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, annotationSource, status, user);
             // Check if we have a duplicate annotation, if so throw an error
             // See if we already have an annotation like this.
-            if(treatmentAnnotationRepository.existsByAnnotationSourceAndAnnotationTypeAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceTypeAndRelationAndStatusNot(
-                    annotation.getAnnotationSource(), "treatment", annotation.getMaxoId(), annotation.getHpoId(), annotation.getExtensionId(), annotation.getEvidenceType(), annotation.getRelation(), AnnotationStatus.RETIRED)){
+            if(treatmentAnnotationExists(annotation, AnnotationStatus.RETIRED, AnnotationStatus.OFFICIAL)){
                 throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseName());
             }
             treatmentAnnotationRepository.save(annotation);
-            updateUserActivity(authentication, CurationAction.CREATE, annotation, null);
+            updateUserActivity(user, null, CurationAction.CREATE, annotation, null);
         } else {
             throw new AnnotationSourceException(treatmentRequest.getPublicationId(), treatmentRequest.getDiseaseId());
         }
@@ -122,27 +269,89 @@ public class AnnotationService {
      * Update a MaXo annotation enforcing business rules with the status of the annotation
      *
      * @param treatmentRequest a maxo request body
+     * @param user the user making the request
+     * @param review integer 0 = not a review, 1 = approve 2 = deny
      *
      * @return a boolean whether the annotation was created or not.
      */
-    public void updateTreatmentAnnotation(TreatmentRequest treatmentRequest, Authentication authentication) throws DuplicateAnnotationException {
-            // Retired the old annotation
-            TreatmentAnnotation oldAnnotation = treatmentAnnotationRepository.findDistinctById(treatmentRequest.getId());
-            // Create the new one with updated values
-            final TreatmentAnnotation annotation = new TreatmentAnnotation(oldAnnotation.getAnnotationSource(),
-                    oldAnnotation.getStatus(), treatmentRequest.getMaxoId(), treatmentRequest.getMaxoName(),
-                    treatmentRequest.getHpoName(), treatmentRequest.getHpoId(), treatmentRequest.getEvidence(),
-                    treatmentRequest.getComment(), treatmentRequest.getRelation(), treatmentRequest.getExtensionId(), treatmentRequest.getExtensionLabel());
+    public void updateTreatmentAnnotation(TreatmentRequest treatmentRequest, User user, String review) throws DuplicateAnnotationException {
 
-            // See if we already have an annotation like this.
-            if(treatmentAnnotationRepository.existsByAnnotationSourceAndAnnotationTypeAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceTypeAndRelationAndStatusNot(
-                    annotation.getAnnotationSource(), "treatment", annotation.getMaxoId(), annotation.getHpoId(), annotation.getExtensionId(), annotation.getEvidenceType(), annotation.getRelation(), AnnotationStatus.RETIRED)){
-                throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseName());
+            TreatmentAnnotation oldAnnotation = treatmentAnnotationRepository.findDistinctById(treatmentRequest.getId());
+            User owner = userActivityRespository.getMostRecentDateForAnnotationActivity(oldAnnotation.getId()).getOwner();
+
+            if(user.getCurationRole().equals(CurationRole.POET_ADMIN)) {
+                if(isValidReview(review)){
+                    // Review, check that the authentication is a valid user and that they are an elevated curator
+                        oldAnnotation.setStatus(reviewToStatus(review));
+                        if(review.equals("deny")){
+                            Message reviewMessage = new Message(treatmentRequest.getMessage(), user, oldAnnotation);
+                            messageRepository.save(reviewMessage);
+                            oldAnnotation.newMessage(reviewMessage);
+                        }
+                        treatmentAnnotationRepository.save(oldAnnotation);
+                        updateUserActivity(owner, user, CurationAction.REVIEW, oldAnnotation, null);
+                }
+                // Allow official annotations to be updated by elevated users
+                if(oldAnnotation.getStatus().equals(AnnotationStatus.OFFICIAL)) {
+                    final TreatmentAnnotation annotation = new TreatmentAnnotation(oldAnnotation.getAnnotationSource(),
+                            AnnotationStatus.ACCEPTED, oldAnnotation.getOwner(), treatmentRequest.getMaxoId(), treatmentRequest.getMaxoName(),
+                            treatmentRequest.getHpoName(), treatmentRequest.getHpoId(), treatmentRequest.getEvidence(),
+                            treatmentRequest.getComment(), treatmentRequest.getRelation(), treatmentRequest.getExtensionId(), treatmentRequest.getExtensionLabel());
+                    oldAnnotation.setStatus(AnnotationStatus.RETIRED_PENDING);
+                    treatmentAnnotationRepository.save(oldAnnotation);
+                    treatmentAnnotationRepository.save(annotation);
+                    updateUserActivity(oldAnnotation.getOwner(), user, CurationAction.OVERRIDE, annotation, oldAnnotation);
+                // Allow accepted annotations to be updated by elevated users
+                } else if(oldAnnotation.getStatus().equals(AnnotationStatus.ACCEPTED)) {
+                    final TreatmentAnnotation annotation = new TreatmentAnnotation(oldAnnotation.getAnnotationSource(),
+                            AnnotationStatus.ACCEPTED, oldAnnotation.getOwner(), treatmentRequest.getMaxoId(), treatmentRequest.getMaxoName(),
+                            treatmentRequest.getHpoName(), treatmentRequest.getHpoId(), treatmentRequest.getEvidence(),
+                            treatmentRequest.getComment(), treatmentRequest.getRelation(), treatmentRequest.getExtensionId(), treatmentRequest.getExtensionLabel());
+                    oldAnnotation.setStatus(AnnotationStatus.RETIRED);
+                    treatmentAnnotationRepository.save(oldAnnotation);
+                    treatmentAnnotationRepository.save(annotation);
+                    updateUserActivity(oldAnnotation.getOwner(), user, CurationAction.OVERRIDE, annotation, oldAnnotation);
+                 // An elevated curators annotations can never be under review, must be someone elses
+                } else if(oldAnnotation.getStatus().equals(AnnotationStatus.UNDER_REVIEW)){
+                    // Most likely editing someones annotation
+                    // Build the new annotation, do a check for duplicated data 
+                    final TreatmentAnnotation annotation = new TreatmentAnnotation(treatmentRequest, oldAnnotation.getAnnotationSource(),
+                    AnnotationStatus.ACCEPTED, oldAnnotation.getOwner());
+                    if(treatmentAnnotationExists(annotation, null, null)){
+                            throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseId());
+                    }
+                    // Save the new annotation as accepted, retire the current under review one
+                    oldAnnotation.setStatus(AnnotationStatus.RETIRED);
+                    treatmentAnnotationRepository.save(oldAnnotation);
+                    treatmentAnnotationRepository.save(annotation);
+                    updateUserActivity(oldAnnotation.getOwner(), user, CurationAction.OVERRIDE, annotation, oldAnnotation);
+                }
+            } else if(user.equals(owner)){
+                // Resubmitting after needs work
+                if(oldAnnotation.getStatus().equals(AnnotationStatus.NEEDS_WORK) || oldAnnotation.getStatus().equals(AnnotationStatus.UNDER_REVIEW)){
+                    oldAnnotation.setStatus(AnnotationStatus.UNDER_REVIEW);
+                    oldAnnotation.updateAnnotation(treatmentRequest);
+                    treatmentAnnotationRepository.save(oldAnnotation);
+                    updateUserActivity(user,null, CurationAction.RESUBMIT, oldAnnotation, null);
+                // Updating their own annotations that are accepted or under review
+                } else if(oldAnnotation.getStatus().equals(AnnotationStatus.ACCEPTED)){
+                    final TreatmentAnnotation annotation = new TreatmentAnnotation(oldAnnotation.getAnnotationSource(),
+                            AnnotationStatus.UNDER_REVIEW, oldAnnotation.getOwner(), treatmentRequest.getMaxoId(), treatmentRequest.getMaxoName(),
+                            treatmentRequest.getHpoName(), treatmentRequest.getHpoId(), treatmentRequest.getEvidence(),
+                            treatmentRequest.getComment(), treatmentRequest.getRelation(), treatmentRequest.getExtensionId(), treatmentRequest.getExtensionLabel());
+
+                    // See if we already have an annotation that exists from the one we are trying to update to.
+                    if (treatmentAnnotationExists(annotation, AnnotationStatus.RETIRED, null)) {
+                        throw new DuplicateAnnotationException("treatment", annotation.getAnnotationSource().getDisease().getDiseaseName());
+                    }
+                    oldAnnotation.setStatus(AnnotationStatus.RETIRED);
+                    treatmentAnnotationRepository.save(oldAnnotation);
+                    treatmentAnnotationRepository.save(annotation);
+                    updateUserActivity(user, null, CurationAction.UPDATE, annotation, oldAnnotation);
+                }
+            } else {
+                throw new AuthenticationException(user.getNickname());
             }
-            treatmentAnnotationRepository.save(oldAnnotation);
-            oldAnnotation.setStatus(AnnotationStatus.RETIRED);
-            treatmentAnnotationRepository.save(annotation);
-            updateUserActivity(authentication, CurationAction.UPDATE, annotation, oldAnnotation);
     }
 
     /**
@@ -150,74 +359,78 @@ public class AnnotationService {
      * enforcing business rules with the status of the annotation
      *
      * @param id a maxo annotation id
+     * @param user the user making the request
      *
      * @return a boolean whether the annotation was created or not.
      */
-    public boolean deleteTreatmentAnnotation(Long id, Authentication authentication) {
+    public boolean deleteTreatmentAnnotation(Long id, User user) {
         if(id != null){
             TreatmentAnnotation annotation = treatmentAnnotationRepository.findDistinctById(id);
             if(annotation != null){
                 annotation.setStatus(AnnotationStatus.RETIRED);
-                updateUserActivity(authentication, CurationAction.DELETE, annotation, null);
+                treatmentAnnotationRepository.save(annotation);
+                updateUserActivity(user, null, CurationAction.DELETE, annotation, null);
                 return true;
             }
         }
         return false;
     }
 
-    /**
-     * A function to get an annotation source object.
-     *
-     * @param publicationId a PubMed id
-     * @param diseaseId a OMIM disease id
-     *
-     * @return an annotation source object  or null
-     * @since 0.5.0
-     */
-    private AnnotationSource getAnnotationSource(String publicationId, String diseaseId){
-        final Publication publication = publicationRepository.findByPublicationId(publicationId);
-        final Disease disease = diseaseRepository.findDiseaseByDiseaseId(diseaseId);
-        if(disease !=null && publication != null) {
-            return annotationSourceRepository.findByPublicationAndDisease(publication, disease);
-        }
-        return null;
+    public boolean phenotypeAnnotationExists(PhenotypeAnnotation phenotypeAnnotation, AnnotationStatus status){
+        return false;
     }
+
+    public boolean treatmentAnnotationExists(TreatmentAnnotation treatmentAnnotation, AnnotationStatus status, AnnotationStatus status2){
+        if(status != null && status2 != null){
+            // Negative test against a specific status
+            return treatmentAnnotationRepository.existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNotAndStatusNot(
+                    treatmentAnnotation.getAnnotationSource(), treatmentAnnotation.getMaxoId(), treatmentAnnotation.getHpoId(), treatmentAnnotation.getExtensionId(),
+                    treatmentAnnotation.getEvidence(), treatmentAnnotation.getRelation(), status, status2);
+        } else if(status != null){
+            return treatmentAnnotationRepository.existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNot(
+                    treatmentAnnotation.getAnnotationSource(), treatmentAnnotation.getMaxoId(), treatmentAnnotation.getHpoId(), treatmentAnnotation.getExtensionId(),
+                    treatmentAnnotation.getEvidence(), treatmentAnnotation.getRelation(), status);
+        } else {
+            // Positive test with the treatments status
+            return treatmentAnnotationRepository.existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatus(
+                    treatmentAnnotation.getAnnotationSource(), treatmentAnnotation.getMaxoId(), treatmentAnnotation.getHpoId(), treatmentAnnotation.getExtensionId(),
+                    treatmentAnnotation.getEvidence(), treatmentAnnotation.getRelation(), treatmentAnnotation.getStatus());
+        }
+    }
+
 
     /**
      * A function to track user activity that happens when creating, editing or deleting annotations.
      *
-     * @param authentication the spring authentication object.
+     * @param user a user entity from the database
      * @param curationAction the action that a user is taking.
      * @param annotation the annotation that is being modified.
      *
      * @since 0.5.0
      */
-    private void updateUserActivity(Authentication authentication, CurationAction curationAction,
-                                    TreatmentAnnotation annotation, TreatmentAnnotation oldAnnotation){
-          User user = userRepository.findDistinctByAuthId(authentication.getName());
-          if(user != null){
-              UserActivity userActivity = new UserActivity(user, curationAction, annotation, oldAnnotation);
-              userActivityRespository.save(userActivity);
-          } else {
-              // We got a sec leak
-              System.out.println("Rut Roh!");
-          }
+    private void updateUserActivity(User user, User reviewer, CurationAction curationAction,
+                                    Annotation annotation, Annotation oldAnnotation){
+            UserActivity userActivity;
+            if(curationAction.equals(CurationAction.REVIEW) || curationAction.equals(CurationAction.OVERRIDE)){
+              userActivity = new UserActivity(user, reviewer, curationAction, annotation, oldAnnotation);
+            } else {
+              userActivity = new UserActivity(user, curationAction, annotation, oldAnnotation);
+            }
+            userActivityRespository.save(userActivity);
     }
 
+    /**
+     * A function get the status from a review
+     */
+    private AnnotationStatus reviewToStatus(String review){
+        if(review.equals("approve")){
+            return AnnotationStatus.ACCEPTED;
+        } else {
+            return AnnotationStatus.NEEDS_WORK;
+        }
+    }
 
-    public void insertTestData(){
-        Publication publication = new Publication("PMID:31479590", "Encoding Clinical Data with the Human Phenotype Ontology for Computational Differential Diagnostics.", "2019 Sept", "Kohler S");
-        Publication publication2 = new Publication("PMID:30476213", "Expansion of the Human Phenotype Ontology (HPO) knowledge base and resources", "2019 Jan", "Kohler S");
-        Publication publication3 = new Publication("PMID:30323234", "Mikes future first author paper", "2020 Jan", "Gargano M");
-        publicationRepository.save(publication);
-        publicationRepository.save(publication2);
-        publicationRepository.save(publication3);
-        Disease disease = new Disease("OMIM:154700", "Marfan Syndrome");
-        Disease disease2 = new Disease("OMIM:300200", "Adrenal Hypoplasia, Congenital");
-        diseaseRepository.save(disease);
-        diseaseRepository.save(disease2);
-        annotationSourceRepository.save(new AnnotationSource(publication3, disease));
-        annotationSourceRepository.save(new AnnotationSource(publication, disease));
-        annotationSourceRepository.save(new AnnotationSource(publication2, disease));
+    private boolean isValidReview(String review){
+        return review.equals("approve") || review.equals("deny");
     }
 }

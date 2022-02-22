@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Review Messages</h2>
+<mat-dialog-content class="mat-typography"  cdkDrag
+                    cdkDragRootElement=".cdk-overlay-pane"
+                    cdkDragHandle>
+  <mat-list>
+    <mat-list-item *ngFor="let message of data.messages">
+      <strong>{{message.reviewer.nickname}}</strong>: {{message.value}}
+    </mat-list-item>
+  </mat-list>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>Ok</button>
+</mat-dialog-actions>

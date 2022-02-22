@@ -12,4 +12,19 @@ export class UserService {
   checkUser(): void {
     this.http.get(environment.POET_API_CHECK_USER_URL).subscribe();
   }
+
+  isUserAdmin(user): boolean {
+    return user?.role === environment.AUTH0_ADMIN_ROLE;
+  }
+
+  isRoleAdmin(userRole): boolean {
+    return userRole === environment.AUTH0_ADMIN_ROLE;
+  }
+
+  isUser(user): boolean  {
+    if(user == null){
+      return false;
+    }
+    return user && user.role !== 'GUEST' && Object.keys(user).length !== 0;
+  }
 }
