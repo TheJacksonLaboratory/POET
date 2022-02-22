@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'org.monarchinitiative.poet'
-version = '0.8.9-SNAPSHOT'
+version = '0.9.0-SNAPSHOT'
 sourceCompatibility = '8'
 
 repositories {
@@ -44,8 +44,8 @@ dependencies {
 def profile = 'development'
 
 node {
-	version = '12.0.0'
-	npmVersion = '6.9.0'
+	version = '16.3.0'
+	npmVersion = '7.0.3'
 	download = true
 	nodeModulesDir = file("src/main/poet")
 
@@ -84,6 +84,30 @@ clean {
 	delete fileTree(dir: "src/main/resources/static")
 }
 
+// Our war files will be versions and tagged with the env
+bootWar {
+	archiveFileName = "POET-${project.version}-${getActiveProfileTag()}.war_"
+}
+
+static def getActiveProfileTag() {
+	def profile = System.getProperty('spring.profiles.active')
+	switch(profile) {
+		case "test":
+			profile = "test"
+			break
+		case "stage":
+			profile = "stage"
+			break
+		case "production":
+			profile = "prod"
+			break
+		default:
+			profile = "dev"
+			break
+	}
+	return profile
+}
+
 bootWar.dependsOn {
 	if(System.getProperty('spring.profiles.active') == "production"){
 		buildClientProdEnv
@@ -91,6 +115,8 @@ bootWar.dependsOn {
 		buildClientTestEnv
 	}
 }
+
+bootWar.finalizedBy()
 
 bootRun {
 	if(System.getProperty("initialize") == "true"){

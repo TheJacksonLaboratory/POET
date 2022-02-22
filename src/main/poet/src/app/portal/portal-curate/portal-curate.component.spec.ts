@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PortalCurateComponent } from './portal-curate.component';
 import { RouterTestingModule } from "@angular/router/testing";
@@ -15,7 +15,7 @@ describe('PortalCurateComponent', () => {
     domain: "fake",
     clientId: "fake"
   };
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([
         { path: 'portal/dashboard', component: PortalDashboardComponent }]), SharedModule, HttpClientTestingModule, NoopAnimationsModule,

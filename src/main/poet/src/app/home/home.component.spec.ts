@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HomeComponent } from './home.component';
 import { HttpClientTestingModule } from "@angular/common/http/testing";
@@ -13,7 +13,7 @@ describe('HomeComponent', () => {
     domain: "fake",
     clientId: "fake"
   };
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule, AuthModule.forRoot(authConfig), NoopAnimationsModule, SharedModule],
       declarations: [ HomeComponent ]

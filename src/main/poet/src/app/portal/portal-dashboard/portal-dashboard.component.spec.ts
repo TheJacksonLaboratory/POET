@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PortalDashboardComponent } from './portal-dashboard.component';
 import { AuthConfig, AuthModule } from "@auth0/auth0-angular";
@@ -15,7 +15,7 @@ describe('PortalDashboardComponent', () => {
     domain: "fake",
     clientId: "fake"
   };
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [PortalDashboardComponent],
       imports: [AuthModule.forRoot(authConfig), RouterTestingModule, HttpClientTestingModule, SharedModule,

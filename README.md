@@ -49,7 +49,7 @@ Navigate to http://localhost:4200/, endpoints will be served at http://localhost
 Test Environment Internal Only
 
 `
-    ./gradlew bootWar
+    ./gradlew bootWar -Dspring.profiles.active=stage
 `
 
 Production Environment Deployment
