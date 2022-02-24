@@ -50,24 +50,18 @@
     <mat-list *ngIf="category === 'treatment'">
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': treatment == activeAnnotation}"
-                     *ngFor="let treatment of treatmentAnnotations | async | filter: selectedStatuses:user:showAll:filteredAnnotationLength | sortBy: selectedSort:category | slice:lowValue:highValue ">
+                     *ngFor="let treatment of treatmentAnnotations | async | filter: selectedStatuses:user:showAll:filteredAnnotationLength | sortBy: selectedSort:category | slice:lowValue:highValue "
+                     (mouseenter)="annotationAction(treatment, 'view')"
+      >
         <mat-icon [class]="{'statusApproved': treatment.status === 'ACCEPTED', 'statusReview': treatment.status === 'UNDER_REVIEW',
                       'statusOfficial': treatment.status === 'OFFICIAL', 'statusNeedsWork': treatment.status === 'NEEDS_WORK'}"
-                  [matTooltip]="getStatusTooltipText(treatment.status) " matTooltipShowDelay="775" matListIcon>health_and_safety</mat-icon>
+                  [matTooltip]="getStatusTooltipText(treatment.status) " matTooltipShowDelay="775" matListIcon>verified</mat-icon>
         <div class="selection-text">
           <span matLine>
             <strong>{{treatment.maxoName}}</strong> {{treatment.relation}} <strong>{{treatment.hpoName}}</strong>
           </span>
         </div>
         <div class="spacer"></div>
-        <a mat-icon-button
-           aria-label="Report Treatment Annotation"
-           matTooltip="Report Treatment Annotation Bug"
-           matTooltipShowDelay="775"
-           *ngIf="showBugReport(treatment)"
-           href="https://github.com/monarch-initiative/MAxO/issues/new" target="_blank">
-          <mat-icon>bug_report</mat-icon>
-        </a>
         <button mat-icon-button
                 aria-label="Delete Treatment Annotation"
                 matTooltip="Delete This Treatment Annotation"
@@ -93,19 +87,10 @@
           Needs Review
         </button>
         <ng-template #elseWorkBlock>
-          <button *ngIf="showAnnotationNeedsWork(treatment) else elseBlock"
+          <button *ngIf="showAnnotationNeedsWork(treatment)"
             mat-flat-button color="warn" aria-label="Needs Work Annotation"
             (click)="annotationAction(treatment, 'edit')" class="needs-work-btn">
             Needs Work
-          </button>
-        </ng-template>
-        <ng-template #elseBlock>
-          <button mat-icon-button
-                  aria-label="View Treatment Annotation"
-                  matTooltip="View This Treatment Annotation"
-                  matTooltipShowDelay="775"
-                  (click)="annotationAction(treatment, 'view')" *ngIf="!this.utilityService.isRetired(treatment)">
-            <mat-icon>launch</mat-icon>
           </button>
         </ng-template>
       </mat-list-item>
@@ -113,10 +98,11 @@
     <mat-list *ngIf="category === 'phenotype'" class="phenotype-list">
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      *ngFor="let phenotype of phenotypeAnnotations | async | filter: selectedStatuses:user:showAll:filteredAnnotationLength | sortBy: selectedSort:category | slice:lowValue:highValue "
-                     [ngClass]="{'active': isActive(phenotype)}">
+                     [ngClass]="{'active': isActive(phenotype)}"
+                     (mouseenter)="annotationAction(phenotype, 'view')">
         <mat-icon matListIcon [class]="{'statusApproved': phenotype.status === 'ACCEPTED', 'statusReview': phenotype.status === 'UNDER_REVIEW',
                       'statusOfficial': phenotype.status === 'OFFICIAL', 'statusNeedsWork': phenotype.status === 'NEEDS_WORK'}"
-                  [matTooltip]="getStatusTooltipText(phenotype.status) " matTooltipShowDelay="775">attribution</mat-icon>
+                  [matTooltip]="getStatusTooltipText(phenotype.status) " matTooltipShowDelay="775">verified</mat-icon>
         <div matLine class="selection-text" *ngIf="formOpen">
           <strong>{{phenotype.hpoName}}</strong>
           <span class="selection-id">
@@ -130,13 +116,6 @@
           </span>
         </div>
         <div class="spacer"></div>
-        <a mat-icon-button aria-label="Report Phenotype Annotation"
-           matTooltip="Report Phenotype Annotation Bug"
-           matTooltipShowDelay="775"
-           *ngIf="showBugReport(phenotype)"
-           href="https://github.com/obophenotype/human-phenotype-ontology/issues/new?assignees=drseb&labels=HPOA&template=h_new_annotation.md&title=" target="_blank">
-          <mat-icon>bug_report</mat-icon>
-        </a>
         <button mat-icon-button aria-label="Delete Phenotype Annotation"
                 matTooltip="Delete This Phenotype Annotation"
                 matTooltipPosition="above"
@@ -169,21 +148,11 @@
           Needs Review
         </button>
         <ng-template #elseWorkBlock>
-          <button *ngIf="showAnnotationNeedsWork(phenotype) else elseBlock"
+          <button *ngIf="showAnnotationNeedsWork(phenotype)"
                   mat-flat-button color="warn" aria-label="Needs Work Annotation"
                   (click)="annotationAction(phenotype, 'edit')"
                   class="needs-work-btn">
             Needs Work
-          </button>
-        </ng-template>
-        <ng-template #elseBlock>
-          <button mat-icon-button aria-label="View Phenotype Annotation"
-                  (click)="annotationAction(phenotype, 'view')"
-                  *ngIf="!this.utilityService.isRetired(phenotype)"
-                  matTooltip="View This Phenotype Annotation"
-                  matTooltipPosition="above"
-                  matTooltipShowDelay="775">
-            <mat-icon>launch</mat-icon>
           </button>
         </ng-template>
       </mat-list-item>
@@ -197,7 +166,7 @@
     <mat-paginator #phenotypePaginator *ngIf="(phenotypeAnnotations | async)?.length > 0 && category === 'phenotype'"
                    (page)="getPaginatorData($event)"
                    [length]="filteredAnnotationLength.count"
-                   pageSize="10"
+                   [pageSizeOptions]="[10, 50, 100, 500]"
                    showFirstLastButtons="false">
     </mat-paginator>
     <div class="annotation-missing" *ngIf="((treatmentAnnotations | async)?.length == 0 && this.category == 'treatment')

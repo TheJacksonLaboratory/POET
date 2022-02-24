@@ -3,7 +3,7 @@ import {
   Disease,
   TreatmentAnnotation,
   Publication,
-  PhenotypeAnnotation, Annotation,
+  PhenotypeAnnotation, Annotation, Status,
 } from '../../../shared/models/models';
 import { StateService } from '../../../shared/services/state/state.service';
 import { CurationService } from '../../../shared/services/curation/curation.service';
@@ -158,9 +158,9 @@ export class AnnotationCardComponent implements OnInit {
           }
         });
     } else {
-      if (this.category === 'treatment') {
+      if (this.category === 'treatment' && (annotation?.status !== Status.RETIRED.valueOf())) {
         this.stateService.setSelectedTreatmentAnnotation(annotation);
-      } else {
+      } else if (this.category === 'phenotype' && (annotation?.status !== Status.RETIRED.valueOf())) {
         this.stateService.setSelectedPhenotypeAnnotation(annotation);
       }
       this.stateService.setSelectedAnnotationMode(action);
@@ -183,9 +183,7 @@ export class AnnotationCardComponent implements OnInit {
     }
   }
 
-  showBugReport(annotation: Annotation){
-    return (this.utilityService.isOfficial(annotation) && !this.userService.isUserAdmin(this.user));
-  }
+
 
   showCreateAnnotation(annotation: Annotation) {
     return (this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) && !this.utilityService.isNeedsWork(annotation))

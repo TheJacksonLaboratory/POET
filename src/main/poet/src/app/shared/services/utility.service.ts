@@ -83,6 +83,10 @@ export class UtilityService {
     return this.isUnderReview(selectedAnnotation) && this.userService.isRoleAdmin(userRole);
   }
 
+  showBugReport(annotation: Annotation, userRole){
+    return (this.isOfficial(annotation) && !this.userService.isRoleAdmin(userRole));
+  }
+
   addSourceToAnnotation(annotationSource, annotation){
     annotation.publicationId = annotationSource.publication.publicationId;
     annotation.publicationName = annotationSource.publication.publicationName;

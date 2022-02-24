@@ -3,7 +3,7 @@ A Full-Stack annotation application to generate data for disease and associated 
 
 # Setup
 
-Java 1.8
+Java 11
 
 Intellij
 

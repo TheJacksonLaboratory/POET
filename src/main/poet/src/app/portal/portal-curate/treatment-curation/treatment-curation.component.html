@@ -195,6 +195,14 @@
     </div>
     <div class="right-actions">
       <button mat-stroked-button (click)="resetTreatmentForm()" *ngIf="!formControlGroup.disabled && !elevatedChanges">Clear</button>
+      <a mat-stroked-button
+         aria-label="Report Treatment Annotation"
+         matTooltip="Report Treatment Annotation Bug"
+         matTooltipShowDelay="775"
+         *ngIf="this.utilityService.showBugReport(selectedAnnotation, userRole)"
+         href="https://github.com/monarch-initiative/MAxO/issues/new" target="_blank">
+        <mat-icon>bug_report</mat-icon>
+      </a>
     </div>
   </mat-card-actions>
 </mat-card>
