@@ -78,7 +78,7 @@
                 *ngIf="showCreateAnnotation(treatment)"
                 [disabled]="!this.userService.isUser(this.user)"
                 (click)="annotationAction(treatment, 'edit')">
-          <mat-icon>create</mat-icon>
+          <mat-icon>draw</mat-icon>
         </button>
         <button *ngIf="showAnnotationNeedsReview(treatment) else elseWorkBlock"
                 mat-flat-button color="warn" aria-label="Review Treatment Annotation"
@@ -131,7 +131,7 @@
                 matTooltipShowDelay="775"
                 *ngIf="showCreateTreatment(phenotype)"
                 [disabled]="!isUser()" (click)="createTreatmentForPhenotype(phenotype)">
-          <mat-icon>healing</mat-icon>
+          <mat-icon>medication</mat-icon>
         </button>
         <button mat-icon-button aria-label="Edit Phenotype Annotation"
                 matTooltip="Edit This Phenotype Annotation"
@@ -139,7 +139,7 @@
                 matTooltipShowDelay="775"
                 *ngIf="showCreateAnnotation(phenotype)" [disabled]="!isUser()"
                 (click)="annotationAction(phenotype, 'edit')">
-          <mat-icon>create</mat-icon>
+          <mat-icon>draw</mat-icon>
         </button>
         <button *ngIf="showAnnotationNeedsReview(phenotype) else elseWorkBlock"
                 mat-flat-button color="warn" aria-label="Review Phenotype Annotation"

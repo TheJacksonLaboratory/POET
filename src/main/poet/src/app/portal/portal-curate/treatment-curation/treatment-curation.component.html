@@ -17,7 +17,9 @@
       mark_chat_unread
     </mat-icon>
     {{title}}
-    <mat-icon class="help-icon" (click)="closeForm()">cancel</mat-icon>
+    <mat-icon class="help-icon" (click)="closeForm()"
+              matTooltip="Close Form"
+              matTooltipShowDelay="500">cancel</mat-icon>
   </mat-card-title>
   <mat-card-subtitle>
     Medical Action Ontology [ MAxO ] <br>
