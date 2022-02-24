@@ -47,15 +47,17 @@
       </div>
     </div>
     <!------>
-    <mat-list *ngIf="category === 'treatment'">
+    <mat-list *ngIf="category === 'treatment'" class="treatment-list">
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': treatment == activeAnnotation}"
                      *ngFor="let treatment of treatmentAnnotations | async | filter: selectedStatuses:user:showAll:filteredAnnotationLength | sortBy: selectedSort:category | slice:lowValue:highValue "
-                     (mouseenter)="annotationAction(treatment, 'view')"
+                     (delayed-hover)="annotationAction(treatment, 'view')"
       >
-        <mat-icon [class]="{'statusApproved': treatment.status === 'ACCEPTED', 'statusReview': treatment.status === 'UNDER_REVIEW',
-                      'statusOfficial': treatment.status === 'OFFICIAL', 'statusNeedsWork': treatment.status === 'NEEDS_WORK'}"
+        <mat-icon *ngIf="treatment.status === 'OFFICIAL'" class="statusOfficial statusIcon"
                   [matTooltip]="getStatusTooltipText(treatment.status) " matTooltipShowDelay="775" matListIcon>verified</mat-icon>
+        <mat-icon [ngClass]="{'statusIcon': true, 'statusApproved': treatment.status === 'ACCEPTED', 'statusReview': treatment.status === 'UNDER_REVIEW',
+        'statusNeedsWork': treatment.status === 'NEEDS_WORK'}"  *ngIf="treatment.status === 'ACCEPTED' || treatment.status === 'UNDER_REVIEW' || treatment.status === 'NEEDS_WORK'"
+                  [matTooltip]="getStatusTooltipText(treatment.status) " matTooltipShowDelay="775" matListIcon>fiber_manual_record</mat-icon>
         <div class="selection-text">
           <span matLine>
             <strong>{{treatment.maxoName}}</strong> {{treatment.relation}} <strong>{{treatment.hpoName}}</strong>
@@ -99,10 +101,12 @@
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      *ngFor="let phenotype of phenotypeAnnotations | async | filter: selectedStatuses:user:showAll:filteredAnnotationLength | sortBy: selectedSort:category | slice:lowValue:highValue "
                      [ngClass]="{'active': isActive(phenotype)}"
-                     (mouseenter)="annotationAction(phenotype, 'view')">
-        <mat-icon matListIcon [class]="{'statusApproved': phenotype.status === 'ACCEPTED', 'statusReview': phenotype.status === 'UNDER_REVIEW',
-                      'statusOfficial': phenotype.status === 'OFFICIAL', 'statusNeedsWork': phenotype.status === 'NEEDS_WORK'}"
-                  [matTooltip]="getStatusTooltipText(phenotype.status) " matTooltipShowDelay="775">verified</mat-icon>
+                     (delayed-hover)="annotationAction(phenotype, 'view')">
+        <mat-icon *ngIf="phenotype.status === 'OFFICIAL'" class="statusOfficial statusIcon"
+                  [matTooltip]="getStatusTooltipText(phenotype.status) " matTooltipShowDelay="775" matListIcon>verified</mat-icon>
+        <mat-icon [ngClass]="{'statusIcon': true, 'statusApproved': phenotype.status === 'ACCEPTED', 'statusReview': phenotype.status === 'UNDER_REVIEW',
+        'statusNeedsWork': phenotype.status === 'NEEDS_WORK'}" *ngIf="phenotype.status === 'ACCEPTED' || phenotype.status === 'UNDER_REVIEW' || phenotype.status === 'NEEDS_WORK'"
+                  [matTooltip]="getStatusTooltipText(phenotype.status) " matTooltipShowDelay="775" matListIcon>fiber_manual_record</mat-icon>
         <div matLine class="selection-text" *ngIf="formOpen">
           <strong>{{phenotype.hpoName}}</strong>
           <span class="selection-id">

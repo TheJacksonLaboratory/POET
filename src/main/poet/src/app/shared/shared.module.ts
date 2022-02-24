@@ -30,9 +30,10 @@ import { MatChipsModule } from "@angular/material/chips";
 import { MatRadioModule } from "@angular/material/radio";
 import { SortPipe } from './pipes/sort.pipe';
 import { MatExpansionModule } from "@angular/material/expansion";
+import { DelayedHoverDirective } from './directives/delayed-hover.directive';
 
 @NgModule({
-  declarations: [SearchComponent, FilterPipe, SortPipe],
+  declarations: [SearchComponent, FilterPipe, SortPipe, DelayedHoverDirective],
   providers: [FilterPipe],
   imports: [
     CommonModule,
@@ -68,42 +69,43 @@ import { MatExpansionModule } from "@angular/material/expansion";
     MatRadioModule,
     MatExpansionModule
   ],
-    exports: [
-        MatToolbarModule,
-        MatButtonModule,
-        MatSidenavModule,
-        MatListModule,
-        MatDividerModule,
-        MatIconModule,
-        MatTableModule,
-        MatCardModule,
-        MatDialogModule,
-        MatSelectModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        MatProgressBarModule,
-        MatDividerModule,
-        SearchComponent,
-        MatProgressSpinnerModule,
-        MatBottomSheetModule,
-        MatSnackBarModule,
-        MatTabsModule,
-        MatTooltipModule,
-        MatMenuModule,
-        MatPaginatorModule,
-        MatCheckboxModule,
-        MatTooltipModule,
-        MatChipsModule,
-        FlexLayoutModule,
-        MatCheckboxModule,
-        FilterPipe,
-        MatRadioModule,
-        SortPipe,
-        MatExpansionModule
-    ]
+  exports: [
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatListModule,
+    MatDividerModule,
+    MatIconModule,
+    MatTableModule,
+    MatCardModule,
+    MatDialogModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatProgressBarModule,
+    MatDividerModule,
+    SearchComponent,
+    MatProgressSpinnerModule,
+    MatBottomSheetModule,
+    MatSnackBarModule,
+    MatTabsModule,
+    MatTooltipModule,
+    MatMenuModule,
+    MatPaginatorModule,
+    MatCheckboxModule,
+    MatTooltipModule,
+    MatChipsModule,
+    FlexLayoutModule,
+    MatCheckboxModule,
+    FilterPipe,
+    MatRadioModule,
+    SortPipe,
+    MatExpansionModule,
+    DelayedHoverDirective
+  ]
 })
 export class SharedModule {
 }

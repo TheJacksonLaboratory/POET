@@ -54,6 +54,14 @@
     }
   }
 
+  & .phenotype-list, .treatment-list {
+    & .statusIcon {
+      height:18px;
+      width: 18px;
+      font-size: 18px;
+    }
+  }
+
   & .add-annotation-btn {
     color: white;
     display: block;
@@ -87,7 +95,7 @@
   }
 
   .selection-text {
-    font-size: .9rem !important;
+    font-size: .85rem !important;
     text-transform: capitalize;
   }
 

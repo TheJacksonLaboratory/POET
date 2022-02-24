@@ -485,7 +485,7 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 }
 
 .mat-option.statusApproved .mat-pseudo-checkbox-checked {
-    background: limegreen !important;
+    background: forestgreen !important;
 }
 
 .mat-option.statusReview .mat-pseudo-checkbox-checked {
@@ -497,7 +497,7 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 }
 
 .mat-icon.statusApproved {
-  color: limegreen !important;
+  color: forestgreen !important;
 }
 
 .mat-icon.statusReview {
@@ -508,6 +508,9 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   color: indianred;
 }
 
+.mat-icon.statusHidden {
+  color: #2c3e4c !important;
+}
 
 .approve-annotation {
   background: forestgreen;
