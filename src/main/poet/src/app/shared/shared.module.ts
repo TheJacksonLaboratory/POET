@@ -30,10 +30,9 @@ import { MatChipsModule } from "@angular/material/chips";
 import { MatRadioModule } from "@angular/material/radio";
 import { SortPipe } from './pipes/sort.pipe';
 import { MatExpansionModule } from "@angular/material/expansion";
-import { DelayedHoverDirective } from './directives/delayed-hover.directive';
 
 @NgModule({
-  declarations: [SearchComponent, FilterPipe, SortPipe, DelayedHoverDirective],
+  declarations: [SearchComponent, FilterPipe, SortPipe],
   providers: [FilterPipe],
   imports: [
     CommonModule,
@@ -103,8 +102,7 @@ import { DelayedHoverDirective } from './directives/delayed-hover.directive';
     FilterPipe,
     MatRadioModule,
     SortPipe,
-    MatExpansionModule,
-    DelayedHoverDirective
+    MatExpansionModule
   ]
 })
 export class SharedModule {
