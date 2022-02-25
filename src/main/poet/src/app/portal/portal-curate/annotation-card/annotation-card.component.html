@@ -5,7 +5,7 @@
     <button class="add-annotation-btn-top" mat-mini-fab color="primary" aria-label="Add Annotation"
             *ngIf="isUser() && ((treatmentAnnotations | async)?.length > 0 && this.category == 'treatment') ||
             ((phenotypeAnnotations | async)?.length > 0 && this.category == 'phenotype')"
-            (click)="annotationAction(null, 'create')"
+            (click)="annotationAction($event, null, 'create')"
             matTooltip="New Annotation" matTooltipPosition="above" matTooltipShowDelay="775">
       <mat-icon>add</mat-icon>
     </button>
@@ -51,17 +51,14 @@
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      [ngClass]="{'active': treatment == activeAnnotation}"
                      *ngFor="let treatment of treatmentAnnotations | async | filter: selectedStatuses:user:showAll:filteredAnnotationLength | sortBy: selectedSort:category | slice:lowValue:highValue "
-                     (delayed-hover)="annotationAction(treatment, 'view')"
-      >
+                     (click)="annotationAction($event, treatment, 'view')">
         <mat-icon *ngIf="treatment.status === 'OFFICIAL'" class="statusOfficial statusIcon"
-                  [matTooltip]="getStatusTooltipText(treatment.status) " matTooltipShowDelay="775" matListIcon>verified</mat-icon>
+                  [matTooltip]="getStatusTooltipText(treatment.status)" matTooltipShowDelay="775" matListIcon>verified</mat-icon>
         <mat-icon [ngClass]="{'statusIcon': true, 'statusApproved': treatment.status === 'ACCEPTED', 'statusReview': treatment.status === 'UNDER_REVIEW',
         'statusNeedsWork': treatment.status === 'NEEDS_WORK'}"  *ngIf="treatment.status === 'ACCEPTED' || treatment.status === 'UNDER_REVIEW' || treatment.status === 'NEEDS_WORK'"
                   [matTooltip]="getStatusTooltipText(treatment.status) " matTooltipShowDelay="775" matListIcon>fiber_manual_record</mat-icon>
-        <div class="selection-text">
-          <span matLine>
+        <div class="selection-text" matLine>
             <strong>{{treatment.maxoName}}</strong> {{treatment.relation}} <strong>{{treatment.hpoName}}</strong>
-          </span>
         </div>
         <div class="spacer"></div>
         <button mat-icon-button
@@ -70,7 +67,7 @@
                 matTooltipShowDelay="775"
                 *ngIf="showDeleteAnnotation(treatment)"
                 [disabled]="!this.userService.isUser(this.user)"
-                (click)="annotationAction(treatment, 'delete')">
+                (click)="annotationAction($event, treatment, 'delete')">
           <mat-icon>remove_circle_outline</mat-icon>
         </button>
         <button mat-icon-button
@@ -79,19 +76,19 @@
                 matTooltipShowDelay="775"
                 *ngIf="showCreateAnnotation(treatment)"
                 [disabled]="!this.userService.isUser(this.user)"
-                (click)="annotationAction(treatment, 'edit')">
+                (click)="annotationAction($event, treatment, 'edit')">
           <mat-icon>draw</mat-icon>
         </button>
         <button *ngIf="showAnnotationNeedsReview(treatment) else elseWorkBlock"
                 mat-flat-button color="warn" aria-label="Review Treatment Annotation"
-                (click)="annotationAction(treatment, 'view')"
+                (click)="annotationAction($event, treatment, 'view')"
         class="needs-review-btn">
           Needs Review
         </button>
         <ng-template #elseWorkBlock>
           <button *ngIf="showAnnotationNeedsWork(treatment)"
             mat-flat-button color="warn" aria-label="Needs Work Annotation"
-            (click)="annotationAction(treatment, 'edit')" class="needs-work-btn">
+            (click)="annotationAction($event, treatment, 'edit')" class="needs-work-btn">
             Needs Work
           </button>
         </ng-template>
@@ -101,23 +98,18 @@
       <mat-list-item class="selection-wrapper mat-elevation-z3"
                      *ngFor="let phenotype of phenotypeAnnotations | async | filter: selectedStatuses:user:showAll:filteredAnnotationLength | sortBy: selectedSort:category | slice:lowValue:highValue "
                      [ngClass]="{'active': isActive(phenotype)}"
-                     (delayed-hover)="annotationAction(phenotype, 'view')">
+                     (click)="annotationAction($event, phenotype, 'view')">
         <mat-icon *ngIf="phenotype.status === 'OFFICIAL'" class="statusOfficial statusIcon"
-                  [matTooltip]="getStatusTooltipText(phenotype.status) " matTooltipShowDelay="775" matListIcon>verified</mat-icon>
+                  [matTooltip]="getStatusTooltipText(phenotype.status)" matListIcon>verified</mat-icon>
         <mat-icon [ngClass]="{'statusIcon': true, 'statusApproved': phenotype.status === 'ACCEPTED', 'statusReview': phenotype.status === 'UNDER_REVIEW',
-        'statusNeedsWork': phenotype.status === 'NEEDS_WORK'}" *ngIf="phenotype.status === 'ACCEPTED' || phenotype.status === 'UNDER_REVIEW' || phenotype.status === 'NEEDS_WORK'"
-                  [matTooltip]="getStatusTooltipText(phenotype.status) " matTooltipShowDelay="775" matListIcon>fiber_manual_record</mat-icon>
-        <div matLine class="selection-text" *ngIf="formOpen">
+        'statusNeedsWork': phenotype.status === 'NEEDS_WORK'}" *ngIf="phenotype.status === 'ACCEPTED' || phenotype.status === 'UNDER_REVIEW' || phenotype.status === 'NEEDS_WORK'" matListIcon>fiber_manual_record</mat-icon>
+        <div matLine class="selection-text">
           <strong>{{phenotype.hpoName}}</strong>
-          <span class="selection-id">
-             {{phenotype.hpoId}}
-          </span>
-        </div>
-        <div matLine class="selection-text" *ngIf="!formOpen">
-          <strong>{{phenotype.hpoName}}</strong>
-          <span class="selection-id">
+          <span class="selection-id" (click)="getTermDefinitionTooltipText($event, definitionTooltip, phenotype.hpoId)"
+          (mouseout)="definitionTooltip.hide()">
             {{phenotype.hpoId}}
           </span>
+          <span #definitionTooltip="matTooltip" [matTooltip]="" matTooltipPosition="after"></span>
         </div>
         <div class="spacer"></div>
         <button mat-icon-button aria-label="Delete Phenotype Annotation"
@@ -126,7 +118,7 @@
                 matTooltipShowDelay="775"
                 *ngIf="showDeleteAnnotation(phenotype)"
                 [disabled]="!this.userService.isUser(this.user)"
-                (click)="annotationAction(phenotype, 'delete')">
+                (click)="annotationAction($event, phenotype, 'delete')">
           <mat-icon>remove_circle_outline</mat-icon>
         </button>
         <button mat-icon-button
@@ -142,19 +134,19 @@
                 matTooltipPosition="above"
                 matTooltipShowDelay="775"
                 *ngIf="showCreateAnnotation(phenotype)" [disabled]="!isUser()"
-                (click)="annotationAction(phenotype, 'edit')">
+                (click)="annotationAction($event, phenotype, 'edit')">
           <mat-icon>draw</mat-icon>
         </button>
         <button *ngIf="showAnnotationNeedsReview(phenotype) else elseWorkBlock"
                 mat-flat-button color="warn" aria-label="Review Phenotype Annotation"
-                (click)="annotationAction(phenotype, 'view')"
+                (click)="annotationAction($event, phenotype, 'view')"
                 class="needs-review-btn">
           Needs Review
         </button>
         <ng-template #elseWorkBlock>
           <button *ngIf="showAnnotationNeedsWork(phenotype)"
                   mat-flat-button color="warn" aria-label="Needs Work Annotation"
-                  (click)="annotationAction(phenotype, 'edit')"
+                  (click)="annotationAction($event, phenotype, 'edit')"
                   class="needs-work-btn">
             Needs Work
           </button>
@@ -180,7 +172,7 @@
     <button class="add-annotation-btn" mat-mini-fab color="primary" aria-label="Add Annotation"
             *ngIf="isUser() && ((treatmentAnnotations | async)?.length == 0 && this.category == 'treatment')
     || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype') && !loadingAnnotations"
-            (click)="annotationAction(null, 'create')">
+            (click)="annotationAction($event,null, 'create')">
       <mat-icon>add</mat-icon>
     </button>
   </mat-card-content>

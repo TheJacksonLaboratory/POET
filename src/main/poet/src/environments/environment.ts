@@ -59,6 +59,7 @@ export const environment = {
   HPO_API_HPO_SEARCH_URL: HPO_BASE_URL + 'hpo/search',
   HPO_API_MAXO_SEARCH_URL: HPO_BASE_URL + 'maxo/search/',
   HPO_API_HPO_SEARCH_DESCENDANTS_URL: HPO_BASE_URL + 'hpo/search/descendants/',
+  HPO_API_TERM_URL: HPO_BASE_URL + 'hpo/term/',
   MONARCH_SEARCH_URL: MONARCH_BASE_URL + '/search/entity/autocomplete/',
   MONARCH_ENTITY_URL: MONARCH_BASE_URL + '/bioentity/',
   PUBMED_SUMMARY_URL: PUBMED_BASE_URL + 'esummary.fcgi',

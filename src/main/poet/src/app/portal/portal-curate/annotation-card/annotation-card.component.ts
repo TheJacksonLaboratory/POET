@@ -16,8 +16,10 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ConfirmSheetComponent } from './confirm-sheet/confirm-sheet.component';
 import { UtilityService } from '../../../shared/services/utility.service';
-import { tap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import {UserService} from '../../../shared/services/user/user.service';
+import { HpoService } from "../../../shared/services/external/hpo.service";
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
   selector: 'poet-annotation-card',
@@ -52,11 +54,12 @@ export class AnnotationCardComponent implements OnInit {
   showAll = false;
   selectedSort = 'recent';
   loadingAnnotations = true;
+  hpoToolTipText = '';
 
 
   constructor(public stateService: StateService, public curationService: CurationService, public utilityService: UtilityService,
               private _snackBar: MatSnackBar, private route: ActivatedRoute, private _bottomSheet: MatBottomSheet,
-              private cdk: ChangeDetectorRef, public userService: UserService) {
+              private cdk: ChangeDetectorRef, public userService: UserService, public hpoService: HpoService) {
   }
 
   ngOnInit(): void {
@@ -138,7 +141,8 @@ export class AnnotationCardComponent implements OnInit {
     this.openAnnotationForm.emit(false);
   }
 
-  annotationAction(annotation: any, action: any) {
+  annotationAction(event: MouseEvent, annotation: any, action: any) {
+    event.stopPropagation();
     if (action === 'delete') {
         this._bottomSheet.open(ConfirmSheetComponent, {
           restoreFocus: false,
@@ -183,8 +187,6 @@ export class AnnotationCardComponent implements OnInit {
     }
   }
 
-
-
   showCreateAnnotation(annotation: Annotation) {
     return (this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) && !this.utilityService.isNeedsWork(annotation))
       || (this.userService.isUserAdmin(this.user) && !this.utilityService.isUnderReview(annotation) && !this.utilityService.isNeedsWork(annotation));
@@ -228,6 +230,22 @@ export class AnnotationCardComponent implements OnInit {
       return 'Annotation is official.';
     } else if (status === 'NEEDS_WORK'){
       return 'Annotation needs work.';
+    }
+  }
+
+  getTermDefinitionTooltipText(event, tooltip, hpoId: string){
+    event.stopPropagation();
+    this.hpoService.hpoTermDefinition(hpoId).subscribe(definition => {
+      if(definition){
+        tooltip.message = definition
+        tooltip.show();
+      }
+    });
+  }
+
+  hideDefinitionTooltip(tooltip){
+    if(tooltip._isTooltipVisible()){
+      tooltip.hide();
     }
   }
 
