@@ -2,6 +2,7 @@ package org.monarchinitiative.poet.controller;
 
 import org.apache.commons.csv.CSVFormat;
 import org.monarchinitiative.poet.model.entities.Version;
+import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.service.ExportService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,10 @@ public class ExportController {
      * @since 0.5.0
      */
     @GetMapping(value = "/{ontology}")
-    public void getPublicationById(HttpServletResponse httpServletResponse, @PathVariable String ontology, @RequestParam(name="delim", defaultValue = "tsv") String delim) throws IOException {
+    public void exportOntology(HttpServletResponse httpServletResponse, @PathVariable String ontology,
+                               @RequestParam(name="delim", defaultValue = "tsv") String delim)
+            throws IOException {
+
         String contentType = "text/tab-separated-values";
         String fileExtension = ".tsv";
         CSVFormat format = CSVFormat.MONGODB_TSV; 
@@ -49,7 +53,7 @@ public class ExportController {
         } else if(ontology.equals("maxo")){
             httpServletResponse.setContentType("text/csv");
             httpServletResponse.addHeader("Content-Disposition",String.format("attachment; filename=\"maxo%s\"", fileExtension));
-            exportService.exportHPOAnnotations(httpServletResponse.getWriter(), format);
+            exportService.exportMAXOAnnotations(httpServletResponse.getWriter(), format);
         }
     }
 

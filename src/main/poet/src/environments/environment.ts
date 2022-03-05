@@ -54,6 +54,7 @@ export const environment = {
   POET_API_DISEASE_ENTITY_URL: POET_BASE_URL + '/entity/disease/',
   POET_API_PUBLICATION_ENTITY_URL: POET_BASE_URL + '/entity/publication/',
   POET_API_STATISTICS_ACTIVITY_URL: POET_BASE_URL + "/statistics/activity/",
+  POET_API_STATISTICS_ACTIVITY_DISEASE_URL: POET_BASE_URL + "/statistics/activity/disease",
   POET_API_STATISTICS_CONTRIBUTION_URL: POET_BASE_URL + "/statistics/contributions/",
   POET_API_STATISTICS_ANNOTATION_URL: POET_BASE_URL + "/statistics/annotation/",
   HPO_API_HPO_SEARCH_URL: HPO_BASE_URL + 'hpo/search',

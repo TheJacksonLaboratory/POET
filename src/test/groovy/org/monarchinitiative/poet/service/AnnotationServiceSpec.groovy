@@ -16,7 +16,6 @@ import org.monarchinitiative.poet.repository.PhenotypeAnnotationRepository
 import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository
 import org.monarchinitiative.poet.repository.PublicationRepository
 import org.monarchinitiative.poet.repository.UserActivityRepository
-import org.monarchinitiative.poet.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -100,7 +99,7 @@ class AnnotationServiceSpec extends Specification {
     void "test get phenotype annotations #desc"(){
         given:
         diseaseStub.findDiseaseByDiseaseId(_ as String) >> diseaseResponse
-        phenotypeAnnotationStub.findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(_ as Disease, _ as AnnotationStatus, _ as AnnotationStatus) >> phenotypeAnnotationResponse
+        phenotypeAnnotationStub.findAllByAnnotationSourceDiseaseAndStatusNotIn(_ as Disease, _ as AnnotationStatus, _ as AnnotationStatus) >> phenotypeAnnotationResponse
         annotationStub.findByPublicationAndDisease(_ as Publication, _ as Disease) >> annotationSourceResponse
         userActivityStub.getMostRecentDateForAnnotationActivity(_ as Long) >> userActivityResponse
         def result = annotationService.getPhenotypeAnnotationsByDisease(inputParameters[0])
