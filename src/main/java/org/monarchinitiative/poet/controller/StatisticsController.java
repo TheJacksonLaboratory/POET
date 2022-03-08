@@ -68,7 +68,7 @@ public class StatisticsController {
      */
     @GetMapping(value ="/activity/disease", headers = "Accept=application/json")
     public List<DiseaseCount> getDiseaseActivity(@RequestParam(value = "all", defaultValue = "false") boolean all,
-                                                    @RequestParam(value = "weeks", defaultValue = "2") int weeks,
+                                                    @RequestParam(value = "weeks", defaultValue = "4") int weeks,
                                                     @RequestParam(value = "offset", defaultValue = "0") int offset,
                                                     @RequestParam(value = "limit", defaultValue = "250") int limit,
                                                     Authentication authentication){

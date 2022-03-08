@@ -29,7 +29,6 @@ export class PortalDashboardComponent implements OnInit {
   diseaseActivity: any;
   lowValue: number = 0;
   highValue: number = 5;
-  weeksBackActivity: number;
   reviews: any;
   userAnnotations: any;
   loading: boolean = true;
@@ -41,18 +40,20 @@ export class PortalDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.authService.user$.subscribe((user) => {
-      this.user = user;
-      this.userRole = user[environment.AUTH0_ROLE_CLAIM];
-      if(this.userService.isRoleAdmin(this.userRole)){
-        this.curationService.getAnnotationsNeedingReview().subscribe((annotations) => {
-          this.reviews = annotations;
-          this.loadingAnnotationsNeedingAction = false;
-        });
-      } else if(this.user) {
-        this.curationService.getUserAnnotationsNeedingWork().subscribe((annotations)=>{
-          this.userAnnotations = annotations;
-          this.loadingAnnotationsNeedingAction = false;
-        });
+      if(user) {
+        this.user = user;
+        this.userRole = user[environment.AUTH0_ROLE_CLAIM];
+        if(this.userService.isRoleAdmin(this.userRole)){
+          this.curationService.getAnnotationsNeedingReview().subscribe((annotations) => {
+            this.reviews = annotations;
+            this.loadingAnnotationsNeedingAction = false;
+          });
+        } else {
+          this.curationService.getUserAnnotationsNeedingWork().subscribe((annotations)=>{
+            this.userAnnotations = annotations;
+            this.loadingAnnotationsNeedingAction = false;
+          });
+        }
       }
     });
 
