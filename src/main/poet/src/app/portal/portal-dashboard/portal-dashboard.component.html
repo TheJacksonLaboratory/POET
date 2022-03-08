@@ -15,24 +15,31 @@
             User Activity
           </mat-card-title>
           <mat-card-content>
-                <mat-list *ngFor="let recent of recentUserActivity | slice: lowValue:highValue">
-                  <mat-list-item (click)="navigateToDisease(recent.diseaseId, recent.type)" class="activity-item">
-                    <p>{{recent.view}}</p>
-                  </mat-list-item>
-                </mat-list>
-                <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-                <p class="no-activity" *ngIf="recentUserActivity?.length == 0">No Recent Activity.</p>
-                <mat-paginator *ngIf="recentUserActivity?.length > 0" [length]="recentUserActivity?.length" pageSize="5"
-                               (page)="getPaginatorData($event)"
-                               showFirstLastButtons="false" hidePageSize="true">
-                </mat-paginator>
+            <div class="card-filters">
+              <mat-radio-group aria-label="Select an option" (change)="getUserActivity($event.value)" value="1">
+                <mat-radio-button value="1">1 Week</mat-radio-button>
+                <mat-radio-button value="4">1 Month</mat-radio-button>
+                <mat-radio-button value ="24">6 Months</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <mat-list *ngFor="let recent of recentUserActivity | slice: lowValue:highValue">
+              <mat-list-item (click)="navigateToDisease(recent.diseaseId, recent.type)" class="activity-item">
+                <p>{{recent.view}}</p>
+              </mat-list-item>
+            </mat-list>
+            <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+            <p class="no-activity" *ngIf="recentUserActivity?.length == 0">No Recent Activity.</p>
+            <mat-paginator *ngIf="recentUserActivity?.length > 0" [length]="recentUserActivity?.length" pageSize="5"
+                           (page)="getPaginatorData($event)"
+                           showFirstLastButtons="false" hidePageSize="true">
+            </mat-paginator>
           </mat-card-content>
         </mat-card>
     </div>
     <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5">
       <mat-card class="reviews">
         <mat-card-title>
-          Disease Activity
+          Active Disease Curation
         </mat-card-title>
         <mat-card-content #containerRef>
           <ngx-charts-bar-horizontal

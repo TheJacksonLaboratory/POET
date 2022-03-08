@@ -26,6 +26,11 @@
     & .mat-card {
       height: 100%;
       padding-bottom: 0;
+
+       & .card-filters {
+         text-align: center;
+         margin: 0 0 0.5rem 0;
+       }
     }
 
     & .mat-card-content {

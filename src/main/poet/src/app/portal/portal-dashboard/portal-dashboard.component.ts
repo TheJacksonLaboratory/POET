@@ -29,6 +29,7 @@ export class PortalDashboardComponent implements OnInit {
   diseaseActivity: any;
   lowValue: number = 0;
   highValue: number = 5;
+  weeksBackActivity: number;
   reviews: any;
   userAnnotations: any;
   loading: boolean = true;
@@ -55,14 +56,7 @@ export class PortalDashboardComponent implements OnInit {
       }
     });
 
-    this.curationService.getGroupActivityFeed(true, 1,  null, null)
-      .subscribe((recentActivity) => {
-      this.recentUserActivity = recentActivity;
-    }, (error)=>{
-      console.log(error);
-    }, ()=> {
-        this.loading = false;
-    });
+    this.getUserActivity(1);
 
     this.curationService.getUserContributions().subscribe((contributions) => {
       if (contributions.every(obj => obj.value === 0)) {
@@ -75,6 +69,17 @@ export class PortalDashboardComponent implements OnInit {
     this.curationService.getDiseaseActivity().subscribe(data => {
       this.diseaseActivity = data;
     });
+  }
+
+  getUserActivity(weeksBack: number) {
+    this.curationService.getGroupActivityFeed(true, weeksBack,  null, null)
+      .subscribe((recentActivity) => {
+        this.recentUserActivity = recentActivity;
+      }, (error)=>{
+        console.log(error);
+      }, ()=> {
+        this.loading = false;
+      });
   }
 
   graphUserActivity(userActivity: any) {
