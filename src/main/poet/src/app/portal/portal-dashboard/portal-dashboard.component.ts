@@ -25,7 +25,8 @@ export class PortalDashboardComponent implements OnInit {
   user: any;
   pieData = [];
   userRole: any;
-  recentActivity: any;
+  recentUserActivity: any;
+  diseaseActivity: any;
   lowValue: number = 0;
   highValue: number = 5;
   reviews: any;
@@ -56,7 +57,7 @@ export class PortalDashboardComponent implements OnInit {
 
     this.curationService.getGroupActivityFeed(true, 1,  null, null)
       .subscribe((recentActivity) => {
-      this.recentActivity = recentActivity;
+      this.recentUserActivity = recentActivity;
     }, (error)=>{
       console.log(error);
     }, ()=> {
@@ -69,6 +70,10 @@ export class PortalDashboardComponent implements OnInit {
       } else {
         this.pieData = contributions;
       }
+    });
+
+    this.curationService.getDiseaseActivity().subscribe(data => {
+      this.diseaseActivity = data;
     });
   }
 
@@ -105,5 +110,9 @@ export class PortalDashboardComponent implements OnInit {
     this.stateService.setSelectedCategory(category);
     const urlSegment = `/curate/${disease}`;
     this.router.navigateByUrl(urlSegment);
+  }
+
+  onDiseaseActivitySelect(data): void {
+    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
   }
 }
