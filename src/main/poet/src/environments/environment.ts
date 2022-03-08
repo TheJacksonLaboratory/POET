@@ -4,7 +4,7 @@
 import { HttpMethod } from "@auth0/auth0-angular";
 
 const POET_BASE_URL = 'http://localhost:8080/api/v1';
-const MONARCH_BASE_URL = 'https://api-dev.monarchinitiative.org/api';
+const MONARCH_BASE_URL = 'https://api.monarchinitiative.org/api';
 const PUBMED_BASE_URL = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
 const HPO_BASE_URL = 'https://hpo.jax.org/api/';
 export const environment = {

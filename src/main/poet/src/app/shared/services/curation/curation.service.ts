@@ -408,14 +408,16 @@ export class CurationService {
    */
   getDiseaseActivity(): any{
     return this.httpClient.get(environment.POET_API_STATISTICS_ACTIVITY_DISEASE_URL).pipe(
-      map((diseaseList:object[]) => {
-        diseaseList.map(disease => {
+      map((diseaseList:any[]) => {
+        return diseaseList.map(disease => {
           return {
             name: disease.diseaseName,
-            id: disease.diseaseId,
+            extra: {
+              id: disease.diseaseId,
+            },
             value: disease.diseaseCount
           }
-        });
+        }).sort((a,b) => (a.value > b.value)? -1 : 1);
       })
     );
   }

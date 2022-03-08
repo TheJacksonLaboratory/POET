@@ -8,8 +8,8 @@
       </div>
     </div>
   </div>
-  <div class="dashboard" fxLayout="row wrap" fxLayoutAlign="stretch" fxLayoutGap=" grid">
-    <div class="dashboard-card" fxFlex="33">
+  <div class="dashboard" fxLayout="row wrap" fxLayoutAlign="stretch" fxLayoutGap=" grid" >
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5">
         <mat-card class="reviews">
           <mat-card-title>
             User Activity
@@ -29,39 +29,40 @@
           </mat-card-content>
         </mat-card>
     </div>
-    <div class="dashboard-card" fxFlex="33">
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5">
       <mat-card class="reviews">
         <mat-card-title>
           Disease Activity
         </mat-card-title>
-        <mat-card-content>
-          <mat-list *ngFor="let recent of diseaseActivity">
-            <mat-list-item (click)="navigateToDisease(recent.diseaseId, recent.type)" class="activity-item">
-              <p>{{recent.diseaseName}} - {{recent.diseaseCount}}</p>
-            </mat-list-item>
-          </mat-list>
-          <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-          <p class="no-activity" *ngIf="recentUserActivity?.length == 0">No Recent Activity.</p>
-          <mat-paginator *ngIf="recentUserActivity?.length > 0" [length]="recentUserActivity?.length" pageSize="5"
-                         (page)="getPaginatorData($event)"
-                         showFirstLastButtons="false" hidePageSize="true">
-          </mat-paginator>
+        <mat-card-content #containerRef>
+          <ngx-charts-bar-horizontal
+            [results]="diseaseActivity"
+            [view]="[containerRef.offsetWidth,200]"
+            xAxis="true"
+            yAxis="true"
+            showXAxisLabel="true"
+            xAxisLabel="Annotation Actions"
+            (select)="onDiseaseActivitySelect($event)">
+          </ngx-charts-bar-horizontal>
         </mat-card-content>
       </mat-card>
     </div>
-    <div class="dashboard-card" fxFlex="33" *ngIf="userService.isRoleAdmin(userRole)">
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5" *ngIf="userService.isRoleAdmin(userRole)">
         <mat-card class="reviews">
           <mat-card-title>
             Action Items
           </mat-card-title>
-          <ngx-charts-bar-horizontal
-            [results]="diseaseActivity"
-            xAxis="true"
-            yAxis="true"
-            showYAxisLabel="true"
-            yAxisLabel="Annotation Actions"
-            (select)="onDiseaseActivitySelect($event)">
-          </ngx-charts-bar-horizontal>
+          <mat-card-content>
+            <mat-list *ngFor="let review of reviews">
+              <mat-list-item class="activity-item">
+                <p>{{review.count}} {{review.type}} annotations ready to be reviewed for {{review.diseaseName}}.</p>
+                <span class="spacer"></span>
+                <button mat-stroked-button (click)="navigateToDisease(review.diseaseId, review.type)">View</button>
+              </mat-list-item>
+            </mat-list>
+            <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+            <p class="no-activity" *ngIf="reviews?.length == 0  && !loading">No annotations need review!</p>
+          </mat-card-content>
         </mat-card>
     </div>
 
