@@ -417,7 +417,7 @@ export class CurationService {
             },
             value: disease.diseaseCount
           }
-        }).sort((a,b) => (a.value > b.value)? -1 : 1);
+        }).sort((a,b) => (a.value > b.value)? -1 : 1).slice(0, 10);
       })
     );
   }

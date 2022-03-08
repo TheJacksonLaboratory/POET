@@ -113,6 +113,6 @@ export class PortalDashboardComponent implements OnInit {
   }
 
   onDiseaseActivitySelect(data): void {
-    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+    this.router.navigate([`/portal/curate/${data.extra.id}`])
   }
 }
