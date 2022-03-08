@@ -218,12 +218,12 @@
     </div>
     <div class="right-actions">
       <button mat-icon-button (click)="resetPhenotypeForm()" *ngIf="!formControlGroup.disabled && !elevatedChanges">Clear</button>
-      <a mat-icon-button aria-label="Report Phenotype Annotation"
+      <a mat-flat-button aria-label="Report Phenotype Annotation"
          matTooltip="Report Phenotype Annotation Bug"
          matTooltipShowDelay="775"
-         *ngIf="this.utilityService.showBugReport(selectedAnnotation, userRole)"
+         *ngIf="this.utilityService.isOfficial(selectedAnnotation)"
          href="https://github.com/obophenotype/human-phenotype-ontology/issues/new?assignees=drseb&labels=HPOA&template=h_new_annotation.md&title=" target="_blank">
-        <mat-icon>bug_report</mat-icon>
+        Report Annotation Issue
       </a>
     </div>
   </mat-card-actions>
