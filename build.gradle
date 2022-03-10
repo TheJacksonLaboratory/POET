@@ -44,7 +44,7 @@ dependencies {
 def profile = 'development'
 
 node {
-	version = '16.3.0'
+	version = '16.10.0'
 	npmVersion = '7.0.3'
 	download = true
 	nodeModulesDir = file("src/main/poet")
