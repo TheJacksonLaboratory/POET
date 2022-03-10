@@ -58,7 +58,7 @@ class AnnotationServiceSpec extends Specification {
     void "test get treatment annotations #desc"() {
         given:
         diseaseStub.findDiseaseByDiseaseId(_ as String) >> diseaseResponse
-        treatmentAnnotationStub.findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(_ as Disease, _ as AnnotationStatus, _ as AnnotationStatus) >> treatmentAnnotationResponse
+        treatmentAnnotationStub.findAllByAnnotationSourceDiseaseAndStatusNotIn(_ as Disease, _ as List<AnnotationStatus>) >> treatmentAnnotationResponse
         publicationStub.findByPublicationId(_ as String) >> publicationResponse
         annotationStub.findByPublicationAndDisease(_ as Publication, _ as Disease) >> annotationSourceResponse
         userActivityStub.getMostRecentDateForAnnotationActivity(_ as Long) >> userActivityResponse
@@ -99,7 +99,7 @@ class AnnotationServiceSpec extends Specification {
     void "test get phenotype annotations #desc"(){
         given:
         diseaseStub.findDiseaseByDiseaseId(_ as String) >> diseaseResponse
-        phenotypeAnnotationStub.findAllByAnnotationSourceDiseaseAndStatusNotIn(_ as Disease, _ as AnnotationStatus, _ as AnnotationStatus) >> phenotypeAnnotationResponse
+        phenotypeAnnotationStub.findAllByAnnotationSourceDiseaseAndStatusNotIn(_ as Disease,  _ as List<AnnotationStatus>) >> phenotypeAnnotationResponse
         annotationStub.findByPublicationAndDisease(_ as Publication, _ as Disease) >> annotationSourceResponse
         userActivityStub.getMostRecentDateForAnnotationActivity(_ as Long) >> userActivityResponse
         def result = annotationService.getPhenotypeAnnotationsByDisease(inputParameters[0])
