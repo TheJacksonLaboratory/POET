@@ -40,7 +40,7 @@
             {{publication.publicationName}}{{publication.publicationId}}
         </span>
         <span class="spacer"></span>
-        <mat-icon class="remove-icon" (click)="removePublication(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
+        <mat-icon class="remove-icon" (click)="removePublication(publication)" *ngIf="!formControlGroup.disabled">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
      <form [formGroup]="formControlGroup" fxLayout="column" fxLayoutAlign="start stretch">
@@ -217,7 +217,7 @@
       <mat-spinner color="accent" [diameter]="20" mode="indeterminate" *ngIf="savingAnnotation"></mat-spinner>
     </div>
     <div class="right-actions">
-      <button mat-icon-button (click)="resetPhenotypeForm()" *ngIf="!formControlGroup.disabled && !elevatedChanges">Clear</button>
+      <button mat-stroked-button (click)="resetPhenotypeForm()" *ngIf="!formControlGroup.disabled && !elevatedChanges">Clear</button>
       <a mat-flat-button aria-label="Report Phenotype Annotation"
          matTooltip="Report Phenotype Annotation Bug"
          matTooltipShowDelay="775"

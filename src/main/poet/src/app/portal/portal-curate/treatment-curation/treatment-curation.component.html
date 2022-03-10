@@ -42,7 +42,7 @@
             {{publication.publicationName}}{{publication.publicationId}}
           </span>
         <span class="spacer"></span>
-        <mat-icon class="remove-icon" matListIcon (click)="remove(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
+        <mat-icon class="remove-icon" matListIcon (click)="remove(publication)" *ngIf="!formControlGroup.disabled">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
     <form [formGroup]="formControlGroup">

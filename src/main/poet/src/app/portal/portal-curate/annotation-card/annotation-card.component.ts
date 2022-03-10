@@ -187,13 +187,15 @@ export class AnnotationCardComponent implements OnInit {
     }
   }
 
-  showCreateAnnotation(annotation: Annotation) {
-    return (this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) && !this.utilityService.isNeedsWork(annotation))
-      || (this.userService.isUserAdmin(this.user) && !this.utilityService.isUnderReview(annotation) && !this.utilityService.isNeedsWork(annotation));
+  showEditAnnotation(annotation: Annotation) {
+    return (this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) &&
+      !this.utilityService.isNeedsWork(annotation) && !this.utilityService.isOfficial(annotation))
+      || (this.userService.isUserAdmin(this.user) && !this.utilityService.isUnderReview(annotation) &&
+        !this.utilityService.isNeedsWork(annotation));
   }
 
   showDeleteAnnotation(annotation: Annotation){
-    return this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) ||
+    return (this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) && !this.utilityService.isOfficial(annotation)) ||
       this.userService.isUserAdmin(this.user);
   }
 

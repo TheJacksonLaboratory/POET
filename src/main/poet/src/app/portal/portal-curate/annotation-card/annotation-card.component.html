@@ -74,7 +74,7 @@
                 aria-label="Edit Treatment Annotation"
                 matTooltip="Edit This Treatment Annotation"
                 matTooltipShowDelay="775"
-                *ngIf="showCreateAnnotation(treatment)"
+                *ngIf="showEditAnnotation(treatment)"
                 [disabled]="!this.userService.isUser(this.user)"
                 (click)="annotationAction($event, treatment, 'edit')">
           <mat-icon>draw</mat-icon>
@@ -133,7 +133,7 @@
                 matTooltip="Edit This Phenotype Annotation"
                 matTooltipPosition="above"
                 matTooltipShowDelay="775"
-                *ngIf="showCreateAnnotation(phenotype)" [disabled]="!isUser()"
+                *ngIf="showEditAnnotation(phenotype)" [disabled]="!isUser()"
                 (click)="annotationAction($event, phenotype, 'edit')">
           <mat-icon>draw</mat-icon>
         </button>

@@ -72,7 +72,24 @@
           </mat-card-content>
         </mat-card>
     </div>
-
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5" *ngIf="!userService.isRoleAdmin(userRole)">
+      <mat-card class="reviews">
+        <mat-card-title>
+          Action Items
+        </mat-card-title>
+        <mat-card-content>
+          <mat-list *ngFor="let annotation of userAnnotations">
+            <mat-list-item class="activity-item">
+              <p>{{annotation.count}} {{annotation.type}} annotations need work for {{annotation.diseaseName}}.</p>
+              <span class="spacer"></span>
+              <button mat-stroked-button (click)="navigateToDisease(annotation.diseaseId, annotation.type)">View</button>
+            </mat-list-item>
+          </mat-list>
+          <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+          <p class="no-activity" *ngIf="userAnnotations?.length == 0 && !loading">No work needs to be done!</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
 
 
 
