@@ -19,6 +19,10 @@
     <mat-progress-bar mode="buffer" *ngIf="loadingAnnotations"></mat-progress-bar>
     <div class="filter-wrapper" *ngIf="(category === 'phenotype' && (phenotypeAnnotations | async)?.length > 0) ||
                                         (category === 'treatment' && (treatmentAnnotations | async)?.length > 0)">
+      <div class="filter-container mat-form-field">
+        <button mat-icon-button matTooltip="Refresh" matTooltipPosition="above"
+                (click)="this.stateService.triggerAnnotationReload(true, false)"><mat-icon>cached</mat-icon></button>
+      </div>
       <mat-form-field class="filter-container">
         <mat-label>Annotation Status</mat-label>
         <mat-select multiple [(value)]="selectedStatuses" (selectionChange)="resetPaginator()">
@@ -56,7 +60,7 @@
                   [matTooltip]="getStatusTooltipText(treatment.status)" matTooltipShowDelay="775" matListIcon>verified</mat-icon>
         <mat-icon [ngClass]="{'statusIcon': true, 'statusApproved': treatment.status === 'ACCEPTED', 'statusReview': treatment.status === 'UNDER_REVIEW',
         'statusNeedsWork': treatment.status === 'NEEDS_WORK'}"  *ngIf="treatment.status === 'ACCEPTED' || treatment.status === 'UNDER_REVIEW' || treatment.status === 'NEEDS_WORK'"
-                  [matTooltip]="getStatusTooltipText(treatment.status) " matTooltipShowDelay="775" matListIcon>fiber_manual_record</mat-icon>
+                  [matTooltip]="getStatusTooltipText(treatment.status)" matTooltipShowDelay="775" matListIcon>fiber_manual_record</mat-icon>
         <div class="selection-text" matLine>
             <strong>{{treatment.maxoName}}</strong> {{treatment.relation}} <strong>{{treatment.hpoName}}</strong>
         </div>

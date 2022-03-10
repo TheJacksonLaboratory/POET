@@ -6,8 +6,8 @@ import { fadeIn } from "ng-animate";
 import { CurationService } from "../../shared/services/curation/curation.service";
 import { environment } from "../../../environments/environment";
 import { UserService } from "../../shared/services/user/user.service";
-import {Router} from "@angular/router";
-import {StateService} from "../../shared/services/state/state.service";
+import { Router } from "@angular/router";
+import { StateService } from "../../shared/services/state/state.service";
 
 @Component({
   selector: 'app-portal-home',
@@ -57,8 +57,6 @@ export class PortalDashboardComponent implements OnInit {
       }
     });
 
-    this.getUserActivity(1);
-
     this.curationService.getUserContributions().subscribe((contributions) => {
       if (contributions.every(obj => obj.value === 0)) {
         this.pieData = [];
@@ -70,6 +68,10 @@ export class PortalDashboardComponent implements OnInit {
     this.curationService.getDiseaseActivity().subscribe(data => {
       this.diseaseActivity = data;
     });
+  }
+
+  ngAfterContentInit() {
+    this.getUserActivity(1);
   }
 
   getUserActivity(weeksBack: number) {

@@ -16,10 +16,9 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ConfirmSheetComponent } from './confirm-sheet/confirm-sheet.component';
 import { UtilityService } from '../../../shared/services/utility.service';
-import { switchMap, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import {UserService} from '../../../shared/services/user/user.service';
 import { HpoService } from "../../../shared/services/external/hpo.service";
-import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
   selector: 'poet-annotation-card',
@@ -63,36 +62,6 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    this.phenotypeAnnotations = this.stateService.phenotypeAnnotations.pipe(
-      tap(annotations => {
-        if (this.category === 'phenotype' && annotations.length > 0){
-          this.annotationStatuses = [];
-          const statuses = annotations.map((annotation) => {
-            return annotation.status;
-          });
-          this.annotationStatuses = [...new Set(statuses)].sort();
-          this.selectedStatuses = this.annotationStatuses;
-          this.cdk.detectChanges();
-          this.loadingAnnotations = false;
-        }
-      })
-    );
-
-    this.treatmentAnnotations = this.stateService.treatmentAnnotations.pipe(
-      tap(annotations => {
-        if (this.category === 'treatment' && annotations.length > 0){
-          this.annotationStatuses = [];
-          const statuses = annotations.map((annotation) => {
-            return annotation.status;
-          });
-          this.annotationStatuses = [...new Set(statuses)].sort();
-          this.selectedStatuses = this.annotationStatuses;
-          this.cdk.detectChanges();
-          this.loadingAnnotations = false;
-        }
-      }));
-
     this.stateService.selectedDisease.subscribe((disease: Disease) => {
       if (disease != null) {
         this.disease = disease;
@@ -123,6 +92,37 @@ export class AnnotationCardComponent implements OnInit {
         this .activeAnnotation = null;
       }
     });
+  }
+
+  ngAfterContentInit(){
+    this.phenotypeAnnotations = this.stateService.phenotypeAnnotations.pipe(
+      tap(annotations => {
+        if (this.category === 'phenotype' && annotations.length > 0){
+          this.annotationStatuses = [];
+          const statuses = annotations.map((annotation) => {
+            return annotation.status;
+          });
+          this.annotationStatuses = [...new Set(statuses)].sort();
+          this.selectedStatuses = this.annotationStatuses;
+          this.cdk.detectChanges();
+          this.loadingAnnotations = false;
+        }
+      })
+    );
+
+    this.treatmentAnnotations = this.stateService.treatmentAnnotations.pipe(
+      tap(annotations => {
+        if (this.category === 'treatment' && annotations.length > 0){
+          this.annotationStatuses = [];
+          const statuses = annotations.map((annotation) => {
+            return annotation.status;
+          });
+          this.annotationStatuses = [...new Set(statuses)].sort();
+          this.selectedStatuses = this.annotationStatuses;
+          this.cdk.detectChanges();
+          this.loadingAnnotations = false;
+        }
+      }));
   }
 
   categoryToDisplay() {
