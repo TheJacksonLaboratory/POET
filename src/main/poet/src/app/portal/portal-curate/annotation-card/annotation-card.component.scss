@@ -100,8 +100,8 @@
     text-transform: capitalize;
   }
 
-  .filter-container:not(:first-child){
-    margin-left: .5rem;
+  .filter:not(:first-child){
+    margin-left: .75rem;
   }
 
   .needs-review-btn, .needs-work-btn {

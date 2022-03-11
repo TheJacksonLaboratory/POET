@@ -556,7 +556,7 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   color: #ff4a4a;
 }
 
-.filter-container {
+.filter {
   & .mat-select-value-text, .mat-checkbox-label {
     font-size: 12px;
   }
@@ -599,3 +599,33 @@ a:not(.mat-tab-link, .mat-icon-button) {
   margin-left: 16px;
 }
 
+@mixin mat-icon-size($px-size) {
+  height: $px-size !important;
+  width: $px-size !important;
+  font-size: $px-size !important;
+  line-height: 1 !important;
+}
+
+mat-icon {
+  vertical-align: middle;
+
+  &.size-12 {
+    @include mat-icon-size(12px);
+  }
+
+  &.size-16 {
+    @include mat-icon-size(16px);
+  }
+
+  &.size-18 {
+    @include mat-icon-size(18px);
+  }
+
+  &.size-20 {
+    @include mat-icon-size(20px);
+  }
+
+  &.size-28 {
+    @include mat-icon-size(28px);
+  }
+}
