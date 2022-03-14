@@ -2,6 +2,13 @@
   <mat-card-title>
     <span *ngIf="category == 'treatment'">Treatments</span>
     <span *ngIf="category == 'phenotype'">Phenotypes</span>
+    <button class="add-annotation-btn-top" mat-mini-fab color="primary" aria-label="Add Annotation"
+            *ngIf="isUser() && ((treatmentAnnotations | async)?.length > 0 && this.category == 'treatment') ||
+            ((phenotypeAnnotations | async)?.length > 0 && this.category == 'phenotype')"
+            (click)="annotationAction($event, null, 'create')"
+            matTooltip="New Annotation" matTooltipPosition="above" matTooltipShowDelay="775">
+      <mat-icon>add</mat-icon>
+    </button>
   </mat-card-title>
   <mat-card-subtitle>
     <span *ngIf="category == 'treatment'">A list of curated medical actions for this disease.</span>
@@ -12,49 +19,35 @@
     <mat-progress-bar mode="buffer" *ngIf="loadingAnnotations"></mat-progress-bar>
     <div class="filter-wrapper" *ngIf="(category === 'phenotype' && (phenotypeAnnotations | async)?.length > 0) ||
                                         (category === 'treatment' && (treatmentAnnotations | async)?.length > 0)"
-         fxflexlayout="row" fxLayoutAlign="space-between center">
-      <div class="filter-container">
-        <button mat-stroked-button matTooltip="Refresh" matTooltipPosition="above"
-                (click)="this.stateService.triggerAnnotationReload(true, false)"><mat-icon inline="true" class="size-16">cached</mat-icon> Refresh</button>
-      </div>
-      <div class="filter-container">
-        <mat-form-field class="filter">
-          <mat-label>Annotation Status</mat-label>
-          <mat-select multiple [(value)]="selectedStatuses" (selectionChange)="resetPaginator()">
-            <mat-select-trigger>
-              {{selectedStatuses ? selectedStatuses[0] : ''}}
-              <span *ngIf="selectedStatuses?.length > 1" class="example-additional-selection">
+         fxflexlayout="row wrap" fxLayoutAlign="space-between center">
+      <button mat-stroked-button matTooltip="Refresh" matTooltipPosition="above"
+              (click)="this.stateService.triggerAnnotationReload(true, false)"><mat-icon inline="true" class="size-16">cached</mat-icon> Refresh</button>
+      <mat-form-field class="filter">
+        <mat-label>Annotation Status</mat-label>
+        <mat-select multiple [(value)]="selectedStatuses" (selectionChange)="resetPaginator()">
+          <mat-select-trigger>
+            {{selectedStatuses ? selectedStatuses[0] : ''}}
+            <span *ngIf="selectedStatuses?.length > 1" class="example-additional-selection">
               (+{{selectedStatuses.length - 1}} {{selectedStatuses?.length === 2 ? 'other' : 'others'}})
             </span>
-            </mat-select-trigger>
-            <mat-option *ngFor="let status of annotationStatuses" [value]="status"
-                        [class]="{'statusApproved': status === 'ACCEPTED', 'statusReview': status === 'UNDER_REVIEW',
+          </mat-select-trigger>
+          <mat-option *ngFor="let status of annotationStatuses" [value]="status"
+                      [class]="{'statusApproved': status === 'ACCEPTED', 'statusReview': status === 'UNDER_REVIEW',
                       'statusOfficial': status === 'OFFICIAL', 'statusNeedsWork': status === 'NEEDS_WORK'}">
-              {{status}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="filter">
-          <mat-label>Sort By</mat-label>
-          <mat-select [(ngModel)]="selectedSort" (selectionChange)="resetPaginator()">
-            <mat-option value="recent">Most Recent</mat-option>
-            <mat-option value="name"><span class="capitalize">{{category}}</span> Name</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <div class="filter mat-form-field">
-          <mat-checkbox [(ngModel)]="showAll" (change)="resetPaginator()"> Show Other Curators </mat-checkbox>
-        </div>
+            {{status}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="filter">
+        <mat-label>Sort By</mat-label>
+        <mat-select [(ngModel)]="selectedSort" (selectionChange)="resetPaginator()">
+          <mat-option value="recent">Most Recent</mat-option>
+          <mat-option value="name"><span class="capitalize">{{category}}</span> Name</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="filter mat-form-field">
+        <mat-checkbox [(ngModel)]="showAll" (change)="resetPaginator()"> Show Other Curators </mat-checkbox>
       </div>
-      <div class="filter-container">
-        <button class="add-annotation-btn-top" mat-mini-fab color="primary" aria-label="Add Annotation"
-                *ngIf="isUser() && ((treatmentAnnotations | async)?.length > 0 && this.category == 'treatment') ||
-            ((phenotypeAnnotations | async)?.length > 0 && this.category == 'phenotype')"
-                (click)="annotationAction($event, null, 'create')"
-                matTooltip="New Annotation" matTooltipPosition="above" matTooltipShowDelay="775">
-          <mat-icon>add</mat-icon>
-        </button>
-      </div>
-
     </div>
     <!------>
     <mat-list *ngIf="category === 'treatment'" class="treatment-list">

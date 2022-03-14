@@ -1,27 +1,22 @@
-<div class="contact">
-  <p>For general questions you may have please review our Frequently Asked Questions. If your question was not answered feel free to contact us:<p>
-  <address><a href="mailto:peter.robinson@jax.org">Peter Robinson</a>
-    The Jackson Laboratory for Genomic Medicine
-    10 Discovery Drive
-    Farmington, CT 06032
-    USA </address>
-  <address><a href="mailto:michael.Gargano@jax.org">Michael Gargano</a>
-    The Jackson Laboratory for Genomic Medicine
-    10 Discovery Drive
-    Farmington, CT 06032
-    USA </address>
-  <address>
-    <a href="mailto:dr.sebastian.koehler@gmail.com" target="__blank">Sebastian Köhler</a>
-    Monarch Initiative
-    Information Architect at Ada Health
-  </address>
-  <address>
-    <a href="mailto:haendel@ohsu.edu">Melissa Haendel</a>
-    Center for Genome Research and Biocomputing
-    Oregon State University
-    USA </address>
-  <br>
-  <p>We encourage all users of the HPO to join our low-volume <a href="https://groups.io/g/human-phenotype-ontology" target="__blank">mailing list</a>
-    for announcements about new features, publications, files, etc.</p>
-
+<div class="container">
+  <div>
+    <h1 class="contact">Contact</h1>
+    <h4 class="contact">Please feel free to reach out to us!</h4>
+    <div fxLayout="row wrap" fxLayoutAlign="center center">
+      <div class="contact-general" fxFlex.gt-sm="50" fxFlexOffset="25" fxLayout="column">
+        <div class="contact-card" fxLayout="row" *ngFor="let contact of generalContacts">
+          <div class="contact-img">
+            <img [src]="contact.src" [alt]="contact.name">
+          </div>
+          <div class="contact-bio" fxFlex="85">
+            <h3>{{contact.name}}</h3>
+            <h4>{{contact.affiliation}}</h4>
+            <a [href]="'mailto:' + contact.email" target="_blank">
+              <mat-icon>email_outline</mat-icon>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
