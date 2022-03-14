@@ -8,7 +8,7 @@
       </div>
     </div>
   </div>
-  <div class="dashboard" fxLayout="row wrap" fxLayoutAlign="stretch" fxLayoutGap=" grid" >
+  <div class="dashboard" fxLayout="row wrap" fxLayoutAlign="center stretch" fxLayoutGap=" grid" >
     <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5">
         <mat-card class="reviews">
           <mat-card-title>
@@ -36,7 +36,7 @@
           </mat-card-content>
         </mat-card>
     </div>
-    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5">
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5" *ngIf="diseaseActivity.length > 3">
       <mat-card class="reviews">
         <mat-card-title>
           Active Disease Curation
@@ -44,7 +44,7 @@
         <mat-card-content #containerRef>
           <ngx-charts-bar-horizontal
             [results]="diseaseActivity"
-            [view]="[containerRef.offsetWidth,200]"
+            [view]="[containerRef.offsetWidth, 200]"
             xAxis="true"
             yAxis="true"
             showXAxisLabel="true"
@@ -90,60 +90,5 @@
         </mat-card-content>
       </mat-card>
     </div>
-
-
-
-
-
-
-
- <!--<mat-tab label="Contributions" [disabled]="noContributions()">
-  <div class="chart-wrapper" *ngIf="!noContributions()">
-    <ngx-charts-pie-chart
-      [results]="pieData"
-      legend="true"
-      legendTitle="Legend"
-      legendPosition="bottom"
-      explodeSlices="true"
-      gradient="true"
-      scheme="ocean"
-    >
-    </ngx-charts-pie-chart>
-  </div>
-
-</mat-tab>-->
-<!--  <div fxflexlayout="row" class="flex-row">-->
-<!--    <mat-card class="contribution-donut-card" fxFlex="40" fxFlexOffset="10">-->
-<!--      <mat-card-title>-->
-<!--        Contributions-->
-<!--      </mat-card-title>-->
-<!--      <mat-card-content>-->
-<!--        <div class="no-contributions" *ngIf="pieData?.length === 0">-->
-<!--          <p>No official contributions yet!</p>-->
-<!--          <button mat-raised-button color="accent">Get Started</button>-->
-<!--        </div>-->
-<!--      </mat-card-content>-->
-<!--    </mat-card>-->
-<!--    <mat-card class="contribution-overtime-card" fxFlex="40">-->
-<!--      <mat-card-title>-->
-<!--        Daily Activity-->
-<!--      </mat-card-title>-->
-<!--      <mat-card-content>-->
-<!--        <div class="chart-wrapper">-->
-<!--          <ngx-charts-line-chart-->
-<!--            [results]="lineData"-->
-<!--            [view]="[650, 300]"-->
-<!--            xAxis="Day"-->
-<!--            yAxis="Annotations"-->
-<!--            showXAxisLabel="true"-->
-<!--            showYAxisLabel="true"-->
-<!--            gradient="true"-->
-<!--            scheme="ocean"-->
-<!--          >-->
-<!--          </ngx-charts-line-chart>-->
-<!--        </div>-->
-<!--      </mat-card-content>-->
-<!--    </mat-card>-->
-<!--  </div>-->
   </div>
 </div>
