@@ -29,7 +29,7 @@
 
        & .card-filters {
          text-align: center;
-         margin: 0 0 0.5rem 0;
+         margin: 0 0 .75rem 0;
        }
     }
 
@@ -150,7 +150,6 @@
     }
 
     & .recently-curated-card {
-      padding: 0;
 
       & .mat-card-content {
         margin: .5rem 0 0 0;
@@ -163,14 +162,17 @@
       }
 
       .activity-item {
-        & h3 {
-          margin: 0;
+        outline: 0;
+
+        & .activity-time {
+          font-size: 10px;
         }
-        opacity: .8;
+
         &:hover {
+          opacity: .9;
           cursor: pointer;
         }
-        outline: 0;
+
       }
     }
   }

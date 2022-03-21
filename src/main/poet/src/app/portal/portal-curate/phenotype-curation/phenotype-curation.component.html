@@ -58,7 +58,7 @@
           </mat-hint>
           <input matInput formControlName="hpoFormControl" ngDefaultControl
                  [matAutocomplete]="hpo" required>
-          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null && !formControlGroup.disabled" matSuffix mat-icon-button
+          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value !== null && !formControlGroup.disabled" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
@@ -74,7 +74,7 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-        <div [ngClass]="{'qualifier': formControlGroup.get('hpoFormControl').value == null, 'fr': true}">
+        <div [ngClass]="{'qualifier': formControlGroup.get('hpoFormControl').value === null, 'fr': true}">
           <mat-checkbox aria-label="Is Qualified?" formControlName="qualifierFormControl"
                         [(ngModel)]="selectedQualifier">
             NOT CHARACTERIZED <span class="form-field-help-icon material-icons"
@@ -138,7 +138,7 @@
           <mat-label>HPO Frequency</mat-label>
           <input matInput placeholder="..." formControlName="frequencyFormControl" ngDefaultControl
                  [matAutocomplete]="frequency">
-          <button mat-button *ngIf="formControlGroup.get('frequencyFormControl').value != null && !formControlGroup.disabled" matSuffix mat-icon-button
+          <button mat-button *ngIf="formControlGroup.get('frequencyFormControl').value !== null && !formControlGroup.disabled" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('frequencyFormControl').reset(); frequencyOptions = []; selectedFrequency = null ">
             <mat-icon>close</mat-icon>
           </button>
@@ -184,7 +184,7 @@
           <mat-label>Additional Description</mat-label>
           <input matInput type="text" formControlName="descriptionFormControl" maxlength="50">
           <mat-hint *ngIf="this.formControlGroup.get('descriptionFormControl').value?.length >= 50">Maximum Characters Reached.</mat-hint>
-          <button mat-button *ngIf="formControlGroup.get('descriptionFormControl').value != '' && !formControlGroup.disabled" matSuffix mat-icon-button
+          <button mat-button *ngIf="formControlGroup.get('descriptionFormControl').value !== '' && !formControlGroup.disabled" matSuffix mat-icon-button
                   aria-label="Clear"
                   (click)="formControlGroup.get('descriptionFormControl').reset()">
             <mat-icon>close</mat-icon>

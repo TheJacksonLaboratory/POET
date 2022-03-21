@@ -23,7 +23,7 @@
       </ng-template>
       <ng-template #loggedOut>
         <ng-container>
-          <button *ngIf="!(auth.isLoading$ | async)" mat-button class="primary nav-btn" (click)="loginWithRedirect()">Login</button>
+          <button *ngIf="(auth.isLoading$ | async) === false" mat-button class="primary nav-btn" (click)="loginWithRedirect()">Login</button>
         </ng-container>
       </ng-template>
     </mat-toolbar-row>

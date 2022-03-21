@@ -1,5 +1,4 @@
 import {
-  AfterContentInit,
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -27,7 +26,7 @@ import { ConfirmSheetComponent } from './confirm-sheet/confirm-sheet.component';
 import { UtilityService } from '../../../shared/services/utility.service';
 import { tap } from 'rxjs/operators';
 import {UserService} from '../../../shared/services/user/user.service';
-import { HpoService } from "../../../shared/services/external/hpo.service";
+import { HpoService } from '../../../shared/services/external/hpo.service';
 
 @Component({
   selector: 'poet-annotation-card',
@@ -42,8 +41,8 @@ import { HpoService } from "../../../shared/services/external/hpo.service";
 export class AnnotationCardComponent implements OnInit {
 
   @Output('openForm') openAnnotationForm: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Input('user') user: any;
-  @Input('formOpen') formOpen = false;
+  @Input() user: any;
+  @Input() formOpen = false;
   @ViewChild('phenotypePaginator') phenotypePagination: MatPaginator;
   @ViewChild('treatmentPaginator') treatmentPagination: MatPaginator;
   disease: Disease;
@@ -111,7 +110,7 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   configureAnnotationStatus(annotations){
-    if(annotations.length > 0){
+    if (annotations.length > 0){
       this.annotationStatuses = [];
       const statuses = annotations.map((annotation) => {
         return annotation.status;
@@ -193,7 +192,8 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   showDeleteAnnotation(annotation: Annotation){
-    return (this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) && !this.utilityService.isOfficial(annotation)) ||
+    return (this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) &&
+        !this.utilityService.isOfficial(annotation)) ||
       this.userService.isUserAdmin(this.user);
   }
 
@@ -236,15 +236,15 @@ export class AnnotationCardComponent implements OnInit {
   getTermDefinitionTooltipText(event, tooltip, hpoId: string){
     event.stopPropagation();
     this.hpoService.hpoTermDefinition(hpoId).subscribe(definition => {
-      if(definition){
-        tooltip.message = definition
+      if (definition){
+        tooltip.message = definition;
         tooltip.show();
       }
     });
   }
 
   hideDefinitionTooltip(tooltip){
-    if(tooltip._isTooltipVisible()){
+    if (tooltip._isTooltipVisible()){
       tooltip.hide();
     }
   }

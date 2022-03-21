@@ -1,18 +1,18 @@
 <mat-card class="annotation-card">
   <mat-card-title>
-    <span *ngIf="category == 'treatment'">Treatments</span>
-    <span *ngIf="category == 'phenotype'">Phenotypes</span>
+    <span *ngIf="category === 'treatment'">Treatments</span>
+    <span *ngIf="category === 'phenotype'">Phenotypes</span>
     <button class="add-annotation-btn-top" mat-mini-fab color="primary" aria-label="Add Annotation"
-            *ngIf="isUser() && ((treatmentAnnotations | async)?.length > 0 && this.category == 'treatment') ||
-            ((phenotypeAnnotations | async)?.length > 0 && this.category == 'phenotype')"
+            *ngIf="isUser() && ((treatmentAnnotations | async)?.length > 0 && this.category === 'treatment') ||
+            ((phenotypeAnnotations | async)?.length > 0 && this.category === 'phenotype')"
             (click)="annotationAction($event, null, 'create')"
             matTooltip="New Annotation" matTooltipPosition="above" matTooltipShowDelay="775">
       <mat-icon>add</mat-icon>
     </button>
   </mat-card-title>
   <mat-card-subtitle>
-    <span *ngIf="category == 'treatment'">A list of curated medical actions for this disease.</span>
-    <span *ngIf="category == 'phenotype'">A list of curated phenotypes of this disease</span><br><br>
+    <span *ngIf="category === 'treatment'">A list of curated medical actions for this disease.</span>
+    <span *ngIf="category === 'phenotype'">A list of curated phenotypes of this disease</span><br><br>
   </mat-card-subtitle>
   <mat-card-content>
     <!-- Filters -->
@@ -52,7 +52,7 @@
     <!------>
     <mat-list *ngIf="category === 'treatment'" class="treatment-list">
       <mat-list-item class="selection-wrapper mat-elevation-z3"
-                     [ngClass]="{'active': treatment == activeAnnotation}"
+                     [ngClass]="{'active': treatment === activeAnnotation}"
                      *ngFor="let treatment of treatmentAnnotations | async | filter: selectedStatuses:user:showAll:filteredAnnotationLength | sortBy: selectedSort:category | slice:lowValue:highValue "
                      (click)="annotationAction($event, treatment, 'view')">
         <mat-icon *ngIf="treatment.status === 'OFFICIAL'" class="statusOfficial statusIcon"
@@ -168,13 +168,13 @@
                    [pageSizeOptions]="[10, 50, 100, 500]"
                    showFirstLastButtons="false">
     </mat-paginator>
-    <div class="annotation-missing" *ngIf="((treatmentAnnotations | async)?.length == 0 && this.category == 'treatment')
-    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype') && !loadingAnnotations">
+    <div class="annotation-missing" *ngIf="((treatmentAnnotations | async)?.length === 0 && this.category === 'treatment')
+    || ((phenotypeAnnotations | async)?.length === 0  && this.category === 'phenotype') && !loadingAnnotations">
       No {{categoryToDisplay()}} Found.
     </div>
     <button class="add-annotation-btn" mat-mini-fab color="primary" aria-label="Add Annotation"
-            *ngIf="isUser() && ((treatmentAnnotations | async)?.length == 0 && this.category == 'treatment')
-    || ((phenotypeAnnotations | async)?.length == 0  && this.category == 'phenotype') && !loadingAnnotations"
+            *ngIf="isUser() && ((treatmentAnnotations | async)?.length === 0 && this.category === 'treatment')
+    || ((phenotypeAnnotations | async)?.length === 0  && this.category === 'phenotype') && !loadingAnnotations"
             (click)="annotationAction($event,null, 'create')">
       <mat-icon>add</mat-icon>
     </button>

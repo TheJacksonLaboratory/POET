@@ -220,10 +220,10 @@ export class CurationService {
    * @param activityList
    */
   reduceToGroupedActivity(activityList) {
-    let activities = [];
-    let that = this;
-    let dayMap = activityList.reduce(function (r, a) {
-      let date = new Date(Date.parse(a.dateTime + "Z"));
+    const activities = [];
+    const that = this;
+    const dayMap = activityList.reduce(function (r, a) {
+      const date = new Date(Date.parse(a.dateTime + "Z"));
       const dayDifference = that.daysFromNow(date);
       r[dayDifference] = r[dayDifference] || [];
       r[dayDifference].push(a);
@@ -232,7 +232,7 @@ export class CurationService {
 
     Object.keys(dayMap).forEach(daysFromNow => {
       dayMap[daysFromNow] = dayMap[daysFromNow].reduce((r, a) => {
-        let disease = a.annotation.annotationSource.disease.diseaseId + "~" +
+        const disease = a.annotation.annotationSource.disease.diseaseId + '~' +
           a.annotation.annotationSource.disease.diseaseName;
         r[disease] = r[disease] || [];
         r[disease].push(a);
@@ -240,8 +240,8 @@ export class CurationService {
       }, Object.create(null));
 
       Object.keys(dayMap[daysFromNow]).forEach(diseaseJoined => {
-        const [diseaseId, diseaseName] = diseaseJoined.split("~");
-        if (parseInt(daysFromNow) == 0) {
+        const [diseaseId, diseaseName] = diseaseJoined.split('~');
+        if (parseInt(daysFromNow) === 0) {
           // Today
           dayMap[daysFromNow][diseaseJoined] = dayMap[daysFromNow][diseaseJoined].reduce((r, a) => {
             r[a.owner.nickname] = r[a.owner.nickname] || [];
@@ -260,7 +260,7 @@ export class CurationService {
               // Group by hours from now
               dayMap[daysFromNow][diseaseJoined][user][type] = dayMap[daysFromNow][diseaseJoined][user][type].reduce((r, a) => {
                 // Group by hours from now
-                let date = new Date(Date.parse(a.dateTime + "Z"));
+                let date = new Date(Date.parse(a.dateTime + 'Z'));
                 const hourDifference = that.hoursFromNow(date);
                 r[hourDifference] = r[hourDifference] || [];
                 r[hourDifference].push(a);
@@ -269,7 +269,7 @@ export class CurationService {
 
               Object.keys(dayMap[daysFromNow][diseaseJoined][user][type]).forEach(hour => {
                 const hoursFromNow = parseInt(hour);
-                if (hoursFromNow == 0) {
+                if (hoursFromNow === 0) {
                   dayMap[daysFromNow][diseaseJoined][user][type][hour] = dayMap[daysFromNow][diseaseJoined][user][type][hour].reduce((r, a) => {
                     r[a.curationAction] = r[a.curationAction] || [];
                     r[a.curationAction].push(a);
@@ -283,16 +283,20 @@ export class CurationService {
                     const actionFriendly = this.actionLookup(action);
                     const annotationGrammar = this.annotationGrammar(count);
                     let view;
-                    if (minutesFromNow == 0 || minutesFromNow == 1) {
-                      view = `${user} ${actionFriendly} ${count} ${type} ${annotationGrammar} for ${diseaseName} just now.`;
+                    let timePast;
+                    if (minutesFromNow === 0 || minutesFromNow === 1) {
+                      view = `${user} ${actionFriendly} ${count} ${type} ${annotationGrammar} for ${diseaseName}`;
+                      timePast = 'just now';
                     } else {
-                      view = `${user} ${actionFriendly} ${count} ${type} ${annotationGrammar} for ${diseaseName} -  ${minutesFromNow} minutes ago.`;
+                      view = `${user} ${actionFriendly} ${count} ${type} ${annotationGrammar} for ${diseaseName}`;
+                      timePast = `${minutesFromNow} minutes ago.`;
                     }
                     activities.push({
-                      "view": view,
-                      "diseaseId": diseaseId,
-                      "date": mostRecent,
-                      "type": type
+                      view,
+                      diseaseId,
+                      date: mostRecent,
+                      type,
+                      timePast
                     });
                   });
 
@@ -301,16 +305,20 @@ export class CurationService {
                   const mostRecent = this.getMostRecentDate(dayMap[daysFromNow][diseaseJoined][user][type][hoursFromNow]);
                   const annotationGrammar = this.annotationGrammar(count);
                   let view;
-                  if (hoursFromNow == 1) {
-                    view = `${user} modified ${count} ${type} ${annotationGrammar} for ${diseaseName} an hour ago.`;
+                  let timePast;
+                  if (hoursFromNow === 1) {
+                    view = `${user} modified ${count} ${type} ${annotationGrammar} for ${diseaseName}`;
+                    timePast = 'about an hour ago';
                   } else {
-                    view = `${user} modified ${count} ${type} ${annotationGrammar} for ${diseaseName} - ${hoursFromNow} hours ago.`;
+                    view = `${user} modified ${count} ${type} ${annotationGrammar} for ${diseaseName}`;
+                    timePast = `${hoursFromNow} hours ago`;
                   }
                   activities.push({
-                    "view": view,
-                    "diseaseId": diseaseId,
-                    "date": mostRecent,
-                    "type": type
+                    view,
+                    diseaseId,
+                    date: mostRecent,
+                    type,
+                    timePast
                   });
                 }
               });
@@ -325,18 +333,22 @@ export class CurationService {
           const annotationGrammar = this.annotationGrammar(count);
           const userList = [...new Set(dayMap[daysFromNow][diseaseJoined].map(item => {
             return item.owner.nickname;
-          }))].join(", ");
+          }))].join(', ');
           let view;
-          if (parseInt(daysFromNow) == 1) {
-            view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName} yesterday.`;
+          let timePast;
+          if (parseInt(daysFromNow) === 1) {
+            view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName}`;
+            timePast = 'yesterday';
           } else {
-            view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName} - ${daysFromNow} days ago.`;
+            view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName}`;
+            timePast = `${daysFromNow} days ago`;
           }
           activities.push({
-            "view": view,
-            "diseaseId": diseaseId,
-            "date": mostRecent,
-            "type": "phenotype"
+            view,
+            diseaseId,
+            'date': mostRecent,
+            'type': 'phenotype',
+            timePast
           });
         }
       });

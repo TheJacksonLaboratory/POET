@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { AuthService } from "@auth0/auth0-angular";
-import { MatPaginator, PageEvent } from "@angular/material/paginator";
-import { transition, trigger, useAnimation } from "@angular/animations";
-import { fadeIn } from "ng-animate";
-import { CurationService } from "../../shared/services/curation/curation.service";
-import { environment } from "../../../environments/environment";
-import { UserService } from "../../shared/services/user/user.service";
-import { Router } from "@angular/router";
-import { StateService } from "../../shared/services/state/state.service";
+import {AfterContentInit, Component, OnInit, ViewChild} from '@angular/core';
+import { AuthService } from '@auth0/auth0-angular';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { transition, trigger, useAnimation } from '@angular/animations';
+import { fadeIn } from 'ng-animate';
+import { CurationService } from '../../shared/services/curation/curation.service';
+import { environment } from '../../../environments/environment';
+import { UserService } from '../../shared/services/user/user.service';
+import { Router } from '@angular/router';
+import { StateService } from '../../shared/services/state/state.service';
 
 @Component({
   selector: 'app-portal-home',
@@ -17,7 +17,7 @@ import { StateService } from "../../shared/services/state/state.service";
     trigger('fadeIn', [transition('* => *', useAnimation(fadeIn))])
   ]
 })
-export class PortalDashboardComponent implements OnInit {
+export class PortalDashboardComponent implements OnInit, AfterContentInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -78,30 +78,30 @@ export class PortalDashboardComponent implements OnInit {
     this.curationService.getGroupActivityFeed(true, weeksBack,  null, null)
       .subscribe((recentActivity) => {
         this.recentUserActivity = recentActivity;
-      }, (error)=>{
+      }, (error) => {
         console.log(error);
-      }, ()=> {
+      }, () => {
         this.loading = false;
       });
   }
 
   graphUserActivity(userActivity: any) {
-    let dates = userActivity.map((activity) => activity.date);
-    let counts = {};
+    const dates = userActivity.map((activity) => activity.date);
+    const counts = {};
     for (let i = 0; i < dates.length; i++) {
-      let date = dates[i];
+      const date = dates[i];
       counts[date] = counts[date] && counts[date].value ? {name: date, value: counts[date].value + 1} : {
         name: date,
         value: 1
       };
     }
 
-    let graphSeries = Object.values(counts);
+    const graphSeries = Object.values(counts);
 
     return [{
-      "name": "Annotations",
-      "series": graphSeries
-    }]
+      name: "Annotations",
+      series: graphSeries
+    }];
   }
 
   getPaginatorData(event: PageEvent): PageEvent {
@@ -111,7 +111,7 @@ export class PortalDashboardComponent implements OnInit {
   }
 
   noContributions(){
-    return this.pieData?.length == 0;
+    return this.pieData?.length === 0;
   }
 
   navigateToDisease(disease, category) {

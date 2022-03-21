@@ -629,3 +629,7 @@ mat-icon {
     @include mat-icon-size(28px);
   }
 }
+
+.mat-list-base[dense] .mat-list-item.mat-2-line {
+  height: 50px !important;
+}

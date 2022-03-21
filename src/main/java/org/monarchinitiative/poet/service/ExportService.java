@@ -2,6 +2,7 @@ package org.monarchinitiative.poet.service;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.monarchinitiative.poet.exceptions.ExportException;
 import org.monarchinitiative.poet.model.entities.PhenotypeAnnotation;
 import org.monarchinitiative.poet.model.entities.TreatmentAnnotation;
 import org.monarchinitiative.poet.model.entities.Version;
@@ -53,12 +54,13 @@ public class ExportService {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            throw new ExportException("HPO");
         }
     }
 
     public void exportMAXOAnnotations(PrintWriter writer, CSVFormat format){
         List<TreatmentAnnotation> treatmentAnnotationList = annotationService.getOfficialTreatments();
-        try(CSVPrinter csvPrinter = new CSVPrinter(writer, format)){
+        try(CSVPrinter csvPrinter = format.print(writer)){
             for (TreatmentAnnotation annotation : treatmentAnnotationList) {
                 String reference;
                 if(annotation.getAnnotationSource().isDiseaseDatabaseSource()){
@@ -75,6 +77,7 @@ public class ExportService {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            throw new ExportException("MAXO");
         }
     }
 

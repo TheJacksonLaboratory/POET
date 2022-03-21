@@ -10,7 +10,7 @@
   </div>
   <div class="dashboard" fxLayout="row wrap" fxLayoutAlign="center stretch" fxLayoutGap=" grid" >
     <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5">
-        <mat-card class="reviews">
+        <mat-card class="reviews recently-curated-card">
           <mat-card-title>
             User Activity
           </mat-card-title>
@@ -22,13 +22,14 @@
                 <mat-radio-button value ="24">6 Months</mat-radio-button>
               </mat-radio-group>
             </div>
-            <mat-list *ngFor="let recent of recentUserActivity | slice: lowValue:highValue">
+            <mat-list *ngFor="let recent of recentUserActivity | slice: lowValue:highValue" dense>
               <mat-list-item (click)="navigateToDisease(recent.diseaseId, recent.type)" class="activity-item">
-                <p>{{recent.view}}</p>
+                <p matLine>{{recent.view}}</p>
+                <p class="activity-time" matLine>{{recent.timePast}}</p>
               </mat-list-item>
             </mat-list>
             <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-            <p class="no-activity" *ngIf="recentUserActivity?.length == 0">No Recent Activity.</p>
+            <p class="no-activity" *ngIf="recentUserActivity?.length === 0">No Recent Activity.</p>
             <mat-paginator *ngIf="recentUserActivity?.length > 0" [length]="recentUserActivity?.length" pageSize="5"
                            (page)="getPaginatorData($event)"
                            showFirstLastButtons="false" hidePageSize="true">
@@ -36,7 +37,7 @@
           </mat-card-content>
         </mat-card>
     </div>
-    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5" *ngIf="diseaseActivity.length > 3">
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5" *ngIf="diseaseActivity && diseaseActivity.length > 3">
       <mat-card class="reviews">
         <mat-card-title>
           Active Disease Curation
@@ -44,7 +45,7 @@
         <mat-card-content #containerRef>
           <ngx-charts-bar-horizontal
             [results]="diseaseActivity"
-            [view]="[containerRef.offsetWidth, 200]"
+            [view]="[containerRef.offsetWidth, 275]"
             xAxis="true"
             yAxis="true"
             showXAxisLabel="true"
@@ -68,7 +69,7 @@
               </mat-list-item>
             </mat-list>
             <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-            <p class="no-activity" *ngIf="reviews?.length == 0  && !loading">No annotations need review!</p>
+            <p class="no-activity" *ngIf="reviews?.length === 0  && !loading">No annotations need review!</p>
           </mat-card-content>
         </mat-card>
     </div>
@@ -86,7 +87,7 @@
             </mat-list-item>
           </mat-list>
           <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-          <p class="no-activity" *ngIf="userAnnotations?.length == 0 && !loading">No work needs to be done!</p>
+          <p class="no-activity" *ngIf="userAnnotations?.length === 0 && !loading">No work needs to be done!</p>
         </mat-card-content>
       </mat-card>
     </div>
