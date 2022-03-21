@@ -31,10 +31,11 @@
          text-align: center;
          margin: 0 0 .75rem 0;
        }
-    }
 
-    & .mat-card-content {
-      padding: .5rem;
+      & .mat-card-content {
+        padding: .5rem;
+        height: 100%;
+      }
     }
 
     p {

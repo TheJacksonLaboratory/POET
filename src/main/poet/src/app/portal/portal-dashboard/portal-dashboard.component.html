@@ -38,14 +38,14 @@
         </mat-card>
     </div>
     <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5" *ngIf="diseaseActivity && diseaseActivity.length > 3">
-      <mat-card class="reviews">
+      <mat-card>
         <mat-card-title>
           Active Disease Curation
         </mat-card-title>
         <mat-card-content #containerRef>
           <ngx-charts-bar-horizontal
             [results]="diseaseActivity"
-            [view]="[containerRef.offsetWidth, 275]"
+            [view]="[containerRef.offsetWidth, 300]"
             xAxis="true"
             yAxis="true"
             showXAxisLabel="true"
