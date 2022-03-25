@@ -4,6 +4,7 @@ import { DOCUMENT } from '@angular/common';
 import { Router } from '@angular/router';
 import packageInfo from '../../package.json';
 import { UserService } from './shared/services/user/user.service';
+import {distinctUntilChanged} from "rxjs/operators";
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      this.auth.user$.subscribe((user) => {
+      this.auth.user$.pipe(
+        distinctUntilChanged((prev, curr) => prev === curr)).subscribe((user) => {
         if (user) {
           this.userService.checkUser();
           this.isElevated = this.userService.isUserAdmin(user);

@@ -9,8 +9,8 @@
     </div>
   </div>
   <div class="dashboard" fxLayout="row wrap" fxLayoutAlign="center stretch" fxLayoutGap=" grid" >
-    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5">
-        <mat-card class="reviews recently-curated-card">
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-md="90" fxFlexOffset.lt-md="5">
+        <mat-card class="recently-curated-card">
           <mat-card-title>
             User Activity
           </mat-card-title>
@@ -37,7 +37,7 @@
           </mat-card-content>
         </mat-card>
     </div>
-    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5" *ngIf="diseaseActivity && diseaseActivity.length > 3">
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-md="90" fxFlexOffset.lt-md="5" *ngIf="diseaseActivity && diseaseActivity.length > 3">
       <mat-card>
         <mat-card-title>
           Active Disease Curation
@@ -55,8 +55,8 @@
         </mat-card-content>
       </mat-card>
     </div>
-    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5" *ngIf="userService.isRoleAdmin(userRole)">
-        <mat-card class="reviews">
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-md="90" fxFlexOffset.lt-md="5" *ngIf="userService.isRoleAdmin(userRole)">
+        <mat-card>
           <mat-card-title>
             Action Items
           </mat-card-title>

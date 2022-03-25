@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 import { UserService } from '../../shared/services/user/user.service';
 import { Router } from '@angular/router';
 import { StateService } from '../../shared/services/state/state.service';
+import {distinctUntilChanged} from "rxjs/operators";
 
 @Component({
   selector: 'app-portal-home',
@@ -39,8 +40,9 @@ export class PortalDashboardComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit(): void {
-    this.authService.user$.subscribe((user) => {
-      if(user) {
+    this.authService.user$.pipe(distinctUntilChanged((prev, curr) => prev === curr))
+      .subscribe((user) => {
+      if (user) {
         this.user = user;
         this.userRole = user[environment.AUTH0_ROLE_CLAIM];
         if(this.userService.isRoleAdmin(this.userRole)){
@@ -49,7 +51,7 @@ export class PortalDashboardComponent implements OnInit, AfterContentInit {
             this.loadingAnnotationsNeedingAction = false;
           });
         } else {
-          this.curationService.getUserAnnotationsNeedingWork().subscribe((annotations)=>{
+          this.curationService.getUserAnnotationsNeedingWork().subscribe((annotations) => {
             this.userAnnotations = annotations;
             this.loadingAnnotationsNeedingAction = false;
           });

@@ -24,7 +24,7 @@
     "@angular/platform-browser": "~13.2.5",
     "@angular/platform-browser-dynamic": "~13.2.5",
     "@angular/router": "~13.2.5",
-    "@auth0/auth0-angular": "^1.5.1",
+    "@auth0/auth0-angular": "1.9.0",
     "@swimlane/ngx-charts": "^20.1.0",
     "ng-animate": "^0.3.4",
     "rxjs": "~6.6.2",

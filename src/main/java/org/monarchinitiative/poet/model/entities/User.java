@@ -15,7 +15,6 @@ public class User {
     private Long id;
 
     @JsonView({UserActivityViews.Simple.class, AnnotationViews.Simple.class, AnnotationViews.UserSpecific.class})
-    @Column(unique = true, nullable = false)
     private String nickname;
     @Column(unique = true, nullable = false)
     private String authId;
