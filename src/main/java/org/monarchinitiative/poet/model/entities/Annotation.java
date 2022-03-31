@@ -35,7 +35,7 @@ public class Annotation {
     @Column(name="annotation_type", insertable = false, updatable = false)
     protected String annotationType;
 
-    @OneToOne
+    @ManyToOne
     private Version version;
 
     @OneToMany

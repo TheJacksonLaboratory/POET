@@ -17,7 +17,9 @@
       mark_chat_unread
     </mat-icon>
     {{title}}
-    <mat-icon class="help-icon" (click)="closeForm()">cancel</mat-icon>
+    <mat-icon class="help-icon" (click)="closeForm()"
+              matTooltip="Close Form"
+              matTooltipShowDelay="500">cancel</mat-icon>
   </mat-card-title>
   <mat-card-subtitle>
     Medical Action Ontology [ MAxO ] <br>
@@ -40,7 +42,7 @@
             {{publication.publicationName}}{{publication.publicationId}}
           </span>
         <span class="spacer"></span>
-        <mat-icon class="remove-icon" matListIcon (click)="remove(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
+        <mat-icon class="remove-icon" matListIcon (click)="remove(publication)" *ngIf="!formControlGroup.disabled">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
     <form [formGroup]="formControlGroup">
@@ -195,6 +197,14 @@
     </div>
     <div class="right-actions">
       <button mat-stroked-button (click)="resetTreatmentForm()" *ngIf="!formControlGroup.disabled && !elevatedChanges">Clear</button>
+      <a mat-flat-button
+         aria-label="Report Treatment Annotation"
+         matTooltip="Report Treatment Annotation Bug"
+         matTooltipShowDelay="775"
+         *ngIf="this.utilityService.isOfficial(selectedAnnotation)"
+         href="https://github.com/monarch-initiative/MAxO/issues/new" target="_blank">
+        Suggest Changes
+      </a>
     </div>
   </mat-card-actions>
 </mat-card>

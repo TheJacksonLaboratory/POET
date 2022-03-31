@@ -8,31 +8,56 @@
       </div>
     </div>
   </div>
-  <div class="dashboard" fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="flex-start">
-      <div fxFlex="45" fxFlexOffset="5">
-        <mat-card class="review-card">
+  <div class="dashboard" fxLayout="row wrap" fxLayoutAlign="stretch" fxLayoutGap=" grid" >
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5">
+        <mat-card class="reviews">
           <mat-card-title>
-            Activity
+            User Activity
           </mat-card-title>
           <mat-card-content>
-            <mat-list *ngFor="let recent of recentActivity | slice: lowValue:highValue">
+            <div class="card-filters">
+              <mat-radio-group aria-label="Select an option" (change)="getUserActivity($event.value)" value="1">
+                <mat-radio-button value="1">1 Week</mat-radio-button>
+                <mat-radio-button value="4">1 Month</mat-radio-button>
+                <mat-radio-button value ="24">6 Months</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <mat-list *ngFor="let recent of recentUserActivity | slice: lowValue:highValue">
               <mat-list-item (click)="navigateToDisease(recent.diseaseId, recent.type)" class="activity-item">
                 <p>{{recent.view}}</p>
               </mat-list-item>
             </mat-list>
             <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-            <p class="no-activity" *ngIf="recentActivity?.length == 0">No Recent Activity.</p>
-            <mat-paginator *ngIf="recentActivity?.length > 0" [length]="recentActivity?.length" pageSize="5"
+            <p class="no-activity" *ngIf="recentUserActivity?.length == 0">No Recent Activity.</p>
+            <mat-paginator *ngIf="recentUserActivity?.length > 0" [length]="recentUserActivity?.length" pageSize="5"
                            (page)="getPaginatorData($event)"
                            showFirstLastButtons="false" hidePageSize="true">
             </mat-paginator>
           </mat-card-content>
         </mat-card>
-      </div>
-      <div fxFlex="45" *ngIf="userService.isRoleAdmin(userRole)">
+    </div>
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5">
+      <mat-card class="reviews">
+        <mat-card-title>
+          Active Disease Curation
+        </mat-card-title>
+        <mat-card-content #containerRef>
+          <ngx-charts-bar-horizontal
+            [results]="diseaseActivity"
+            [view]="[containerRef.offsetWidth,200]"
+            xAxis="true"
+            yAxis="true"
+            showXAxisLabel="true"
+            xAxisLabel="Annotation Actions"
+            (select)="onDiseaseActivitySelect($event)">
+          </ngx-charts-bar-horizontal>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5" *ngIf="userService.isRoleAdmin(userRole)">
         <mat-card class="reviews">
           <mat-card-title>
-            Review Curation
+            Action Items
           </mat-card-title>
           <mat-card-content>
             <mat-list *ngFor="let review of reviews">
@@ -43,30 +68,36 @@
               </mat-list-item>
             </mat-list>
             <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-            <p class="no-activity" *ngIf="reviews?.length == 0  && !loading">You are all caught up on annotations that need a review!</p>
+            <p class="no-activity" *ngIf="reviews?.length == 0  && !loading">No annotations need review!</p>
           </mat-card-content>
         </mat-card>
-      </div>
-      <div fxFlex="45" *ngIf="!userService.isRoleAdmin(userRole)">
-        <mat-card class="reviews">
-          <mat-card-title>
-            Work Items
-          </mat-card-title>
-          <mat-card-content>
-              <mat-list *ngFor="let annotation of userAnnotations">
-                <mat-list-item class="activity-item">
-                  <p>{{annotation.count}} {{annotation.type}} annotations need work for {{annotation.diseaseName}}.</p>
-                  <span class="spacer"></span>
-                  <button mat-stroked-button (click)="navigateToDisease(annotation.diseaseId, annotation.type)">View</button>
-                </mat-list-item>
-              </mat-list>
-            <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-            <p class="no-activity" *ngIf="userAnnotations?.length == 0 && !loading">You have no annotations that need work!</p>
-          </mat-card-content>
-        </mat-card>
-      </div>
+    </div>
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5" *ngIf="!userService.isRoleAdmin(userRole)">
+      <mat-card class="reviews">
+        <mat-card-title>
+          Action Items
+        </mat-card-title>
+        <mat-card-content>
+          <mat-list *ngFor="let annotation of userAnnotations">
+            <mat-list-item class="activity-item">
+              <p>{{annotation.count}} {{annotation.type}} annotations need work for {{annotation.diseaseName}}.</p>
+              <span class="spacer"></span>
+              <button mat-stroked-button (click)="navigateToDisease(annotation.diseaseId, annotation.type)">View</button>
+            </mat-list-item>
+          </mat-list>
+          <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+          <p class="no-activity" *ngIf="userAnnotations?.length == 0 && !loading">No work needs to be done!</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
 
-<!--<mat-tab label="Contributions" [disabled]="noContributions()">
+
+
+
+
+
+
+ <!--<mat-tab label="Contributions" [disabled]="noContributions()">
   <div class="chart-wrapper" *ngIf="!noContributions()">
     <ngx-charts-pie-chart
       [results]="pieData"
@@ -79,6 +110,7 @@
     >
     </ngx-charts-pie-chart>
   </div>
+
 </mat-tab>-->
 <!--  <div fxflexlayout="row" class="flex-row">-->
 <!--    <mat-card class="contribution-donut-card" fxFlex="40" fxFlexOffset="10">-->

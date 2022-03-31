@@ -303,6 +303,7 @@ export class PhenotypeCurationComponent implements OnInit {
   }
 
   removePublication(publication: Publication): void {
+    this.formControlGroup.markAsDirty();
     const index = this.selectedPublications.indexOf(publication);
     if (index >= 0) {
       this.selectedPublications.splice(index, 1);

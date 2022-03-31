@@ -84,7 +84,7 @@ public class TreatmentAnnotation extends Annotation {
         this.extensionLabel = treatmentRequest.getExtensionLabel();
     }
 
-    public void updateAnnotation(TreatmentRequest treatmentRequest){
+    public void updateAnnotation(TreatmentRequest treatmentRequest, AnnotationSource annotationSource){
         this.maxoId = treatmentRequest.getMaxoId();
         this.maxoName = treatmentRequest.getMaxoName();
         this.hpoId = treatmentRequest.getHpoId();
@@ -94,6 +94,7 @@ public class TreatmentAnnotation extends Annotation {
         this.relation = treatmentRequest.getRelation();
         this.extensionId = treatmentRequest.getExtensionId();
         this.extensionLabel = treatmentRequest.getExtensionLabel();
+        this.setAnnotationSource(annotationSource);
     }
 
     public String getMaxoId() {

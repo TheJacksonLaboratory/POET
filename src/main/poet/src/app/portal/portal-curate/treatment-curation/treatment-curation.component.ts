@@ -260,7 +260,7 @@ export class TreatmentCurationComponent implements OnInit {
   }
 
   everythingValid() {
-    return this.formControlGroup.valid && this.selectedPublications.length > 0 && !this.formControlGroup.disabled;
+    return this.formControlGroup.valid && this.selectedPublications.length > 0 && !this.formControlGroup.disabled && this.formControlGroup.dirty;
   }
 
   resetTreatmentForm() {
@@ -269,8 +269,8 @@ export class TreatmentCurationComponent implements OnInit {
   }
 
   remove(publication: Publication): void {
+    this.formControlGroup.markAsDirty();
     const index = this.selectedPublications.indexOf(publication);
-
     if (index >= 0) {
       this.selectedPublications.splice(index, 1);
     }

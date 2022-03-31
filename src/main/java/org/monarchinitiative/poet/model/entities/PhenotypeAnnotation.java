@@ -61,7 +61,7 @@ public class PhenotypeAnnotation extends Annotation {
         this.sex = phenotypeRequest.getSex();
     }
 
-    public void updateAnnotation(PhenotypeRequest phenotypeRequest){
+    public void updateAnnotation(PhenotypeRequest phenotypeRequest, AnnotationSource annotationSource){
         this.hpoId = phenotypeRequest.getHpoId();
         this.hpoName = phenotypeRequest.getHpoName();
         this.onset = phenotypeRequest.getOnset();
@@ -71,6 +71,7 @@ public class PhenotypeAnnotation extends Annotation {
         this.qualifier = phenotypeRequest.getQualifier();
         this.description = phenotypeRequest.getDescription();
         this.sex = phenotypeRequest.getSex();
+        this.setAnnotationSource(annotationSource);
     }
 
     public String getHpoId() {

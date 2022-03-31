@@ -14,7 +14,10 @@ export class PubmedService {
   findPublication(id: string) {
     let parameters: HttpParams = new HttpParams().set('db', 'pubmed').set('id', id).set('retmode', 'json');
     return this.httpClient.get(environment.PUBMED_SUMMARY_URL, {params: parameters}).pipe(
-      map((data) => data['result'][id])
+      map((data) => data['result'][id]), map((result) => {
+        result['title'] = result['title'].replace(/<\/?[^>]+(>|$)/g, "");
+        return result;
+      })
     );
   }
 }

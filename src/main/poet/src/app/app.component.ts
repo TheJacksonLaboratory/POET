@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
 import { DOCUMENT } from '@angular/common';
 import { Router } from '@angular/router';
-import { version } from '../../package.json';
+import packageInfo from '../../package.json';
 import { UserService } from './shared/services/user/user.service';
 
 @Component({
@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
     {title: 'FAQ', route: '/faq', icon: 'view_list', private: false, requiresElevated: false}
   ];
   isElevated: boolean = false;
-  version: string = version + '.beta';
+  version: string = packageInfo.version + '.beta';
 
   constructor(public auth: AuthService, @Inject(DOCUMENT) public document: Document,
               public router: Router, public userService: UserService) {

@@ -6,8 +6,8 @@ import { fadeIn } from "ng-animate";
 import { CurationService } from "../../shared/services/curation/curation.service";
 import { environment } from "../../../environments/environment";
 import { UserService } from "../../shared/services/user/user.service";
-import {Router} from "@angular/router";
-import {StateService} from "../../shared/services/state/state.service";
+import { Router } from "@angular/router";
+import { StateService } from "../../shared/services/state/state.service";
 
 @Component({
   selector: 'app-portal-home',
@@ -25,7 +25,8 @@ export class PortalDashboardComponent implements OnInit {
   user: any;
   pieData = [];
   userRole: any;
-  recentActivity: any;
+  recentUserActivity: any;
+  diseaseActivity: any;
   lowValue: number = 0;
   highValue: number = 5;
   reviews: any;
@@ -39,28 +40,21 @@ export class PortalDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.authService.user$.subscribe((user) => {
-      this.user = user;
-      this.userRole = user[environment.AUTH0_ROLE_CLAIM];
-      if(this.userService.isRoleAdmin(this.userRole)){
-        this.curationService.getAnnotationsNeedingReview().subscribe((annotations) => {
-          this.reviews = annotations;
-          this.loadingAnnotationsNeedingAction = false;
-        });
-      } else if(this.user) {
-        this.curationService.getUserAnnotationsNeedingWork().subscribe((annotations)=>{
-          this.userAnnotations = annotations;
-          this.loadingAnnotationsNeedingAction = false;
-        });
+      if(user) {
+        this.user = user;
+        this.userRole = user[environment.AUTH0_ROLE_CLAIM];
+        if(this.userService.isRoleAdmin(this.userRole)){
+          this.curationService.getAnnotationsNeedingReview().subscribe((annotations) => {
+            this.reviews = annotations;
+            this.loadingAnnotationsNeedingAction = false;
+          });
+        } else {
+          this.curationService.getUserAnnotationsNeedingWork().subscribe((annotations)=>{
+            this.userAnnotations = annotations;
+            this.loadingAnnotationsNeedingAction = false;
+          });
+        }
       }
-    });
-
-    this.curationService.getGroupActivityFeed(true, 1,  null, null)
-      .subscribe((recentActivity) => {
-      this.recentActivity = recentActivity;
-    }, (error)=>{
-      console.log(error);
-    }, ()=> {
-        this.loading = false;
     });
 
     this.curationService.getUserContributions().subscribe((contributions) => {
@@ -70,6 +64,25 @@ export class PortalDashboardComponent implements OnInit {
         this.pieData = contributions;
       }
     });
+
+    this.curationService.getDiseaseActivity().subscribe(data => {
+      this.diseaseActivity = data;
+    });
+  }
+
+  ngAfterContentInit() {
+    this.getUserActivity(1);
+  }
+
+  getUserActivity(weeksBack: number) {
+    this.curationService.getGroupActivityFeed(true, weeksBack,  null, null)
+      .subscribe((recentActivity) => {
+        this.recentUserActivity = recentActivity;
+      }, (error)=>{
+        console.log(error);
+      }, ()=> {
+        this.loading = false;
+      });
   }
 
   graphUserActivity(userActivity: any) {
@@ -105,5 +118,9 @@ export class PortalDashboardComponent implements OnInit {
     this.stateService.setSelectedCategory(category);
     const urlSegment = `/curate/${disease}`;
     this.router.navigateByUrl(urlSegment);
+  }
+
+  onDiseaseActivitySelect(data): void {
+    this.router.navigate([`/portal/curate/${data.extra.id}`])
   }
 }

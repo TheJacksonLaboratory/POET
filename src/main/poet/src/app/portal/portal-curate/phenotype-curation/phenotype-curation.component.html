@@ -16,7 +16,8 @@
       mark_chat_unread
     </mat-icon>
     {{title}}
-    <mat-icon class="help-icon" (click)="closeForm()">cancel</mat-icon>
+    <mat-icon class="help-icon" (click)="closeForm()" matTooltip="Close Form"
+              matTooltipShowDelay="500">cancel</mat-icon>
   </mat-card-title>
   <mat-card-subtitle>
     Human Phenotype Ontology [ HPO ]
@@ -39,7 +40,7 @@
             {{publication.publicationName}}{{publication.publicationId}}
         </span>
         <span class="spacer"></span>
-        <mat-icon class="remove-icon" (click)="removePublication(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
+        <mat-icon class="remove-icon" (click)="removePublication(publication)" *ngIf="!formControlGroup.disabled">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
      <form [formGroup]="formControlGroup" fxLayout="column" fxLayoutAlign="start stretch">
@@ -217,6 +218,13 @@
     </div>
     <div class="right-actions">
       <button mat-stroked-button (click)="resetPhenotypeForm()" *ngIf="!formControlGroup.disabled && !elevatedChanges">Clear</button>
+      <a mat-flat-button aria-label="Report Phenotype Annotation"
+         matTooltip="Report Phenotype Annotation Bug"
+         matTooltipShowDelay="775"
+         *ngIf="this.utilityService.isOfficial(selectedAnnotation)"
+         href="https://github.com/obophenotype/human-phenotype-ontology/issues/new?assignees=drseb&labels=HPOA&template=h_new_annotation.md&title=" target="_blank">
+        Report Annotation Issue
+      </a>
     </div>
   </mat-card-actions>
 </mat-card>

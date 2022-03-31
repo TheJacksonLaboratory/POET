@@ -19,8 +19,8 @@ import { DialogMessagesComponent } from './portal-curate/dialog-messages/dialog-
 
 
 @NgModule({
-  declarations: [PortalDashboardComponent, PortalCurateComponent, PortalComponent, TreatmentCurationComponent,
-    PhenotypeCurationComponent, DialogSourceComponent, AnnotationCardComponent, ConfirmSheetComponent, DialogReviewComponent, DialogMessagesComponent],
+    declarations: [PortalDashboardComponent, PortalCurateComponent, PortalComponent, TreatmentCurationComponent,
+        PhenotypeCurationComponent, DialogSourceComponent, AnnotationCardComponent, ConfirmSheetComponent, DialogReviewComponent, DialogMessagesComponent],
     imports: [
         CommonModule,
         SharedModule,
@@ -29,8 +29,7 @@ import { DialogMessagesComponent } from './portal-curate/dialog-messages/dialog-
         PortalRoutingModule,
         FlexLayoutModule,
         DragDropModule
-    ],
-  entryComponents: [DialogSourceComponent]
+    ]
 })
 export class PortalModule {
 }

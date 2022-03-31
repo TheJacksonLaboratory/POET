@@ -402,4 +402,23 @@ export class CurationService {
   getAnnotationCounts(diseaseId: string): any {
     return this.httpClient.get(environment.POET_API_STATISTICS_ANNOTATION_URL + diseaseId);
   }
+
+  /**
+   * Get disease activity
+   */
+  getDiseaseActivity(): any{
+    return this.httpClient.get(environment.POET_API_STATISTICS_ACTIVITY_DISEASE_URL).pipe(
+      map((diseaseList:any[]) => {
+        return diseaseList.map(disease => {
+          return {
+            name: disease.diseaseName,
+            extra: {
+              id: disease.diseaseId,
+            },
+            value: disease.diseaseCount
+          }
+        }).sort((a,b) => (a.value > b.value)? -1 : 1).slice(0, 10);
+      })
+    );
+  }
 }
