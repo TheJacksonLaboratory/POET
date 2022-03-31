@@ -10,29 +10,39 @@ Intellij
 - Import project as gradle project
 - Ensure the gradle runtime is the wrapper (usually defaults)
 
-Requirements
+Requirements for development
 - Node
 - Npm
+- Java 11
+- Mysql or Mariadb
+
+
 
 # Running
 
-#### Development (2 tabs)
+#### Development
 
-To Initialize DB
+Configure datasources under:
+-   ``/src/main/resources/application-*.yml``
+
+Initalize Data (~30min)
 
 ` 
     ./gradlew bootRun --args="--initializePoet=true" 
 `
 
-Run Default
+Open in two terminals
+
+Run Server
 
 `
     ./gradle bootRun
 `
 
-In src/main/poet
+Run Client src/main/poet
 
 `
+    cd src/main/poet;
     npm run start
 `
 
