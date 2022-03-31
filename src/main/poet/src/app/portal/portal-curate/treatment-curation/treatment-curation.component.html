@@ -45,8 +45,8 @@
         <mat-icon class="remove-icon" matListIcon (click)="remove(publication)" *ngIf="!formControlGroup.disabled">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
-    <form [formGroup]="formControlGroup">
-      <div class="form-content-section">
+    <form [formGroup]="formControlGroup" fxLayout="column" fxLayoutAlign="start stretch">
+      <div class="form-content-section" fxFlex="100">
         <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>HPO Term</mat-label>
           <mat-hint *ngIf="!formControlGroup.get('hpoFormControl').hasError('notFound') &&
@@ -73,8 +73,18 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
+        <div class="fr">
+          <mat-checkbox aria-label="Whole Disease?" formControlName="diseaseTreatmentControl">
+            Disease Treatment? <span class="form-field-help-icon material-icons"
+                                           matTooltip="Select if the maxo term below treats the disease instead of a
+                                           specific phenotype."
+                                           matTooltipPosition="below">
+              help_outline
+            </span>
+          </mat-checkbox>
+        </div>
       </div>
-      <div class="form-content-section">
+      <div class="form-content-section" fxFlex="100">
         <mat-form-field class="treatment-form" appearance="fill">
           <mat-label>MAxO Term</mat-label>
           <mat-hint *ngIf="!formControlGroup.get('maxoFormControl').hasError('notFound') &&
