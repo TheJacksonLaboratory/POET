@@ -7,9 +7,8 @@
       <button mat-button *ngIf="auth.isAuthenticated$ | async" [routerLink]="['/dashboard']">Dashboard</button>
       <button mat-button [routerLink]="['/resources']">Resources</button>
       <div fxFlex class="toolbar-spacer"></div>
-      <div class="nickname" *ngIf="auth.user$ | async as user;" [routerLink]="['/portal/dashboard']">
+      <div class="nickname" *ngIf="auth.user$ | async as user">
         <span *ngIf="user.nickname">{{user.nickname}}</span>
-        <span *ngIf="!user.nickname">GUEST</span>
       </div>
       <ng-container *ngIf="isHomePage() && (auth.isLoading$ | async); else loggedIn">
         <mat-spinner diameter="25" color="warn"></mat-spinner>
@@ -24,7 +23,7 @@
       </ng-template>
       <ng-template #loggedOut>
         <ng-container>
-          <button *ngIf="!(auth.isLoading$ | async)" mat-button class="primary nav-btn" (click)="loginWithRedirect()">Login</button>
+          <button *ngIf="(auth.isLoading$ | async) === false" mat-button class="primary nav-btn" (click)="loginWithRedirect()">Login</button>
         </ng-container>
       </ng-template>
     </mat-toolbar-row>

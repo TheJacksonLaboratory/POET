@@ -139,8 +139,21 @@
               "devServerTarget": "poet:serve:production"
             }
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
-    }},
-  "defaultProject": "poet"
+    }
+  },
+  "defaultProject": "poet",
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
+  }
 }

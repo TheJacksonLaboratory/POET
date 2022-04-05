@@ -57,4 +57,11 @@ public class GlobalExceptionAdvice {
         return new ErrorDetails(new Date(), "Request body validation Failed",
                 ex.getBindingResult().getFieldError().getDefaultMessage());
     }
+
+    @ResponseBody
+    @ExceptionHandler(ExportException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    ErrorDetails handleExportException(ExportException ex){
+        return new ErrorDetails(new Date(), "Exporting ontology failed.", ex.getMessage());
+    }
 }
