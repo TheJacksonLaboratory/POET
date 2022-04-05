@@ -16,8 +16,6 @@ Requirements for development
 - Java 11
 - Mysql or Mariadb
 
-
-
 # Running
 
 ### Setup the database

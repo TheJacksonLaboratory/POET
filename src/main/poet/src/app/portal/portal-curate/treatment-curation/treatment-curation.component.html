@@ -57,7 +57,7 @@
           </mat-hint>
           <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
                  [matAutocomplete]="hpo" required>
-          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value !== null && !formControlGroup.disabled" matSuffix mat-icon-button
+          <button mat-button *ngIf="showFormControlElement('hpoFormControl')" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
@@ -75,10 +75,9 @@
         </mat-form-field>
         <div class="fr">
           <mat-checkbox aria-label="Whole Disease?" formControlName="diseaseTreatmentControl">
-            Disease Treatment? <span class="form-field-help-icon material-icons"
-                                           matTooltip="Select if the maxo term below treats the disease instead of a
-                                           specific phenotype."
-                                           matTooltipPosition="below">
+            Disease Treatment?
+            <span class="form-field-help-icon material-icons" matTooltipPosition="below"
+                  matTooltip="Select if the maxo term below treats the disease instead of a specific phenotype.">
               help_outline
             </span>
           </mat-checkbox>
@@ -98,7 +97,7 @@
           </mat-hint>
           <input matInput placeholder="Search for a MAxO Term" formControlName="maxoFormControl" ngDefaultControl
                  [matAutocomplete]="maxoAuto" required>
-          <button mat-button *ngIf="formControlGroup.get('maxoFormControl').value !== null && !formControlGroup.disabled"
+          <button mat-button *ngIf="showFormControlElement('maxoFormControl')"
                   matSuffix mat-icon-button aria-label="Clear" (click)="formControlGroup.get('maxoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
@@ -150,7 +149,7 @@
           </mat-error>
           <input matInput placeholder="..." formControlName="extensionFormControl" ngDefaultControl
                  [matAutocomplete]="extensionAuto">
-          <button mat-button *ngIf="formControlGroup.get('extensionFormControl').value !== null && !formControlGroup.disabled"
+          <button mat-button *ngIf="showFormControlElement('extensionFormControl')"
                   matSuffix mat-icon-button aria-label="Clear" (click)="formControlGroup.get('extensionFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
@@ -172,7 +171,7 @@
           <mat-label>Additional Comments</mat-label>
           <input matInput type="text" formControlName="commentFormControl" maxlength="50">
           <mat-hint *ngIf="this.formControlGroup.get('commentFormControl').value?.length >= 50">Maximum Characters Reached.</mat-hint>
-          <button mat-button *ngIf="formControlGroup.get('commentFormControl').value !== '' && !formControlGroup.disabled" matSuffix mat-icon-button
+          <button mat-button *ngIf="showFormControlElement('commentFormControl')" matSuffix mat-icon-button
                   aria-label="Clear"
                   (click)="formControlGroup.get('commentFormControl').reset()">
             <mat-icon>close</mat-icon>

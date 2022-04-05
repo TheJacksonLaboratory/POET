@@ -347,9 +347,9 @@ export class TreatmentCurationComponent implements OnInit {
     }
   }
 
-  /**
-  * Elevated curator making changes to an annotation under_review
-  */
+  /*
+   * Elevated curator making changes to an annotation under_review
+   */
   toggleAnnotationChanges(shouldShow: boolean){
     if (shouldShow){
       this.elevatedChanges = true;
@@ -374,4 +374,7 @@ export class TreatmentCurationComponent implements OnInit {
     };
   }
 
+  showFormControlElement(name: string){
+    return this.formControlGroup.get(name).value !== null && !this.formControlGroup.disabled;
+  }
 }
