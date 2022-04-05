@@ -22,7 +22,8 @@
                 <mat-radio-button value ="24">6 Months</mat-radio-button>
               </mat-radio-group>
             </div>
-            <mat-list *ngFor="let recent of recentUserActivity | slice: lowValue:highValue" dense>
+            <mat-list *ngFor="let recent of recentUserActivity |
+              slice: paginators['activityPaginator'].lowValue:paginators['activityPaginator'].highValue" dense>
               <mat-list-item (click)="navigateToDisease(recent.diseaseId, recent.type)" class="activity-item">
                 <p matLine>{{recent.view}}</p>
                 <p class="activity-time" matLine>{{recent.timePast}}</p>
@@ -30,8 +31,8 @@
             </mat-list>
             <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
             <p class="no-activity" *ngIf="recentUserActivity?.length === 0">No Recent Activity.</p>
-            <mat-paginator *ngIf="recentUserActivity?.length > 0" [length]="recentUserActivity?.length" pageSize="5"
-                           (page)="getPaginatorData($event)"
+            <mat-paginator #activityPaginator *ngIf="recentUserActivity?.length > 0" [length]="recentUserActivity?.length" pageSize="5"
+                           (page)="getPaginatorData('activityPaginator', $event)"
                            showFirstLastButtons="false" hidePageSize="true">
             </mat-paginator>
           </mat-card-content>
@@ -61,15 +62,19 @@
             Action Items
           </mat-card-title>
           <mat-card-content>
-            <mat-list *ngFor="let review of reviews">
-              <mat-list-item class="activity-item">
-                <p>{{review.count}} {{review.type}} annotations ready to be reviewed for {{review.diseaseName}}.</p>
-                <span class="spacer"></span>
-                <button mat-stroked-button (click)="navigateToDisease(review.diseaseId, review.type)">View</button>
+            <mat-list *ngFor="let review of reviews |
+              slice: paginators['reviewsPaginator'].lowValue:paginators['reviewsPaginator'].highValue" dense>
+              <mat-list-item class="activity-item" (click)="navigateToDisease(review.diseaseId, review.type)">
+                <span class="material-icons" mat-list-icon>engineering</span>
+                <p matLine>{{review.diseaseName}} needs review.</p>
+                <p class="activity-time" matLine>{{review.count}} {{review.type}} annotations</p>
               </mat-list-item>
             </mat-list>
             <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
             <p class="no-activity" *ngIf="reviews?.length === 0  && !loading">No annotations need review!</p>
+            <mat-paginator #reviewsPaginator *ngIf="reviews?.length > 0" [length]="reviews?.length" pageSize="5"
+                           (page)="getPaginatorData('reviewsPaginator', $event)"
+                           showFirstLastButtons="false" hidePageSize="true"></mat-paginator>
           </mat-card-content>
         </mat-card>
     </div>
@@ -79,7 +84,8 @@
           Action Items
         </mat-card-title>
         <mat-card-content>
-          <mat-list *ngFor="let annotation of userAnnotations">
+          <mat-list *ngFor="let annotation of userAnnotations |
+          slice: paginators['userAnnotationsPaginator'].lowValue:paginators['userAnnotationsPaginator'].highValue" dense>
             <mat-list-item class="activity-item">
               <p>{{annotation.count}} {{annotation.type}} annotations need work for {{annotation.diseaseName}}.</p>
               <span class="spacer"></span>
@@ -89,6 +95,9 @@
           <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
           <p class="no-activity" *ngIf="userAnnotations?.length === 0 && !loading">No work needs to be done!</p>
         </mat-card-content>
+        <mat-paginator #userAnnotationsPaginator *ngIf="reviews?.length > 0" [length]="reviews?.length" pageSize="5"
+                       (page)="getPaginatorData('userAnnotationsPagintor', $event)"
+                       showFirstLastButtons="false" hidePageSize="true"></mat-paginator>
       </mat-card>
     </div>
   </div>

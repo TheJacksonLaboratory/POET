@@ -50,15 +50,24 @@
       padding: .5rem;
     }
 
-    & .review-card {
-      .activity-item {
-        &:hover {
-          cursor: pointer;
-          background: #296a7c;
-        }
-        & .mat-list-icon {
-          order: 10;
-        }
+    .activity-item {
+      outline: 0;
+
+      & .activity-time {
+        font-size: 12px;
+        color: whitesmoke;
+      }
+
+      &:hover {
+        opacity: .9;
+        cursor: pointer;
+        background: #296a7c;
+      }
+
+      & .mat-list-icon {
+        width: 24px;
+        height: 24px;
+        font-size: 24px;
       }
     }
 
@@ -160,20 +169,6 @@
       & .curated-not-found {
         margin: 2rem;
         text-align: center;
-      }
-
-      .activity-item {
-        outline: 0;
-
-        & .activity-time {
-          font-size: 10px;
-        }
-
-        &:hover {
-          opacity: .9;
-          cursor: pointer;
-        }
-
       }
     }
   }

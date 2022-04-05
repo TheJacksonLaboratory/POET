@@ -20,7 +20,9 @@ import {distinctUntilChanged} from "rxjs/operators";
 })
 export class PortalDashboardComponent implements OnInit, AfterContentInit {
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('activityPaginator', {static: true}) activityPagintor: MatPaginator;
+  @ViewChild('reviewsPaginator', {static: true}) reviewsPaginator: MatPaginator;
+  @ViewChild('userAnnotationsPaginator', {static: true}) userAnnotationsPaginator: MatPaginator;
 
   displayedColumns: string[] = ['category', 'curator', 'date', 'time', 'actions'];
   user: any;
@@ -28,12 +30,24 @@ export class PortalDashboardComponent implements OnInit, AfterContentInit {
   userRole: any;
   recentUserActivity: any;
   diseaseActivity: any;
-  lowValue: number = 0;
-  highValue: number = 5;
+  paginators = {
+    activityPaginator: {
+      lowValue: 0,
+      highValue: 5
+    },
+    reviewsPaginator: {
+      lowValue: 0,
+      highValue: 5
+    },
+    userAnnotationsPaginator: {
+      lowValue: 0,
+      highValue: 5
+    }
+  };
   reviews: any;
   userAnnotations: any;
-  loading: boolean = true;
-  loadingAnnotationsNeedingAction: boolean = true;
+  loading = true;
+  loadingAnnotationsNeedingAction = true;
 
   constructor(public authService: AuthService, public curationService: CurationService,
               public userService: UserService, public stateService: StateService, public router: Router) {
@@ -45,7 +59,7 @@ export class PortalDashboardComponent implements OnInit, AfterContentInit {
       if (user) {
         this.user = user;
         this.userRole = user[environment.AUTH0_ROLE_CLAIM];
-        if(this.userService.isRoleAdmin(this.userRole)){
+        if (this.userService.isRoleAdmin(this.userRole)){
           this.curationService.getAnnotationsNeedingReview().subscribe((annotations) => {
             this.reviews = annotations;
             this.loadingAnnotationsNeedingAction = false;
@@ -90,8 +104,7 @@ export class PortalDashboardComponent implements OnInit, AfterContentInit {
   graphUserActivity(userActivity: any) {
     const dates = userActivity.map((activity) => activity.date);
     const counts = {};
-    for (let i = 0; i < dates.length; i++) {
-      const date = dates[i];
+    for (const date of dates) {
       counts[date] = counts[date] && counts[date].value ? {name: date, value: counts[date].value + 1} : {
         name: date,
         value: 1
@@ -101,14 +114,14 @@ export class PortalDashboardComponent implements OnInit, AfterContentInit {
     const graphSeries = Object.values(counts);
 
     return [{
-      name: "Annotations",
+      name: 'Annotations',
       series: graphSeries
     }];
   }
 
-  getPaginatorData(event: PageEvent): PageEvent {
-    this.lowValue = event.pageIndex * event.pageSize;
-    this.highValue = this.lowValue + event.pageSize;
+  getPaginatorData(name: string, event: PageEvent): PageEvent {
+    this.paginators[name].lowValue = event.pageIndex * event.pageSize;
+    this.paginators[name].highValue = this.paginators[name].lowValue  + event.pageSize;
     return event;
   }
 
@@ -123,6 +136,6 @@ export class PortalDashboardComponent implements OnInit, AfterContentInit {
   }
 
   onDiseaseActivitySelect(data): void {
-    this.router.navigate([`/portal/curate/${data.extra.id}`])
+    this.router.navigate([`/portal/curate/${data.extra.id}`]);
   }
 }
