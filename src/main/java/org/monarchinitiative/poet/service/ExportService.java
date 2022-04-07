@@ -64,11 +64,11 @@ public class ExportService {
             for (TreatmentAnnotation annotation : treatmentAnnotationList) {
                 String reference;
                 if(annotation.getAnnotationSource().isDiseaseDatabaseSource()){
-                    reference = annotation.getAnnotationSource().getDisease().getDiseaseId();
+                    reference = annotation.getAnnotationSource().getDisease().getEquivalentId();
                 } else {
                     reference = annotation.getAnnotationSource().getPublication().getPublicationId();
                 }
-                csvPrinter.printRecord(annotation.getAnnotationSource().getDisease().getDiseaseId(),
+                csvPrinter.printRecord(annotation.getAnnotationSource().getDisease().getEquivalentId(),
                         annotation.getAnnotationSource().getDisease().getDiseaseName(), reference,
                         annotation.getMaxoId(), annotation.getMaxoName(), annotation.getHpoId(), annotation.getRelation(),
                         annotation.getEvidence(), annotation.getExtensionId(), annotation.getExtensionLabel(),
