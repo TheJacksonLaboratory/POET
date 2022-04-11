@@ -19,7 +19,8 @@ public class User {
     @Column(unique = true, nullable = false)
     private String authId;
     private String email;
-
+    @Column(unique = true)
+    private String orcid;
     @Enumerated(EnumType.ORDINAL)
     private CurationRole curationRole;
 
@@ -40,12 +41,20 @@ public class User {
         return nickname;
     }
 
+    public String getUniqueNickname(){
+        return String.format("%s#%d", nickname, getId());
+    }
+
     public String getAuthId() {
         return authId;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public String getOrcid(){
+        return orcid;
     }
 
 
@@ -55,6 +64,10 @@ public class User {
 
     public void setCurationRole(CurationRole curationRole) {
         this.curationRole = curationRole == null ? CurationRole.POET_CURATOR : curationRole;
+    }
+
+    public void setOrcid(String orcid) {
+        this.orcid = orcid;
     }
 
     @Override

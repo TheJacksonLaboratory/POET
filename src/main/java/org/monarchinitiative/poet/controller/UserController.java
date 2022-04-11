@@ -38,4 +38,11 @@ public class UserController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PostMapping(headers = "Accept=application/json")
+    public ResponseEntity<?> updateOrcid(Authentication authentication,
+                                         @RequestParam(value = "orcid") String orcid){
+        userService.setUserOrcId(authentication, orcid);
+        return ResponseEntity.ok().build();
+    }
 }
