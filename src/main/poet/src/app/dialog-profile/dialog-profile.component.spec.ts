@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DialogProfileComponent } from './dialog-profile.component';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 describe('DialogProfileComponent', () => {
   let component: DialogProfileComponent;
@@ -8,7 +10,17 @@ describe('DialogProfileComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DialogProfileComponent ]
+      declarations: [ DialogProfileComponent ],
+      providers: [
+        {
+          provide: MatDialogRef,
+          useValue: {}
+        }, {
+          provide: MAT_DIALOG_DATA,
+          useValue: {}
+        }
+      ],
+      imports: [HttpClientTestingModule]
     })
     .compileComponents();
   });
