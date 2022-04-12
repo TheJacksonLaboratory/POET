@@ -18,6 +18,7 @@ import { FaqComponent } from "./resources/faq/faq.component";
 import { ContactComponent } from "./resources/contact/contact.component";
 import { DocumentationComponent } from './resources/documentation/documentation.component';
 import { NgxChartsModule } from "@swimlane/ngx-charts";
+import { DialogProfileComponent } from './dialog-profile/dialog-profile.component';
 const config: AuthConfig = {
   ...env.auth,
   httpInterceptor: {
@@ -31,7 +32,8 @@ const config: AuthConfig = {
     ResourcesComponent,
     FaqComponent,
     ContactComponent,
-    DocumentationComponent
+    DocumentationComponent,
+    DialogProfileComponent
   ],
   imports: [
     BrowserModule,

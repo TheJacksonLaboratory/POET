@@ -57,7 +57,7 @@ public class UserService {
      */
     public User getExistingUser(Authentication authentication) throws AuthenticationException {
         final User user = getUserFromAuthentication(authentication);
-        User existing = userRepository.findDistinctByAuthId(user.getAuthId());
+        final User existing = userRepository.findDistinctByAuthId(user.getAuthId());
         if(existing != null){
             return existing;
         } else {

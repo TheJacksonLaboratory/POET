@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class UserModificationException extends RuntimeException  {
 
     public UserModificationException(String orcid){
-        super(String.format("Attemping to assign user %s, someone already has this orcid.", orcid));
+        super(String.format("Attemping to assign user %s, someone already has this orcid. Please contact us.", orcid));
     }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
 import org.monarchinitiative.poet.views.AnnotationViews;
 import org.monarchinitiative.poet.views.UserActivityViews;
+import org.monarchinitiative.poet.views.UserViews;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -18,10 +19,13 @@ public class User {
     private String nickname;
     @Column(unique = true, nullable = false)
     private String authId;
+    @JsonView({UserViews.Simple.class})
     private String email;
     @Column(unique = true)
+    @JsonView({UserViews.Simple.class})
     private String orcid;
     @Enumerated(EnumType.ORDINAL)
+    @JsonView({UserViews.Simple.class})
     private CurationRole curationRole;
 
     public User(){}
@@ -40,7 +44,7 @@ public class User {
     public String getNickname() {
         return nickname;
     }
-
+    @JsonView({UserViews.Simple.class})
     public String getUniqueNickname(){
         return String.format("%s#%d", nickname, getId());
     }
@@ -57,6 +61,13 @@ public class User {
         return orcid;
     }
 
+    public String getExportName(){
+        if (orcid != null) {
+            return String.format("%s[%s]", nickname, orcid);
+        } else {
+            return String.format("%s[]", nickname);
+        }
+    }
 
     public CurationRole getCurationRole() {
         return curationRole;

@@ -1,7 +1,10 @@
 package org.monarchinitiative.poet.controller;
 
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.service.UserService;
+import org.monarchinitiative.poet.views.UserViews;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -39,10 +42,16 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping(headers = "Accept=application/json")
+    @PostMapping(value = "", headers = "Accept=application/json")
     public ResponseEntity<?> updateOrcid(Authentication authentication,
                                          @RequestParam(value = "orcid") String orcid){
         userService.setUserOrcId(authentication, orcid);
         return ResponseEntity.ok().build();
+    }
+
+    @JsonView(UserViews.Simple.class)
+    @GetMapping(value = "", headers = "Accept=application/json")
+    public User getUserDetails(Authentication authentication){
+        return userService.getExistingUser(authentication);
     }
 }

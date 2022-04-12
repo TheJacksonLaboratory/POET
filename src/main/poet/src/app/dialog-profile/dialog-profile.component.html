@@ -1,0 +1,45 @@
+<h4 mat-dialog-title class="title">Your Profile</h4>
+<mat-dialog-content>
+  <mat-progress-bar *ngIf="!user else form" mode="indeterminate"></mat-progress-bar>
+  <ng-template #form>
+    <form [formGroup]="profileForm" >
+      <div class="profile-form-field">
+        <mat-form-field appearance="fill">
+          <mat-label>Username</mat-label>
+          <input matInput placeholder="Nickname" [value]="user.uniqueNickname" [disabled]=true>
+        </mat-form-field>
+      </div>
+      <div class="profile-form-field">
+        <mat-form-field appearance="fill" >
+          <mat-label>Orcid</mat-label>
+          <input matInput placeholder="Please enter your Orcid" formControlName="orcidFormControl">
+          <mat-error *ngIf="this.profileForm.get('orcidFormControl').hasError('required')">
+            Your orcid is missing.
+          </mat-error>
+          <mat-error *ngIf="this.profileForm.get('orcidFormControl').hasError('pattern')">
+            Please enter a valid orcid.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="profile-form-field">
+        <mat-form-field appearance="fill">
+          <mat-label>Curation Role</mat-label>
+          <input matInput placeholder="Your Role" [value]="prettyRole()" [disabled]=true>
+        </mat-form-field>
+      </div>
+      <div class="profile-form-field">
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input matInput placeholder="Your Role" [value]="user.email" [disabled]=true>
+        </mat-form-field>
+      </div>
+    </form>
+  </ng-template>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button *ngIf="!this.profileForm.get('orcidFormControl').enabled"
+          (click)="this.profileForm.get('orcidFormControl').enable()">Edit</button>
+  <button mat-button [mat-dialog-close]="this.profileForm.get('orcidFormControl').value"
+          *ngIf="this.profileForm.get('orcidFormControl').valid">Save</button>
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>
