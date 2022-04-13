@@ -64,22 +64,24 @@ export class AppComponent implements OnInit {
   }
 
   openProfile(){
-    this.dialog.open(DialogProfileComponent, {minWidth: 300, data: {
-      orcid: ''
-      }}).afterClosed().subscribe((id) => {
-        if (id) {
-          this.userService.setOrcid(id).subscribe(() => {
-            this._snackBar.open('Successfully updated profile!', 'close', {
-              duration: 3000,
-              horizontalPosition: 'left'
+    if(this.dialog.openDialogs.length === 0){
+      this.dialog.open(DialogProfileComponent, {minWidth: 300, data: {
+          orcid: ''
+        }}).afterClosed().subscribe((id) => {
+          if (id) {
+            this.userService.setOrcid(id).subscribe(() => {
+              this._snackBar.open('Successfully updated profile!', 'close', {
+                duration: 3000,
+                horizontalPosition: 'left'
+              });
+            }, (err) => {
+              this._snackBar.open(err?.error?.message, 'close', {
+                horizontalPosition: 'left'
+              });
             });
-          }, (err) => {
-            this._snackBar.open(err?.error?.message, 'close', {
-              horizontalPosition: 'left'
-            });
-          });
+          }
         }
-      }
-    );
+      );
+    }
   }
 }
