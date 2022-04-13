@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
     {title: 'FAQ', route: '/faq', icon: 'view_list', private: false, requiresElevated: false}
   ];
   isElevated: boolean = false;
-  version: string = packageInfo.version + '.beta';
+  version: string = 'v' + packageInfo.version;
 
   constructor(public auth: AuthService, @Inject(DOCUMENT) public document: Document,
               public router: Router, public userService: UserService, public dialog: MatDialog,
