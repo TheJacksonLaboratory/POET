@@ -29,6 +29,10 @@
 
 .nickname {
   outline: 0;
+  :hover {
+    opacity: .8;
+    cursor: pointer;
+  }
 }
 
 .beta-button {

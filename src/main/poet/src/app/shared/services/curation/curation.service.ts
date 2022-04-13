@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { environment } from "../../../../environments/environment";
-import { Observable } from "rxjs";
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
+import { Observable } from 'rxjs';
 import {
   Disease,
   PhenotypeAnnotation,
   Publication,
   TreatmentAnnotation,
   UserActivityResponse
-} from "../../models/models";
-import { StateService } from "../state/state.service";
-import { map, shareReplay } from "rxjs/operators";
+} from '../../models/models';
+import { map, shareReplay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -26,13 +25,13 @@ export class CurationService {
    * @param query
    */
   searchAll(query: string) {
-    let parameters: HttpParams = new HttpParams().set('query', query);
+    const parameters: HttpParams = new HttpParams().set('query', query);
     return this.httpClient.get(environment.POET_API_SEARCH_URL, {params: parameters});
   }
 
   /***
    * Get a disease by OMIM id
-   * @param id
+   * @param id the OMIM id
    */
   getDisease(id: string): Observable<Disease> {
     return this.httpClient.get<any>(environment.POET_API_DISEASE_ENTITY_URL + id);
@@ -138,7 +137,7 @@ export class CurationService {
    * @param category - the category we are curating
    */
   saveAnnotation(annotation: any, category: string) {
-    if(category ==='treatment'){
+    if(category === 'treatment'){
       return this.httpClient.post(environment.POET_API_TREATMENTS_ANNOTATION, annotation);
     } else {
       return this.httpClient.post(environment.POET_API_PHENOTYPES_ANNOTATION, annotation);
@@ -165,7 +164,7 @@ export class CurationService {
    * @param everyone
    */
   getUserActivity(everyone: boolean) {
-    const params = new HttpParams().set("all", String(everyone));
+    const params = new HttpParams().set('all', String(everyone));
     return this.httpClient.get<UserActivityResponse[]>(environment.POET_API_STATISTICS_ACTIVITY_URL, {params: params}).pipe(
       map((response: UserActivityResponse[]) => {
         return response.map((activity: UserActivityResponse) => {
@@ -186,7 +185,7 @@ export class CurationService {
           newData.time = new Date(activity.dateTime);
           newData.annotationId = activity.annotation.id;
           return newData;
-        })
+        });
       }));
   }
 
@@ -198,13 +197,13 @@ export class CurationService {
    * @param limit - the page limit
    */
   getGroupActivityFeed(everyone: boolean, weeksBack: number, offset: number, limit: number) {
-    let params = new HttpParams().set("all", String(everyone)).set("weeks", String(weeksBack));
+    let params = new HttpParams().set('all', String(everyone)).set('weeks', String(weeksBack));
     if(offset){
-      params = params.set("offset", String(offset));
+      params = params.set('offset', String(offset));
     }
 
     if(limit){
-      params = params.set("limit", String(limit))
+      params = params.set('limit', String(limit))
     }
 
     return this.httpClient.get<UserActivityResponse[]>(environment.POET_API_STATISTICS_ACTIVITY_URL, {params: params}).pipe(
@@ -217,7 +216,7 @@ export class CurationService {
    * Activity older than a day gets grouped by day, disease
    * Activity older than an hour gets grouped by day, disease, user, type
    * Activity under an hour gets grouped by day, disease, user, type, action
-   * @param activityList
+   * @param activityList the list of user activity
    */
   reduceToGroupedActivity(activityList) {
     const activities = [];
@@ -401,9 +400,9 @@ export class CurationService {
   getUserContributions() {
     return this.httpClient.get(environment.POET_API_STATISTICS_CONTRIBUTION_URL).pipe(
       map((contributions) => {
-        return [{"value": contributions["treatment"], "name": "Medical Action Ontology"},
-          {"value": contributions["phenotype"], "name": "Human Phenotype Ontology"},
-          {"value": contributions["phenopackets"], "name": "PhenoPackets"}];
+        return [{value: contributions["treatment"], name: "Medical Action Ontology"},
+          {value: contributions["phenotype"], name: "Human Phenotype Ontology"},
+          {value: contributions["phenopackets"], name: "PhenoPackets"}];
       })
     );
   }
@@ -420,7 +419,7 @@ export class CurationService {
    */
   getDiseaseActivity(): any{
     return this.httpClient.get(environment.POET_API_STATISTICS_ACTIVITY_DISEASE_URL).pipe(
-      map((diseaseList:any[]) => {
+      map((diseaseList: any[]) => {
         return diseaseList.map(disease => {
           return {
             name: disease.diseaseName,

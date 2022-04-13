@@ -7,7 +7,7 @@
       <button mat-button *ngIf="auth.isAuthenticated$ | async" [routerLink]="['/dashboard']">Dashboard</button>
       <button mat-button [routerLink]="['/resources']">Resources</button>
       <div fxFlex class="toolbar-spacer"></div>
-      <div class="nickname" *ngIf="auth.user$ | async as user">
+      <div class="nickname" *ngIf="auth.user$ | async as user" (click)="openProfile()">
         <span *ngIf="user.nickname">{{user.nickname}}</span>
       </div>
       <ng-container *ngIf="isHomePage() && (auth.isLoading$ | async); else loggedIn">

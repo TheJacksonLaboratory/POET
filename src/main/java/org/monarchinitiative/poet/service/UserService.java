@@ -1,6 +1,7 @@
 package org.monarchinitiative.poet.service;
 
 import org.monarchinitiative.poet.exceptions.AuthenticationException;
+import org.monarchinitiative.poet.exceptions.UserModificationException;
 import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
 import org.monarchinitiative.poet.repository.UserRepository;
@@ -54,9 +55,9 @@ public class UserService {
      * @param authentication a spring authentication object
      * @return the created or fetched user object
      */
-    public User getExistingUser(Authentication authentication) throws AuthenticationException{
+    public User getExistingUser(Authentication authentication) throws AuthenticationException {
         final User user = getUserFromAuthentication(authentication);
-        User existing = userRepository.findDistinctByAuthId(user.getAuthId());
+        final User existing = userRepository.findDistinctByAuthId(user.getAuthId());
         if(existing != null){
             return existing;
         } else {
@@ -77,6 +78,16 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void setUserOrcId(Authentication authentication, String orcid) throws AuthenticationException {
+        User user = getExistingUser(authentication);
+        if(!userRepository.existsUserByOrcid(orcid)){
+            user.setOrcid(orcid);
+            userRepository.save(user);
+        } else {
+            throw new UserModificationException(orcid);
+        }
+    }
+
 
     /**
      * A function to transform an authentication object to a user entity
@@ -86,7 +97,7 @@ public class UserService {
      * @return a user object or throw Authentication Exception
      * @since 0.6.0
      */
-    private User getUserFromAuthentication(Authentication authentication){
+    private User getUserFromAuthentication(Authentication authentication) throws AuthenticationException {
         if(authentication != null){
             final Jwt credentials = (Jwt) authentication.getCredentials();
             String authId = authentication.getName();
@@ -94,9 +105,10 @@ public class UserService {
             String email = credentials.getClaim(email_claim);
             List<String> permissions = credentials.getClaim("permissions");
             CurationRole curationRole = CurationRole.POET_CURATOR;
-            if(permissions.contains("poet:admin")){
+            if(permissions.contains("poet:admin")) {
                 curationRole = CurationRole.POET_ADMIN;
             }
+
             if(authId != null && nickname != null && email != null){
                 return new User(authId, nickname, email, curationRole);
             } else {

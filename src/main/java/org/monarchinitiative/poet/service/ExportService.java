@@ -49,7 +49,7 @@ public class ExportService {
                         annotation.getAnnotationSource().getDisease().getDiseaseName(),
                         annotation.getQualifier(), annotation.getHpoId(), reference, annotation.getEvidence(),
                         annotation.getOnset(), annotation.getFrequency(), annotation.getSex(), annotation.getModifier(),
-                        annotation.getOwner().getNickname()
+                        annotation.getOwner().getExportName()
                 );
             }
         } catch (IOException e) {
@@ -68,11 +68,12 @@ public class ExportService {
                 } else {
                     reference = annotation.getAnnotationSource().getPublication().getPublicationId();
                 }
+
                 csvPrinter.printRecord(annotation.getAnnotationSource().getDisease().getEquivalentId(),
                         annotation.getAnnotationSource().getDisease().getDiseaseName(), reference,
                         annotation.getMaxoId(), annotation.getMaxoName(), annotation.getHpoId(), annotation.getRelation(),
                         annotation.getEvidence(), annotation.getExtensionId(), annotation.getExtensionLabel(),
-                        annotation.getComment(), annotation.getOwner().getNickname()
+                        annotation.getComment(), annotation.getOwner().getExportName()
                 );
             }
         } catch (IOException e) {

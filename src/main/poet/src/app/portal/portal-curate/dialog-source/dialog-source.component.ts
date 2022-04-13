@@ -23,7 +23,7 @@ export class DialogSourceComponent implements OnInit {
     Validators.required]);
   selectedCategory: string;
   selectedPublication: any;
-  selectedDisease: any = {diseaseName: "", diseaseId: ""};
+  selectedDisease: any = {diseaseName: '', diseaseId: ''};
   selectedType: string;
   annotatedPublications$: Observable<Publication[]>;
   newPublication: boolean = false;

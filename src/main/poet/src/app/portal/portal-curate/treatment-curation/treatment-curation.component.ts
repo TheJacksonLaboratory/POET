@@ -37,7 +37,8 @@ export class TreatmentCurationComponent implements OnInit {
   loadingHpoSuggestions = false;
   loadingMaxoSuggestions = false;
   loadingExtensionSuggestions = false;
-  elevatedButtonText = {approve: {display: 'Approve', show: true}, deny: {display: 'Deny', show: true}, changes: {display: 'Make changes', show: true}};
+  elevatedButtonText = {approve: {display: 'Approve', show: true}, deny: {display: 'Deny', show: true},
+    changes: {display: 'Make changes', show: true}};
   elevatedChanges = false;
   title = 'Treatment';
 
