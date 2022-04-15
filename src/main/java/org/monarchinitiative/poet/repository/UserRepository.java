@@ -5,4 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<User, Long> {
     User findDistinctByAuthId(String authId);
+    boolean existsUserByOrcid(String orcid);
 }

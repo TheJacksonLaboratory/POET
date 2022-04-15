@@ -30,6 +30,7 @@ import { MatChipsModule } from "@angular/material/chips";
 import { MatRadioModule } from "@angular/material/radio";
 import { SortPipe } from './pipes/sort.pipe';
 import { MatExpansionModule } from "@angular/material/expansion";
+import { NgxChartsModule } from "@swimlane/ngx-charts";
 
 @NgModule({
   declarations: [SearchComponent, FilterPipe, SortPipe],
@@ -66,44 +67,46 @@ import { MatExpansionModule } from "@angular/material/expansion";
     MatChipsModule,
     MatCheckboxModule,
     MatRadioModule,
-    MatExpansionModule
+    MatExpansionModule,
+    NgxChartsModule,
   ],
-    exports: [
-        MatToolbarModule,
-        MatButtonModule,
-        MatSidenavModule,
-        MatListModule,
-        MatDividerModule,
-        MatIconModule,
-        MatTableModule,
-        MatCardModule,
-        MatDialogModule,
-        MatSelectModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        MatProgressBarModule,
-        MatDividerModule,
-        SearchComponent,
-        MatProgressSpinnerModule,
-        MatBottomSheetModule,
-        MatSnackBarModule,
-        MatTabsModule,
-        MatTooltipModule,
-        MatMenuModule,
-        MatPaginatorModule,
-        MatCheckboxModule,
-        MatTooltipModule,
-        MatChipsModule,
-        FlexLayoutModule,
-        MatCheckboxModule,
-        FilterPipe,
-        MatRadioModule,
-        SortPipe,
-        MatExpansionModule
-    ]
+  exports: [
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatListModule,
+    MatDividerModule,
+    MatIconModule,
+    MatTableModule,
+    MatCardModule,
+    MatDialogModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatProgressBarModule,
+    MatDividerModule,
+    SearchComponent,
+    MatProgressSpinnerModule,
+    MatBottomSheetModule,
+    MatSnackBarModule,
+    MatTabsModule,
+    MatTooltipModule,
+    MatMenuModule,
+    MatPaginatorModule,
+    MatCheckboxModule,
+    MatTooltipModule,
+    MatChipsModule,
+    FlexLayoutModule,
+    MatCheckboxModule,
+    FilterPipe,
+    MatRadioModule,
+    SortPipe,
+    MatExpansionModule,
+    NgxChartsModule
+  ]
 })
 export class SharedModule {
 }

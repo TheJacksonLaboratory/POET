@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { environment } from "../../../../environments/environment";
-import { Observable } from "rxjs";
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
+import { Observable } from 'rxjs';
 import {
   Disease,
   PhenotypeAnnotation,
   Publication,
   TreatmentAnnotation,
   UserActivityResponse
-} from "../../models/models";
-import { StateService } from "../state/state.service";
-import { map, shareReplay } from "rxjs/operators";
+} from '../../models/models';
+import { map, shareReplay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -26,13 +25,13 @@ export class CurationService {
    * @param query
    */
   searchAll(query: string) {
-    let parameters: HttpParams = new HttpParams().set('query', query);
+    const parameters: HttpParams = new HttpParams().set('query', query);
     return this.httpClient.get(environment.POET_API_SEARCH_URL, {params: parameters});
   }
 
   /***
    * Get a disease by OMIM id
-   * @param id
+   * @param id the OMIM id
    */
   getDisease(id: string): Observable<Disease> {
     return this.httpClient.get<any>(environment.POET_API_DISEASE_ENTITY_URL + id);
@@ -138,7 +137,7 @@ export class CurationService {
    * @param category - the category we are curating
    */
   saveAnnotation(annotation: any, category: string) {
-    if(category ==='treatment'){
+    if(category === 'treatment'){
       return this.httpClient.post(environment.POET_API_TREATMENTS_ANNOTATION, annotation);
     } else {
       return this.httpClient.post(environment.POET_API_PHENOTYPES_ANNOTATION, annotation);
@@ -165,7 +164,7 @@ export class CurationService {
    * @param everyone
    */
   getUserActivity(everyone: boolean) {
-    const params = new HttpParams().set("all", String(everyone));
+    const params = new HttpParams().set('all', String(everyone));
     return this.httpClient.get<UserActivityResponse[]>(environment.POET_API_STATISTICS_ACTIVITY_URL, {params: params}).pipe(
       map((response: UserActivityResponse[]) => {
         return response.map((activity: UserActivityResponse) => {
@@ -186,7 +185,7 @@ export class CurationService {
           newData.time = new Date(activity.dateTime);
           newData.annotationId = activity.annotation.id;
           return newData;
-        })
+        });
       }));
   }
 
@@ -198,13 +197,13 @@ export class CurationService {
    * @param limit - the page limit
    */
   getGroupActivityFeed(everyone: boolean, weeksBack: number, offset: number, limit: number) {
-    let params = new HttpParams().set("all", String(everyone)).set("weeks", String(weeksBack));
+    let params = new HttpParams().set('all', String(everyone)).set('weeks', String(weeksBack));
     if(offset){
-      params = params.set("offset", String(offset));
+      params = params.set('offset', String(offset));
     }
 
     if(limit){
-      params = params.set("limit", String(limit))
+      params = params.set('limit', String(limit))
     }
 
     return this.httpClient.get<UserActivityResponse[]>(environment.POET_API_STATISTICS_ACTIVITY_URL, {params: params}).pipe(
@@ -217,13 +216,13 @@ export class CurationService {
    * Activity older than a day gets grouped by day, disease
    * Activity older than an hour gets grouped by day, disease, user, type
    * Activity under an hour gets grouped by day, disease, user, type, action
-   * @param activityList
+   * @param activityList the list of user activity
    */
   reduceToGroupedActivity(activityList) {
-    let activities = [];
-    let that = this;
-    let dayMap = activityList.reduce(function (r, a) {
-      let date = new Date(Date.parse(a.dateTime + "Z"));
+    const activities = [];
+    const that = this;
+    const dayMap = activityList.reduce(function (r, a) {
+      const date = new Date(Date.parse(a.dateTime + "Z"));
       const dayDifference = that.daysFromNow(date);
       r[dayDifference] = r[dayDifference] || [];
       r[dayDifference].push(a);
@@ -232,7 +231,7 @@ export class CurationService {
 
     Object.keys(dayMap).forEach(daysFromNow => {
       dayMap[daysFromNow] = dayMap[daysFromNow].reduce((r, a) => {
-        let disease = a.annotation.annotationSource.disease.diseaseId + "~" +
+        const disease = a.annotation.annotationSource.disease.diseaseId + '~' +
           a.annotation.annotationSource.disease.diseaseName;
         r[disease] = r[disease] || [];
         r[disease].push(a);
@@ -240,8 +239,8 @@ export class CurationService {
       }, Object.create(null));
 
       Object.keys(dayMap[daysFromNow]).forEach(diseaseJoined => {
-        const [diseaseId, diseaseName] = diseaseJoined.split("~");
-        if (parseInt(daysFromNow) == 0) {
+        const [diseaseId, diseaseName] = diseaseJoined.split('~');
+        if (parseInt(daysFromNow) === 0) {
           // Today
           dayMap[daysFromNow][diseaseJoined] = dayMap[daysFromNow][diseaseJoined].reduce((r, a) => {
             r[a.owner.nickname] = r[a.owner.nickname] || [];
@@ -260,7 +259,7 @@ export class CurationService {
               // Group by hours from now
               dayMap[daysFromNow][diseaseJoined][user][type] = dayMap[daysFromNow][diseaseJoined][user][type].reduce((r, a) => {
                 // Group by hours from now
-                let date = new Date(Date.parse(a.dateTime + "Z"));
+                let date = new Date(Date.parse(a.dateTime + 'Z'));
                 const hourDifference = that.hoursFromNow(date);
                 r[hourDifference] = r[hourDifference] || [];
                 r[hourDifference].push(a);
@@ -269,7 +268,7 @@ export class CurationService {
 
               Object.keys(dayMap[daysFromNow][diseaseJoined][user][type]).forEach(hour => {
                 const hoursFromNow = parseInt(hour);
-                if (hoursFromNow == 0) {
+                if (hoursFromNow === 0) {
                   dayMap[daysFromNow][diseaseJoined][user][type][hour] = dayMap[daysFromNow][diseaseJoined][user][type][hour].reduce((r, a) => {
                     r[a.curationAction] = r[a.curationAction] || [];
                     r[a.curationAction].push(a);
@@ -283,16 +282,20 @@ export class CurationService {
                     const actionFriendly = this.actionLookup(action);
                     const annotationGrammar = this.annotationGrammar(count);
                     let view;
-                    if (minutesFromNow == 0 || minutesFromNow == 1) {
-                      view = `${user} ${actionFriendly} ${count} ${type} ${annotationGrammar} for ${diseaseName} just now.`;
+                    let timePast;
+                    if (minutesFromNow === 0 || minutesFromNow === 1) {
+                      view = `${user} ${actionFriendly} ${count} ${type} ${annotationGrammar} for ${diseaseName}`;
+                      timePast = 'just now';
                     } else {
-                      view = `${user} ${actionFriendly} ${count} ${type} ${annotationGrammar} for ${diseaseName} -  ${minutesFromNow} minutes ago.`;
+                      view = `${user} ${actionFriendly} ${count} ${type} ${annotationGrammar} for ${diseaseName}`;
+                      timePast = `${minutesFromNow} minutes ago.`;
                     }
                     activities.push({
-                      "view": view,
-                      "diseaseId": diseaseId,
-                      "date": mostRecent,
-                      "type": type
+                      view,
+                      diseaseId,
+                      date: mostRecent,
+                      type,
+                      timePast
                     });
                   });
 
@@ -301,16 +304,20 @@ export class CurationService {
                   const mostRecent = this.getMostRecentDate(dayMap[daysFromNow][diseaseJoined][user][type][hoursFromNow]);
                   const annotationGrammar = this.annotationGrammar(count);
                   let view;
-                  if (hoursFromNow == 1) {
-                    view = `${user} modified ${count} ${type} ${annotationGrammar} for ${diseaseName} an hour ago.`;
+                  let timePast;
+                  if (hoursFromNow === 1) {
+                    view = `${user} modified ${count} ${type} ${annotationGrammar} for ${diseaseName}`;
+                    timePast = 'about an hour ago';
                   } else {
-                    view = `${user} modified ${count} ${type} ${annotationGrammar} for ${diseaseName} - ${hoursFromNow} hours ago.`;
+                    view = `${user} modified ${count} ${type} ${annotationGrammar} for ${diseaseName}`;
+                    timePast = `${hoursFromNow} hours ago`;
                   }
                   activities.push({
-                    "view": view,
-                    "diseaseId": diseaseId,
-                    "date": mostRecent,
-                    "type": type
+                    view,
+                    diseaseId,
+                    date: mostRecent,
+                    type,
+                    timePast
                   });
                 }
               });
@@ -325,18 +332,22 @@ export class CurationService {
           const annotationGrammar = this.annotationGrammar(count);
           const userList = [...new Set(dayMap[daysFromNow][diseaseJoined].map(item => {
             return item.owner.nickname;
-          }))].join(", ");
+          }))].join(', ');
           let view;
-          if (parseInt(daysFromNow) == 1) {
-            view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName} yesterday.`;
+          let timePast;
+          if (parseInt(daysFromNow) === 1) {
+            view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName}`;
+            timePast = 'yesterday';
           } else {
-            view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName} - ${daysFromNow} days ago.`;
+            view = `${userList} modified ${count} ${annotationGrammar} for ${diseaseName}`;
+            timePast = `${daysFromNow} days ago`;
           }
           activities.push({
-            "view": view,
-            "diseaseId": diseaseId,
-            "date": mostRecent,
-            "type": "phenotype"
+            view,
+            diseaseId,
+            'date': mostRecent,
+            'type': 'phenotype',
+            timePast
           });
         }
       });
@@ -389,9 +400,9 @@ export class CurationService {
   getUserContributions() {
     return this.httpClient.get(environment.POET_API_STATISTICS_CONTRIBUTION_URL).pipe(
       map((contributions) => {
-        return [{"value": contributions["treatment"], "name": "Medical Action Ontology"},
-          {"value": contributions["phenotype"], "name": "Human Phenotype Ontology"},
-          {"value": contributions["phenopackets"], "name": "PhenoPackets"}];
+        return [{value: contributions["treatment"], name: "Medical Action Ontology"},
+          {value: contributions["phenotype"], name: "Human Phenotype Ontology"},
+          {value: contributions["phenopackets"], name: "PhenoPackets"}];
       })
     );
   }
@@ -401,5 +412,24 @@ export class CurationService {
    */
   getAnnotationCounts(diseaseId: string): any {
     return this.httpClient.get(environment.POET_API_STATISTICS_ANNOTATION_URL + diseaseId);
+  }
+
+  /**
+   * Get disease activity
+   */
+  getDiseaseActivity(): any{
+    return this.httpClient.get(environment.POET_API_STATISTICS_ACTIVITY_DISEASE_URL).pipe(
+      map((diseaseList: any[]) => {
+        return diseaseList.map(disease => {
+          return {
+            name: disease.diseaseName,
+            extra: {
+              id: disease.diseaseId,
+            },
+            value: disease.diseaseCount
+          }
+        }).sort((a,b) => (a.value > b.value)? -1 : 1).slice(0, 10);
+      })
+    );
   }
 }

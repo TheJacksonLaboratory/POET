@@ -1,9 +1,17 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import {
   Disease,
   TreatmentAnnotation,
   Publication,
-  PhenotypeAnnotation, Annotation,
+  PhenotypeAnnotation, Annotation, Status,
 } from '../../../shared/models/models';
 import { StateService } from '../../../shared/services/state/state.service';
 import { CurationService } from '../../../shared/services/curation/curation.service';
@@ -18,6 +26,7 @@ import { ConfirmSheetComponent } from './confirm-sheet/confirm-sheet.component';
 import { UtilityService } from '../../../shared/services/utility.service';
 import { tap } from 'rxjs/operators';
 import {UserService} from '../../../shared/services/user/user.service';
+import { HpoService } from '../../../shared/services/external/hpo.service';
 
 @Component({
   selector: 'poet-annotation-card',
@@ -32,8 +41,8 @@ import {UserService} from '../../../shared/services/user/user.service';
 export class AnnotationCardComponent implements OnInit {
 
   @Output('openForm') openAnnotationForm: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Input('user') user: any;
-  @Input('formOpen') formOpen = false;
+  @Input() user: any;
+  @Input() formOpen = false;
   @ViewChild('phenotypePaginator') phenotypePagination: MatPaginator;
   @ViewChild('treatmentPaginator') treatmentPagination: MatPaginator;
   disease: Disease;
@@ -52,44 +61,15 @@ export class AnnotationCardComponent implements OnInit {
   showAll = false;
   selectedSort = 'recent';
   loadingAnnotations = true;
+  hpoToolTipText = '';
 
 
   constructor(public stateService: StateService, public curationService: CurationService, public utilityService: UtilityService,
               private _snackBar: MatSnackBar, private route: ActivatedRoute, private _bottomSheet: MatBottomSheet,
-              private cdk: ChangeDetectorRef, public userService: UserService) {
+              private cdk: ChangeDetectorRef, public userService: UserService, public hpoService: HpoService) {
   }
 
   ngOnInit(): void {
-
-    this.phenotypeAnnotations = this.stateService.phenotypeAnnotations.pipe(
-      tap(annotations => {
-        if (this.category === 'phenotype' && annotations.length > 0){
-          this.annotationStatuses = [];
-          const statuses = annotations.map((annotation) => {
-            return annotation.status;
-          });
-          this.annotationStatuses = [...new Set(statuses)].sort();
-          this.selectedStatuses = this.annotationStatuses;
-          this.cdk.detectChanges();
-          this.loadingAnnotations = false;
-        }
-      })
-    );
-
-    this.treatmentAnnotations = this.stateService.treatmentAnnotations.pipe(
-      tap(annotations => {
-        if (this.category === 'treatment' && annotations.length > 0){
-          this.annotationStatuses = [];
-          const statuses = annotations.map((annotation) => {
-            return annotation.status;
-          });
-          this.annotationStatuses = [...new Set(statuses)].sort();
-          this.selectedStatuses = this.annotationStatuses;
-          this.cdk.detectChanges();
-          this.loadingAnnotations = false;
-        }
-      }));
-
     this.stateService.selectedDisease.subscribe((disease: Disease) => {
       if (disease != null) {
         this.disease = disease;
@@ -99,6 +79,13 @@ export class AnnotationCardComponent implements OnInit {
     this.stateService.selectedCategory.subscribe((category) => {
       this.category = category;
       this.annotationStatuses = [];
+      if (this.category === 'phenotype') {
+        this.phenotypeAnnotations = this.stateService.phenotypeAnnotations.pipe(
+          tap(annotations => this.configureAnnotationStatus(annotations)));
+      } else if (this.category === 'treatment') {
+        this.treatmentAnnotations = this.stateService.treatmentAnnotations.pipe(
+          tap(annotations => this.configureAnnotationStatus(annotations)));
+      }
     });
 
     this.stateService.selectedAnnotationMode.subscribe((mode) => {
@@ -106,7 +93,7 @@ export class AnnotationCardComponent implements OnInit {
     });
 
     this.stateService.selectedPhenotypeAnnotation.subscribe((annotation) => {
-      if (annotation){
+      if (annotation) {
         this.activeAnnotation = annotation;
       } else {
         this.activeAnnotation = null;
@@ -114,12 +101,25 @@ export class AnnotationCardComponent implements OnInit {
     });
 
     this.stateService.selectedTreatmentAnnotation.subscribe((annotation) => {
-      if (annotation){
+      if (annotation) {
         this.activeAnnotation = annotation;
       } else {
-        this .activeAnnotation = null;
+        this.activeAnnotation = null;
       }
     });
+  }
+
+  configureAnnotationStatus(annotations){
+    if (annotations.length > 0){
+      this.annotationStatuses = [];
+      const statuses = annotations.map((annotation) => {
+        return annotation.status;
+      });
+      this.annotationStatuses = [...new Set(statuses)].sort();
+      this.selectedStatuses = this.annotationStatuses;
+      this.cdk.detectChanges();
+      this.loadingAnnotations = false;
+    }
   }
 
   categoryToDisplay() {
@@ -138,7 +138,8 @@ export class AnnotationCardComponent implements OnInit {
     this.openAnnotationForm.emit(false);
   }
 
-  annotationAction(annotation: any, action: any) {
+  annotationAction(event: MouseEvent, annotation: any, action: any) {
+    event.stopPropagation();
     if (action === 'delete') {
         this._bottomSheet.open(ConfirmSheetComponent, {
           restoreFocus: false,
@@ -158,9 +159,9 @@ export class AnnotationCardComponent implements OnInit {
           }
         });
     } else {
-      if (this.category === 'treatment') {
+      if (this.category === 'treatment' && (annotation?.status !== Status.RETIRED.valueOf())) {
         this.stateService.setSelectedTreatmentAnnotation(annotation);
-      } else {
+      } else if (this.category === 'phenotype' && (annotation?.status !== Status.RETIRED.valueOf())) {
         this.stateService.setSelectedPhenotypeAnnotation(annotation);
       }
       this.stateService.setSelectedAnnotationMode(action);
@@ -183,17 +184,16 @@ export class AnnotationCardComponent implements OnInit {
     }
   }
 
-  showBugReport(annotation: Annotation){
-    return (this.utilityService.isOfficial(annotation) && !this.userService.isUserAdmin(this.user));
-  }
-
-  showCreateAnnotation(annotation: Annotation) {
-    return (this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) && !this.utilityService.isNeedsWork(annotation))
-      || (this.userService.isUserAdmin(this.user) && !this.utilityService.isUnderReview(annotation) && !this.utilityService.isNeedsWork(annotation));
+  showEditAnnotation(annotation: Annotation) {
+    return (this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) &&
+      !this.utilityService.isNeedsWork(annotation) && !this.utilityService.isOfficial(annotation))
+      || (this.userService.isUserAdmin(this.user) && !this.utilityService.isUnderReview(annotation) &&
+        !this.utilityService.isNeedsWork(annotation));
   }
 
   showDeleteAnnotation(annotation: Annotation){
-    return this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) ||
+    return (this.userService.isUser(this.user) && this.utilityService.ownsAnnotation(this.user, annotation.owner) &&
+        !this.utilityService.isOfficial(annotation)) ||
       this.userService.isUserAdmin(this.user);
   }
 
@@ -230,6 +230,22 @@ export class AnnotationCardComponent implements OnInit {
       return 'Annotation is official.';
     } else if (status === 'NEEDS_WORK'){
       return 'Annotation needs work.';
+    }
+  }
+
+  getTermDefinitionTooltipText(event, tooltip, hpoId: string){
+    event.stopPropagation();
+    this.hpoService.hpoTermDefinition(hpoId).subscribe(definition => {
+      if (definition){
+        tooltip.message = definition;
+        tooltip.show();
+      }
+    });
+  }
+
+  hideDefinitionTooltip(tooltip){
+    if (tooltip._isTooltipVisible()){
+      tooltip.hide();
     }
   }
 

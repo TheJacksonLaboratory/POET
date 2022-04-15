@@ -17,6 +17,8 @@ import { ResourcesComponent } from "./resources/resources/resources.component";
 import { FaqComponent } from "./resources/faq/faq.component";
 import { ContactComponent } from "./resources/contact/contact.component";
 import { DocumentationComponent } from './resources/documentation/documentation.component';
+import { NgxChartsModule } from "@swimlane/ngx-charts";
+import { DialogProfileComponent } from './dialog-profile/dialog-profile.component';
 const config: AuthConfig = {
   ...env.auth,
   httpInterceptor: {
@@ -30,7 +32,8 @@ const config: AuthConfig = {
     ResourcesComponent,
     FaqComponent,
     ContactComponent,
-    DocumentationComponent
+    DocumentationComponent,
+    DialogProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +42,8 @@ const config: AuthConfig = {
     SharedModule,
     PortalModule,
     FlexLayoutModule,
-    AuthModule.forRoot(config)
+    AuthModule.forRoot(config),
+    NgxChartsModule
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {panelClass: 'mat-dialog-override'}}],

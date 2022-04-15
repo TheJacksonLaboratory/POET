@@ -37,7 +37,8 @@ export class TreatmentCurationComponent implements OnInit {
   loadingHpoSuggestions = false;
   loadingMaxoSuggestions = false;
   loadingExtensionSuggestions = false;
-  elevatedButtonText = {approve: {display: 'Approve', show: true}, deny: {display: 'Deny', show: true}, changes: {display: 'Make changes', show: true}};
+  elevatedButtonText = {approve: {display: 'Approve', show: true}, deny: {display: 'Deny', show: true},
+    changes: {display: 'Make changes', show: true}};
   elevatedChanges = false;
   title = 'Treatment';
 
@@ -45,6 +46,7 @@ export class TreatmentCurationComponent implements OnInit {
   formControlGroup: FormGroup = new FormGroup({
     maxoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     hpoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
+    diseaseTreatmentControl:  new FormControl({value: '', disabled: false}),
     evidenceFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     relationFormControl: new FormControl({value: '', disabled: false}, Validators.required),
     extensionFormControl: new FormControl({value: '', disabled: false}, this.extensionValidation()),
@@ -106,6 +108,24 @@ export class TreatmentCurationComponent implements OnInit {
       this.formControlGroup.enable();
     });
 
+    this.formControlGroup.get('diseaseTreatmentControl').valueChanges.subscribe(value => {
+      if (value) {
+        this.selectedHpo = {
+          id: 'HP:0000118',
+          name: 'Phenotypic abnormality'
+        };
+        this.formControlGroup.get('hpoFormControl').setValue(this.selectedHpo);
+        this.formControlGroup.get('hpoFormControl').disable();
+      } else if (this.formControlGroup.dirty){
+          this.selectedHpo = {
+            id: '',
+            name: ''
+          };
+          this.formControlGroup.get('hpoFormControl').reset();
+          this.formControlGroup.get('hpoFormControl').enable();
+        }
+    });
+
     this.formControlGroup.get('maxoFormControl').valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
@@ -114,7 +134,7 @@ export class TreatmentCurationComponent implements OnInit {
           this.maxoOptions = [];
           this.hpoService.searchMaxoTerms(query).pipe(
             finalize(() => this.loadingMaxoSuggestions = false)).subscribe((data) => {
-            if (!data || data.length == 0) {
+            if (!data || data.length === 0) {
               this.formControlGroup.get('maxoFormControl').setErrors({notFound: true});
             }
             this.maxoOptions = data;
@@ -220,7 +240,13 @@ export class TreatmentCurationComponent implements OnInit {
 
   setFormValues(annotation: any) {
     this.formControlGroup.get('maxoFormControl').setValue({ontologyId: annotation.maxoId, name: annotation.maxoName});
+    if (annotation.hpoId === 'HP:0000118'){
+      this.formControlGroup.get('diseaseTreatmentControl').setValue(true);
+    } else {
+      this.formControlGroup.get('diseaseTreatmentControl').setValue(false);
+    }
     this.formControlGroup.get('hpoFormControl').setValue({id: annotation.hpoId, name: annotation.hpoName});
+
     this.formControlGroup.get('evidenceFormControl').setValue(annotation.evidence);
     this.formControlGroup.get('relationFormControl').setValue(annotation.relation);
     this.formControlGroup.get('extensionFormControl').setValue({id: annotation.extensionId, label: annotation.extensionLabel});
@@ -260,7 +286,8 @@ export class TreatmentCurationComponent implements OnInit {
   }
 
   everythingValid() {
-    return this.formControlGroup.valid && this.selectedPublications.length > 0 && !this.formControlGroup.disabled;
+    return this.formControlGroup.valid && this.selectedPublications.length > 0 && !this.formControlGroup.disabled &&
+      this.formControlGroup.dirty;
   }
 
   resetTreatmentForm() {
@@ -269,8 +296,8 @@ export class TreatmentCurationComponent implements OnInit {
   }
 
   remove(publication: Publication): void {
+    this.formControlGroup.markAsDirty();
     const index = this.selectedPublications.indexOf(publication);
-
     if (index >= 0) {
       this.selectedPublications.splice(index, 1);
     }
@@ -321,9 +348,9 @@ export class TreatmentCurationComponent implements OnInit {
     }
   }
 
-  /**
-  * Elevated curator making changes to an annotation under_review
-  */
+  /*
+   * Elevated curator making changes to an annotation under_review
+   */
   toggleAnnotationChanges(shouldShow: boolean){
     if (shouldShow){
       this.elevatedChanges = true;
@@ -348,4 +375,7 @@ export class TreatmentCurationComponent implements OnInit {
     };
   }
 
+  showFormControlElement(name: string){
+    return this.formControlGroup.get(name).value !== null && !this.formControlGroup.disabled;
+  }
 }

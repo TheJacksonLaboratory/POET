@@ -8,110 +8,97 @@
       </div>
     </div>
   </div>
-  <div class="dashboard" fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="flex-start">
-      <div fxFlex="45" fxFlexOffset="5">
-        <mat-card class="review-card">
+  <div class="dashboard" fxLayout="row wrap" fxLayoutAlign="center stretch" fxLayoutGap=" grid" >
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-md="90" fxFlexOffset.lt-md="5">
+        <mat-card class="recently-curated-card">
           <mat-card-title>
-            Activity
+            User Activity
           </mat-card-title>
           <mat-card-content>
-            <mat-list *ngFor="let recent of recentActivity | slice: lowValue:highValue">
+            <div class="card-filters">
+              <mat-radio-group aria-label="Select an option" (change)="getUserActivity($event.value)" value="1">
+                <mat-radio-button value="1">1 Week</mat-radio-button>
+                <mat-radio-button value="4">1 Month</mat-radio-button>
+                <mat-radio-button value ="24">6 Months</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <mat-list *ngFor="let recent of recentUserActivity |
+              slice: paginators['activityPaginator'].lowValue:paginators['activityPaginator'].highValue" dense>
               <mat-list-item (click)="navigateToDisease(recent.diseaseId, recent.type)" class="activity-item">
-                <p>{{recent.view}}</p>
+                <p matLine>{{recent.view}}</p>
+                <p class="activity-time" matLine>{{recent.timePast}}</p>
               </mat-list-item>
             </mat-list>
             <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-            <p class="no-activity" *ngIf="recentActivity?.length == 0">No Recent Activity.</p>
-            <mat-paginator *ngIf="recentActivity?.length > 0" [length]="recentActivity?.length" pageSize="5"
-                           (page)="getPaginatorData($event)"
+            <p class="no-activity" *ngIf="recentUserActivity?.length === 0">No Recent Activity.</p>
+            <mat-paginator #activityPaginator *ngIf="recentUserActivity?.length > 0" [length]="recentUserActivity?.length" pageSize="5"
+                           (page)="getPaginatorData('activityPaginator', $event)"
                            showFirstLastButtons="false" hidePageSize="true">
             </mat-paginator>
           </mat-card-content>
         </mat-card>
-      </div>
-      <div fxFlex="45" *ngIf="userService.isRoleAdmin(userRole)">
-        <mat-card class="reviews">
+    </div>
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-md="90" fxFlexOffset.lt-md="5" *ngIf="diseaseActivity && diseaseActivity.length > 3">
+      <mat-card>
+        <mat-card-title>
+          Active Disease Curation
+        </mat-card-title>
+        <mat-card-content #containerRef>
+          <ngx-charts-bar-horizontal
+            [results]="diseaseActivity"
+            [view]="[containerRef.offsetWidth, 300]"
+            xAxis="true"
+            yAxis="true"
+            showXAxisLabel="true"
+            xAxisLabel="Annotation Actions"
+            (select)="onDiseaseActivitySelect($event)">
+          </ngx-charts-bar-horizontal>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-md="90" fxFlexOffset.lt-md="5" *ngIf="userService.isRoleAdmin(userRole)">
+        <mat-card>
           <mat-card-title>
-            Review Curation
+            Action Items
           </mat-card-title>
           <mat-card-content>
-            <mat-list *ngFor="let review of reviews">
-              <mat-list-item class="activity-item">
-                <p>{{review.count}} {{review.type}} annotations ready to be reviewed for {{review.diseaseName}}.</p>
-                <span class="spacer"></span>
-                <button mat-stroked-button (click)="navigateToDisease(review.diseaseId, review.type)">View</button>
+            <mat-list *ngFor="let review of reviews |
+              slice: paginators['reviewsPaginator'].lowValue:paginators['reviewsPaginator'].highValue" dense>
+              <mat-list-item class="activity-item" (click)="navigateToDisease(review.diseaseId, review.type)">
+                <span class="material-icons" mat-list-icon>engineering</span>
+                <p matLine>{{review.diseaseName}} needs review.</p>
+                <p class="activity-time" matLine>{{review.count}} {{review.type}} annotations</p>
               </mat-list-item>
             </mat-list>
             <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-            <p class="no-activity" *ngIf="reviews?.length == 0  && !loading">You are all caught up on annotations that need a review!</p>
+            <p class="no-activity" *ngIf="reviews?.length === 0  && !loading">No annotations need review!</p>
+            <mat-paginator #reviewsPaginator *ngIf="reviews?.length > 0" [length]="reviews?.length" pageSize="5"
+                           (page)="getPaginatorData('reviewsPaginator', $event)"
+                           showFirstLastButtons="false" hidePageSize="true"></mat-paginator>
           </mat-card-content>
         </mat-card>
-      </div>
-      <div fxFlex="45" *ngIf="!userService.isRoleAdmin(userRole)">
-        <mat-card class="reviews">
-          <mat-card-title>
-            Work Items
-          </mat-card-title>
-          <mat-card-content>
-              <mat-list *ngFor="let annotation of userAnnotations">
-                <mat-list-item class="activity-item">
-                  <p>{{annotation.count}} {{annotation.type}} annotations need work for {{annotation.diseaseName}}.</p>
-                  <span class="spacer"></span>
-                  <button mat-stroked-button (click)="navigateToDisease(annotation.diseaseId, annotation.type)">View</button>
-                </mat-list-item>
-              </mat-list>
-            <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-            <p class="no-activity" *ngIf="userAnnotations?.length == 0 && !loading">You have no annotations that need work!</p>
-          </mat-card-content>
-        </mat-card>
-      </div>
-
-<!--<mat-tab label="Contributions" [disabled]="noContributions()">
-  <div class="chart-wrapper" *ngIf="!noContributions()">
-    <ngx-charts-pie-chart
-      [results]="pieData"
-      legend="true"
-      legendTitle="Legend"
-      legendPosition="bottom"
-      explodeSlices="true"
-      gradient="true"
-      scheme="ocean"
-    >
-    </ngx-charts-pie-chart>
-  </div>
-</mat-tab>-->
-<!--  <div fxflexlayout="row" class="flex-row">-->
-<!--    <mat-card class="contribution-donut-card" fxFlex="40" fxFlexOffset="10">-->
-<!--      <mat-card-title>-->
-<!--        Contributions-->
-<!--      </mat-card-title>-->
-<!--      <mat-card-content>-->
-<!--        <div class="no-contributions" *ngIf="pieData?.length === 0">-->
-<!--          <p>No official contributions yet!</p>-->
-<!--          <button mat-raised-button color="accent">Get Started</button>-->
-<!--        </div>-->
-<!--      </mat-card-content>-->
-<!--    </mat-card>-->
-<!--    <mat-card class="contribution-overtime-card" fxFlex="40">-->
-<!--      <mat-card-title>-->
-<!--        Daily Activity-->
-<!--      </mat-card-title>-->
-<!--      <mat-card-content>-->
-<!--        <div class="chart-wrapper">-->
-<!--          <ngx-charts-line-chart-->
-<!--            [results]="lineData"-->
-<!--            [view]="[650, 300]"-->
-<!--            xAxis="Day"-->
-<!--            yAxis="Annotations"-->
-<!--            showXAxisLabel="true"-->
-<!--            showYAxisLabel="true"-->
-<!--            gradient="true"-->
-<!--            scheme="ocean"-->
-<!--          >-->
-<!--          </ngx-charts-line-chart>-->
-<!--        </div>-->
-<!--      </mat-card-content>-->
-<!--    </mat-card>-->
-<!--  </div>-->
+    </div>
+    <div class="dashboard-card" fxFlex="33" fxFlex.lt-sm="90" fxFlexOffset.lt-sm="5" *ngIf="!userService.isRoleAdmin(userRole)">
+      <mat-card class="reviews">
+        <mat-card-title>
+          Action Items
+        </mat-card-title>
+        <mat-card-content>
+          <mat-list *ngFor="let annotation of userAnnotations |
+          slice: paginators['userAnnotationsPaginator'].lowValue:paginators['userAnnotationsPaginator'].highValue" dense>
+            <mat-list-item class="activity-item">
+              <p>{{annotation.count}} {{annotation.type}} annotations need work for {{annotation.diseaseName}}.</p>
+              <span class="spacer"></span>
+              <button mat-stroked-button (click)="navigateToDisease(annotation.diseaseId, annotation.type)">View</button>
+            </mat-list-item>
+          </mat-list>
+          <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+          <p class="no-activity" *ngIf="userAnnotations?.length === 0 && !loading">No work needs to be done!</p>
+        </mat-card-content>
+        <mat-paginator #userAnnotationsPaginator *ngIf="reviews?.length > 0" [length]="reviews?.length" pageSize="5"
+                       (page)="getPaginatorData('userAnnotationsPagintor', $event)"
+                       showFirstLastButtons="false" hidePageSize="true"></mat-paginator>
+      </mat-card>
+    </div>
   </div>
 </div>

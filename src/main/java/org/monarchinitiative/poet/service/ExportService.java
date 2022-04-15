@@ -2,6 +2,7 @@ package org.monarchinitiative.poet.service;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.monarchinitiative.poet.exceptions.ExportException;
 import org.monarchinitiative.poet.model.entities.PhenotypeAnnotation;
 import org.monarchinitiative.poet.model.entities.TreatmentAnnotation;
 import org.monarchinitiative.poet.model.entities.Version;
@@ -48,11 +49,36 @@ public class ExportService {
                         annotation.getAnnotationSource().getDisease().getDiseaseName(),
                         annotation.getQualifier(), annotation.getHpoId(), reference, annotation.getEvidence(),
                         annotation.getOnset(), annotation.getFrequency(), annotation.getSex(), annotation.getModifier(),
-                        annotation.getOwner().getNickname()
+                        annotation.getOwner().getExportName()
                 );
             }
         } catch (IOException e) {
             e.printStackTrace();
+            throw new ExportException("HPO");
+        }
+    }
+
+    public void exportMAXOAnnotations(PrintWriter writer, CSVFormat format){
+        List<TreatmentAnnotation> treatmentAnnotationList = annotationService.getOfficialTreatments();
+        try(CSVPrinter csvPrinter = format.print(writer)){
+            for (TreatmentAnnotation annotation : treatmentAnnotationList) {
+                String reference;
+                if(annotation.getAnnotationSource().isDiseaseDatabaseSource()){
+                    reference = annotation.getAnnotationSource().getDisease().getEquivalentId();
+                } else {
+                    reference = annotation.getAnnotationSource().getPublication().getPublicationId();
+                }
+
+                csvPrinter.printRecord(annotation.getAnnotationSource().getDisease().getEquivalentId(),
+                        annotation.getAnnotationSource().getDisease().getDiseaseName(), reference,
+                        annotation.getMaxoId(), annotation.getMaxoName(), annotation.getHpoId(), annotation.getRelation(),
+                        annotation.getEvidence(), annotation.getExtensionId(), annotation.getExtensionLabel(),
+                        annotation.getComment(), annotation.getOwner().getExportName()
+                );
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ExportException("MAXO");
         }
     }
 
@@ -64,22 +90,27 @@ public class ExportService {
         List<TreatmentAnnotation> treatmentAnnotations = treatmentAnnotationRepository.findAllByStatus(AnnotationStatus.ACCEPTED);
         // For all accepted phenotype annotations we want to check to see if an official one exists already as official
         for(PhenotypeAnnotation annotation: phenotypeAnnotations){
-            annotation.setStatus(AnnotationStatus.OFFICIAL);
             // If not, change annotation to official status, tag with release
-            if(!annotationService.phenotypeAnnotationExists(annotation, null)){
+            if(!annotationService.phenotypeAnnotationExists(annotation, AnnotationStatus.OFFICIAL)){
+                annotation.setStatus(AnnotationStatus.OFFICIAL);
                 annotation.setVersion(version);
                 phenotypeAnnotationRepository.save(annotation);
                 // TODO: Add useractivity update
+            } else {
+                // we have data integrity issues
+                // throw poet error about data integrity with this annotation information
             }
         }
 
         for(TreatmentAnnotation annotation: treatmentAnnotations) {
-            annotation.setStatus(AnnotationStatus.OFFICIAL);
-            // If not, change annotation to official status, tag with release
-            if (!annotationService.treatmentAnnotationExists(annotation, null, null)) {
+            if (!annotationService.treatmentAnnotationExistsByStatus(annotation, AnnotationStatus.OFFICIAL)) {
+                annotation.setStatus(AnnotationStatus.OFFICIAL);
                 annotation.setVersion(version);
                 treatmentAnnotationRepository.save(annotation);
                 // TODO: Add useractivity update
+            } else {
+                // we have data integrity issues
+                // throw poet error about data integrity with this annotation information
             }
         }
     }

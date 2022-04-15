@@ -16,7 +16,8 @@
       mark_chat_unread
     </mat-icon>
     {{title}}
-    <mat-icon class="help-icon" (click)="closeForm()">cancel</mat-icon>
+    <mat-icon class="help-icon" (click)="closeForm()" matTooltip="Close Form"
+              matTooltipShowDelay="500">cancel</mat-icon>
   </mat-card-title>
   <mat-card-subtitle>
     Human Phenotype Ontology [ HPO ]
@@ -39,7 +40,7 @@
             {{publication.publicationName}}{{publication.publicationId}}
         </span>
         <span class="spacer"></span>
-        <mat-icon class="remove-icon" (click)="removePublication(publication)" *ngIf="!formControlGroup.disabled && !updating">cancel</mat-icon>
+        <mat-icon class="remove-icon" (click)="removePublication(publication)" *ngIf="!formControlGroup.disabled">cancel</mat-icon>
       </mat-list-item>
     </mat-list>
      <form [formGroup]="formControlGroup" fxLayout="column" fxLayoutAlign="start stretch">
@@ -57,7 +58,7 @@
           </mat-hint>
           <input matInput formControlName="hpoFormControl" ngDefaultControl
                  [matAutocomplete]="hpo" required>
-          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value != null && !formControlGroup.disabled" matSuffix mat-icon-button
+          <button mat-button *ngIf="formControlGroup.get('hpoFormControl').value !== null && !formControlGroup.disabled" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
@@ -73,7 +74,7 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-        <div [ngClass]="{'qualifier': formControlGroup.get('hpoFormControl').value == null, 'fr': true}">
+        <div [ngClass]="{'qualifier': formControlGroup.get('hpoFormControl').value === null, 'fr': true}">
           <mat-checkbox aria-label="Is Qualified?" formControlName="qualifierFormControl"
                         [(ngModel)]="selectedQualifier">
             NOT CHARACTERIZED <span class="form-field-help-icon material-icons"
@@ -137,7 +138,7 @@
           <mat-label>HPO Frequency</mat-label>
           <input matInput placeholder="..." formControlName="frequencyFormControl" ngDefaultControl
                  [matAutocomplete]="frequency">
-          <button mat-button *ngIf="formControlGroup.get('frequencyFormControl').value != null && !formControlGroup.disabled" matSuffix mat-icon-button
+          <button mat-button *ngIf="formControlGroup.get('frequencyFormControl').value !== null && !formControlGroup.disabled" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('frequencyFormControl').reset(); frequencyOptions = []; selectedFrequency = null ">
             <mat-icon>close</mat-icon>
           </button>
@@ -183,7 +184,7 @@
           <mat-label>Additional Description</mat-label>
           <input matInput type="text" formControlName="descriptionFormControl" maxlength="50">
           <mat-hint *ngIf="this.formControlGroup.get('descriptionFormControl').value?.length >= 50">Maximum Characters Reached.</mat-hint>
-          <button mat-button *ngIf="formControlGroup.get('descriptionFormControl').value != '' && !formControlGroup.disabled" matSuffix mat-icon-button
+          <button mat-button *ngIf="formControlGroup.get('descriptionFormControl').value !== '' && !formControlGroup.disabled" matSuffix mat-icon-button
                   aria-label="Clear"
                   (click)="formControlGroup.get('descriptionFormControl').reset()">
             <mat-icon>close</mat-icon>
@@ -217,6 +218,13 @@
     </div>
     <div class="right-actions">
       <button mat-stroked-button (click)="resetPhenotypeForm()" *ngIf="!formControlGroup.disabled && !elevatedChanges">Clear</button>
+      <a mat-flat-button aria-label="Report Phenotype Annotation"
+         matTooltip="Report Phenotype Annotation Bug"
+         matTooltipShowDelay="775"
+         *ngIf="this.utilityService.isOfficial(selectedAnnotation)"
+         href="https://github.com/obophenotype/human-phenotype-ontology/issues/new?assignees=drseb&labels=HPOA&template=h_new_annotation.md&title=" target="_blank">
+        Report Annotation Issue
+      </a>
     </div>
   </mat-card-actions>
 </mat-card>

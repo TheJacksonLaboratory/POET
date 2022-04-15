@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from "@angular/router";
-import { CurationService } from "../../shared/services/curation/curation.service";
-import { AuthService } from "@auth0/auth0-angular";
-import { transition, trigger, useAnimation } from "@angular/animations";
-import { fadeIn } from "ng-animate";
-import { StateService } from "../../shared/services/state/state.service";
-import { Disease } from "../../shared/models/models";
-import { finalize } from "rxjs/operators";
-import { environment } from "../../../environments/environment";
+import { ActivatedRoute, Router } from '@angular/router';
+import { CurationService } from '../../shared/services/curation/curation.service';
+import { AuthService } from '@auth0/auth0-angular';
+import { transition, trigger, useAnimation } from '@angular/animations';
+import { fadeIn } from 'ng-animate';
+import { StateService } from '../../shared/services/state/state.service';
+import { Disease } from '../../shared/models/models';
+import { finalize } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-portal-curate',
@@ -23,17 +23,17 @@ export class PortalCurateComponent implements OnInit {
   selectedCategory: string;
   selectedDisease: Disease;
   showLoader: boolean = false;
-  fxLayout: string = "row";
-  fxLayoutAlign: string = "start stretch";
-  fxFlexAnnotations: string = "60";
-  fxFlexAnnotationOffset: string = "20";
-  fxFlexForm: string = "45";
-  fxFlexFormOffset: string = "2.5"
+  fxLayout: string = 'row';
+  fxLayoutAlign: string = 'start stretch';
+  fxFlexAnnotations: string = '60';
+  fxFlexAnnotationOffset: string = '20';
+  fxFlexForm: string = '45';
+  fxFlexFormOffset: string = '2.5';
   sourceAndOntologySelected: boolean = false;
   showForm: boolean = false;
   annotationItems = [
     {value: 'phenotype', display: 'Phenotypes', icon: 'assignment', disabled: false, count: 0, reason:""},
-    {value: 'treatment', display: 'Treatments', icon: 'healing', disabled: false, count: 0, reason: ""}
+    {value: 'treatment', display: 'Treatments', icon: 'medication', disabled: false, count: 0, reason: ""}
   ];
   user: any;
 

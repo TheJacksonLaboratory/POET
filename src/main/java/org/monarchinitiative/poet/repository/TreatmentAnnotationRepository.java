@@ -9,11 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.monarchinitiative.poet.model.responses.ReviewCount;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface TreatmentAnnotationRepository extends CrudRepository<TreatmentAnnotation, Long> {
 
-    List<TreatmentAnnotation> findAllByAnnotationSourceDiseaseAndStatusNotAndStatusNot(Disease disease, AnnotationStatus status, AnnotationStatus status_two);
+    List<TreatmentAnnotation> findAllByAnnotationSourceDiseaseAndStatusNotIn(Disease disease, List<AnnotationStatus> statuses);
     List<TreatmentAnnotation> findAllByAnnotationSourceDiseaseAndStatusNotAndStatus(Disease disease, AnnotationStatus statusNot, AnnotationStatus status);
     TreatmentAnnotation findDistinctById(long id);
     int countAllByAnnotationSourceDiseaseAndStatusNot(Disease disease, AnnotationStatus status);
@@ -24,7 +25,7 @@ public interface TreatmentAnnotationRepository extends CrudRepository<TreatmentA
     boolean existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatus(
             AnnotationSource annotationSource, String maxoId, String hpoId,
             String extensionId, String evidence, String relation, AnnotationStatus status);
-    boolean existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNotAndStatusNot(AnnotationSource annotationSource, String maxoId, String hpoId, String extensionId, String evidence, String relation, AnnotationStatus status, AnnotationStatus status2);
+    boolean existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNotIn(AnnotationSource annotationSource, String maxoId, String hpoId, String extensionId, String evidence, String relation, List<AnnotationStatus> statuses);
     List<TreatmentAnnotation> findAllByStatus(AnnotationStatus status);
     @Query("select new org.monarchinitiative.poet.model.responses.ReviewCount(a.annotationSource.disease, count(a), 'treatment') from TreatmentAnnotation a where a.status = ?1 group by a.annotationSource.disease")
     List<ReviewCount> getAllByStatus(AnnotationStatus status);

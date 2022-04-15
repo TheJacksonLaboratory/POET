@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
 import org.monarchinitiative.poet.views.AnnotationViews;
 import org.monarchinitiative.poet.views.UserActivityViews;
+import org.monarchinitiative.poet.views.UserViews;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -15,13 +16,16 @@ public class User {
     private Long id;
 
     @JsonView({UserActivityViews.Simple.class, AnnotationViews.Simple.class, AnnotationViews.UserSpecific.class})
-    @Column(unique = true, nullable = false)
     private String nickname;
     @Column(unique = true, nullable = false)
     private String authId;
+    @JsonView({UserViews.Simple.class})
     private String email;
-
+    @Column(unique = true)
+    @JsonView({UserViews.Simple.class})
+    private String orcid;
     @Enumerated(EnumType.ORDINAL)
+    @JsonView({UserViews.Simple.class})
     private CurationRole curationRole;
 
     public User(){}
@@ -40,6 +44,10 @@ public class User {
     public String getNickname() {
         return nickname;
     }
+    @JsonView({UserViews.Simple.class})
+    public String getUniqueNickname(){
+        return String.format("%s#%d", nickname, getId());
+    }
 
     public String getAuthId() {
         return authId;
@@ -49,6 +57,17 @@ public class User {
         return email;
     }
 
+    public String getOrcid(){
+        return orcid;
+    }
+
+    public String getExportName(){
+        if (orcid != null) {
+            return String.format("%s[%s]", nickname, orcid);
+        } else {
+            return String.format("%s[]", nickname);
+        }
+    }
 
     public CurationRole getCurationRole() {
         return curationRole;
@@ -56,6 +75,10 @@ public class User {
 
     public void setCurationRole(CurationRole curationRole) {
         this.curationRole = curationRole == null ? CurationRole.POET_CURATOR : curationRole;
+    }
+
+    public void setOrcid(String orcid) {
+        this.orcid = orcid;
     }
 
     @Override

@@ -1,21 +1,25 @@
 package org.monarchinitiative.poet.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import org.monarchinitiative.poet.model.entities.User;
+import org.monarchinitiative.poet.model.entities.*;
 import org.monarchinitiative.poet.model.enumeration.CurationAction;
 import org.monarchinitiative.poet.model.responses.AnnotationCount;
 import org.monarchinitiative.poet.model.responses.Contribution;
-import org.monarchinitiative.poet.model.entities.UserActivity;
+import org.monarchinitiative.poet.model.responses.DiseaseCount;
 import org.monarchinitiative.poet.model.responses.ReviewCount;
 import org.monarchinitiative.poet.service.StatisticsService;
 import org.monarchinitiative.poet.service.UserService;
 import org.monarchinitiative.poet.views.UserActivityViews;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -49,15 +53,35 @@ public class StatisticsController {
     public List<UserActivity> getUserActivity(@RequestParam(value = "all", defaultValue = "true") boolean all,
                                               @RequestParam(value = "weeks", defaultValue = "0") int weeks,
                                               @RequestParam(value = "offset", defaultValue = "0") int offset,
-                                              @RequestParam(value = "limit", defaultValue = "250") int limit,
+                                              @RequestParam(value = "limit", defaultValue = "1000") int limit,
                                               Authentication authentication){
-        Pageable pageable = PageRequest.of(offset, limit);
+        Pageable pageable = PageRequest.of(offset,limit, Sort.by("dateTime").descending());
         return statisticsService.getUserActivity(all, weeks, pageable, authentication).stream().peek(activity -> {
             if(activity.getCurationAction().equals(CurationAction.REVIEW) ||
                     activity.getCurationAction().equals(CurationAction.OVERRIDE)){
                 activity.ownerSwap();
             }
         }).collect(Collectors.toList());
+    }
+
+    /**
+     * Group annotations by "activity" count
+     * 1. get list of user activity for last 5 weeks.
+     */
+    @GetMapping(value ="/activity/disease", headers = "Accept=application/json")
+    public List<DiseaseCount> getDiseaseActivity(@RequestParam(value = "all", defaultValue = "false") boolean all,
+                                                    @RequestParam(value = "weeks", defaultValue = "4") int weeks,
+                                                    @RequestParam(value = "offset", defaultValue = "0") int offset,
+                                                    @RequestParam(value = "limit", defaultValue = "250") int limit,
+                                                    Authentication authentication){
+        Pageable pageable = PageRequest.of(offset, limit, Sort.by("dateTime").descending());
+        return statisticsService.getUserActivity(true, weeks, pageable, authentication).stream().
+                map(UserActivity::getAnnotation).map(Annotation::getAnnotationSource)
+                .collect(Collectors.groupingByConcurrent(AnnotationSource::getDisease, Collectors.counting()))
+                .entrySet().stream()
+                .map(entry ->
+                        new DiseaseCount(entry.getKey().getDiseaseId(), entry.getKey().getDiseaseName(),
+                                entry.getValue())).collect(Collectors.toList());
     }
 
     /**

@@ -23,7 +23,7 @@ export class PhenotypeCurationComponent implements OnInit {
 
   @Input('selectedSource') annotationSource: AnnotationSource;
   @Input('role') userRole: string;
-  @Output('onAnnotationSuccess') onAnnotationSuccess: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() onAnnotationSuccess: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output('handleForm') handleFormEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   @ViewChild('modifierInput') modifierInput: ElementRef<HTMLInputElement>;
   selectedAnnotation: PhenotypeAnnotation;
@@ -125,11 +125,11 @@ export class PhenotypeCurationComponent implements OnInit {
           this.hpoService.searchHPOTerms(query).pipe(take(1), finalize(() => {
             this.loadingHpoSuggestions = false;
           })).subscribe((data) => {
-            if (!data || data.length == 0) {
+            if (!data || data.length === 0) {
               this.formControlGroup.get('hpoFormControl').setErrors({notFound: true});
             }
             this.hpoOptions = data;
-          }, (err) => {
+          }, () => {
             this.formControlGroup.get('hpoFormControl').setErrors({apiError: true});
           });
         }
@@ -144,7 +144,7 @@ export class PhenotypeCurationComponent implements OnInit {
           this.hpoService.searchDescendants(query, 'HP:0012823').pipe(take(1), finalize(() => {
             this.loadingModifierSuggestions = false;
           })).subscribe((data) => {
-            if (!data || data.length == 0) {
+            if (!data || data.length === 0) {
               this.formControlGroup.get('modifierFormControl').setErrors({notFound: true});
             }
             this.modifierOptions = data;
@@ -158,11 +158,11 @@ export class PhenotypeCurationComponent implements OnInit {
       .subscribe(query => {
         if (query && query.length >= 3 && !this.formControlGroup.disabled && isNaN(query)) {
           this.hpoService.searchDescendants(query, 'HP:0040279').subscribe((data) => {
-            if ((!data || data.length == 0) && (query.startsWith('HP:') || query.match(/^[A-Za-z]{3}/))) {
+            if ((!data || data.length === 0) && (query.startsWith('HP:') || query.match(/^[A-Za-z]{3}/))) {
               this.formControlGroup.get('frequencyFormControl').setErrors({notFound: true});
             }
             this.frequencyOptions = data;
-          }, (err) => {
+          }, () => {
             this.formControlGroup.get('frequencyFormControl').setErrors({apiError: true});
           });
         }
@@ -233,7 +233,7 @@ export class PhenotypeCurationComponent implements OnInit {
     this.formControlGroup.get('descriptionFormControl').setValue(annotation.description);
     this.formControlGroup.get('frequencyFormControl').setValue(annotation.frequency);
     this.selectedFrequency = annotation.frequency;
-    const onset = this.onsetOptions?.find(onset => onset.ontologyId == annotation.onset);
+    const onset = this.onsetOptions?.find(onsetItem => onsetItem.ontologyId === annotation.onset);
     this.formControlGroup.get('onsetFormControl').setValue(onset);
     this.selectedModifiers = annotation.modifier.length > 0 ?  annotation.modifier.split(';') : [];
     this.formControlGroup.get('sexFormControl').setValue(annotation.sex);
@@ -291,7 +291,8 @@ export class PhenotypeCurationComponent implements OnInit {
    * Is our form group fully valid? Used to show action buttons.
    */
   everythingValid() {
-    return this.formControlGroup.valid && this.selectedPublications.length > 0 && !this.formControlGroup.disabled && this.formControlGroup.dirty;
+    return this.formControlGroup.valid && this.selectedPublications.length > 0 && !this.formControlGroup.disabled &&
+      this.formControlGroup.dirty;
   }
 
   resetPhenotypeForm() {
@@ -303,6 +304,7 @@ export class PhenotypeCurationComponent implements OnInit {
   }
 
   removePublication(publication: Publication): void {
+    this.formControlGroup.markAsDirty();
     const index = this.selectedPublications.indexOf(publication);
     if (index >= 0) {
       this.selectedPublications.splice(index, 1);
@@ -322,8 +324,8 @@ export class PhenotypeCurationComponent implements OnInit {
           const nums = control.value.split('/');
           return parseFloat(nums[0].trim()) > parseFloat(nums[1].trim()) ? { notValid: {value: 'M Greater than M'}} : null;
         } else if (new RegExp('\d{0,3}%').test(control.value)) {
-          const number = parseInt(control.value.split('%')[0]);
-          if (number <= 100){
+          const freq = parseInt(control.value.split('%')[0]);
+          if (freq <= 100){
             return null;
           } else {
             return {notValid: {value: 'Percentage greater than 100%'}};

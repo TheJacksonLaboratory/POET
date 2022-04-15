@@ -10,8 +10,8 @@ plugins {
 }
 
 group = 'org.monarchinitiative.poet'
-version = '0.9.0-SNAPSHOT'
-sourceCompatibility = '8'
+version = '1.0.0-SNAPSHOT'
+sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
@@ -44,8 +44,8 @@ dependencies {
 def profile = 'development'
 
 node {
-	version = '16.3.0'
-	npmVersion = '7.0.3'
+	version = '16.13.0'
+	npmVersion = '8.1.0'
 	download = true
 	nodeModulesDir = file("src/main/poet")
 
@@ -115,8 +115,6 @@ bootWar.dependsOn {
 		buildClientTestEnv
 	}
 }
-
-bootWar.finalizedBy()
 
 bootRun {
 	if(System.getProperty("initialize") == "true"){

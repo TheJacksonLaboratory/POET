@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
-import { filter, map, pluck } from "rxjs/operators";
+import { map, pluck, tap} from "rxjs/operators";
 import { MaxoSearchResult, HpoMaxoSearchResult, HpoTerm, AnchorSearchResult } from "../../models/search-models";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable, of } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class HpoService {
+
+  private hpoTermDefinitionSubject: BehaviorSubject<any> = new BehaviorSubject<any>('');
 
   constructor(public httpClient: HttpClient) { }
 
@@ -20,6 +22,19 @@ export class HpoService {
     let parameters: HttpParams = new HttpParams().set('q', query);
     return this.httpClient.get<any>(environment.HPO_API_HPO_SEARCH_URL, {params: parameters})
       .pipe(pluck('terms'));
+  }
+
+  /**
+   * Search hpo for term definition
+   */
+  hpoTermDefinition(hpoId: string): Observable<any> {
+    const lastTerm = this.hpoTermDefinitionSubject.getValue();
+    if(lastTerm?.details?.id !== hpoId){
+      return this.httpClient.get<any>(environment.HPO_API_TERM_URL + hpoId).pipe(
+        tap(term => this.hpoTermDefinitionSubject.next(term)), map(term => term.details.definition));
+    } else {
+      return of(lastTerm.details.definition);
+    }
   }
 
   /**

@@ -28,10 +28,10 @@
 }
 
 .nickname {
-  cursor: pointer;
   outline: 0;
-  &:hover {
-    opacity: 0.6;
+  :hover {
+    opacity: .8;
+    cursor: pointer;
   }
 }
 

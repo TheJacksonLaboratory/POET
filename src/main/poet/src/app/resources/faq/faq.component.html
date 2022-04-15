@@ -1,6 +1,6 @@
 <div class="faq">
 <mat-accordion>
-  <mat-expansion-panel [expanded]="openPanel == 1" id = "hpo-relation">
+  <mat-expansion-panel [expanded]="openPanel === 1" id = "hpo-relation">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <strong>How is POET related to HPO & Monarch Initiative?</strong>
@@ -11,7 +11,7 @@
       may be of especial interest to translational researchers.</p>
     <p>POET, is a collaborative web application to curate and annotate information to disease, phenotypes, treatments and more..</p>
   </mat-expansion-panel>
-  <mat-expansion-panel [expanded]="openPanel == 2" id = "content-change">
+  <mat-expansion-panel [expanded]="openPanel === 2" id = "content-change">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <strong>Am I allowed to change the contents of POET annotations?</strong>
@@ -20,7 +20,7 @@
     <p>POET and HPO are community-driven projects. Suggesting changes or submitting new annotations is vital to correctly representing linked-information
       across the ontology, disease and treatment landscape. All suggested changes and updates will be reviewed by our core team of curators.</p>
   </mat-expansion-panel>
-  <mat-expansion-panel [expanded]="openPanel == 6" id = "annotation-use">
+  <mat-expansion-panel [expanded]="openPanel === 3" id = "annotation-use">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <strong>How do these annotations get used?</strong>

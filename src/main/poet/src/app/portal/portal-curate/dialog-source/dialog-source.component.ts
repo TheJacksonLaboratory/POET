@@ -23,7 +23,7 @@ export class DialogSourceComponent implements OnInit {
     Validators.required]);
   selectedCategory: string;
   selectedPublication: any;
-  selectedDisease: any = {diseaseName: "", diseaseId: ""};
+  selectedDisease: any = {diseaseName: '', diseaseId: ''};
   selectedType: string;
   annotatedPublications$: Observable<Publication[]>;
   newPublication: boolean = false;
@@ -142,9 +142,9 @@ export class DialogSourceComponent implements OnInit {
 
   getSecondAffirmation() {
     if (this.selectedCategory == 'treatment') {
-      return 'I have affirmed that this publication describes medical actions for ' + this.selectedDisease.diseaseName;
+      return 'I affirm that this publication describes medical actions for ' + this.selectedDisease.diseaseName;
     }
-    return 'I have affirmed that this publication describes phenotypes for ' + this.selectedDisease.diseaseName;
+    return 'I affirm that this publication describes phenotypes for ' + this.selectedDisease.diseaseName;
   }
 }
 

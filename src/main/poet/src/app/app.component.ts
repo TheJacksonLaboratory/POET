@@ -2,8 +2,12 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
 import { DOCUMENT } from '@angular/common';
 import { Router } from '@angular/router';
-import { version } from '../../package.json';
+import packageInfo from '../../package.json';
 import { UserService } from './shared/services/user/user.service';
+import {distinctUntilChanged} from 'rxjs/operators';
+import {MatDialog} from '@angular/material/dialog';
+import {DialogProfileComponent} from './dialog-profile/dialog-profile.component';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-root',
@@ -17,14 +21,16 @@ export class AppComponent implements OnInit {
     {title: 'FAQ', route: '/faq', icon: 'view_list', private: false, requiresElevated: false}
   ];
   isElevated: boolean = false;
-  version: string = version + '.beta';
+  version: string = 'v' + packageInfo.version;
 
   constructor(public auth: AuthService, @Inject(DOCUMENT) public document: Document,
-              public router: Router, public userService: UserService) {
+              public router: Router, public userService: UserService, public dialog: MatDialog,
+              private _snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
-      this.auth.user$.subscribe((user) => {
+      this.auth.user$.pipe(
+        distinctUntilChanged((prev, curr) => prev === curr)).subscribe((user) => {
         if (user) {
           this.userService.checkUser();
           this.isElevated = this.userService.isUserAdmin(user);
@@ -50,10 +56,32 @@ export class AppComponent implements OnInit {
 
   loginWithRedirect(): void {
     const target = '/portal/dashboard';
-    const redirect_uri = window.location.origin + target;
+    const redirectUri = window.location.origin + target;
     this.auth.loginWithRedirect(  {
-      redirect_uri: redirect_uri,
-      appState: {target: target}
+      redirect_uri: redirectUri,
+      appState: {target}
     });
+  }
+
+  openProfile(){
+    if(this.dialog.openDialogs.length === 0){
+      this.dialog.open(DialogProfileComponent, {minWidth: 300, data: {
+          orcid: ''
+        }}).afterClosed().subscribe((id) => {
+          if (id) {
+            this.userService.setOrcid(id).subscribe(() => {
+              this._snackBar.open('Successfully updated profile!', 'close', {
+                duration: 3000,
+                horizontalPosition: 'left'
+              });
+            }, (err) => {
+              this._snackBar.open(err?.error?.message, 'close', {
+                horizontalPosition: 'left'
+              });
+            });
+          }
+        }
+      );
+    }
   }
 }

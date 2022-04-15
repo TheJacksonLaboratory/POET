@@ -1,6 +1,6 @@
 <div class="portal-container">
   <mat-progress-bar *ngIf="(auth.isLoading$ | async)" class="custom-progress" mode="indeterminate"></mat-progress-bar>
-  <router-outlet *ngIf="!(auth.isLoading$ | async)"></router-outlet>
+  <router-outlet *ngIf="(auth.isLoading$ | async) === false"></router-outlet>
 </div>
 
 
