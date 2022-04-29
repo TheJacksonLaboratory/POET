@@ -8,6 +8,8 @@ import {distinctUntilChanged} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogProfileComponent} from './dialog-profile/dialog-profile.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import { DialogExportComponent } from './dialog-export/dialog-export.component';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -33,7 +35,8 @@ export class AppComponent implements OnInit {
         distinctUntilChanged((prev, curr) => prev === curr)).subscribe((user) => {
         if (user) {
           this.userService.checkUser();
-          this.isElevated = this.userService.isUserAdmin(user);
+          user.role = user[environment.AUTH0_ROLE_CLAIM];
+          this.isElevated = this.userService.isRoleAdmin(user.role);
         }
       });
   }
@@ -63,9 +66,9 @@ export class AppComponent implements OnInit {
     });
   }
 
-  openProfile(){
+  openProfile() {
     if(this.dialog.openDialogs.length === 0){
-      this.dialog.open(DialogProfileComponent, {minWidth: 300, data: {
+      this.dialog.open(DialogProfileComponent, {minWidth: 300, disableClose: false, hasBackdrop: true, data: {
           orcid: ''
         }}).afterClosed().subscribe((id) => {
           if (id) {
@@ -83,5 +86,10 @@ export class AppComponent implements OnInit {
         }
       );
     }
+  }
+
+  openDataManagement() {
+    this.dialog.open(DialogExportComponent, {minWidth: 300, disableClose: false,
+      hasBackdrop: true, data: {isElevated: this.isElevated}});
   }
 }

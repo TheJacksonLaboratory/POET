@@ -60,7 +60,7 @@ export interface UserActivityResponse {
   annotation: any;
   curationAction: string;
   dateTime: string;
-  owner: object;
+  owner: any;
 }
 
 export interface HomeIcon {
@@ -81,9 +81,14 @@ export interface User {
 }
 
 export enum Status {
-  OFFICIAL = "OFFICIAL",
-  ACCEPTED = "ACCEPTED",
-  UNDER_REVIEW = "UNDER_REVIEW",
-  NEEDS_WORK = "NEEDS_WORK",
-  RETIRED = "RETIRED"
+  OFFICIAL = 'OFFICIAL',
+  ACCEPTED = 'ACCEPTED',
+  UNDER_REVIEW = 'UNDER_REVIEW',
+  NEEDS_WORK = 'NEEDS_WORK',
+  RETIRED = 'RETIRED'
+}
+
+export interface Contribution {
+  treatment: number;
+  phenotype: number;
 }

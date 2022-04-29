@@ -1,0 +1,41 @@
+<h4 mat-dialog-title class="title">Export Data</h4>
+<mat-dialog-content>
+    <div class="export-section">
+      <mat-radio-group aria-label="Data Action" [(ngModel)]="selectedAction">
+        <mat-radio-button [value]="'export'">Export</mat-radio-button>
+        <mat-radio-button [value]="'release'" [disabled]="!this.data.isElevated">Release</mat-radio-button>
+      </mat-radio-group>
+    </div>
+  <div class="export-section">
+    <form [formGroup]="exportForm">
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Select Ontology</mat-label>
+          <mat-select formControlName="ontologyControl">
+            <mat-option [value]="'hpo'">Human Phenotype Ontology</mat-option>
+            <mat-option [value]="'maxo'">Medical Action Ontology</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div *ngIf="selectedAction == 'export'">
+        <mat-form-field appearance="fill">
+          <mat-label>Select Version</mat-label>
+          <mat-select formControlName="versionControl">
+            <mat-option [value]="'official'" disabled="true">Official</mat-option>
+            <mat-option [value]="'unstable'">Unstable</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div *ngIf="selectedAction == 'release'">
+        <mat-form-field appearance="fill">
+          <mat-label>Release Key</mat-label>
+          <input matInput type="text" formControlName="keyControl">
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-flat-button color="accent" [disabled]="disableDialogAction()" (click)="doDataAction()">{{getDataActionText()}}</button>
+</mat-dialog-actions>
+
