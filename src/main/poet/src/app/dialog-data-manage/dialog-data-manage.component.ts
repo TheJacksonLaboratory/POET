@@ -13,7 +13,7 @@ import { ReleaseState } from '../shared/models/models';
 })
 export class DialogDataManageComponent implements OnInit {
 
-  title = 'Manage Data';
+  title = 'Data Management';
   selectedOntology;
   selectedVersion;
   selectedAction = 'export';
