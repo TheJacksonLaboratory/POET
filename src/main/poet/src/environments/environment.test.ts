@@ -71,5 +71,6 @@ export const environment = {
   MONARCH_ENTITY_URL: MONARCH_BASE_URL + '/bioentity/',
   PUBMED_SUMMARY_URL: PUBMED_BASE_URL + 'esummary.fcgi',
   AUTH0_ROLE_CLAIM: 'https://poet.jax.org/role',
-  AUTH0_ADMIN_ROLE: 'POET_ADMIN'
+  AUTH0_ADMIN_ROLE: 'POET_ADMIN',
+  HPO_ANNOTATIONS_URL: 'http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa'
 };

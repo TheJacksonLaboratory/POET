@@ -8,8 +8,10 @@ import {distinctUntilChanged} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogProfileComponent} from './dialog-profile/dialog-profile.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import { DialogExportComponent } from './dialog-export/dialog-export.component';
+import { DialogDataManageComponent } from './dialog-data-manage/dialog-data-manage.component';
 import { environment } from '../environments/environment';
+import { StateService } from './shared/services/state/state.service';
+import { ReleaseState } from './shared/models/models';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +29,7 @@ export class AppComponent implements OnInit {
 
   constructor(public auth: AuthService, @Inject(DOCUMENT) public document: Document,
               public router: Router, public userService: UserService, public dialog: MatDialog,
-              private _snackBar: MatSnackBar) {
+              private _snackBar: MatSnackBar, public stateService: StateService) {
   }
 
   ngOnInit(): void {
@@ -89,7 +91,11 @@ export class AppComponent implements OnInit {
   }
 
   openDataManagement() {
-    this.dialog.open(DialogExportComponent, {minWidth: 300, disableClose: false,
-      hasBackdrop: true, data: {isElevated: this.isElevated}});
+    this.dialog.open(DialogDataManageComponent, {minWidth: 300, disableClose: false,
+      hasBackdrop: true, data: {isElevated: this.isElevated}}).afterClosed().subscribe((data) => {
+        if (data && data.release === true){
+          this.stateService.triggerAnnotationReload(true, true);
+        }
+    });
   }
 }

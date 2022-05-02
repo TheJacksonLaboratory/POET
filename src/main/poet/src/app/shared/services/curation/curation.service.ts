@@ -432,8 +432,8 @@ export class CurationService {
     );
   }
 
-  exportPoetAnnotations(key: string): any {
+  releasePoetAnnotations(key: string): any {
     const params = new HttpParams().set('key', key);
-    return this.httpClient.get(environment.POET_API_EXPORT_URL, {params});
+    return this.httpClient.get(environment.POET_API_RELEASE_URL, {params});
   }
 }

@@ -19,7 +19,7 @@ import { ContactComponent } from './resources/contact/contact.component';
 import { DocumentationComponent } from './resources/documentation/documentation.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { DialogProfileComponent } from './dialog-profile/dialog-profile.component';
-import { DialogExportComponent } from './dialog-export/dialog-export.component';
+import { DialogDataManageComponent } from './dialog-data-manage/dialog-data-manage.component';
 
 const config: AuthConfig = {
   ...env.auth,
@@ -37,7 +37,7 @@ const config: AuthConfig = {
     ContactComponent,
     DocumentationComponent,
     DialogProfileComponent,
-    DialogExportComponent
+    DialogDataManageComponent
   ],
   imports: [
     BrowserModule,

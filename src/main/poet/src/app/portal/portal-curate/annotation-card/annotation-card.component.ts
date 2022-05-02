@@ -81,10 +81,19 @@ export class AnnotationCardComponent implements OnInit {
       this.annotationStatuses = [];
       if (this.category === 'phenotype') {
         this.phenotypeAnnotations = this.stateService.phenotypeAnnotations.pipe(
-          tap(annotations => this.configureAnnotationStatus(annotations)));
+          tap(annotations => {
+            if (this.category === 'phenotype'){
+              this.configureAnnotationStatus(annotations);
+            }
+          })
+        );
       } else if (this.category === 'treatment') {
         this.treatmentAnnotations = this.stateService.treatmentAnnotations.pipe(
-          tap(annotations => this.configureAnnotationStatus(annotations)));
+          tap(annotations => {
+            if (this.category === 'treatment'){
+              this.configureAnnotationStatus(annotations);
+            }
+          }));
       }
     });
 

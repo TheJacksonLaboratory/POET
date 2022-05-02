@@ -92,3 +92,7 @@ export interface Contribution {
   treatment: number;
   phenotype: number;
 }
+
+export enum ReleaseState {
+  NOT_STARTED, IN_PROGRESS, DONE_SUCCESS, DONE_ERROR
+}
