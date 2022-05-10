@@ -73,12 +73,10 @@ export class PortalCurateComponent implements OnInit {
     this.stateService.selectedCategory.subscribe((category) => this.selectedCategory = category);
 
     this.authService.user$.subscribe((user) => {
-      if(!user){
-        user = {nickname: 'GUEST', role: 'GUEST'};
-      } else {
+      if (user){
         user.role = user[environment.AUTH0_ROLE_CLAIM];
+        this.user = user;
       }
-      this.user = user;
     });
 
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from "rxjs";
-import { AnnotationSource, Disease, PhenotypeAnnotation, TreatmentAnnotation } from "../../models/models";
-import { CurationService } from "../curation/curation.service";
+import { BehaviorSubject, Observable } from 'rxjs';
+import { AnnotationSource, Disease, PhenotypeAnnotation, TreatmentAnnotation } from '../../models/models';
+import { CurationService } from '../curation/curation.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class StateService {
   private reloadAnnotationCountsSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private selectedTreatmentAnnotationSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private selectedPhenotypeAnnotationSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  private selectedAnnotationModeSubject: BehaviorSubject<any> = new BehaviorSubject<any>("view");
+  private selectedAnnotationModeSubject: BehaviorSubject<any> = new BehaviorSubject<any>('view');
   private phenotypeAnnotationsSubject: BehaviorSubject<any> = new BehaviorSubject<any>([]);
   private treatmentAnnotationsSubject: BehaviorSubject<any> = new BehaviorSubject<any>([]);
 
@@ -34,12 +34,13 @@ export class StateService {
   phenotypeAnnotations: Observable<PhenotypeAnnotation[]> = this.phenotypeAnnotationsSubject.asObservable();
   treatmentAnnotations: Observable<TreatmentAnnotation[]> = this.treatmentAnnotationsSubject.asObservable();
 
-  constructor(private curationService: CurationService) {}
+  constructor(private curationService: CurationService) {
+  }
 
   setSelectedCategory(ontology: string): void {
     this.selectedCategorySubject.next(ontology);
-    if(this.selectedAnnotationSourceSubject.getValue().publication != null &&
-      this.selectedAnnotationSourceSubject.getValue().disease != null){
+    if (this.selectedAnnotationSourceSubject.getValue().publication != null &&
+      this.selectedAnnotationSourceSubject.getValue().disease != null) {
       this.sourceAndOntologySelectedSubject.next(true);
     }
     this.triggerAnnotationReload(true, false);
@@ -51,14 +52,14 @@ export class StateService {
 
   setSelectedSource(annotationSource: AnnotationSource): void {
     this.selectedAnnotationSourceSubject.next(annotationSource);
-    if(this.selectedCategorySubject.getValue() != ''){
+    if (this.selectedCategorySubject.getValue() !== '') {
       this.sourceAndOntologySelectedSubject.next(true);
     }
   }
 
-  setSelectedDisease(disease: Disease){
+  setSelectedDisease(disease: Disease) {
     this.selectedDiseaseSubject.next(disease);
-    if(disease != null){
+    if (disease != null) {
       this.triggerAnnotationReload(true, true);
     }
   }
@@ -67,41 +68,41 @@ export class StateService {
     return this.selectedAnnotationSourceSubject.getValue();
   }
 
-  triggerAnnotationReload(reload: boolean, all: boolean){
+  triggerAnnotationReload(reload: boolean, all: boolean) {
     const disease = this.selectedDiseaseSubject.getValue();
-    if(reload && disease !== null){
-      if(all || this.selectedCategorySubject.getValue() === 'phenotype'){
+    if (reload && disease !== null) {
+      if (all || this.selectedCategorySubject.getValue() === 'phenotype') {
         this.curationService.getPhenotypeAnnotations(disease).subscribe((annotations) => {
-            this.phenotypeAnnotationsSubject.next(annotations);
+          this.phenotypeAnnotationsSubject.next(annotations);
         });
 
       }
 
-      if(all || this.selectedCategorySubject.getValue() === 'treatment'){
+      if (all || this.selectedCategorySubject.getValue() === 'treatment') {
         this.curationService.getTreatmentAnnotations(disease).subscribe((annotations) => {
           this.treatmentAnnotationsSubject.next(annotations);
-        })
+        });
       }
     }
   }
 
-  triggerAnnotationCountsReload(reload: boolean){
+  triggerAnnotationCountsReload(reload: boolean) {
     this.reloadAnnotationCountsSubject.next(reload);
   }
 
-  setSelectedTreatmentAnnotation(annotation){
+  setSelectedTreatmentAnnotation(annotation) {
     this.selectedTreatmentAnnotationSubject.next(annotation);
   }
 
-  setSelectedPhenotypeAnnotation(annotation){
+  setSelectedPhenotypeAnnotation(annotation) {
     this.selectedPhenotypeAnnotationSubject.next(annotation);
   }
 
-  setSelectedAnnotationMode(mode){
-    this.selectedAnnotationModeSubject.next(mode)
+  setSelectedAnnotationMode(mode) {
+    this.selectedAnnotationModeSubject.next(mode);
   }
 
-  isValidCategory(category: string){
+  isValidCategory(category: string) {
     return category === 'phenotype' || category === 'treatment';
   }
 
