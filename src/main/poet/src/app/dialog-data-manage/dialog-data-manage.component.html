@@ -1,0 +1,50 @@
+<h4 mat-dialog-title class="title">{{title}}</h4>
+<mat-dialog-content>
+  <mat-spinner class="spinner-auto" mode="indeterminate" *ngIf="releaseStarted()"></mat-spinner>
+  <div class="export-section" *ngIf="showOptions()">
+    <mat-radio-group aria-label="Data Action" [(ngModel)]="selectedAction">
+      <mat-radio-button [value]="'export'">Export</mat-radio-button>
+      <mat-radio-button [value]="'release'" [disabled]="!this.data.isElevated">Release</mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div class="export-section" *ngIf="releaseDone()">
+    <p class="center">{{releaseText}}</p>
+  </div>
+  <div class="export-section" *ngIf="showOptions()">
+    <form [formGroup]="exportForm">
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Select Ontology</mat-label>
+          <mat-select formControlName="ontologyControl">
+            <mat-option [value]="'hpo'">Human Phenotype Ontology</mat-option>
+            <mat-option [value]="'maxo'">Medical Action Ontology</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div *ngIf="selectedAction == 'export'">
+        <mat-form-field appearance="fill">
+          <mat-label>Select Version</mat-label>
+          <mat-select formControlName="versionControl">
+            <mat-option [value]="'official'" [disabled]="this.exportForm.get('ontologyControl').value === 'maxo'">Official</mat-option>
+            <mat-option [value]="'unstable'">Unstable</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div *ngIf="selectedAction == 'release'">
+        <mat-form-field appearance="fill">
+          <mat-label>Release Key</mat-label>
+          <input matInput type="text" formControlName="keyControl">
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-flat-button color="accent" *ngIf="showOptions()"
+          [disabled]="disableDialogAction()" (click)="doDataAction()">{{getDataActionText()}}</button>
+  <button mat-flat-button color="accent" *ngIf="releaseSuccess()" (click)="closing()">
+    Close
+  </button>
+  <button mat-flat-button color="accent" *ngIf="releaseError()" (click)="reset()">Try Again</button>
+</mat-dialog-actions>
+

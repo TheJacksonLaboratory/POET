@@ -7,23 +7,22 @@
       <button mat-button *ngIf="auth.isAuthenticated$ | async" [routerLink]="['/dashboard']">Dashboard</button>
       <button mat-button [routerLink]="['/resources']">Resources</button>
       <div fxFlex class="toolbar-spacer"></div>
-      <div class="nickname" *ngIf="auth.user$ | async as user" (click)="openProfile()">
+      <button mat-button class="nickname" *ngIf="auth.user$ | async as user" [matMenuTriggerFor]="optionsMenu">
         <span *ngIf="user.nickname">{{user.nickname}}</span>
-      </div>
-      <ng-container *ngIf="isHomePage() && (auth.isLoading$ | async); else loggedIn">
+        <mat-icon>expand_more</mat-icon>
+      </button>
+
+      <mat-menu [overlapTrigger]="false" #optionsMenu="matMenu">
+        <button mat-menu-item (click)="openProfile()">Profile</button>
+        <button mat-menu-item (click)="openDataManagement()">Manage</button>
+        <button mat-menu-item (click)="auth.logout({ returnTo: document.location.origin })">Logout</button>
+      </mat-menu>
+      <ng-container *ngIf="(auth.isLoading$ | async ) else notLoading">
         <mat-spinner diameter="25" color="warn"></mat-spinner>
       </ng-container>
-      <ng-template #loggedIn>
-        <ng-container *ngIf="auth.isAuthenticated$ | async; else loggedOut">
-          <button mat-icon-button class="primary nav-btn" (click)="auth.logout({ returnTo: document.location.origin })"
-                  matTooltip="Logout">
-            <mat-icon>exit_to_app</mat-icon>
-          </button>
-        </ng-container>
-      </ng-template>
-      <ng-template #loggedOut>
-        <ng-container>
-          <button *ngIf="(auth.isLoading$ | async) === false" mat-button class="primary nav-btn" (click)="loginWithRedirect()">Login</button>
+      <ng-template #notLoading>
+        <ng-container *ngIf="(auth.isAuthenticated$ | async) === false">
+          <button mat-button class="primary nav-btn" (click)="loginWithRedirect()">Login</button>
         </ng-container>
       </ng-template>
     </mat-toolbar-row>

@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DialogProfileComponent } from './dialog-profile.component';
+import { DialogDataManageComponent } from './dialog-data-manage.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-describe('DialogProfileComponent', () => {
-  let component: DialogProfileComponent;
-  let fixture: ComponentFixture<DialogProfileComponent>;
+describe('DialogExportComponent', () => {
+  let component: DialogDataManageComponent;
+  let fixture: ComponentFixture<DialogDataManageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DialogProfileComponent],
+      declarations: [ DialogDataManageComponent ],
       providers: [
         {
           provide: MatDialogRef,
@@ -22,11 +22,11 @@ describe('DialogProfileComponent', () => {
       ],
       imports: [HttpClientTestingModule]
     })
-      .compileComponents();
+    .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DialogProfileComponent);
+    fixture = TestBed.createComponent(DialogDataManageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

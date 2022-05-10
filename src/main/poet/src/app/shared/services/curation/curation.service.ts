@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
 import {
+  Contribution,
   Disease,
   PhenotypeAnnotation,
   Publication,
@@ -58,7 +59,7 @@ export class CurationService {
    * @param id
    */
   getDiseasePublications(id: string): Observable<Publication[]> {
-    return this.httpClient.get<Publication[]>(environment.POET_API_DISEASE_ENTITY_URL + id + "/publications");
+    return this.httpClient.get<Publication[]>(environment.POET_API_DISEASE_ENTITY_URL + id + '/publications');
   }
 
   /**
@@ -73,7 +74,7 @@ export class CurationService {
    * Save a publication to a disease.
    */
   savePublication(annotationSource: any) {
-    return this.httpClient.post(environment.POET_API_PUBLICATION_ENTITY_URL, annotationSource)
+    return this.httpClient.post(environment.POET_API_PUBLICATION_ENTITY_URL, annotationSource);
   }
 
   /**
@@ -81,7 +82,7 @@ export class CurationService {
    * @param id - ideally a PMID.
    */
   getPublicationDiseases(id: string): Observable<Disease[]> {
-    return this.httpClient.get<Disease[]>(environment.POET_API_PUBLICATION_ENTITY_URL + id + "/diseases");
+    return this.httpClient.get<Disease[]>(environment.POET_API_PUBLICATION_ENTITY_URL + id + '/diseases');
   }
 
   /**
@@ -92,7 +93,7 @@ export class CurationService {
    * @param review
    */
   getPhenotypeAnnotations(disease: Disease): Observable<PhenotypeAnnotation[]> {
-      return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + disease.diseaseId).pipe(shareReplay());
+    return this.httpClient.get<any>(environment.POET_API_PHENOTYPES_ANNOTATION + disease.diseaseId).pipe(shareReplay());
   }
 
   getAnnotationsNeedingReview(): Observable<any> {
@@ -109,7 +110,7 @@ export class CurationService {
    * @param disease
    */
   getTreatmentAnnotations(disease: Disease): Observable<TreatmentAnnotation[]> {
-      return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + disease.diseaseId).pipe(shareReplay());
+    return this.httpClient.get<any>(environment.POET_API_TREATMENTS_ANNOTATION + disease.diseaseId).pipe(shareReplay());
   }
 
   /**
@@ -120,14 +121,14 @@ export class CurationService {
    */
   updateAnnotation(annotation: any, category: string, review: string) {
     let params = new HttpParams();
-    if(review) {
-     params = params.set("review", review);
+    if (review) {
+      params = params.set('review', review);
     }
 
-    if(category === 'treatment'){
-      return this.httpClient.put(environment.POET_API_TREATMENTS_ANNOTATION, annotation, {params: params});
+    if (category === 'treatment') {
+      return this.httpClient.put(environment.POET_API_TREATMENTS_ANNOTATION, annotation, {params});
     } else {
-      return this.httpClient.put(environment.POET_API_PHENOTYPES_ANNOTATION, annotation, {params: params});
+      return this.httpClient.put(environment.POET_API_PHENOTYPES_ANNOTATION, annotation, {params});
     }
   }
 
@@ -137,7 +138,7 @@ export class CurationService {
    * @param category - the category we are curating
    */
   saveAnnotation(annotation: any, category: string) {
-    if(category === 'treatment'){
+    if (category === 'treatment') {
       return this.httpClient.post(environment.POET_API_TREATMENTS_ANNOTATION, annotation);
     } else {
       return this.httpClient.post(environment.POET_API_PHENOTYPES_ANNOTATION, annotation);
@@ -151,7 +152,7 @@ export class CurationService {
    * @param category - the selected category
    */
   deleteAnnotation(id: string, category: string) {
-    if(category === 'treatment'){
+    if (category === 'treatment') {
       return this.httpClient.delete(environment.POET_API_TREATMENTS_ANNOTATION + id);
     } else {
       return this.httpClient.delete(environment.POET_API_PHENOTYPES_ANNOTATION + id);
@@ -165,22 +166,22 @@ export class CurationService {
    */
   getUserActivity(everyone: boolean) {
     const params = new HttpParams().set('all', String(everyone));
-    return this.httpClient.get<UserActivityResponse[]>(environment.POET_API_STATISTICS_ACTIVITY_URL, {params: params}).pipe(
+    return this.httpClient.get<UserActivityResponse[]>(environment.POET_API_STATISTICS_ACTIVITY_URL, {params}).pipe(
       map((response: UserActivityResponse[]) => {
         return response.map((activity: UserActivityResponse) => {
-          let newData = {
+          const newData = {
             source: null,
             category: null,
-            curationAction: "",
+            curationAction: '',
             curator: null,
             date: null,
             time: null,
             annotationId: null
           };
-          newData.source = activity.annotation["annotationSource"];
-          newData.category = activity.annotation["annotationType"].toUpperCase();
+          newData.source = activity.annotation.annotationSource;
+          newData.category = activity.annotation.annotationType.toUpperCase();
           newData.curationAction = activity.curationAction;
-          newData.curator = activity.owner["nickname"];
+          newData.curator = activity.owner.nickname;
           newData.date = new Date(activity.dateTime);
           newData.time = new Date(activity.dateTime);
           newData.annotationId = activity.annotation.id;
@@ -198,15 +199,15 @@ export class CurationService {
    */
   getGroupActivityFeed(everyone: boolean, weeksBack: number, offset: number, limit: number) {
     let params = new HttpParams().set('all', String(everyone)).set('weeks', String(weeksBack));
-    if(offset){
+    if (offset) {
       params = params.set('offset', String(offset));
     }
 
-    if(limit){
-      params = params.set('limit', String(limit))
+    if (limit) {
+      params = params.set('limit', String(limit));
     }
 
-    return this.httpClient.get<UserActivityResponse[]>(environment.POET_API_STATISTICS_ACTIVITY_URL, {params: params}).pipe(
+    return this.httpClient.get<UserActivityResponse[]>(environment.POET_API_STATISTICS_ACTIVITY_URL, {params}).pipe(
       map((activityMap) => this.reduceToGroupedActivity(activityMap))
     );
   }
@@ -221,8 +222,8 @@ export class CurationService {
   reduceToGroupedActivity(activityList) {
     const activities = [];
     const that = this;
-    const dayMap = activityList.reduce(function (r, a) {
-      const date = new Date(Date.parse(a.dateTime + "Z"));
+    const dayMap = activityList.reduce(function(r, a) {
+      const date = new Date(Date.parse(a.dateTime + 'Z'));
       const dayDifference = that.daysFromNow(date);
       r[dayDifference] = r[dayDifference] || [];
       r[dayDifference].push(a);
@@ -259,7 +260,7 @@ export class CurationService {
               // Group by hours from now
               dayMap[daysFromNow][diseaseJoined][user][type] = dayMap[daysFromNow][diseaseJoined][user][type].reduce((r, a) => {
                 // Group by hours from now
-                let date = new Date(Date.parse(a.dateTime + 'Z'));
+                const date = new Date(Date.parse(a.dateTime + 'Z'));
                 const hourDifference = that.hoursFromNow(date);
                 r[hourDifference] = r[hourDifference] || [];
                 r[hourDifference].push(a);
@@ -345,8 +346,8 @@ export class CurationService {
           activities.push({
             view,
             diseaseId,
-            'date': mostRecent,
-            'type': 'phenotype',
+            date: mostRecent,
+            type: 'phenotype',
             timePast
           });
         }
@@ -356,14 +357,14 @@ export class CurationService {
   }
 
   private getMostRecentDate(annotations) {
-    let dates = annotations.map(a => {
-      return new Date(a.dateTime + "Z");
+    const dates = annotations.map(a => {
+      return new Date(a.dateTime + 'Z');
     });
     return new Date(Math.max(...dates));
   }
 
   private annotationGrammar(count) {
-    return count > 1 ? "annotations" : "annotation";
+    return count > 1 ? 'annotations' : 'annotation';
   }
 
   private daysFromNow(dateToCheck: Date): number {
@@ -373,36 +374,34 @@ export class CurationService {
 
   private hoursFromNow(dateToCheck): number {
     const now = Date.now();
-    return Math.round((now - dateToCheck.getTime()) / (1000 * 60 * 60))
+    return Math.round((now - dateToCheck.getTime()) / (1000 * 60 * 60));
   }
 
   private minutesFromNow(dateToCheck): number {
     const now = Date.now();
-    return Math.round((now - dateToCheck.getTime()) / (1000 * 60))
+    return Math.round((now - dateToCheck.getTime()) / (1000 * 60));
   }
 
   private actionLookup(action): string {
     const actionMap = {
-      "CREATE": "created",
-      "UPDATE": "updated",
-      "DELETE": "deleted",
-      "REVIEW": "reviewed",
-      "RESUBMIT": "resubmitted",
-      "OVERRIDE": "updated"
-    }
+      CREATE: 'created',
+      UPDATE: 'updated',
+      DELETE: 'deleted',
+      REVIEW: 'reviewed',
+      RESUBMIT: 'resubmitted',
+      OVERRIDE: 'updated'
+    };
     return actionMap[action];
   }
 
   /**
    * Get User Activity for curations
-   * @param everyone
    */
   getUserContributions() {
     return this.httpClient.get(environment.POET_API_STATISTICS_CONTRIBUTION_URL).pipe(
-      map((contributions) => {
-        return [{value: contributions["treatment"], name: "Medical Action Ontology"},
-          {value: contributions["phenotype"], name: "Human Phenotype Ontology"},
-          {value: contributions["phenopackets"], name: "PhenoPackets"}];
+      map((contributions: Contribution) => {
+        return [{value: contributions.treatment, name: 'Medical Action Ontology'},
+          {value: contributions.phenotype, name: 'Human Phenotype Ontology'}];
       })
     );
   }
@@ -417,7 +416,7 @@ export class CurationService {
   /**
    * Get disease activity
    */
-  getDiseaseActivity(): any{
+  getDiseaseActivity(): any {
     return this.httpClient.get(environment.POET_API_STATISTICS_ACTIVITY_DISEASE_URL).pipe(
       map((diseaseList: any[]) => {
         return diseaseList.map(disease => {
@@ -427,9 +426,14 @@ export class CurationService {
               id: disease.diseaseId,
             },
             value: disease.diseaseCount
-          }
-        }).sort((a,b) => (a.value > b.value)? -1 : 1).slice(0, 10);
+          };
+        }).sort((a, b) => (a.value > b.value) ? -1 : 1).slice(0, 10);
       })
     );
+  }
+
+  releasePoetAnnotations(key: string): any {
+    const params = new HttpParams().set('key', key);
+    return this.httpClient.get(environment.POET_API_RELEASE_URL, {params});
   }
 }
