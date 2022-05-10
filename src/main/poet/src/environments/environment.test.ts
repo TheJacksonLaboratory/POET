@@ -63,6 +63,7 @@ export const environment = {
   POET_API_STATISTICS_CONTRIBUTION_URL: POET_BASE_URL + '/statistics/contributions/',
   POET_API_STATISTICS_ANNOTATION_URL: POET_BASE_URL + '/statistics/annotation/',
   POET_API_EXPORT_URL: POET_BASE_URL + '/export/',
+  POET_API_RELEASE_URL: POET_BASE_URL + '/export/release',
   HPO_API_HPO_SEARCH_URL: HPO_BASE_URL + 'hpo/search',
   HPO_API_MAXO_SEARCH_URL: HPO_BASE_URL + 'maxo/search/',
   HPO_API_HPO_SEARCH_DESCENDANTS_URL: HPO_BASE_URL + 'hpo/search/descendants/',
