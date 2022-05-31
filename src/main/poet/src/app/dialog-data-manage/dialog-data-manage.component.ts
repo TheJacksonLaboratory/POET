@@ -75,7 +75,7 @@ export class DialogDataManageComponent implements OnInit {
           // TODO: shouldn't get here
         }
       } else {
-        window.open(`${environment.POET_API_EXPORT_URL} + ${this.exportForm.get('ontologyControl').value}?unstable=true`);
+        window.open(`${environment.POET_API_EXPORT_URL}${this.exportForm.get('ontologyControl').value}?unstable=true`);
         this.dialogRef.close();
       }
     }
