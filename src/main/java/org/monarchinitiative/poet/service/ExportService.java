@@ -35,8 +35,13 @@ public class ExportService {
         this.treatmentAnnotationRepository = treatmentAnnotationRepository;
     }
 
-    public void exportHPOAnnotations(PrintWriter writer, CSVFormat format){
-        List<PhenotypeAnnotation> phenotypeAnnotationList = annotationService.getOfficialPhenotypes();
+    public void exportHPOAnnotations(PrintWriter writer, CSVFormat format, boolean unstable){
+        List<PhenotypeAnnotation> phenotypeAnnotationList;
+        if(unstable){
+            phenotypeAnnotationList = annotationService.getOfficialAndApprovedPhenotypes();
+        } else {
+            phenotypeAnnotationList = annotationService.getOfficialPhenotypes();
+        }
         try(CSVPrinter csvPrinter = new CSVPrinter(writer, format)){
             for (PhenotypeAnnotation annotation : phenotypeAnnotationList) {
                 String reference;
@@ -58,8 +63,13 @@ public class ExportService {
         }
     }
 
-    public void exportMAXOAnnotations(PrintWriter writer, CSVFormat format){
-        List<TreatmentAnnotation> treatmentAnnotationList = annotationService.getOfficialTreatments();
+    public void exportMAXOAnnotations(PrintWriter writer, CSVFormat format, boolean unstable){
+        List<TreatmentAnnotation> treatmentAnnotationList;
+        if(unstable){
+            treatmentAnnotationList = annotationService.getOfficialAndApprovedTreatments();
+        } else {
+            treatmentAnnotationList = annotationService.getOfficialTreatments();
+        }
         try(CSVPrinter csvPrinter = format.print(writer)){
             for (TreatmentAnnotation annotation : treatmentAnnotationList) {
                 String reference;
