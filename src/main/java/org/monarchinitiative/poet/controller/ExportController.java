@@ -34,7 +34,8 @@ public class ExportController {
      */
     @GetMapping(value = "/{ontology}")
     public void exportOntology(HttpServletResponse httpServletResponse, @PathVariable String ontology,
-                               @RequestParam(name="delim", defaultValue = "tsv") String delim)
+                               @RequestParam(name="delim", defaultValue = "tsv") String delim,
+                               @RequestParam(name="unstable", defaultValue = "true") boolean unstable)
             throws IOException {
 
         String contentType = "text/tab-separated-values";
@@ -49,11 +50,11 @@ public class ExportController {
         if(ontology.equals("hpo")){
             httpServletResponse.setContentType(contentType);
             httpServletResponse.addHeader("Content-Disposition", String.format("attachment; filename=\"hpoa%s\"", fileExtension));
-            exportService.exportHPOAnnotations(httpServletResponse.getWriter(), format);
+            exportService.exportHPOAnnotations(httpServletResponse.getWriter(), format, unstable);
         } else if(ontology.equals("maxo")){
             httpServletResponse.setContentType("text/csv");
             httpServletResponse.addHeader("Content-Disposition",String.format("attachment; filename=\"maxo%s\"", fileExtension));
-            exportService.exportMAXOAnnotations(httpServletResponse.getWriter(), format);
+            exportService.exportMAXOAnnotations(httpServletResponse.getWriter(), format, unstable);
         }
     }
 

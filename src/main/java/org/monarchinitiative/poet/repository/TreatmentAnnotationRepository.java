@@ -27,6 +27,7 @@ public interface TreatmentAnnotationRepository extends CrudRepository<TreatmentA
             String extensionId, String evidence, String relation, AnnotationStatus status);
     boolean existsByAnnotationSourceAndMaxoIdAndHpoIdAndExtensionIdAndEvidenceAndRelationAndStatusNotIn(AnnotationSource annotationSource, String maxoId, String hpoId, String extensionId, String evidence, String relation, List<AnnotationStatus> statuses);
     List<TreatmentAnnotation> findAllByStatus(AnnotationStatus status);
+    List<TreatmentAnnotation> findAllByStatusIn(List<AnnotationStatus> statuses);
     @Query("select new org.monarchinitiative.poet.model.responses.ReviewCount(a.annotationSource.disease, count(a), 'treatment') from TreatmentAnnotation a where a.status = ?1 group by a.annotationSource.disease")
     List<ReviewCount> getAllByStatus(AnnotationStatus status);
     @Query("select new org.monarchinitiative.poet.model.responses.ReviewCount(a.annotationSource.disease, count(a), 'treatment') from TreatmentAnnotation a where a.status = ?1 and a.owner = ?2 group by a.annotationSource.disease")
