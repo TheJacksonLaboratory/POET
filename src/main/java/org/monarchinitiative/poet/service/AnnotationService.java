@@ -62,6 +62,16 @@ public class AnnotationService {
     /**
      * A function to get phenotype annotations from the database by just disease.
      *
+     * @return a collection of official phenotype annotations
+     * @since 0.5.0
+     */
+    public List<PhenotypeAnnotation> getOfficialAndApprovedPhenotypes() {
+        return this.phenotypeAnnotationRepository.findAllByStatusIn(List.of(AnnotationStatus.OFFICIAL, AnnotationStatus.ACCEPTED));
+    }
+
+    /**
+     * A function to get phenotype annotations from the database by just disease.
+     *
      * @param diseaseId a OMIM disease id
      *
      * @return a collection of phenotype annotations or an empty list.
@@ -219,7 +229,7 @@ public class AnnotationService {
     }
 
     /**
-     * A function to get phenotype annotations from the database by just disease.
+     * A function to get phenotype annotations from the database by official status.
      *
      * @return a collection of official phenotype annotations
      * @since 0.5.0
@@ -227,6 +237,17 @@ public class AnnotationService {
     public List<TreatmentAnnotation> getOfficialTreatments() {
         return this.treatmentAnnotationRepository.findAllByStatus(AnnotationStatus.OFFICIAL);
     }
+
+    /**
+     * A function to get phenotype annotations from the database by official & approved status.
+     *
+     * @return a collection of official and approved phenotype annotations
+     * @since 0.5.0
+     */
+    public List<TreatmentAnnotation> getOfficialAndApprovedTreatments() {
+        return this.treatmentAnnotationRepository.findAllByStatusIn(List.of(AnnotationStatus.OFFICIAL, AnnotationStatus.ACCEPTED));
+    }
+
 
 
     /**
