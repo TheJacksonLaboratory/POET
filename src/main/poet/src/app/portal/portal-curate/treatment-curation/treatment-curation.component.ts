@@ -41,7 +41,6 @@ export class TreatmentCurationComponent implements OnInit {
     changes: {display: 'Make changes', show: true}};
   elevatedChanges = false;
   title = 'Treatment';
-
   savingAnnotation = false;
   formControlGroup: FormGroup = new FormGroup({
     maxoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
@@ -104,6 +103,7 @@ export class TreatmentCurationComponent implements OnInit {
         this.title = 'Treatment';
       } else if (mode === 'create') {
         this.title = 'New Treatment';
+        this.resetTreatmentForm();
       }
       this.formControlGroup.enable();
     });
@@ -291,6 +291,7 @@ export class TreatmentCurationComponent implements OnInit {
   }
 
   resetTreatmentForm() {
+    this.selectedAnnotation = null;
     this.formControlGroup.reset();
     this.formControlGroup.get('evidenceFormControl').setValue('TAS');
   }
@@ -362,6 +363,7 @@ export class TreatmentCurationComponent implements OnInit {
       this.formControlGroup.disable();
       this.elevatedButtonText.approve.display = 'Approve';
       this.elevatedButtonText.changes.show = true;
+      this.setFormValues(this.selectedAnnotation);
     }
   }
 
