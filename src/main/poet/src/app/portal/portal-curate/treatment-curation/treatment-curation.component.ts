@@ -3,7 +3,7 @@ import { HpoService } from '../../../shared/services/external/hpo.service';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {catchError, debounceTime, distinctUntilChanged, finalize, map, startWith, take} from 'rxjs/operators';
 import { HpoTerm, MaxoSearchResult, MaxoTerm } from '../../../shared/models/search-models';
-import { AnnotationSource, Publication, TreatmentAnnotation } from '../../../shared/models/models';
+import { AnnotationSource, PhenotypeAnnotation, Publication, TreatmentAnnotation } from '../../../shared/models/models';
 import { CurationService } from '../../../shared/services/curation/curation.service';
 import { StateService } from '../../../shared/services/state/state.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -84,13 +84,13 @@ export class TreatmentCurationComponent implements OnInit {
       }
     });
 
-    this.stateService.selectedPhenotypeAnnotation.subscribe((annotation) => {
-      if (annotation){
-        const preselect = {id: annotation.hpoId, name: annotation.hpoName};
-        this.selectedHpo = preselect;
-        this.formControlGroup.get('hpoFormControl').setValue(preselect);
-      }
-    });
+    const phenotypeTarget = this.stateService.getTreatmentPhenotypeTarget();
+    if (phenotypeTarget){
+      this.resetTreatmentForm();
+      this.selectedHpo = phenotypeTarget;
+      this.formControlGroup.get('hpoFormControl').setValue(phenotypeTarget);
+      this.stateService.setTreatmentPhenotypeTarget(null);
+    }
 
     this.stateService.selectedAnnotationMode.subscribe((mode) => {
       if (mode === 'view') {
