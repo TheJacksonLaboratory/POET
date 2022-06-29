@@ -146,6 +146,7 @@ public class AnnotationService {
                 }
                 phenotypeAnnotationRepository.save(oldAnnotation);
                 updateUserActivity(owner, user, CurationAction.REVIEW, oldAnnotation, null);
+                return;
             }
 
             // Allow official annotations to be updated by elevated users
@@ -338,6 +339,7 @@ public class AnnotationService {
                         }
                         treatmentAnnotationRepository.save(oldAnnotation);
                         updateUserActivity(owner, user, CurationAction.REVIEW, oldAnnotation, null);
+                        return;
                 }
 
                 // Allow official annotations to be updated by elevated users

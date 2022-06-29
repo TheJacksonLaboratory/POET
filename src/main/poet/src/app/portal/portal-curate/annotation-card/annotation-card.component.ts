@@ -224,7 +224,7 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   createTreatmentForPhenotype(phenotype: PhenotypeAnnotation){
-    this.stateService.setSelectedPhenotypeAnnotation(phenotype);
+    this.stateService.setTreatmentPhenotypeTarget(phenotype);
     this.stateService.setSelectedAnnotationMode('create');
     this.openAnnotationForm.emit(true);
     this.stateService.setSelectedCategory('treatment');
