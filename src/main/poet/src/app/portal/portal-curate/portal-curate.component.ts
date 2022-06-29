@@ -22,18 +22,18 @@ export class PortalCurateComponent implements OnInit {
   selectionType: string;
   selectedCategory: string;
   selectedDisease: Disease;
-  showLoader: boolean = false;
-  fxLayout: string = 'row';
-  fxLayoutAlign: string = 'start stretch';
-  fxFlexAnnotations: string = '60';
-  fxFlexAnnotationOffset: string = '20';
-  fxFlexForm: string = '45';
-  fxFlexFormOffset: string = '2.5';
-  sourceAndOntologySelected: boolean = false;
-  showForm: boolean = false;
+  showLoader = false;
+  fxLayout = 'row';
+  fxLayoutAlign = 'start stretch';
+  fxFlexAnnotations = '60';
+  fxFlexAnnotationOffset = '20';
+  fxFlexForm = '45';
+  fxFlexFormOffset = '2.5';
+  sourceAndOntologySelected = false;
+  showForm = false;
   annotationItems = [
-    {value: 'phenotype', display: 'Phenotypes', icon: 'assignment', disabled: false, count: 0, reason:""},
-    {value: 'treatment', display: 'Treatments', icon: 'medication', disabled: false, count: 0, reason: ""}
+    {value: 'phenotype', display: 'Phenotypes', icon: 'assignment', disabled: false, count: 0, reason: ''},
+    {value: 'treatment', display: 'Treatments', icon: 'medication', disabled: false, count: 0, reason: ''}
   ];
   user: any;
 
@@ -43,14 +43,14 @@ export class PortalCurateComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      let id = params['id'];
+      const id = params.id;
       if (id) {
-        if (this.determineIdType(id) == 'disease') {
+        if (this.determineIdType(id) === 'disease') {
           this.doingWork(true);
           this.curationService.getDisease(id).pipe(
             finalize(() => this.doingWork(false))
           ).subscribe((disease) => {
-            this.selectedDisease = disease
+            this.selectedDisease = disease;
             this.stateService.setSelectedDisease(disease);
             this.stateService.triggerAnnotationCountsReload(true);
           }, (error) => {
@@ -63,7 +63,7 @@ export class PortalCurateComponent implements OnInit {
     });
 
     this.stateService.triggerReloadAnnotationCounts.subscribe((reload) => {
-      if(reload && this.selectedDisease){
+      if (reload && this.selectedDisease){
         this.curationService.getAnnotationCounts(this.selectedDisease.diseaseId).subscribe((counts) => {
           this.updateAnnotationCount(counts);
         });
@@ -85,12 +85,12 @@ export class PortalCurateComponent implements OnInit {
   handleForm(value: boolean) {
     if (value) {
       this.showForm = true;
-      this.fxFlexAnnotations = "45";
-      this.fxFlexAnnotationOffset = "2.5";
+      this.fxFlexAnnotations = '45';
+      this.fxFlexAnnotationOffset = '2.5';
     } else {
       this.showForm = false;
-      this.fxFlexAnnotations = "50";
-      this.fxFlexAnnotationOffset = "25";
+      this.fxFlexAnnotations = '50';
+      this.fxFlexAnnotationOffset = '25';
     }
   }
 
@@ -100,10 +100,10 @@ export class PortalCurateComponent implements OnInit {
    */
   determineIdType(id: string): string {
     if (id) {
-      if (id.includes("OMIM") || id.includes("MONDO")) {
-        return "disease";
-      } else if (id.includes("PMID")) {
-        return "publication";
+      if (id.includes('OMIM') || id.includes('MONDO')) {
+        return 'disease';
+      } else if (id.includes('PMID')) {
+        return 'publication';
       }
     }
   }
@@ -118,9 +118,9 @@ export class PortalCurateComponent implements OnInit {
 
   updateAnnotationCount(counts){
     this.annotationItems.forEach((item) => {
-      if(item.value == 'phenotype'){
+      if (item.value === 'phenotype'){
         item.count = counts.phenotypeCount;
-      } else if(item.value == 'treatment') {
+      } else if (item.value === 'treatment') {
         item.count = counts.treatmentCount;
       }
     });
@@ -135,7 +135,7 @@ export class PortalCurateComponent implements OnInit {
   }
 
   changeCategory(ontology: string) {
-    if(this.selectedCategory != ontology){
+    if (this.selectedCategory !== ontology){
       this.stateService.setSelectedCategory(ontology);
       this.handleForm(false);
     }
