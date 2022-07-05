@@ -1,43 +1,43 @@
 import { Injectable } from '@angular/core';
-import { Annotation, Message } from "../models/models";
-import { MatDialog } from "@angular/material/dialog";
-import { DialogMessagesComponent } from "../../portal/portal-curate/dialog-messages/dialog-messages.component";
+import { Annotation, Message } from '../models/models';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogMessagesComponent } from '../../portal/portal-curate/dialog-messages/dialog-messages.component';
 import { UserService } from './user/user.service';
-import { MonarchSearchResult } from "../models/search-models";
-import { environment } from "../../../environments/environment";
+import { MonarchSearchResult } from '../models/search-models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilityService {
 
-  constructor(public dialog: MatDialog, public userService: UserService) { }
+  constructor(public dialog: MatDialog, public userService: UserService) {
+  }
 
-  hasReviewerComments(annotation: Annotation){
-    return  annotation && annotation.reviewMessages.length > 0;
+  hasReviewerComments(annotation: Annotation) {
+    return annotation && annotation.reviewMessages.length > 0;
   }
 
   isAccepted(annotation: Annotation): boolean {
-    return annotation && annotation.status === "ACCEPTED";
+    return annotation && annotation.status === 'ACCEPTED';
   }
 
   isUnderReview(annotation: Annotation): boolean {
-      return annotation && annotation.status === "UNDER_REVIEW";
+    return annotation && annotation.status === 'UNDER_REVIEW';
   }
 
   isNeedsWork(annotation: Annotation): boolean {
-    return annotation && annotation.status === "NEEDS_WORK";
+    return annotation && annotation.status === 'NEEDS_WORK';
   }
 
   isOfficial(annotation: Annotation): boolean {
-    return annotation && annotation.status === "OFFICIAL";
+    return annotation && annotation.status === 'OFFICIAL';
   }
 
   isRetired(annotation: Annotation): boolean {
-    return annotation && annotation.status === "RETIRED"
+    return annotation && annotation.status === 'RETIRED'
   }
 
-  ownsAnnotation(user, annotationOwner){
+  ownsAnnotation(user, annotationOwner) {
     return user?.nickname === annotationOwner.nickname;
   }
 
@@ -49,10 +49,10 @@ export class UtilityService {
     return option && option.name ? `${option.name} ${option.id}` : '';
   }
 
-  displayFrequency(option){
-    if(option && option.hasOwnProperty("id")){
+  displayFrequency(option) {
+    if (option && option.hasOwnProperty('id')) {
       return `${option.name} ${option.id}`;
-    } else if(option && option.hasOwnProperty("ontologyId")) {
+    } else if (option && option.hasOwnProperty('ontologyId')) {
       return `${option.name} ${option.ontologyId}`;
     } else {
       return option;
@@ -60,18 +60,18 @@ export class UtilityService {
   }
 
   displayMonarchSearchFn(monarchSearchResult: MonarchSearchResult) {
-      return  monarchSearchResult ? monarchSearchResult.label : "";
+    return monarchSearchResult ? monarchSearchResult.label : '';
   }
 
   displayChebiFn(monarchSearchResult: MonarchSearchResult) {
     return monarchSearchResult && monarchSearchResult.label != null ? `${monarchSearchResult.id} - ${monarchSearchResult.label}` : '';
   }
 
-  isDiseaseSource(publicationId: string){
-    return publicationId.includes("OMIM");
+  isDiseaseSource(publicationId: string) {
+    return publicationId.includes('OMIM');
   }
 
-  openMessagesDialog(messages: Message[]){
+  openMessagesDialog(messages: Message[]) {
     this.dialog.open(DialogMessagesComponent, {
       data: {
         messages: messages
@@ -79,11 +79,11 @@ export class UtilityService {
     });
   }
 
-  showElevatedActions(userRole: string, selectedAnnotation: Annotation){
+  showElevatedActions(userRole: string, selectedAnnotation: Annotation) {
     return this.isUnderReview(selectedAnnotation) && this.userService.isRoleAdmin(userRole);
   }
 
-  addSourceToAnnotation(annotationSource, annotation){
+  addSourceToAnnotation(annotationSource, annotation) {
     annotation.publicationId = annotationSource.publication.publicationId;
     annotation.publicationName = annotationSource.publication.publicationName;
     annotation.diseaseId = annotationSource.disease.diseaseId;

@@ -21,6 +21,7 @@ export class StateService {
   private selectedAnnotationModeSubject: BehaviorSubject<any> = new BehaviorSubject<any>('view');
   private phenotypeAnnotationsSubject: BehaviorSubject<any> = new BehaviorSubject<any>([]);
   private treatmentAnnotationsSubject: BehaviorSubject<any> = new BehaviorSubject<any>([]);
+  private treatmentAnnotationPhenotypeTargetSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
 
   selectedAnnotationSource: Observable<AnnotationSource> = this.selectedAnnotationSourceSubject.asObservable();
@@ -48,6 +49,16 @@ export class StateService {
 
   getSelectedCategory() {
     return this.selectedCategorySubject.getValue();
+  }
+
+  getTreatmentPhenotypeTarget(){
+    return this.treatmentAnnotationPhenotypeTargetSubject.getValue();
+  }
+
+  setTreatmentPhenotypeTarget(target: any){
+      this.treatmentAnnotationPhenotypeTargetSubject.next(
+        target
+      );
   }
 
   setSelectedSource(annotationSource: AnnotationSource): void {
