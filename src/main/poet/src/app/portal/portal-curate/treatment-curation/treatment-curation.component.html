@@ -57,7 +57,7 @@
           </mat-hint>
           <input matInput placeholder="Search for an HPO Term" formControlName="hpoFormControl" ngDefaultControl
                  [matAutocomplete]="hpo" required>
-          <button mat-button *ngIf="showFormControlElement('hpoFormControl')" matSuffix mat-icon-button
+          <button mat-button *ngIf="showFormControlElement('hpoFormControl') && formControlGroup.get('diseaseTreatmentControl').value !== true" matSuffix mat-icon-button
                   aria-label="Clear" (click)="formControlGroup.get('hpoFormControl').reset()">
             <mat-icon>close</mat-icon>
           </button>
