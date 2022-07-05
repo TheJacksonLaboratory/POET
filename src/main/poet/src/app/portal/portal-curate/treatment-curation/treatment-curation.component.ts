@@ -1,9 +1,18 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { HpoService } from '../../../shared/services/external/hpo.service';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
-import {catchError, debounceTime, distinctUntilChanged, finalize, map, startWith, take} from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  finalize,
+  map,
+  startWith,
+  take,
+  takeUntil
+} from 'rxjs/operators';
 import { HpoTerm, MaxoSearchResult, MaxoTerm } from '../../../shared/models/search-models';
-import { AnnotationSource, PhenotypeAnnotation, Publication, TreatmentAnnotation } from '../../../shared/models/models';
+import { AnnotationSource, Publication, TreatmentAnnotation } from '../../../shared/models/models';
 import { CurationService } from '../../../shared/services/curation/curation.service';
 import { StateService } from '../../../shared/services/state/state.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,14 +21,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MonarchService } from '../../../shared/services/external/monarch.service';
 import { DialogReviewComponent } from '../dialog-review/dialog-review.component';
 import { UtilityService } from '../../../shared/services/utility.service';
-import {Observable} from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'poet-treatment-curation',
   templateUrl: './treatment-curation.component.html',
   styleUrls: ['./treatment-curation.component.scss']
 })
-export class TreatmentCurationComponent implements OnInit {
+export class TreatmentCurationComponent implements OnInit, OnDestroy {
 
 
   @Input('selectedSource') annotationSource: AnnotationSource;
@@ -51,6 +60,8 @@ export class TreatmentCurationComponent implements OnInit {
     extensionFormControl: new FormControl({value: '', disabled: false}, this.extensionValidation()),
     commentFormControl: new FormControl({value: '', disabled: false}, Validators.maxLength(50)),
   });
+
+  destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(public hpoService: HpoService,
               public curationService: CurationService,
@@ -84,7 +95,7 @@ export class TreatmentCurationComponent implements OnInit {
       }
     });
 
-    this.stateService.selectedAnnotationMode.subscribe((mode) => {
+    this.stateService.selectedAnnotationMode.pipe(takeUntil(this.destroy$)).subscribe((mode) => {
       if (mode === 'view') {
         this.formControlGroup.disable();
         this.title = 'Treatment';
@@ -194,6 +205,11 @@ export class TreatmentCurationComponent implements OnInit {
             this.formControlGroup.get('extensionFormControl').setErrors({apiError: true});
           });
         }});
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
   getFormTreatmentAnnotation(){
