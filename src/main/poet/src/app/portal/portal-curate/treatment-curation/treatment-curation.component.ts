@@ -84,14 +84,6 @@ export class TreatmentCurationComponent implements OnInit {
       }
     });
 
-    const phenotypeTarget = this.stateService.getTreatmentPhenotypeTarget();
-    if (phenotypeTarget){
-      this.resetTreatmentForm();
-      this.selectedHpo = phenotypeTarget;
-      this.formControlGroup.get('hpoFormControl').setValue(phenotypeTarget);
-      this.stateService.setTreatmentPhenotypeTarget(null);
-    }
-
     this.stateService.selectedAnnotationMode.subscribe((mode) => {
       if (mode === 'view') {
         this.formControlGroup.disable();
@@ -104,6 +96,12 @@ export class TreatmentCurationComponent implements OnInit {
       } else if (mode === 'create') {
         this.title = 'New Treatment';
         this.resetTreatmentForm();
+        const phenotypeTarget = this.stateService.getTreatmentPhenotypeTarget();
+        if (phenotypeTarget){
+          this.selectedHpo = phenotypeTarget;
+          this.formControlGroup.get('hpoFormControl').setValue(phenotypeTarget);
+          this.stateService.setTreatmentPhenotypeTarget(null);
+        }
       }
       this.formControlGroup.enable();
     });

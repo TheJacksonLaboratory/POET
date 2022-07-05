@@ -55,12 +55,10 @@ export class StateService {
     return this.treatmentAnnotationPhenotypeTargetSubject.getValue();
   }
 
-  setTreatmentPhenotypeTarget(phenotypeAnnotation: PhenotypeAnnotation){
-    if (phenotypeAnnotation){
+  setTreatmentPhenotypeTarget(target: any){
       this.treatmentAnnotationPhenotypeTargetSubject.next(
-        {id: phenotypeAnnotation.hpoId, name: phenotypeAnnotation.hpoName}
+        target
       );
-    }
   }
 
   setSelectedSource(annotationSource: AnnotationSource): void {
