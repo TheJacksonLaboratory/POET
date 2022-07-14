@@ -52,9 +52,11 @@ export class DialogSourceComponent implements OnInit {
         this.annotatedPublications$ = this.curationService.getDiseasePublications(disease.diseaseId);
       }
     });
+
     this.stateService.selectedCategory.subscribe((category) => {
       this.selectedCategory = category;
-    })
+    });
+
     this.annotationSourceControl.valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(id => {
@@ -74,7 +76,7 @@ export class DialogSourceComponent implements OnInit {
             this.searchingPubMed = false;
           });
         }
-      })
+      });
   }
 
   closeDialog() {
