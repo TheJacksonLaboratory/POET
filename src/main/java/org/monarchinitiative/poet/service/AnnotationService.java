@@ -83,7 +83,7 @@ public class AnnotationService {
                 List<PhenotypeAnnotation> annotations = this.phenotypeAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNotIn(disease, List.of(AnnotationStatus.RETIRED, AnnotationStatus.RETIRED_PENDING));
                 return (List<PhenotypeAnnotation>) getLastUpdatedForAnnotation(annotations);
             } else {
-                throw new AnnotationSourceException(diseaseId);
+                throw AnnotationSourceException.diseaseNotFound(diseaseId);
             }
     }
 
@@ -113,7 +113,7 @@ public class AnnotationService {
             phenotypeAnnotationRepository.save(annotation);
             updateUserActivity(user, null, CurationAction.CREATE, annotation, null);
         } else {
-            throw new AnnotationSourceException(phenotypeRequest.getPublicationId(), phenotypeRequest.getDiseaseId());
+            throw AnnotationSourceException.bothNotFound(phenotypeRequest.getPublicationId(), phenotypeRequest.getDiseaseId());
         }
     }
 
@@ -129,7 +129,7 @@ public class AnnotationService {
         User owner = userActivityRespository.getMostRecentDateForAnnotationActivity(oldAnnotation.getId()).getOwner();
 
         if(annotationSource == null){
-            throw new AnnotationSourceException(phenotypeRequest.getDiseaseId(), phenotypeRequest.getPublicationId());
+            throw AnnotationSourceException.bothNotFound(phenotypeRequest.getDiseaseId(), phenotypeRequest.getPublicationId());
 
         } else if(annotationSource == oldAnnotation.getAnnotationSource()) {
             annotationSource = oldAnnotation.getAnnotationSource();
@@ -265,7 +265,7 @@ public class AnnotationService {
             List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNotIn(disease, List.of(AnnotationStatus.RETIRED, AnnotationStatus.RETIRED_PENDING));
             return (List<TreatmentAnnotation>) getLastUpdatedForAnnotation(annotations);
         }
-        throw new AnnotationSourceException(diseaseId);
+        throw AnnotationSourceException.diseaseNotFound(diseaseId);
     }
 
 
@@ -302,7 +302,7 @@ public class AnnotationService {
             treatmentAnnotationRepository.save(annotation);
             updateUserActivity(user, null, CurationAction.CREATE, annotation, null);
         } else {
-            throw new AnnotationSourceException(treatmentRequest.getPublicationId(), treatmentRequest.getDiseaseId());
+            throw AnnotationSourceException.bothNotFound(treatmentRequest.getPublicationId(), treatmentRequest.getDiseaseId());
         }
     }
 
@@ -323,7 +323,7 @@ public class AnnotationService {
             User owner = userActivityRespository.getMostRecentDateForAnnotationActivity(oldAnnotation.getId()).getOwner();
 
             if(annotationSource == null){
-                throw new AnnotationSourceException(treatmentRequest.getDiseaseId(), treatmentRequest.getPublicationId());
+                throw AnnotationSourceException.bothNotFound(treatmentRequest.getDiseaseId(), treatmentRequest.getPublicationId());
             } else if(oldAnnotation.getAnnotationSource() == annotationSource){
                 annotationSource = oldAnnotation.getAnnotationSource();
             }

@@ -98,6 +98,7 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
     this.stateService.selectedAnnotationMode.pipe(takeUntil(this.destroy$)).subscribe((mode) => {
       if (mode === 'view') {
         this.formControlGroup.disable();
+        this.formControlGroup.markAsPristine();
         this.title = 'Treatment';
         return;
       } else if (mode === 'edit') {
@@ -125,13 +126,12 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
         };
         this.formControlGroup.get('hpoFormControl').setValue(this.selectedHpo);
         this.formControlGroup.get('hpoFormControl').disable();
-      } else if (this.formControlGroup.dirty){
+      } else if (this.formControlGroup.enabled && this.formControlGroup.dirty){
           this.selectedHpo = {
             id: '',
             name: ''
           };
           this.formControlGroup.get('hpoFormControl').reset();
-          this.formControlGroup.get('hpoFormControl').enable();
         }
     });
 
@@ -197,7 +197,7 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
           this.monarchService.searchMonarch(query, 'CHEBI').pipe(
             finalize(() => this.loadingExtensionSuggestions = false)
           ).subscribe((data) => {
-            if (!data || data.length == 0) {
+            if (!data || data.length === 0) {
               this.formControlGroup.get('extensionFormControl').setErrors({notFound: true});
             }
             this.chebiOptions = data;
@@ -369,12 +369,12 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
   toggleAnnotationChanges(shouldShow: boolean){
     if (shouldShow){
       this.elevatedChanges = true;
-      this.formControlGroup.enable();
+      this.stateService.setSelectedAnnotationMode('edit');
       this.elevatedButtonText.approve.display = 'Save & Accept';
       this.elevatedButtonText.changes.show = false;
     } else {
       this.elevatedChanges = false;
-      this.formControlGroup.disable();
+      this.stateService.setSelectedAnnotationMode('view');
       this.elevatedButtonText.approve.display = 'Approve';
       this.elevatedButtonText.changes.show = true;
       this.setFormValues(this.selectedAnnotation);
