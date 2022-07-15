@@ -390,8 +390,6 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 
 
     & .left-actions {
-      display: inline-flex;
-
       & .mat-progress-spinner {
         margin-left: 1rem;
         margin-top: .5rem;
@@ -522,6 +520,7 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 .edit-annotation {
   background: #296a7c;
   color: white;
+  float: right;
 }
 
 .portal-curate {
@@ -559,12 +558,6 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 .filter {
   & .mat-select-value-text, .mat-checkbox-label {
     font-size: 12px;
-  }
-}
-
-.mat-card-actions .left-actions {
-  & .mat-raised-button, .mat-stroked-button, .mat-flat-button, .mat-button {
-    margin: 0 6px !important;
   }
 }
 

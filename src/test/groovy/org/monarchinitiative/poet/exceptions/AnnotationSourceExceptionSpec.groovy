@@ -10,7 +10,7 @@ class AnnotationSourceExceptionSpec extends Specification {
 
     void "test exception message #desc"() {
         given:
-        def exception = new AnnotationSourceException(publicationId, diseaseId)
+        def exception = AnnotationSourceException.bothNotFound(publicationId, diseaseId)
 
         expect:
         exception.getMessage() == expectedMessage
@@ -24,7 +24,7 @@ class AnnotationSourceExceptionSpec extends Specification {
 
     void "test exception message for disease only #desc"() {
         given:
-        def exception = new AnnotationSourceException(diseaseId)
+        def exception = AnnotationSourceException.diseaseNotFound(diseaseId)
 
         expect:
         exception.getMessage() == expectedMessage

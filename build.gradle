@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'org.monarchinitiative.poet'
-version = '1.0.3-SNAPSHOT'
+version = '1.0.4'
 sourceCompatibility = '11'
 
 repositories {
@@ -86,6 +86,9 @@ clean {
 
 // Our war files will be versions and tagged with the env
 bootWar {
+	if(getActiveProfileTag() != 'production'){
+		project.version = "${project.version}-SNAPSHOT"
+	}
 	archiveFileName = "POET-${project.version}-${getActiveProfileTag()}.war_"
 }
 
