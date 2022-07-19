@@ -37,7 +37,7 @@
         </button>
         <mat-hint *ngIf="!selectedPublication">Try: 31479590</mat-hint>
         <mat-error *ngIf="annotationSourceControl.hasError('required')">
-          PubMed Identifier is <strong>required</strong>. Try: 31479590
+          PubMed Identifier is <strong>required</strong>. Try: PMID:31479590 or 31479590
         </mat-error>
         <mat-error *ngIf="annotationSourceControl.hasError('notFound')">
           Could not find data for this identifer. Please enter a full and valid PubMed Id.

@@ -27,7 +27,7 @@
         <mat-select multiple [(value)]="selectedStatuses" (selectionChange)="resetPaginator()">
           <mat-select-trigger>
             {{selectedStatuses ? selectedStatuses[0] : ''}}
-            <span *ngIf="selectedStatuses?.length > 1" class="example-additional-selection">
+            <span *ngIf="selectedStatuses?.length > 1">
               (+{{selectedStatuses.length - 1}} {{selectedStatuses?.length === 2 ? 'other' : 'others'}})
             </span>
           </mat-select-trigger>

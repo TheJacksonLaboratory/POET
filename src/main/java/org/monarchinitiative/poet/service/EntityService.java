@@ -1,5 +1,6 @@
 package org.monarchinitiative.poet.service;
 
+import org.monarchinitiative.poet.exceptions.AnnotationSourceException;
 import org.monarchinitiative.poet.exceptions.DiseaseNotFoundException;
 import org.monarchinitiative.poet.model.entities.AnnotationSource;
 import org.monarchinitiative.poet.model.entities.Disease;
@@ -11,6 +12,7 @@ import org.monarchinitiative.poet.repository.DiseaseRepository;
 import org.monarchinitiative.poet.repository.PublicationRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 
@@ -183,14 +185,20 @@ public class EntityService {
      * @param request a publication request to save to a disease
      */
     public AnnotationSource createAnnotationSource(PublicationRequest request){
+
         Publication publication = this.publicationRepository.findByPublicationId(request.getPublication().getPublicationId());
         Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(request.getDisease().getDiseaseId());
+
         if(publication == null){
             publication = new Publication(request.getPublication());
             this.publicationRepository.save(publication);
         }
 
         if(disease != null){
+            AnnotationSource source = this.annotationSourceRepository.findByPublicationAndDisease(publication, disease);
+            if(source != null){
+                throw AnnotationSourceException.exists(publication.getPublicationId(), disease.getDiseaseId());
+            }
             return this.annotationSourceRepository.save(new AnnotationSource(publication, disease));
         } else {
             throw new DiseaseNotFoundException(request.getDisease().getDiseaseId());
