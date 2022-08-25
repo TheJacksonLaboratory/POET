@@ -159,9 +159,9 @@
               <mat-progress-bar mode="query"></mat-progress-bar>
             </mat-option>
             <mat-option class="auto-complete-option" *ngFor="let option of chebiOptions" [value]="option">
-              <span class="option-name">{{option.label}}</span>
+              <span class="option-name">{{option.chebiAsciiName}}</span>
               &nbsp;
-              <span class="option-id">{{option.id}}</span>
+              <span class="option-id">{{option.chebiId}}</span>
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>

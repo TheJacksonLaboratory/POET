@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
 import {
+  ChebiEntity,
   Contribution,
   Disease,
   PhenotypeAnnotation,
@@ -23,13 +24,21 @@ export class CurationService {
 
   /**
    * Search for publications and diseases by a query.
-   * @param query
+   * @param query the search string, publications or diseases
    */
   searchAll(query: string) {
     const parameters: HttpParams = new HttpParams().set('query', query);
     return this.httpClient.get(environment.POET_API_SEARCH_URL, {params: parameters});
   }
 
+  /**
+   * Search for chebi term by a query
+   * @param query - the search string, a chebi or drug name
+   */
+  searchChebi(query: string): Observable<ChebiEntity[]> {
+    const parameters: HttpParams = new HttpParams().set('query', query);
+    return this.httpClient.get<ChebiEntity[]>(`${environment.POET_API_SEARCH_URL}/chebi`, {params: parameters});
+  }
   /***
    * Get a disease by OMIM id
    * @param id the OMIM id

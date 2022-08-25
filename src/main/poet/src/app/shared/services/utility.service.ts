@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Annotation, Message } from '../models/models';
+import { Annotation, ChebiEntity, Message } from '../models/models';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogMessagesComponent } from '../../portal/portal-curate/dialog-messages/dialog-messages.component';
 import { UserService } from './user/user.service';
@@ -63,8 +63,15 @@ export class UtilityService {
     return monarchSearchResult ? monarchSearchResult.label : '';
   }
 
-  displayChebiFn(monarchSearchResult: MonarchSearchResult) {
-    return monarchSearchResult && monarchSearchResult.label != null ? `${monarchSearchResult.id} - ${monarchSearchResult.label}` : '';
+  displayChebiFn(chebiEntity: any) {
+    if (chebiEntity){
+      if (chebiEntity.hasOwnProperty('chebiAsciiName')){
+        return chebiEntity.chebiAsciiName != null ? `${chebiEntity.chebiId} - ${chebiEntity.chebiAsciiName}` : '';
+      } else {
+        return chebiEntity.label != null ? `${chebiEntity.id} - ${chebiEntity.label}` : '';
+      }
+    }
+    return '';
   }
 
   isDiseaseSource(publicationId: string) {
