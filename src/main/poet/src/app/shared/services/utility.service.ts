@@ -81,7 +81,7 @@ export class UtilityService {
   openMessagesDialog(messages: Message[]) {
     this.dialog.open(DialogMessagesComponent, {
       data: {
-        messages: messages
+        messages
       }
     });
   }
