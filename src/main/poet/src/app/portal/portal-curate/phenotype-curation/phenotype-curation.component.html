@@ -208,7 +208,7 @@
               *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && elevatedChanges" (click)="toggleAnnotationChanges(false)">
         Cancel
       </button>
-      <button class="edit-annotation" mat-raised-button aria-label="Edit Phenotype Annotation"
+      <button class="edit-annotation right" mat-raised-button aria-label="Edit Phenotype Annotation"
               *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && elevatedButtonText.changes.show"
               (click)="toggleAnnotationChanges(true)">
         {{elevatedButtonText.changes.display}}

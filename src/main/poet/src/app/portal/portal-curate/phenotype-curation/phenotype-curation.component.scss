@@ -23,4 +23,12 @@
   & .fr {
     float: right;
   }
+
+  & .mat-card-actions {
+    display: flex;
+  }
+
+  & .left-actions {
+    flex: auto;
+  }
 }
