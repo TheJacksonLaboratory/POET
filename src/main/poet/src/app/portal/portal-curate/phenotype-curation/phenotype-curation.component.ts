@@ -1,7 +1,7 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { HpoService } from '../../../shared/services/external/hpo.service';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import {debounceTime, distinctUntilChanged, finalize, shareReplay, take} from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, finalize, shareReplay, take, takeUntil } from 'rxjs/operators';
 import { AnchorSearchResult, HpoTerm } from '../../../shared/models/search-models';
 import { AnnotationSource, PhenotypeAnnotation, Publication } from '../../../shared/models/models';
 import { CurationService } from '../../../shared/services/curation/curation.service';
@@ -13,13 +13,14 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { DialogReviewComponent } from '../dialog-review/dialog-review.component';
 import { UtilityService } from '../../../shared/services/utility.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'poet-phenotype-curation',
   templateUrl: './phenotype-curation.component.html',
   styleUrls: ['./phenotype-curation.component.scss']
 })
-export class PhenotypeCurationComponent implements OnInit {
+export class PhenotypeCurationComponent implements OnInit, OnDestroy {
 
   @Input('selectedSource') annotationSource: AnnotationSource;
   @Input('role') userRole: string;
@@ -57,6 +58,8 @@ export class PhenotypeCurationComponent implements OnInit {
     descriptionFormControl: new FormControl({value: '', disabled: false}, Validators.maxLength(50)),
   });
 
+  destroy$: Subject<boolean> = new Subject<boolean>();
+
   constructor(public hpoService: HpoService,
               public curationService: CurationService,
               public stateService: StateService,
@@ -70,6 +73,12 @@ export class PhenotypeCurationComponent implements OnInit {
         this.setFormValues(this.selectedAnnotation);
       }
     });
+  }
+
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -103,7 +112,7 @@ export class PhenotypeCurationComponent implements OnInit {
     /**
      * Subscribe to our state service to figure out the state of the form.
      */
-    this.stateService.selectedAnnotationMode.subscribe((mode) => {
+    this.stateService.selectedAnnotationMode.pipe(takeUntil(this.destroy$)).subscribe((mode) => {
       if (mode === 'view') {
         this.formControlGroup.disable();
         this.title = 'Phenotype';
@@ -113,6 +122,7 @@ export class PhenotypeCurationComponent implements OnInit {
         this.title = 'Phenotype';
       } else if (mode === 'create'){
         this.title = 'New Phenotype';
+        this.resetPhenotypeForm()
       }
       this.formControlGroup.enable();
     });
@@ -407,14 +417,15 @@ export class PhenotypeCurationComponent implements OnInit {
   toggleAnnotationChanges(shouldShow: boolean){
     if (shouldShow){
       this.elevatedChanges = true;
-      this.formControlGroup.enable();
+      this.stateService.setSelectedAnnotationMode('edit');
       this.elevatedButtonText.approve.display = 'Save & Accept';
       this.elevatedButtonText.changes.show = false;
     } else {
       this.elevatedChanges = false;
-      this.formControlGroup.disable();
+      this.stateService.setSelectedAnnotationMode('view');
       this.elevatedButtonText.approve.display = 'Approve';
       this.elevatedButtonText.changes.show = true;
+      this.setFormValues(this.selectedAnnotation);
     }
   }
 }
