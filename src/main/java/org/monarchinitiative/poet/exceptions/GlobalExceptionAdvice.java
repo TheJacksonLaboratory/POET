@@ -38,7 +38,7 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(AnnotationSourceException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ErrorDetails annotationSourceException(AnnotationSourceException ex) {
-        return new ErrorDetails(new Date(), "Data missing error",
+        return new ErrorDetails(new Date(), "API error",
                 ex.getMessage());
     }
 

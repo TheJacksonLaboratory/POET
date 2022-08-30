@@ -1,16 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { ErrorStateMatcher } from "@angular/material/core";
-import { FormControl, FormGroupDirective, NgForm, Validators } from "@angular/forms";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import { CurationService } from "../../../shared/services/curation/curation.service";
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
-import { PubmedService } from "../../../shared/services/external/pubmed.service";
-import { StateService } from "../../../shared/services/state/state.service";
-import { Publication } from "../../../shared/models/models";
-import { Observable } from "rxjs";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { UserService } from "../../../shared/services/user/user.service";
-import { UtilityService } from "../../../shared/services/utility.service";
+import { ErrorStateMatcher } from '@angular/material/core';
+import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { CurationService } from '../../../shared/services/curation/curation.service';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { PubmedService } from '../../../shared/services/external/pubmed.service';
+import { StateService } from '../../../shared/services/state/state.service';
+import { Publication } from '../../../shared/models/models';
+import { Observable } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserService } from '../../../shared/services/user/user.service';
+import { UtilityService } from '../../../shared/services/utility.service';
 
 @Component({
   selector: 'app-dialog-curation',
@@ -24,10 +24,9 @@ export class DialogSourceComponent implements OnInit {
   selectedCategory: string;
   selectedPublication: any;
   selectedDisease: any = {diseaseName: '', diseaseId: ''};
-  selectedType: string;
   annotatedPublications$: Observable<Publication[]>;
-  newPublication: boolean = false;
-  searchingPubMed: boolean = false;
+  newPublication = false;
+  searchingPubMed = false;
   matcher = new DialogErrorStateMatcher();
   newPublicationChecks: any;
 
@@ -53,13 +52,18 @@ export class DialogSourceComponent implements OnInit {
         this.annotatedPublications$ = this.curationService.getDiseasePublications(disease.diseaseId);
       }
     });
+
     this.stateService.selectedCategory.subscribe((category) => {
       this.selectedCategory = category;
-    })
+    });
+
     this.annotationSourceControl.valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(id => {
         if (id) {
+          if (id.includes('PMID:')){
+            id = id.replace('PMID:', '');
+          }
           this.searchingPubMed = true;
           this.pubmedService.findPublication(id.trim()).subscribe((data) => {
             if (!data) {
@@ -72,7 +76,7 @@ export class DialogSourceComponent implements OnInit {
             this.searchingPubMed = false;
           });
         }
-      })
+      });
   }
 
   closeDialog() {
@@ -92,13 +96,13 @@ export class DialogSourceComponent implements OnInit {
   }
 
   saveNewPublication() {
-    let source = {
+    const source = {
       disease: this.selectedDisease,
       publication: {
-        "publicationId": "PMID:" + this.selectedPublication.uid,
-        "publicationName": this.selectedPublication.title,
-        "date": this.selectedPublication.pubdate,
-        "firstAuthor": this.selectedPublication.sortfirstauthor
+        publicationId: `PMID:${this.selectedPublication.uid}`,
+        publicationName: this.selectedPublication.title,
+        date: this.selectedPublication.pubdate,
+        firstAuthor: this.selectedPublication.sortfirstauthor
       }
     };
     this.curationService.savePublication(source).subscribe(() => {
@@ -115,10 +119,12 @@ export class DialogSourceComponent implements OnInit {
   }
 
   getErrorMessage(error: any) {
-    if (error.error.message) {
-      return "[ERROR]: " + error.error.message;
+    if (error.error.details) {
+      return `[ERROR]: ${error.error.details}`;
+    } else if (error.error.message) {
+      return `[ERROR]: ${error.error.message}`;
     } else {
-      return "[ERROR]: " + error.message;
+      return `[ERROR]: ${error.message}`;
     }
   }
 
@@ -127,7 +133,7 @@ export class DialogSourceComponent implements OnInit {
   }
 
   selectPublication(publication: any) {
-    if (publication == "new") {
+    if (publication === 'new') {
       this.selectedPublication = null;
       this.newPublication = true;
     } else {
@@ -141,7 +147,7 @@ export class DialogSourceComponent implements OnInit {
   }
 
   getSecondAffirmation() {
-    if (this.selectedCategory == 'treatment') {
+    if (this.selectedCategory === 'treatment') {
       return 'I affirm that this publication describes medical actions for ' + this.selectedDisease.diseaseName;
     }
     return 'I affirm that this publication describes phenotypes for ' + this.selectedDisease.diseaseName;
