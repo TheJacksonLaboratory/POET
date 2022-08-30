@@ -1,5 +1,8 @@
 package org.monarchinitiative.poet.controller;
 
+import org.monarchinitiative.model.responses.chebi.GetLiteEntityResponse;
+import org.monarchinitiative.model.responses.chebi.LiteEntity;
+import org.monarchinitiative.model.responses.chebi.LiteEntityList;
 import org.monarchinitiative.poet.model.responses.SearchResponse;
 import org.monarchinitiative.poet.service.SearchService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,5 +39,10 @@ public class SearchController {
     @GetMapping(value = "", headers = "Accept=application/json")
     public List<SearchResponse> searchPublicationsAndDiseases(@RequestParam String query) {
         return searchService.searchDisease(query.trim());
+    }
+
+    @GetMapping(value = "/chebi", headers="Accept=application/json")
+    public List<LiteEntity> searchChebiEntities(@RequestParam String query) {
+        return searchService.searchChebi(query.trim());
     }
 }

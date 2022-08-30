@@ -1,10 +1,14 @@
 package org.monarchinitiative.poet.service;
 
+import org.monarchinitiative.model.responses.chebi.*;
 import org.monarchinitiative.poet.model.entities.Disease;
 import org.monarchinitiative.poet.model.responses.SearchResponse;
 import org.monarchinitiative.poet.repository.DiseaseRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.soap.client.core.SoapActionCallback;
 
+import javax.xml.bind.JAXBElement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +23,11 @@ public class SearchService {
 
     private DiseaseRepository diseaseRepository;
 
-    SearchService(DiseaseRepository diseaseRepository){
+    private WebServiceTemplate webServiceTemplate;
+
+    SearchService(DiseaseRepository diseaseRepository, WebServiceTemplate webServiceTemplate){
         this.diseaseRepository = diseaseRepository;
+        this.webServiceTemplate = webServiceTemplate;
     }
 
     /**
@@ -42,5 +49,25 @@ public class SearchService {
             }
         }
         return responseList;
+    }
+
+    /**
+     * A function to call the chebi wdsl web service to search for a chbi
+     * @param query the search string
+     * @return a list of lite chebi lite elements or empty list
+     */
+    public List<LiteEntity> searchChebi(String query){
+        GetLiteEntity liteEntity = new GetLiteEntity();
+        liteEntity.setSearch(query);
+        liteEntity.setStars(StarsCategory.ALL);
+        liteEntity.setSearchCategory(SearchCategory.ALL);
+        liteEntity.setMaximumResults(10);
+        JAXBElement<GetLiteEntity> request = new ObjectFactory().createGetLiteEntity(liteEntity);
+
+        JAXBElement<GetLiteEntityResponse> response =  (JAXBElement<GetLiteEntityResponse>) webServiceTemplate.marshalSendAndReceive(
+                "http://www.ebi.ac.uk:80/webservices/chebi/2.0/webservice", request);
+
+
+        return response.getValue().getReturn().getListElement();
     }
 }

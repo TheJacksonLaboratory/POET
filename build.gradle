@@ -10,8 +10,49 @@ plugins {
 }
 
 group = 'org.monarchinitiative.poet'
-version = '1.0.4'
+version = '1.0.5'
 sourceCompatibility = '11'
+
+configurations {
+	jaxb
+}
+
+task genJaxb {
+	ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
+	ext.classesDir = "${buildDir}/classes/jaxb"
+	ext.schema = "https://www.ebi.ac.uk/webservices/chebi/2.0/webservice?wsdl"
+
+	outputs.dir classesDir
+
+	doLast() {
+		project.ant {
+			taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask",
+					classpath: configurations.jaxb.asPath
+			mkdir(dir: sourcesDir)
+			mkdir(dir: classesDir)
+
+			xjc(destdir: sourcesDir, schema: schema,
+					package: "org.monarchinitiative.model.responses.chebi") {
+				arg(value: "-wsdl")
+				produces(dir: sourcesDir, includes: "**/*.java")
+			}
+
+			javac(destdir: classesDir, source: 1.8, target: 1.8, debug: true,
+					debugLevel: "lines,vars,source",
+					classpath: configurations.jaxb.asPath) {
+				src(path: sourcesDir)
+				include(name: "**/*.java")
+				include(name: "*.java")
+			}
+
+			copy(todir: classesDir) {
+				fileset(dir: sourcesDir, erroronmissingdir: false) {
+					exclude(name: "**/*.java")
+				}
+			}
+		}
+	}
+}
 
 repositories {
 	mavenCentral()
@@ -31,6 +72,15 @@ dependencies {
 	implementation 'org.monarchinitiative.phenol:phenol-annotations:1.6.2'
 	implementation 'org.monarchinitiative.phenol:phenol-io:1.6.2'
 	implementation 'org.apache.commons:commons-csv:1.9.0'
+	implementation 'org.springframework.ws:spring-ws-core'
+	// For Java 11:
+	implementation 'org.glassfish.jaxb:jaxb-runtime'
+	implementation(files(genJaxb.classesDir).builtBy(genJaxb))
+	implementation ('org.springframework.boot:spring-boot-starter-web-services') {
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+	}
+
+	jaxb "com.sun.xml.bind:jaxb-xjc:2.1.7"
 
 	runtimeOnly 'com.h2database:h2'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'

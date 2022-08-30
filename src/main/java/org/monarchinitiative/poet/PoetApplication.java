@@ -17,46 +17,7 @@ import java.io.IOException;
 
 @SpringBootApplication
 public class PoetApplication {
-	@Autowired
-	private Environment env;
-
 	public static void main(String[] args) {
 		SpringApplication.run(PoetApplication.class, args);
-	}
-
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**/*");
-			}
-
-			@Override
-			public void addResourceHandlers(ResourceHandlerRegistry registry) {
-				registry.addResourceHandler(env.getProperty("api.client").split(","))
-						.addResourceLocations("classpath:/static/")
-						.resourceChain(true)
-						.addResolver(new PathResourceResolver() {
-							@Override
-							protected Resource getResource(String resourcePath, Resource location) throws IOException {
-								Resource requestedResource = location.createRelative(resourcePath);
-								return requestedResource.exists() && requestedResource.isReadable() ?
-										requestedResource : new ClassPathResource("/static/index.html");
-							}
-						});
-				registry.setOrder(Integer.MAX_VALUE);
-			}
-			
-			@Override
-			public void addViewControllers(ViewControllerRegistry registry) {
-				registry.addViewController("/{spring:(?!assets)\\w+}")
-						.setViewName("forward:/");
-				registry.addViewController("/**/{spring:\\w+}")
-						.setViewName("forward:/");
-				registry.addViewController("/{spring:(?!assets)\\w+}/**{spring:?!(\\.js|\\.css)$}")
-						.setViewName("forward:/");
-			}
-		};
 	}
 }

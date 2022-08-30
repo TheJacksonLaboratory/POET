@@ -96,3 +96,10 @@ export interface Contribution {
 export enum ReleaseState {
   NOT_STARTED, IN_PROGRESS, DONE_SUCCESS, DONE_ERROR
 }
+
+export interface ChebiEntity {
+  chebiId: string;
+  chebiAsciiName: string;
+  searchScore: number;
+  entityStar: number;
+}
