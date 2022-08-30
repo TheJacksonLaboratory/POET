@@ -136,7 +136,7 @@ clean {
 
 // Our war files will be versions and tagged with the env
 bootWar {
-	if(getActiveProfileTag() != 'production'){
+	if(getActiveProfileTag() != 'prod'){
 		project.version = "${project.version}-SNAPSHOT"
 	}
 	archiveFileName = "POET-${project.version}-${getActiveProfileTag()}.war_"
