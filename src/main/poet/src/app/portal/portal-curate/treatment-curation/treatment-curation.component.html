@@ -159,9 +159,9 @@
               <mat-progress-bar mode="query"></mat-progress-bar>
             </mat-option>
             <mat-option class="auto-complete-option" *ngFor="let option of chebiOptions" [value]="option">
-              <span class="option-name">{{option.label}}</span>
+              <span class="option-name">{{option.chebiAsciiName}}</span>
               &nbsp;
-              <span class="option-id">{{option.id}}</span>
+              <span class="option-id">{{option.chebiId}}</span>
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
@@ -196,14 +196,12 @@
               *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && elevatedChanges" (click)="toggleAnnotationChanges(false)">
         Cancel
       </button>
-      <button class="edit-annotation" mat-raised-button aria-label="Edit Treatment Annotation"
+      <button class="edit-annotation right" mat-raised-button aria-label="Edit Treatment Annotation"
               *ngIf="utilityService.showElevatedActions(userRole, selectedAnnotation) && elevatedButtonText.changes.show"
               (click)="toggleAnnotationChanges(true)">
         {{elevatedButtonText.changes.display}}
       </button>
-      <button mat-raised-button color="primary" *ngIf="everythingValid() && !utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="submitForm()">SUBMIT</button>
-      <mat-spinner color="accent" [diameter]="20" mode="indeterminate" *ngIf="savingAnnotation"></mat-spinner>
-    </div>
+
     <div class="right-actions">
       <button mat-stroked-button (click)="resetTreatmentForm()" *ngIf="!formControlGroup.disabled && !elevatedChanges">Clear</button>
       <a mat-flat-button
@@ -214,6 +212,9 @@
          href="https://github.com/monarch-initiative/MAxO/issues/new" target="_blank">
         Suggest Changes
       </a>
+      <button mat-raised-button color="primary" *ngIf="everythingValid() && !utilityService.showElevatedActions(userRole, selectedAnnotation)" (click)="submitForm()">SUBMIT</button>
+      <mat-spinner color="accent" [diameter]="20" mode="indeterminate" *ngIf="savingAnnotation"></mat-spinner>
+    </div>
     </div>
   </mat-card-actions>
 </mat-card>

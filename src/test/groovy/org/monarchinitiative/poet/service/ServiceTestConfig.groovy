@@ -10,6 +10,7 @@ import org.monarchinitiative.poet.repository.UserActivityRepository
 import org.monarchinitiative.poet.repository.UserRepository
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import org.springframework.ws.client.core.WebServiceTemplate
 import spock.mock.DetachedMockFactory
 
 @TestConfiguration
@@ -70,8 +71,13 @@ class ServiceTestConfig {
     }
 
     @Bean
+    WebServiceTemplate webServiceTemplate(){
+        return mockFactory.Stub(WebServiceTemplate)
+    }
+
+    @Bean
     SearchService searchService(){
-        SearchService searchService = new SearchService(diseaseStub())
+        SearchService searchService = new SearchService(diseaseStub(), webServiceTemplate())
         return searchService
     }
 

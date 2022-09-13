@@ -12,7 +12,7 @@ import {
   takeUntil
 } from 'rxjs/operators';
 import { HpoTerm, MaxoSearchResult, MaxoTerm } from '../../../shared/models/search-models';
-import { AnnotationSource, Publication, TreatmentAnnotation } from '../../../shared/models/models';
+import { AnnotationSource, ChebiEntity, Publication, TreatmentAnnotation } from '../../../shared/models/models';
 import { CurationService } from '../../../shared/services/curation/curation.service';
 import { StateService } from '../../../shared/services/state/state.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -41,7 +41,7 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
   selectedHpo: HpoTerm;
   maxoOptions: MaxoSearchResult[];
   hpoOptions: Observable<{ name: string; id: string }[]>;
-  chebiOptions: any;
+  chebiOptions: ChebiEntity[];
   selectedPublications: Publication[] = [];
   loadingHpoSuggestions = false;
   loadingMaxoSuggestions = false;
@@ -88,7 +88,7 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
         this.resetTreatmentForm();
       } else {
         this.selectedAnnotation = annotation;
-        if (this.selectedAnnotation.lastUpdatedDate.includes('T')){
+        if (this.selectedAnnotation.lastUpdatedDate.includes('T')) {
           this.selectedAnnotation.lastUpdatedDate = new Date(this.selectedAnnotation.lastUpdatedDate + 'Z').toLocaleString();
         }
         this.setFormValues(annotation);
@@ -109,7 +109,7 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
         this.title = 'New Treatment';
         this.resetTreatmentForm();
         const phenotypeTarget = this.stateService.getTreatmentPhenotypeTarget();
-        if (phenotypeTarget){
+        if (phenotypeTarget) {
           this.selectedHpo = phenotypeTarget;
           this.formControlGroup.get('hpoFormControl').setValue(phenotypeTarget);
           this.stateService.setTreatmentPhenotypeTarget(null);
@@ -126,13 +126,13 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
         };
         this.formControlGroup.get('hpoFormControl').setValue(this.selectedHpo);
         this.formControlGroup.get('hpoFormControl').disable();
-      } else if (this.formControlGroup.enabled && this.formControlGroup.dirty){
-          this.selectedHpo = {
-            id: '',
-            name: ''
-          };
-          this.formControlGroup.get('hpoFormControl').reset();
-        }
+      } else if (this.formControlGroup.enabled && this.formControlGroup.dirty) {
+        this.selectedHpo = {
+          id: '',
+          name: ''
+        };
+        this.formControlGroup.get('hpoFormControl').reset();
+      }
     });
 
     this.formControlGroup.get('maxoFormControl').valueChanges
@@ -150,7 +150,8 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
           }, (err) => {
             this.formControlGroup.get('maxoFormControl').setErrors({apiError: true});
           });
-        }});
+        }
+      });
 
     this.formControlGroup.get('hpoFormControl').valueChanges
       .pipe(startWith(''), debounceTime(1000), distinctUntilChanged())
@@ -162,13 +163,13 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
             annotations => {
               return annotations.filter(annotation => {
                 // do the filter here
-                if (query === ''){
+                if (query === '') {
                   return annotation;
-                } else if (query){
+                } else if (query) {
                   query = query.toLowerCase();
-                  if (query.startsWith('hp:') && annotation.hpoId.toLowerCase().includes(query)){
+                  if (query.startsWith('hp:') && annotation.hpoId.toLowerCase().includes(query)) {
                     return annotation;
-                  } else if (annotation.hpoName.toLowerCase().includes(query)){
+                  } else if (annotation.hpoName.toLowerCase().includes(query)) {
                     return annotation;
                   }
                 }
@@ -186,17 +187,17 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
             console.log(err);
             this.formControlGroup.get('hpoFormControl').setErrors({apiError: true});
             return [];
-            }));
-        }});
+          }));
+        }
+      });
 
     this.formControlGroup.get('extensionFormControl').valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
         if (query && query.length > 3 && !this.formControlGroup.disabled) {
           this.loadingExtensionSuggestions = true;
-          this.monarchService.searchMonarch(query, 'CHEBI').pipe(
-            finalize(() => this.loadingExtensionSuggestions = false)
-          ).subscribe((data) => {
+          this.curationService.searchChebi(query).pipe(
+            finalize(() => this.loadingExtensionSuggestions = false)).subscribe((data) => {
             if (!data || data.length === 0) {
               this.formControlGroup.get('extensionFormControl').setErrors({notFound: true});
             }
@@ -204,7 +205,8 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
           }, (err) => {
             this.formControlGroup.get('extensionFormControl').setErrors({apiError: true});
           });
-        }});
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -224,8 +226,8 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
       evidence: this.formControlGroup.get('evidenceFormControl').value,
       relation: this.formControlGroup.get('relationFormControl').value,
       comment: this.formControlGroup.get('commentFormControl').value,
-      extensionId: extension && extension.id ? extension.id : null,
-      extensionLabel: extension && extension.label ? extension.label : null,
+      extensionId: extension && extension.chebiId ? extension.chebiId : null,
+      extensionLabel: extension && extension.chebiAsciiName ? extension.chebiAsciiName : null,
       message: '',
       publicationId: annotationSource.publication.publicationId,
       publicationName: annotationSource.publication.publicationName,

@@ -385,11 +385,13 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
   }
 
   & .mat-card-actions {
+    display: flex;
     margin: .5rem auto .5rem auto !important;
     min-width: 300px;
 
 
     & .left-actions {
+      flex: auto;
       & .mat-progress-spinner {
         margin-left: 1rem;
         margin-top: .5rem;
@@ -398,7 +400,6 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 
     & .right-actions {
       float: right;
-      display: inline-flex;
     }
   }
 
@@ -520,7 +521,6 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
 .edit-annotation {
   background: #296a7c;
   color: white;
-  float: right;
 }
 
 .portal-curate {
