@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import { FormControl, Validators } from "@angular/forms";
+import { UntypedFormControl, Validators } from "@angular/forms";
 
 @Component({
   selector: 'app-dialog-review',
@@ -12,7 +12,7 @@ export class DialogReviewComponent implements OnInit {
   title: string;
   message: string;
   approve: boolean;
-  denyMessageControl = new FormControl({value: '', disabled: false}, Validators.required);
+  denyMessageControl = new UntypedFormControl({value: '', disabled: false}, Validators.required);
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<DialogReviewComponent>) { }
 
   ngOnInit(): void {

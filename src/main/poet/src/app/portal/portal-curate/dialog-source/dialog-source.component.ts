@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { UntypedFormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CurationService } from '../../../shared/services/curation/curation.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -19,7 +19,7 @@ import { UtilityService } from '../../../shared/services/utility.service';
 })
 export class DialogSourceComponent implements OnInit {
 
-  annotationSourceControl = new FormControl('', [
+  annotationSourceControl = new UntypedFormControl('', [
     Validators.required]);
   selectedCategory: string;
   selectedPublication: any;
@@ -156,7 +156,7 @@ export class DialogSourceComponent implements OnInit {
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class DialogErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(control: UntypedFormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }

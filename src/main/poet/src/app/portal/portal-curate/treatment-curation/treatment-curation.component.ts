@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { HpoService } from '../../../shared/services/external/hpo.service';
-import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {AbstractControl, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {
   catchError,
   debounceTime,
@@ -51,14 +51,14 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
   elevatedChanges = false;
   title = 'Treatment';
   savingAnnotation = false;
-  formControlGroup: FormGroup = new FormGroup({
-    maxoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    hpoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    diseaseTreatmentControl:  new FormControl({value: '', disabled: false}),
-    evidenceFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    relationFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    extensionFormControl: new FormControl({value: '', disabled: false}, this.extensionValidation()),
-    commentFormControl: new FormControl({value: '', disabled: false}, Validators.maxLength(50)),
+  formControlGroup: UntypedFormGroup = new UntypedFormGroup({
+    maxoFormControl: new UntypedFormControl({value: '', disabled: false}, Validators.required),
+    hpoFormControl: new UntypedFormControl({value: '', disabled: false}, Validators.required),
+    diseaseTreatmentControl:  new UntypedFormControl({value: '', disabled: false}),
+    evidenceFormControl: new UntypedFormControl({value: '', disabled: false}, Validators.required),
+    relationFormControl: new UntypedFormControl({value: '', disabled: false}, Validators.required),
+    extensionFormControl: new UntypedFormControl({value: '', disabled: false}, this.extensionValidation()),
+    commentFormControl: new UntypedFormControl({value: '', disabled: false}, Validators.maxLength(50)),
   });
 
   destroy$: Subject<boolean> = new Subject<boolean>();

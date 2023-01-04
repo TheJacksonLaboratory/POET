@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DialogReviewComponent } from '../portal/portal-curate/dialog-review/dialog-review.component';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { CurationService } from '../shared/services/curation/curation.service';
 import { ReleaseState } from '../shared/models/models';
@@ -20,10 +20,10 @@ export class DialogDataManageComponent implements OnInit {
   selectedReleaseKey;
   releaseState = ReleaseState.NOT_STARTED;
   releaseText = '';
-  exportForm = new FormGroup({
-    ontologyControl: new FormControl({value: '', disabled: false}, [Validators.required]),
-    versionControl: new FormControl({value: '', disabled: false}),
-    keyControl: new FormControl({value: '', disabled: false})
+  exportForm = new UntypedFormGroup({
+    ontologyControl: new UntypedFormControl({value: '', disabled: false}, [Validators.required]),
+    versionControl: new UntypedFormControl({value: '', disabled: false}),
+    keyControl: new UntypedFormControl({value: '', disabled: false})
   });
   constructor(public dialogRef: MatDialogRef<DialogReviewComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any, private curationService: CurationService) {
