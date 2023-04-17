@@ -3,6 +3,7 @@ package org.monarchinitiative.poet.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
+import org.monarchinitiative.poet.model.enumeration.Relation;
 import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.views.AnnotationViews;
 
@@ -30,7 +31,8 @@ public class TreatmentAnnotation extends Annotation {
     private String evidence;
     @JsonView(AnnotationViews.Simple.class)
     @NotNull
-    private String relation;
+    @Enumerated
+    private Relation relation;
     @JsonView(AnnotationViews.Simple.class)
     private String extensionId;
     @JsonView(AnnotationViews.Simple.class)
@@ -51,7 +53,7 @@ public class TreatmentAnnotation extends Annotation {
         this.hpoId = hpoId;
         this.evidence = evidence;
         this.comment = comment;
-        this.relation = relation;
+        this.relation = Relation.valueOf(relation);
         this.extensionId = extensionId;
         this.extensionLabel = extensionLabel;
     }
@@ -64,7 +66,7 @@ public class TreatmentAnnotation extends Annotation {
         this.hpoId = hpoId;
         this.evidence = evidence;
         this.comment = comment;
-        this.relation = relation;
+        this.relation = Relation.valueOf(relation);
         this.extensionId = extensionId;
         this.extensionLabel = extensionLabel;
     }
@@ -79,7 +81,7 @@ public class TreatmentAnnotation extends Annotation {
         this.hpoName = treatmentRequest.getHpoName();
         this.evidence = treatmentRequest.getEvidence();
         this.comment = treatmentRequest.getComment();
-        this.relation = treatmentRequest.getRelation();
+        this.relation = Relation.valueOf(treatmentRequest.getRelation());
         this.extensionId = treatmentRequest.getExtensionId();
         this.extensionLabel = treatmentRequest.getExtensionLabel();
     }
@@ -91,7 +93,7 @@ public class TreatmentAnnotation extends Annotation {
         this.hpoName = treatmentRequest.getHpoName();
         this.evidence = treatmentRequest.getEvidence();
         this.comment = treatmentRequest.getComment();
-        this.relation = treatmentRequest.getRelation();
+        this.relation = Relation.valueOf(treatmentRequest.getRelation());
         this.extensionId = treatmentRequest.getExtensionId();
         this.extensionLabel = treatmentRequest.getExtensionLabel();
         this.setAnnotationSource(annotationSource);
@@ -122,7 +124,7 @@ public class TreatmentAnnotation extends Annotation {
     }
 
     public String getRelation() {
-        return relation;
+        return relation.toString();
     }
 
     public String getExtensionId() {

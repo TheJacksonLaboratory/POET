@@ -1,24 +1,30 @@
 package org.monarchinitiative.poet.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang.WordUtils;
-import org.monarchinitiative.poet.exceptions.DuplicateAnnotationException;
-import org.monarchinitiative.poet.model.utility.HpoAnnotationLine;
+import org.apache.commons.text.WordUtils;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.monarchinitiative.poet.model.entities.*;
+import org.monarchinitiative.poet.exceptions.DuplicateAnnotationException;
+import org.monarchinitiative.poet.model.entities.AnnotationSource;
+import org.monarchinitiative.poet.model.entities.Disease;
+import org.monarchinitiative.poet.model.entities.Publication;
+import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.requests.PhenotypeRequest;
 import org.monarchinitiative.poet.model.requests.PublicationRequest;
+import org.monarchinitiative.poet.model.utility.HpoAnnotationLine;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -123,7 +129,7 @@ public class InitDatabaseService {
                         System.out.println(diseaseId);
                     }
 
-                    PhenotypeRequest request = new PhenotypeRequest(null, term.getName(), term.getId().toString(),
+                    PhenotypeRequest request = new PhenotypeRequest(null, term.getName(), term.id().toString(),
                             phenotype.getEvidence(), "", phenotype.getOnsetId(),
                             annotationSource.getPublication().getPublicationId(),
                     annotationSource.getPublication().getPublicationName(),
