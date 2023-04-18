@@ -104,6 +104,11 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
       } else if (mode === 'edit') {
         this.updating = true;
         this.formControlGroup.enable();
+        // Check if the selected annotation is a disease treatment, if so we want to disable the hpo form control
+        // in the scenario where this fires after setting values
+        if (this.isDiseaseTreatment()){
+          this.formControlGroup.get("hpoFormControl").disable();
+        }
         this.title = 'Treatment';
       } else if (mode === 'create') {
         this.title = 'New Treatment';
@@ -114,8 +119,8 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
           this.formControlGroup.get('hpoFormControl').setValue(phenotypeTarget);
           this.stateService.setTreatmentPhenotypeTarget(null);
         }
+        this.formControlGroup.enable();
       }
-      this.formControlGroup.enable();
     });
 
     this.formControlGroup.get('diseaseTreatmentControl').valueChanges.subscribe(value => {
@@ -259,6 +264,7 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
     this.formControlGroup.get('maxoFormControl').setValue({ontologyId: annotation.maxoId, name: annotation.maxoName});
     if (annotation.hpoId === 'HP:0000118'){
       this.formControlGroup.get('diseaseTreatmentControl').setValue(true);
+      this.formControlGroup.get('hpoFormControl').disable();
     } else {
       this.formControlGroup.get('diseaseTreatmentControl').setValue(false);
     }
@@ -396,5 +402,9 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
 
   showFormControlElement(name: string){
     return this.formControlGroup.get(name).value !== null && !this.formControlGroup.disabled;
+  }
+
+  isDiseaseTreatment(){
+    return this.formControlGroup.get('hpoFormControl').value.id == 'HP:0000118';
   }
 }
