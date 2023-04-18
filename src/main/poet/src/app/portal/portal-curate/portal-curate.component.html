@@ -1,9 +1,11 @@
 <div class="portal-curate">
   <mat-toolbar class="top-banner" *ngIf="selectedDisease && selectedDisease.diseaseId !== null">
     <mat-toolbar-row>
-      <h2 class="display-name">{{selectedDisease.diseaseName}} &nbsp;
-        <span class="display-id">{{selectedDisease.diseaseId}} {{selectedDisease.equivalentId}}
-        </span></h2>
+      <h2 class="display-name">{{selectedDisease.diseaseName}} &nbsp;</h2>
+      <div class="display-id">
+        <a [href]="getExternalTermIdUrlFromId(selectedDisease.diseaseId)" target="_blank">{{selectedDisease.diseaseId}} <i class="material-icons">open_in_new</i></a>
+        <a [href]="getExternalTermIdUrlFromId(selectedDisease.equivalentId)" target="_blank">{{selectedDisease.equivalentId}} <i class="material-icons">open_in_new</i></a>
+      </div>
       <span class="spacer"></span>
       <div class="search-wrapper">
         <app-search [role]="user.role"></app-search>
