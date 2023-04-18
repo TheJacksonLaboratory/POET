@@ -123,8 +123,8 @@ public class TreatmentAnnotation extends Annotation {
         return comment;
     }
 
-    public String getRelation() {
-        return relation.toString();
+    public Relation getRelation() {
+        return relation;
     }
 
     public String getExtensionId() {
