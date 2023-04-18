@@ -31,7 +31,7 @@ public class TreatmentAnnotation extends Annotation {
     private String evidence;
     @JsonView(AnnotationViews.Simple.class)
     @NotNull
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Relation relation;
     @JsonView(AnnotationViews.Simple.class)
     private String extensionId;
