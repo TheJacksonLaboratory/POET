@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { HpoService } from '../../../shared/services/external/hpo.service';
-import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, finalize, shareReplay, take, takeUntil } from 'rxjs/operators';
 import { AnchorSearchResult, HpoTerm } from '../../../shared/models/search-models';
 import { AnnotationSource, PhenotypeAnnotation, Publication } from '../../../shared/models/models';
@@ -47,15 +47,15 @@ export class PhenotypeCurationComponent implements OnInit, OnDestroy {
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   savingAnnotation = false;
-  formControlGroup: FormGroup = new FormGroup({
-    hpoFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    onsetFormControl: new FormControl({value: '', disabled: false}),
-    modifierFormControl: new FormControl({value: '', disabled: false}),
-    evidenceFormControl: new FormControl({value: '', disabled: false}, Validators.required),
-    qualifierFormControl: new FormControl({value: '', disabled: false}),
-    sexFormControl: new FormControl({value: '', disabled: false}),
-    frequencyFormControl: new FormControl({value: '', disabled: false}, this.frequencyValdiation()),
-    descriptionFormControl: new FormControl({value: '', disabled: false}, Validators.maxLength(50)),
+  formControlGroup: UntypedFormGroup = new UntypedFormGroup({
+    hpoFormControl: new UntypedFormControl({value: '', disabled: false}, Validators.required),
+    onsetFormControl: new UntypedFormControl({value: '', disabled: false}),
+    modifierFormControl: new UntypedFormControl({value: '', disabled: false}),
+    evidenceFormControl: new UntypedFormControl({value: '', disabled: false}, Validators.required),
+    qualifierFormControl: new UntypedFormControl({value: '', disabled: false}),
+    sexFormControl: new UntypedFormControl({value: '', disabled: false}),
+    frequencyFormControl: new UntypedFormControl({value: '', disabled: false}, this.frequencyValdiation()),
+    descriptionFormControl: new UntypedFormControl({value: '', disabled: false}, Validators.maxLength(50)),
   });
 
   destroy$: Subject<boolean> = new Subject<boolean>();

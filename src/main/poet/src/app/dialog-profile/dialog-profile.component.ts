@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {DialogReviewComponent} from '../portal/portal-curate/dialog-review/dialog-review.component';
 import {UserService} from '../shared/services/user/user.service';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-dialog-profile',
@@ -10,8 +10,8 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
   styleUrls: ['./dialog-profile.component.scss']
 })
 export class DialogProfileComponent implements OnInit {
-  profileForm = new FormGroup({
-    orcidFormControl: new FormControl({value: '', disabled: false}, [Validators.required,
+  profileForm = new UntypedFormGroup({
+    orcidFormControl: new UntypedFormControl({value: '', disabled: false}, [Validators.required,
       Validators.minLength(19), Validators.maxLength(19),
       Validators.pattern('\\d{4}-\\d{4}-\\d{4}-\\w{4,5}')])
   });
