@@ -75,8 +75,8 @@ class AnnotationServiceSpec extends Specification {
 
     def getTreatmentAnnotations() {
         return [
-                new TreatmentAnnotation("MAXO:0919323", "Surgical Procedure", "arachnodayctly", "HP:0992334", "some evidence", "some comment", "some relation", "some extension id", "some extension label"),
-                new TreatmentAnnotation("MAXO:8882029", "Therapeutic Procedure", "some hp name", "HP:0222222", "some evidence", "some comment", "some relation", "some extension id", "some extension label")
+                new TreatmentAnnotation("MAXO:0919323", "Surgical Procedure", "arachnodayctly", "HP:0992334", "some evidence", "some comment", "TREATS", "some extension id", "some extension label"),
+                new TreatmentAnnotation("MAXO:8882029", "Therapeutic Procedure", "some hp name", "HP:0222222", "some evidence", "some comment", "PREVENTS", "some extension id", "some extension label")
         ]
     }
 

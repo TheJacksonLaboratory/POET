@@ -51,7 +51,6 @@ export class AnnotationCardComponent implements OnInit {
   treatmentAnnotations: Observable<TreatmentAnnotation[]>;
   phenotypeAnnotations: Observable<PhenotypeAnnotation[]>;
   annotationMode: any;
-  triggerBounceIn: any;
   activeAnnotation: any;
   annotationStatuses: any[] = [];
   selectedStatuses: any[] = [];
@@ -79,6 +78,8 @@ export class AnnotationCardComponent implements OnInit {
     this.stateService.selectedCategory.subscribe((category) => {
       this.category = category;
       this.annotationStatuses = [];
+      this.showAll = false;
+      this.resetPaginator();
       if (this.category === 'phenotype') {
         this.phenotypeAnnotations = this.stateService.phenotypeAnnotations.pipe(
           tap(annotations => {
@@ -186,11 +187,13 @@ export class AnnotationCardComponent implements OnInit {
   }
 
   resetPaginator(){
-    if (this.category === 'phenotype'){
       this.lowValue = 0;
       this.highValue = 10;
-      this.phenotypePagination.pageIndex = 0;
-    }
+      if (this.phenotypePagination){
+        this.phenotypePagination.firstPage();
+      } else if(this.treatmentPagination){
+        this.treatmentPagination.firstPage();
+      }
   }
 
   showEditAnnotation(annotation: Annotation) {

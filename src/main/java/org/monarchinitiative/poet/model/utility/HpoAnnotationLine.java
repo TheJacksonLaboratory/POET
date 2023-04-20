@@ -201,57 +201,6 @@ public class HpoAnnotationLine {
         return valid_number_of_fields;
     }
 
-
-    /**
-     * @param lst List of semicolon separated HPO term ids from the modifier subontology
-     * @return Immutable List of {@link TermId} objects
-     */
-    private static List<TermId> getModifiers(String lst) {
-        ImmutableList.Builder<TermId> builder = new ImmutableList.Builder<>();
-        if (lst == null || lst.isEmpty()) return builder.build(); //return empty list
-        String[] modifierTermStrings = lst.split(";");
-        for (String mt : modifierTermStrings) {
-            TermId mtId = TermId.of(mt.trim());
-            builder.add(mtId);
-        }
-        return builder.build();
-    }
-
-    /**
-     * Extract the {@link HpoFrequency} object that corresponds to the frequency modifier in an
-     * annotation line. Note that we are expecting there to be one of three kinds of frequency
-     * information (an HPO term, n/m or x%). If we find nothing or there is some parsing error,
-     * return the default frequency (obligate, 100%).
-     *
-     * @param freq The representation of the frequency, if any, in the {@code
-     *             phenotype_annotation.tab} file
-     * @return the corresponding {@link HpoFrequency} object or the default {@link HpoFrequency}
-     * object (100%).
-     */
-     public static double getFrequency(String freq, Ontology ontology) {
-        if (freq == null || freq.isEmpty()) {
-            return HpoFrequency.ALWAYS_PRESENT.mean();
-        }
-        int i = freq.indexOf('%');
-        if (i > 0) {
-            return 0.01 * Double.parseDouble(freq.substring(0, i));
-        }
-        i = freq.indexOf('/');
-        if (i > 0 && freq.length() > (i + 1)) {
-            int n = Integer.parseInt(freq.substring(0, i));
-            int m = Integer.parseInt(freq.substring(i + 1));
-            return (double) n / (double) m;
-        }
-        try {
-            TermId tid = string2TermId(freq, ontology);
-            if (tid != null) return HpoFrequency.fromTermId(tid).mean();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // if we get here we could not parse the Frequency, return the default 100%
-        return HpoFrequency.ALWAYS_PRESENT.mean();
-    }
-
     /**
      * Go from HP:0000123 to the corresponding TermId
      *
@@ -267,23 +216,11 @@ public class HpoAnnotationLine {
                 return ontology
                         .getTermMap()
                         .get(tid)
-                        .getId(); // replace alt_id with current if if necessary
+                        .id(); // replace alt_id with current if if necessary
             } else {
                 return null;
             }
         }
-    }
-
-    /**
-     * This fucnction transforms a {@link TermId} into an {@link HpoOnset} object. If the argument is
-     * null, it means that no annotation for the onset was provided in the annotation line, and
-     * then this function returns null.
-     * @param ons The {@link TermId} of an HPO Onset
-     * @return The {@link HpoOnset} object corresponding to the {@link TermId} in the argument
-     */
-    public static HpoOnset getOnset(TermId ons) {
-        if (ons == null) return HpoOnset.UNKNOWN;
-        return HpoOnset.fromTermId(ons);
     }
 
     @Override
