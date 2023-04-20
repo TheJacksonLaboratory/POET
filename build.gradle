@@ -129,7 +129,19 @@ test {
 	systemProperty 'spring.profiles.active', 'test'
 }
 
+jacocoTestReport {
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					"org/monarchinitiative/poet/views/*",
+					"org/monarchinitiative/poet/model/utility/HpoAnnotationLine.class",
+			])
+		}))
+	}
+}
+
 test.finalizedBy(jacocoTestReport)
+
 
 clean {
 	delete fileTree(dir: "src/main/resources/static")
