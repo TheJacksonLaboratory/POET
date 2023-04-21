@@ -3,7 +3,7 @@
   <!-- Find disease or publication, then find all annotation sources for it. -->
   <div class="existing-curation" *ngIf="!newPublication">
     <div *ngIf="selectedDisease">
-      <mat-selection-list #publications (selectionChange)="selectPublication($event.option.value)" multiple="false">
+      <mat-selection-list #publications (selectionChange)="selectPublication(publications.selectedOptions.selected[0].value)" multiple="false">
         <mat-list-option class="selection-wrapper" value="new">
           <mat-icon matListIcon>add_box</mat-icon>
           <div class="selection-text">

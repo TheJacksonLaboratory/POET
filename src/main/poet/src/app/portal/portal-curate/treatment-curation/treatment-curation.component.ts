@@ -132,6 +132,7 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
           name: ''
         };
         this.formControlGroup.get('hpoFormControl').reset();
+        this.formControlGroup.get('hpoFormControl').enable();
       }
     });
 
