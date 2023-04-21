@@ -70,4 +70,6 @@ public class SearchService {
 
         return response.getValue().getReturn().getListElement();
     }
+
+
 }

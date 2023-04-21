@@ -3,22 +3,24 @@ package org.monarchinitiative.poet.model.responses;
 import org.monarchinitiative.poet.model.entities.Disease;
 
 public class ReviewCount {
-    Disease disease;
-    long count;
-    String type;
+    final String diseaseId;
+    final String diseaseName;
+    final long count;
+    final String type;
 
-    public ReviewCount(Disease disease, long count, String type) {
-        this.disease = disease;
+    public ReviewCount(String diseaseId, String diseaseName, long count, String type) {
+        this.diseaseId = diseaseId;
+        this.diseaseName = diseaseName;
         this.count = count;
         this.type = type;
     }
 
     public String getDiseaseName() {
-        return disease.getDiseaseName();
+        return diseaseName;
     }
 
     public String getDiseaseId() {
-        return disease.getDiseaseId();
+        return diseaseId;
     }
 
     public Long getCount(){

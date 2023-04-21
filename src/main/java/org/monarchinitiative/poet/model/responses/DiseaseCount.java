@@ -3,9 +3,9 @@ package org.monarchinitiative.poet.model.responses;
 public class DiseaseCount {
     final String diseaseId;
     final String diseaseName;
-    final Long activityCount;
+    final long activityCount;
 
-    public DiseaseCount(String diseaseId, String diseaseName, Long activityCount) {
+    public DiseaseCount(String diseaseId, String diseaseName, long activityCount) {
         this.diseaseId = diseaseId;
         this.diseaseName = diseaseName;
         this.activityCount = activityCount;
@@ -19,7 +19,7 @@ public class DiseaseCount {
         return diseaseName;
     }
 
-    public Long getDiseaseCount() {
+    public long getDiseaseCount() {
         return activityCount;
     }
 }

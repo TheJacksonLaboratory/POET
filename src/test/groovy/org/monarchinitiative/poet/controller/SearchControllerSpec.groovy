@@ -19,7 +19,7 @@ import spock.lang.Unroll
 @WebMvcTest(SearchController.class)
 @ContextConfiguration
 @ActiveProfiles(value = "test")
-class SearchControllerSpec extends Specification{
+class SearchControllerSpec extends Specification {
     @Autowired
     private MockMvc mvc
 
@@ -40,8 +40,8 @@ class SearchControllerSpec extends Specification{
 
         where:
         serviceResponse      | searchTerm      | expectedResponse                            | desc
-        [new SearchResponse()] | "OMIM:00392928" | MockMvcResultMatchers.status().isOk() | "test search term with disease"
-        [new SearchResponse()] | "PMID:20391892" | MockMvcResultMatchers.status().isOk()       | "test search term with publication"
+        [new SearchResponse("", "", "")] | "OMIM:00392928" | MockMvcResultMatchers.status().isOk() | "test search term with disease"
+        [new SearchResponse("", "", "")] | "PMID:20391892" | MockMvcResultMatchers.status().isOk()       | "test search term with publication"
         null                 | ""              | MockMvcResultMatchers.status().isOk()       | "test search term nothing"
     }
 }

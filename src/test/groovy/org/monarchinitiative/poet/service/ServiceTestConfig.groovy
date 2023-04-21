@@ -23,6 +23,11 @@ class ServiceTestConfig {
     }
 
     @Bean
+    UserRepository userRepositoryStub(){
+        return mockFactory.Stub(UserRepository)
+    }
+
+    @Bean
     AnnotationSourceRepository annotationSourceStub(){
         return mockFactory.Stub(AnnotationSourceRepository)
     }
@@ -71,13 +76,13 @@ class ServiceTestConfig {
     }
 
     @Bean
-    WebServiceTemplate webServiceTemplate(){
+    WebServiceTemplate webServiceTemplateStub(){
         return mockFactory.Stub(WebServiceTemplate)
     }
 
     @Bean
     SearchService searchService(){
-        SearchService searchService = new SearchService(diseaseStub(), webServiceTemplate())
+        SearchService searchService = new SearchService(diseaseStub(), webServiceTemplateStub())
         return searchService
     }
 

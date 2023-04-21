@@ -19,9 +19,9 @@ public interface PhenotypeAnnotationRepository extends CrudRepository<PhenotypeA
     boolean existsByAnnotationSourceAndHpoIdAndSexAndEvidenceAndOnsetAndFrequencyAndModifierAndQualifierAndStatus(AnnotationSource source, String hpoId, String sex, String evidence, String onset, String frequency, String modifier, String qualifier, AnnotationStatus status);
     int countAllByAnnotationSourceDiseaseAndStatusNot(Disease disease, AnnotationStatus status);
     int countAllByStatusNot(AnnotationStatus status);
-    @Query("select new org.monarchinitiative.poet.model.responses.ReviewCount(a.annotationSource.disease, count(a), 'phenotype') from PhenotypeAnnotation a where a.status = ?1 group by a.annotationSource.disease")
+    @Query("select new org.monarchinitiative.poet.model.responses.ReviewCount(a.annotationSource.disease.diseaseId, a.annotationSource.disease.diseaseName, count(a), 'phenotype') from PhenotypeAnnotation a where a.status = ?1 group by a.annotationSource.disease")
     List<ReviewCount> countAllByStatus(AnnotationStatus status);
-    @Query("select new org.monarchinitiative.poet.model.responses.ReviewCount(a.annotationSource.disease, count(a), 'phenotype') from PhenotypeAnnotation a where a.status = ?1 and a.owner = ?2 group by a.annotationSource.disease")
+    @Query("select new org.monarchinitiative.poet.model.responses.ReviewCount(a.annotationSource.disease.diseaseId, a.annotationSource.disease.diseaseName, count(a), 'phenotype') from PhenotypeAnnotation a where a.status = ?1 and a.owner = ?2 group by a.annotationSource.disease")
     List<ReviewCount> countAllByStatusAndUser(AnnotationStatus status, User user);
 
 }
