@@ -528,6 +528,10 @@ body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
     font-size: 18px;
     margin-bottom: 5px;
   }
+  .display-id a i {
+    font-size: 16px;
+    margin: 0 0 0 0.15rem;
+  }
 }
 .search {
   & .mat-form-field-infix {

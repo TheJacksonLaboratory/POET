@@ -146,4 +146,32 @@ export class PortalCurateComponent implements OnInit {
       this.router.navigate(['/portal/curate/' + disease.id]);
     }
   }
+
+  /*
+      Mapping ontology terms to there respective URLS.
+      OMIM:1234 -> https://omim.org/entry/1234
+   */
+  getExternalTermIdUrlFromId(termId?: string) {
+    if(!termId){
+      return '';
+    }
+    const sourceParts = termId.split(':');
+    if (this.isTermIdExpected(termId, "OMIM")) {
+      return `https://omim.org/entry/${sourceParts[1]}`;
+    } else if (this.isTermIdExpected(termId, "ORPHA")) {
+      return `https://www.orpha.net/consor/cgi-bin/OC_Exp.php?Lng=EN&Expert=${sourceParts[1]}`
+    } else if (this.isTermIdExpected(termId, "MONDO")){
+      return `https://monarchinitiative.org/disease/${termId}`;
+    } else if(this.isTermIdExpected(termId, "PMID")){
+      return `https://www.ncbi.nlm.nih.gov/pubmed/${sourceParts[1]}`;
+    }
+  }
+  /*
+      Checking if the term prefix matches what we are looking for.
+      OMIM:1234 matches? OMIM -> true
+   */
+  isTermIdExpected(termId: string, expected: string) {
+    return termId != "" && termId != null && expected != "" && expected != null
+      ? termId.toUpperCase().includes(expected) : false;
+  }
 }
