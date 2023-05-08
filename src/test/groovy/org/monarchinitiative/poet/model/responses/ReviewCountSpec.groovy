@@ -18,9 +18,9 @@ class ReviewCountSpec extends Specification {
         reviewCountResponse.getType() == type
 
         where:
-        diseaseId       | diseaseName         | count   | type    | desc
-        "OMIM:10930495" | "a first terrible disease" | 60l       | "treatment"       | "a publication"
-        "OMIM:90992932" | "a terrible disease"  | 0l             | "phenotype"       | "a disease"
-        ""              | ""                    | -60l           | ""                | "all empties"
+        diseaseId       | diseaseName                | count | type        | desc
+        "OMIM:10930495" | "a first terrible disease" | 60l   | "TREATMENT" | "a publication"
+        "OMIM:90992932" | "a terrible disease"       | 0l    | "PHENOTYPE" | "a disease"
+        ""              | ""                         | -60l  | "UNKNOWN"   | "all empties"
     }
 }

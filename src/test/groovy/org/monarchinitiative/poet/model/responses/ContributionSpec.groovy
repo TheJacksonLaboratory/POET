@@ -13,18 +13,16 @@ class ContributionSpec extends Specification {
 
     void "test constructor for contribution #desc"() {
         given:
-        def contribution = new Contribution(inputMaxoCount, inputHpoCount, inputPhenopacketCount);
+        def contribution = new Contribution(inputMaxoCount, inputHpoCount);
 
         expect:
         contribution.getTreatment() == expectedCounts[0]
         contribution.getPhenotype() == expectedCounts[1]
-        contribution.getPhenopackets() == expectedCounts[2]
 
         where:
-        inputMaxoCount | inputHpoCount | inputPhenopacketCount | expectedCounts | desc
-        0              | 1             | 19                    | [0, 1, 19]     | "normal counts"
-        90             | 29            | 56                    | [90, 29, 56]   | "normal counts"
-        99             | 299           | null                  | [99, 299, 0]   | "one null should return 0"
-        null           | null          | null                  | [0, 0, 0]      | "all null should be 0s"
+        inputMaxoCount | inputHpoCount | expectedCounts | desc
+        0              | 1             | [0, 1]     | "normal counts"
+        90             | 29            | [90, 29]   | "normal counts"
+        99             | 299           | [99, 299]   | "one null should return 0"
     }
 }

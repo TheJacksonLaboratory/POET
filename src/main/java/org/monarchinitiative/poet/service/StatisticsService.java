@@ -81,8 +81,7 @@ public class StatisticsService {
     public Contribution summarizeUserContributions(Authentication authentication){
         final int treatment = userActivityRepository.countAllByAnnotation_AnnotationTypeAndOwnerAuthId("maxo", authentication.getName());
         final int phenotype = 0;
-        final int phenopackets = 0;
-        return new Contribution(treatment, phenotype, phenopackets);
+        return new Contribution(treatment, phenotype);
     }
 
     public AnnotationCount summarizeAnnotations(String diseaseId){

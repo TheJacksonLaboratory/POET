@@ -60,7 +60,6 @@ class StatisticsServiceSpec extends Specification {
         expect:
         result.getTreatment() == repositoryResponse
         result.getPhenotype() == 0
-        result.getPhenopackets() == 0;
         where:
         inputAuthentication | repositoryResponse
         authentication      | 20

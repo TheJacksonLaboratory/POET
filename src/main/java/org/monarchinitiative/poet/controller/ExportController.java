@@ -1,8 +1,6 @@
 package org.monarchinitiative.poet.controller;
 
 import org.apache.commons.csv.CSVFormat;
-import org.monarchinitiative.poet.model.entities.Version;
-import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.service.ExportService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

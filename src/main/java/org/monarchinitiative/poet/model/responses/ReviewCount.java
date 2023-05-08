@@ -1,18 +1,31 @@
 package org.monarchinitiative.poet.model.responses;
 
-import org.monarchinitiative.poet.model.entities.Disease;
+import org.monarchinitiative.poet.model.enumeration.Category;
 
 public class ReviewCount {
     final String diseaseId;
     final String diseaseName;
     final long count;
-    final String type;
+    Category type;
 
     public ReviewCount(String diseaseId, String diseaseName, long count, String type) {
         this.diseaseId = diseaseId;
         this.diseaseName = diseaseName;
         this.count = count;
+        try {
+            this.type = Category.valueOf(type.toUpperCase());
+        } catch (Exception e) {
+            this.type = Category.UNKNOWN;
+        }
+
+    }
+
+    public ReviewCount(String diseaseId, String diseaseName, long count, Category type) {
+        this.diseaseId = diseaseId;
+        this.diseaseName = diseaseName;
+        this.count = count;
         this.type = type;
+
     }
 
     public String getDiseaseName() {
@@ -28,6 +41,6 @@ public class ReviewCount {
     }
 
     public String getType() {
-        return type;
+        return type.toString();
     }
 }

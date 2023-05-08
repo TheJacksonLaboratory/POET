@@ -1,6 +1,8 @@
 package org.monarchinitiative.poet.controller
 
-
+import groovy.json.JsonBuilder
+import org.monarchinitiative.poet.model.entities.AnnotationSource
+import org.monarchinitiative.poet.model.entities.Disease
 import org.monarchinitiative.poet.model.entities.Publication
 import org.monarchinitiative.poet.service.EntityService
 import org.monarchinitiative.poet.service.UserService
@@ -8,6 +10,7 @@ import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
@@ -45,12 +48,48 @@ class PublicationControllerSpec extends Specification {
                 .andExpect((ResultMatcher) expectedResponse)
 
         where:
-        returnedPublication                  | inputPublicationId | expectedResponse                            | desc
-        publicationGenerator("PMID:1337998") | "PMID:1337998"     | MockMvcResultMatchers.status().isOk()       | "test get publication by id with pub"
-        publicationGenerator("PMID:9999990") | "PMID:9999990"     | MockMvcResultMatchers.status().isOk()       | "test get disease by id find nothing"
-        publicationGenerator("PMID:9999990") | "PMID:9999990"     | MockMvcResultMatchers.status().isOk()       | "test get disease by id find nothing"
+        returnedPublication                  | inputPublicationId | expectedResponse                                    | desc
+        publicationGenerator("PMID:1337998") | "PMID:1337998"     | MockMvcResultMatchers.status().isOk()               | "test get publication by id with pub"
+        publicationGenerator("PMID:9999990") | "PMID:9999990"     | MockMvcResultMatchers.status().isOk()               | "test get disease by id find nothing"
+        publicationGenerator("PMID:9999990") | "PMID:9999990"     | MockMvcResultMatchers.status().isOk()               | "test get disease by id find nothing"
         null                                 | ""                 | MockMvcResultMatchers.status().isMethodNotAllowed() | "test get disease by nothing should fail"
         ""                                   | ""                 | MockMvcResultMatchers.status().isMethodNotAllowed() | "test get disease by nothing should fail"
+    }
+
+    @Unroll
+    def "when we test get publication diseases"() {
+        given:
+        entityService.getDiseasePublications(_ as String) >> returnedPublication
+
+
+        expect: "an annotation state"
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/entity/publication/${inputPublicationId}/diseases"))
+                .andExpect((ResultMatcher) expectedResponse)
+
+        where:
+        returnedPublication                           | inputPublicationId | expectedResponse                      | desc
+        new Disease("OMIM:154700", "Marfan Syndrome") | "PMID:1337998"     | MockMvcResultMatchers.status().isOk() | "test get diseases for publication"
+        new Disease("OMIM:154700", "Marfan Syndrome") | "PMID:9999990"     | MockMvcResultMatchers.status().isOk() | "test get diseases for publication 2"
+        []                                            | "PMID:9999990"     | MockMvcResultMatchers.status().isOk() | "test get diseases for publication find nothing"
+        []                                            | ""                 | MockMvcResultMatchers.status().isOk() | "test get disease by nothing should fail"
+        []                                            | ""                 | MockMvcResultMatchers.status().isOk() | "test get disease by nothing should fail"
+    }
+
+    @Unroll
+    def "when we save publication to disease"() {
+        given:
+        entityService.createAnnotationSource(_) >> new AnnotationSource()
+
+
+        expect:
+        mvc.perform(MockMvcRequestBuilders.post("/api/v1/entity/publication/", inputBody).contentType(MediaType.APPLICATION_JSON)
+                .content(new JsonBuilder(inputBody).toPrettyString()))
+                .andExpect((ResultMatcher) expectedResponse)
+
+        where:
+        inputBody                            | expectedResponse                      | desc
+        publicationGenerator("PMID:1337998") | MockMvcResultMatchers.status().isOk() | "test get publication by id with pub"
+
     }
 
     private static Publication publicationGenerator(publicationId) {
@@ -65,7 +104,7 @@ class PublicationControllerSpec extends Specification {
                         "Michael A Gargano"
                 )
         ]
-        return publications[publicationId];
+        return publications[publicationId]
     }
 
 
