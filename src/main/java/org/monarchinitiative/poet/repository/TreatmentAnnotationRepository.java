@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.monarchinitiative.poet.model.responses.ReviewCount;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface TreatmentAnnotationRepository extends CrudRepository<TreatmentAnnotation, Long> {
@@ -30,9 +29,9 @@ public interface TreatmentAnnotationRepository extends CrudRepository<TreatmentA
     List<TreatmentAnnotation> findAllByStatus(AnnotationStatus status);
     List<TreatmentAnnotation> findAllByStatusIn(List<AnnotationStatus> statuses);
     @Query("select new org.monarchinitiative.poet.model.responses.ReviewCount(a.annotationSource.disease.diseaseId, a.annotationSource.disease.diseaseName, count(a), 'TREATMENT') from TreatmentAnnotation a where a.status = ?1 group by a.annotationSource.disease")
-    List<ReviewCount> getAllByStatus(AnnotationStatus status);
+    List<ReviewCount> countAllByStatus(AnnotationStatus status);
     @Query("select new org.monarchinitiative.poet.model.responses.ReviewCount(a.annotationSource.disease.diseaseId, a.annotationSource.disease.diseaseName, count(a), 'TREATMENT') from TreatmentAnnotation a where a.status = ?1 and a.owner = ?2 group by a.annotationSource.disease")
-    List<ReviewCount> getAllByStatusAndUser(AnnotationStatus status, User user);
+    List<ReviewCount> countAllByStatusAndUser(AnnotationStatus status, User user);
 
     List<TreatmentAnnotation> findAllByOwnerAndStatusNot(User user, AnnotationStatus status);
     List<TreatmentAnnotation> findAllByOwnerAndStatus(User user, AnnotationStatus status);

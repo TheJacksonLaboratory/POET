@@ -8,6 +8,7 @@ import org.monarchinitiative.poet.model.entities.Disease
 import org.monarchinitiative.poet.repository.AnnotationSourceRepository
 import org.monarchinitiative.poet.repository.DiseaseRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.support.AnnotationConfigContextLoader
@@ -20,7 +21,7 @@ import javax.xml.namespace.QName
 
 @Unroll
 @ActiveProfiles(value = "test")
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class])
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class],  initializers = ConfigFileApplicationContextInitializer.class )
 class SearchServiceSpec extends Specification {
     @Autowired
     DiseaseRepository diseaseStub;

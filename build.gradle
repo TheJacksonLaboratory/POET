@@ -135,6 +135,7 @@ jacocoTestReport {
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: [
+					"org/monarchinitiative/poet/service/InitDatabaseService.class",
 					"org/monarchinitiative/poet/views/*",
 					"org/monarchinitiative/poet/model/utility/HpoAnnotationLine.class",
 			])

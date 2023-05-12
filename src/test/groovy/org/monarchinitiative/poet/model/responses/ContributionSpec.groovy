@@ -9,8 +9,6 @@ import spock.lang.Unroll
 @ActiveProfiles(value = "test")
 class ContributionSpec extends Specification {
 
-    def setup() {}
-
     void "test constructor for contribution #desc"() {
         given:
         def contribution = new Contribution(inputMaxoCount, inputHpoCount);

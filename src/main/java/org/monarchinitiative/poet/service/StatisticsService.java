@@ -87,7 +87,7 @@ public class StatisticsService {
     public AnnotationCount summarizeAnnotations(String diseaseId){
         int treatmentCount;
         int phenotypeCount;
-        if(diseaseId != null){
+        if(diseaseId.isBlank()){
             treatmentCount = this.treatmentAnnotationRepository.countAllByAnnotationSourceDiseaseAndStatusNot(
                     this.diseaseRepository.findDiseaseByDiseaseId(diseaseId), AnnotationStatus.RETIRED
             );
@@ -104,13 +104,13 @@ public class StatisticsService {
 
     public List<ReviewCount> summarizeAnnotationNeedReview(){
         List<ReviewCount> phenotypeAnnotations = this.phenotypeAnnotationRepository.countAllByStatus(AnnotationStatus.UNDER_REVIEW);
-        List<ReviewCount> treatmentAnnotations = this.treatmentAnnotationRepository.getAllByStatus(AnnotationStatus.UNDER_REVIEW);
+        List<ReviewCount> treatmentAnnotations = this.treatmentAnnotationRepository.countAllByStatus(AnnotationStatus.UNDER_REVIEW);
         return Stream.concat(phenotypeAnnotations.stream(), treatmentAnnotations.stream()).collect(Collectors.toList());
     }
 
     public List<ReviewCount> summarizeAnnotationNeedWork(User user){
         List<ReviewCount> phenotypeAnnotations = this.phenotypeAnnotationRepository.countAllByStatusAndUser(AnnotationStatus.NEEDS_WORK, user);
-        List<ReviewCount> treatmentAnnotations = this.treatmentAnnotationRepository.getAllByStatusAndUser(AnnotationStatus.NEEDS_WORK, user);
+        List<ReviewCount> treatmentAnnotations = this.treatmentAnnotationRepository.countAllByStatusAndUser(AnnotationStatus.NEEDS_WORK, user);
         return Stream.concat(phenotypeAnnotations.stream(), treatmentAnnotations.stream()).collect(Collectors.toList());
     }
 }

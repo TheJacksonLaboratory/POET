@@ -8,12 +8,16 @@ import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository
 import org.monarchinitiative.poet.repository.PublicationRepository
 import org.monarchinitiative.poet.repository.UserActivityRepository
 import org.monarchinitiative.poet.repository.UserRepository
+import org.monarchinitiative.poet.repository.VersionRepository
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.PropertySource
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 import org.springframework.ws.client.core.WebServiceTemplate
 import spock.mock.DetachedMockFactory
 
 @TestConfiguration
+@PropertySource("classpath:application-test.yml")
 class ServiceTestConfig {
     def mockFactory = new DetachedMockFactory()
 
@@ -43,11 +47,6 @@ class ServiceTestConfig {
     }
 
     @Bean
-    UserRepository userStub(){
-        return mockFactory.Stub(UserRepository)
-    }
-
-    @Bean
     TreatmentAnnotationRepository treatmentAnnotationStub(){
         return mockFactory.Stub(TreatmentAnnotationRepository)
     }
@@ -61,6 +60,12 @@ class ServiceTestConfig {
     MessageRepository messageRepositoryStub() {
         return mockFactory.Stub(MessageRepository)
     }
+
+    @Bean
+    VersionRepository versionRepositoryStub() {
+        return mockFactory.Stub(VersionRepository)
+    }
+
     @Bean
     EntityService entityService(){
         EntityService entityService = new EntityService(diseaseStub(), publicationStub(), annotationSourceStub())
@@ -92,5 +97,22 @@ class ServiceTestConfig {
             StatisticsService statisticsService = new StatisticsService(userActivityStub(), treatmentAnnotationStub(), diseaseStub(),
                     phenotypeAnnotationStub());
             return statisticsService;
+    }
+
+    @Bean
+    UserService userService(){
+        UserService userService = new UserService(userRepositoryStub())
+        return userService
+    }
+
+    @Bean
+    ExportService exportService(){
+        ExportService exportService = new ExportService(annotationService(), versionRepositoryStub(), phenotypeAnnotationStub(), treatmentAnnotationStub())
+        return exportService
+    }
+
+    @Bean
+    public PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer()
     }
 }

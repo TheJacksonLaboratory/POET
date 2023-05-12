@@ -59,7 +59,7 @@ class StatisticsControllerSpec extends Specification {
                 .andExpect(MockMvcResultMatchers.jsonPath("\$[0].curationAction").value(expectedResponseBody[1]))
         where:
         serviceResponse     |   inputAll    | inputWeeks    | inputOffset   | inputLimit | expectedResponseStatus | expectedResponseBody
-        userActivityPage()  |   "true"      | "1"           | "0"           | "2"        | MockMvcResultMatchers.status().isOk() | ["gary", "ACCEPTED"]
+        userActivityPage()  |   "true"      | "1"           | "0"           | "2"        | MockMvcResultMatchers.status().isOk() | ["gary", "CREATE"]
     }
 
     @Unroll

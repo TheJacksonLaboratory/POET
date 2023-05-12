@@ -3,9 +3,15 @@ package org.monarchinitiative.poet.service
 import org.monarchinitiative.poet.model.entities.Annotation
 import org.monarchinitiative.poet.model.entities.User
 import org.monarchinitiative.poet.model.entities.UserActivity
+import org.monarchinitiative.poet.model.enumeration.Category
 import org.monarchinitiative.poet.model.enumeration.CurationAction
+import org.monarchinitiative.poet.model.responses.AnnotationCount
+import org.monarchinitiative.poet.model.responses.ReviewCount
+import org.monarchinitiative.poet.repository.PhenotypeAnnotationRepository
+import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository
 import org.monarchinitiative.poet.repository.UserActivityRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -21,11 +27,17 @@ import spock.lang.Unroll
 
 @Unroll
 @ActiveProfiles(value = "test")
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class])
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class], initializers = ConfigFileApplicationContextInitializer.class)
 class StatisticsServiceSpec extends Specification {
 
     @Autowired
     UserActivityRepository userActivityStub
+
+    @Autowired
+    PhenotypeAnnotationRepository phenotypeAnnotationRepositoryStub;
+
+    @Autowired
+    TreatmentAnnotationRepository treatmentAnnotationRepositoryStub;
 
     @Autowired
     StatisticsService statisticsService
@@ -37,19 +49,20 @@ class StatisticsServiceSpec extends Specification {
         given:
         userActivityStub.findAll(_ as Pageable) >> repositoryResponse
         userActivityStub.findUserActivityByOwnerAuthId(_ as String, _ as Pageable) >> repositoryResponse
+        userActivityStub.findUserActivityByDateTimeAfter(_, _) >> repositoryResponse
         authentication.getName() >> "fakename"
-        def result = statisticsService.getUserActivity(all, 0, PageRequest.of(0,10), inputAuthentication);
+        def result = statisticsService.getUserActivity(all, weeks, PageRequest.of(0, 10), inputAuthentication);
 
         expect:
         result.size() == expectedResultSize
 
         where:
-        all   | inputAuthentication | repositoryResponse        | expectedResultSize | desc
-        true  | authentication      | getFakeUserActivity()     | 3                  | "all user activity no activity"
-        true  | authentication      | getEmptyList()            | 0                  | "all user activity and has nothing"
-        false | authentication      | getSpecificUserActivity() | 1                  | "current user and has one"
-        false | authentication      | getEmptyList()            | 0                  | "not valid (even though impossible) and has none"
-        false | authentication      | getEmptyList()            | 0                  | "not valid (even though impossible) and has none"
+        all   | weeks | inputAuthentication | repositoryResponse        | expectedResultSize | desc
+        true  | 1     | authentication      | getFakeUserActivity()     | 3                  | "all user activity no activity"
+        true  | 0     | authentication      | getEmptyList()            | 0                  | "all user activity and has nothing"
+        false | 0     | authentication      | getSpecificUserActivity() | 1                  | "current user and has one"
+        false | 0     | authentication      | getEmptyList()            | 0                  | "not valid (even though impossible) and has none"
+        false | 1     | authentication      | getEmptyList()            | 0                  | "not valid (even though impossible) and has none"
 
     }
 
@@ -66,6 +79,65 @@ class StatisticsServiceSpec extends Specification {
         authentication      | 0
         authentication      | 1092
         authentication      | 1337
+    }
+
+    void "test summarize annotations"() {
+        given:
+        treatmentAnnotationRepositoryStub.countAllByAnnotationSourceDiseaseAndStatusNot(_, _) >> treatmentCount
+        treatmentAnnotationRepositoryStub.countAllByStatusNot(_) >> treatmentCount
+        phenotypeAnnotationRepositoryStub.countAllByAnnotationSourceDiseaseAndStatusNot(_, _) >> phenotypeCount
+        phenotypeAnnotationRepositoryStub.countAllByStatusNot(_) >> phenotypeCount
+        expect:
+        def response = statisticsService.summarizeAnnotations(inputDiseaseId)
+        response.treatmentCount == expectedResponse.treatmentCount
+        response.phenotypeCount == expectedResponse.phenotypeCount
+
+        where:
+        inputDiseaseId | treatmentCount | phenotypeCount | expectedResponse
+        "OMIM:039323"  | 0              | 20             | new AnnotationCount(phenotypeCount, treatmentCount)
+        "MONDO:11214"  | 15             | 0              | new AnnotationCount(phenotypeCount, treatmentCount)
+        ""             | 15             | 0              | new AnnotationCount(phenotypeCount, treatmentCount)
+    }
+
+    void "test summarize annotations needing review"() {
+        given:
+        phenotypeAnnotationRepositoryStub.countAllByStatus(_) >> phenotypeResponse
+        treatmentAnnotationRepositoryStub.countAllByStatus(_) >> treatmentResponse
+        expect:
+        def responses = statisticsService.summarizeAnnotationNeedReview()
+        responses.size() == 4
+        responses[0].diseaseId == "OMIM:030323"
+        responses[3].count == 0
+        where:
+        phenotypeResponse                           | treatmentResponse
+        [phenotypeReviewCount("OMIM:030323", 6l),
+         phenotypeReviewCount("MONDO:030323", 30l)] | [treatmentReviewCount("OMIM:0300323", 10l), treatmentReviewCount("MONDO:030323", 0l)]
+    }
+
+
+    void "test summarize annotations needing work"() {
+        given:
+        phenotypeAnnotationRepositoryStub.countAllByStatusAndUser(_, _) >> phenotypeResponse
+        treatmentAnnotationRepositoryStub.countAllByStatusAndUser(_, _) >> treatmentResponse
+        expect:
+        def responses = statisticsService.summarizeAnnotationNeedWork(null)
+        responses.size() == 4
+        responses[0].diseaseId == "OMIM:030323"
+        responses[3].count == 0
+        where:
+        phenotypeResponse                           | treatmentResponse
+        [phenotypeReviewCount("OMIM:030323", 6l),
+         phenotypeReviewCount("MONDO:030323", 30l)] | [treatmentReviewCount("OMIM:0300323", 10l), treatmentReviewCount("MONDO:030323", 0l)]
+
+    }
+
+
+    def phenotypeReviewCount(diseaseId, count) {
+        return new ReviewCount(diseaseId, "some terrible disease", count, Category.PHENOTYPE)
+    }
+
+    def treatmentReviewCount(diseaseId, count) {
+        return new ReviewCount(diseaseId, "some terrible disease", count, Category.TREATMENT)
     }
 
     def getFakeUserActivity() {
