@@ -1,6 +1,5 @@
 package org.monarchinitiative.poet.service
 
-import org.monarchinitiative.poet.model.entities.Version
 import org.monarchinitiative.poet.repository.VersionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer
@@ -30,17 +29,5 @@ class ExportServiceSpec extends Specification {
         expect:
         def versionGiven = exportService.createNewReleaseVersion();
         versionGiven.getVersion().getDayOfWeek() == LocalDateTime.now().getDayOfWeek()
-    }
-
-    void "test release annotations"(){
-
-    }
-
-    void "test export maxo annotations"(){
-
-    }
-
-    void "test export hpo annotations"(){
-
     }
 }
