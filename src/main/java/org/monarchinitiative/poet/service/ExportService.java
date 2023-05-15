@@ -54,7 +54,7 @@ public class ExportService {
                         annotation.getAnnotationSource().getDisease().getDiseaseName(),
                         annotation.getQualifier(), annotation.getHpoId(), reference, annotation.getEvidence(),
                         annotation.getOnset(), annotation.getFrequency(), annotation.getSex(), annotation.getModifier(),
-                        annotation.getOwner().getExportName()
+                        annotation.getOwner().getExportName(annotation.getLastUpdatedDate())
                 );
             }
         } catch (IOException e) {
@@ -83,7 +83,7 @@ public class ExportService {
                         annotation.getAnnotationSource().getDisease().getDiseaseName(), reference,
                         annotation.getMaxoId(), annotation.getMaxoName(), annotation.getHpoId(), annotation.getRelation(),
                         annotation.getEvidence(), annotation.getExtensionId(), annotation.getExtensionLabel(),
-                        annotation.getComment(), annotation.getOwner().getExportName()
+                        annotation.getComment(), annotation.getOwner().getExportName(annotation.getLastUpdatedDate())
                 );
             }
         } catch (IOException e) {
