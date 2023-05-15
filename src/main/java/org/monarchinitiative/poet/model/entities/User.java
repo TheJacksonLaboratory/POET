@@ -66,7 +66,7 @@ public class User {
 
     public String getExportName(LocalDateTime time){
         String identifier = "";
-        if (orcid != null) {
+        if (!orcid.isBlank()) {
             identifier = String.format("ORCID:%s",orcid);
         } else {
             identifier = email;

@@ -147,6 +147,10 @@ export class PortalCurateComponent implements OnInit {
     }
   }
 
+  /*
+      Mapping ontology terms to there respective URLS.
+      OMIM:1234 -> https://omim.org/entry/1234
+   */
   getExternalTermIdUrlFromId(termId?: string) {
     if(!termId){
       return '';
@@ -162,9 +166,12 @@ export class PortalCurateComponent implements OnInit {
       return `https://www.ncbi.nlm.nih.gov/pubmed/${sourceParts[1]}`;
     }
   }
-
-  isTermIdExpected(diseaseId: string, expected: string) {
-    return diseaseId != "" && diseaseId != null && expected != "" && expected != null
-      ? diseaseId.toUpperCase().includes(expected) : false;
+  /*
+      Checking if the term prefix matches what we are looking for.
+      OMIM:1234 matches? OMIM -> true
+   */
+  isTermIdExpected(termId: string, expected: string) {
+    return termId != "" && termId != null && expected != "" && expected != null
+      ? termId.toUpperCase().includes(expected) : false;
   }
 }
