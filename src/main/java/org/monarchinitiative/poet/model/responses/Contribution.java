@@ -1,8 +1,8 @@
 package org.monarchinitiative.poet.model.responses;
 
 public class Contribution {
-    final int treatment;
-    final int phenotype;
+    private final int treatment;
+    private final int phenotype;
 
     public Contribution(int treatment, int phenotype) {
         this.treatment = Math.max(treatment, 0);

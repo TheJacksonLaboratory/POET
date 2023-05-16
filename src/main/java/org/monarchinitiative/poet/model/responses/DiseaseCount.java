@@ -1,9 +1,9 @@
 package org.monarchinitiative.poet.model.responses;
 
 public class DiseaseCount {
-    final String diseaseId;
-    final String diseaseName;
-    final long activityCount;
+    private final String diseaseId;
+    private final String diseaseName;
+    private final long activityCount;
 
     public DiseaseCount(String diseaseId, String diseaseName, long activityCount) {
         this.diseaseId = diseaseId;

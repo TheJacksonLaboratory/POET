@@ -109,7 +109,7 @@ public class UserService {
                 curationRole = CurationRole.POET_ADMIN;
             }
 
-            if(!authId.isBlank() && !nickname.isBlank() && !email.isBlank()){
+            if(authId != null && !authId.isBlank() && nickname != null && !nickname.isBlank() && email !=null && !email.isBlank()){
                 return new User(authId, nickname, email, curationRole);
             } else {
                 throw new AuthenticationException(true);

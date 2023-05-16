@@ -2,11 +2,11 @@ package org.monarchinitiative.poet.model.responses;
 
 import org.monarchinitiative.poet.model.enumeration.Category;
 
-public class ReviewCount {
-    final String diseaseId;
-    final String diseaseName;
-    final long count;
-    Category type;
+ public class ReviewCount {
+    private final String diseaseId;
+    private final String diseaseName;
+    private final long count;
+    private Category type;
 
     public ReviewCount(String diseaseId, String diseaseName, long count, String type) {
         this.diseaseId = diseaseId;

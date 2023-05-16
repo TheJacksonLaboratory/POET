@@ -87,7 +87,7 @@ public class StatisticsService {
     public AnnotationCount summarizeAnnotations(String diseaseId){
         int treatmentCount;
         int phenotypeCount;
-        if(diseaseId.isBlank()){
+        if(diseaseId != null && !diseaseId.isBlank()){
             treatmentCount = this.treatmentAnnotationRepository.countAllByAnnotationSourceDiseaseAndStatusNot(
                     this.diseaseRepository.findDiseaseByDiseaseId(diseaseId), AnnotationStatus.RETIRED
             );
