@@ -82,11 +82,12 @@ public class EntityService {
     }
 
     /**
-     * A function to get a disease from the disease repository implementation
+     * A function to get save a new disease or update an existing one based on equivalent id
      *
-     * @param disease a disease object created from the
+     * @param disease a disease object
      *
-     * @return a disease or nothing
+     * @return boolean saved
+     * @throws repository errors
      * @since 0.5.0
      */
     public boolean saveNewDisease(Disease disease){

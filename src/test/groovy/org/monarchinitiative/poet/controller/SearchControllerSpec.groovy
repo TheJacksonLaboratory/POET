@@ -1,5 +1,6 @@
 package org.monarchinitiative.poet.controller
 
+import org.monarchinitiative.model.responses.chebi.LiteEntity
 import org.monarchinitiative.poet.model.responses.SearchResponse
 import org.monarchinitiative.poet.service.SearchService
 import org.spockframework.spring.SpringBean
@@ -19,15 +20,12 @@ import spock.lang.Unroll
 @WebMvcTest(SearchController.class)
 @ContextConfiguration
 @ActiveProfiles(value = "test")
-class SearchControllerSpec extends Specification{
+class SearchControllerSpec extends Specification {
     @Autowired
     private MockMvc mvc
 
     @SpringBean
     private SearchService searchService = Stub()
-
-    def setup() {
-    }
 
     @Unroll
     def "when we test search annotations #desc"() {
@@ -39,9 +37,24 @@ class SearchControllerSpec extends Specification{
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/search").param("query", searchTerm)).andExpect((ResultMatcher) expectedResponse);
 
         where:
-        serviceResponse      | searchTerm      | expectedResponse                            | desc
-        [new SearchResponse()] | "OMIM:00392928" | MockMvcResultMatchers.status().isOk() | "test search term with disease"
-        [new SearchResponse()] | "PMID:20391892" | MockMvcResultMatchers.status().isOk()       | "test search term with publication"
-        null                 | ""              | MockMvcResultMatchers.status().isOk()       | "test search term nothing"
+        serviceResponse                  | searchTerm      | expectedResponse                      | desc
+        [new SearchResponse("", "", "")] | "OMIM:00392928" | MockMvcResultMatchers.status().isOk() | "test search term with disease"
+        [new SearchResponse("", "", "")] | "PMID:20391892" | MockMvcResultMatchers.status().isOk() | "test search term with publication"
+        null                             | ""              | MockMvcResultMatchers.status().isOk() | "test search term nothing"
+    }
+
+    @Unroll
+    def "when we test search annotations #desc"() {
+        given:
+        searchService.searchChebi(_ as String) >> serviceResponse
+
+        expect:
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/search/chebi").param("query", searchTerm)).andExpect((ResultMatcher) expectedResponse);
+
+        where:
+        serviceResponse    | searchTerm       | expectedResponse                      | desc
+        [new LiteEntity()] | "CHEBI:093843"   | MockMvcResultMatchers.status().isOk() | "test search chebi term 1"
+        [new LiteEntity()] | "CHEBI:20391892" | MockMvcResultMatchers.status().isOk() | "test search chebi term 2"
+        []                 | ""               | MockMvcResultMatchers.status().isOk() | "test search term nothing"
     }
 }

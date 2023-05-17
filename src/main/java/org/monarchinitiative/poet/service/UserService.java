@@ -97,7 +97,7 @@ public class UserService {
      * @return a user object or throw Authentication Exception
      * @since 0.6.0
      */
-    private User getUserFromAuthentication(Authentication authentication) throws AuthenticationException {
+    User getUserFromAuthentication(Authentication authentication) throws AuthenticationException {
         if(authentication != null){
             final Jwt credentials = (Jwt) authentication.getCredentials();
             String authId = authentication.getName();
@@ -109,7 +109,7 @@ public class UserService {
                 curationRole = CurationRole.POET_ADMIN;
             }
 
-            if(authId != null && nickname != null && email != null){
+            if(authId != null && !authId.isBlank() && nickname != null && !nickname.isBlank() && email !=null && !email.isBlank()){
                 return new User(authId, nickname, email, curationRole);
             } else {
                 throw new AuthenticationException(true);

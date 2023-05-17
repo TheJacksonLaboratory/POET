@@ -86,6 +86,62 @@ class TreatmentControllerSpec extends Specification {
         generateFakeTreatment(true)  | MockMvcResultMatchers.status().isBadRequest()
     }
 
+    def "when we test update treatment annotation they pass"() {
+        given:
+        annotationService.updateTreatmentAnnotation(_,_) >> null
+
+        expect:
+        mvc.perform(
+                MockMvcRequestBuilders.put("/api/v1/annotation/treatments/?review=${inputReview}", inputBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new JsonBuilder(inputBody).toPrettyString())).andExpect((ResultMatcher) expectedResponse)
+
+        where:
+        inputBody                 | inputReview    | expectedResponse
+        generateFakeTreatment(false) | "approve"  | MockMvcResultMatchers.status().isCreated()
+    }
+
+    def "when we test update treatment annotation they fail"() {
+        given:
+        annotationService.updateTreatmentAnnotation(_,_) >> null
+
+        expect:
+        mvc.perform(
+                MockMvcRequestBuilders.put("/api/v1/annotation/treatments/?review=${inputReview}", inputBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new JsonBuilder(inputBody).toPrettyString())).andExpect((ResultMatcher) expectedResponse)
+
+        where:
+        inputBody                 | inputReview    | expectedResponse
+        generateFakeTreatment(true) | "approve"  | MockMvcResultMatchers.status().isBadRequest()
+    }
+
+    def "when we test delete treatment annotation they are deleted"() {
+        given:
+        annotationService.deleteTreatmentAnnotation(_,_) >> serviceResponse
+
+        expect:
+        mvc.perform(
+                MockMvcRequestBuilders.delete("/api/v1/annotation/treatments/${treatmentId}")).andExpect((ResultMatcher) expectedResponse)
+
+        where:
+        treatmentId | serviceResponse      | expectedResponse
+        1           | true                | MockMvcResultMatchers.status().isOk()
+    }
+
+    def "when we test delete treatment annotation they cant be found"() {
+        given:
+        annotationService.deleteTreatmentAnnotation(_,_) >> serviceResponse
+
+        expect:
+        mvc.perform(
+                MockMvcRequestBuilders.delete("/api/v1/annotation/treatments/${treatmentId}")).andExpect((ResultMatcher) expectedResponse)
+
+        where:
+        treatmentId | serviceResponse      | expectedResponse
+        1           | false                | MockMvcResultMatchers.status().isInternalServerError()
+    }
+
     private static generateFakeTreatment(incompleteTreatmentAnnotation) {
         if (incompleteTreatmentAnnotation) {
             return [comment    : "daf",

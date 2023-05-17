@@ -1,24 +1,33 @@
 package org.monarchinitiative.poet.service
 
+import org.monarchinitiative.model.responses.chebi.GetLiteEntity
+import org.monarchinitiative.model.responses.chebi.GetLiteEntityResponse
+import org.monarchinitiative.model.responses.chebi.LiteEntity
+import org.monarchinitiative.model.responses.chebi.LiteEntityList
 import org.monarchinitiative.poet.model.entities.Disease
 import org.monarchinitiative.poet.repository.AnnotationSourceRepository
 import org.monarchinitiative.poet.repository.DiseaseRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.support.AnnotationConfigContextLoader
+import org.springframework.ws.client.core.WebServiceTemplate
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import javax.xml.bind.JAXBElement
+import javax.xml.namespace.QName
+
 @Unroll
 @ActiveProfiles(value = "test")
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class])
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class],  initializers = ConfigFileApplicationContextInitializer.class )
 class SearchServiceSpec extends Specification {
     @Autowired
     DiseaseRepository diseaseStub;
 
     @Autowired
-    AnnotationSourceRepository annotationStub;
+    WebServiceTemplate webServiceTemplateStub;
 
     @Autowired
     SearchService searchService
@@ -55,5 +64,43 @@ class SearchServiceSpec extends Specification {
 
     def getSingleDisease() {
         return [new Disease("OMIM:2091938", "Some really really bad disease")]
+    }
+
+
+    void "test search chebi #desc"(){
+        given:
+            webServiceTemplateStub.marshalSendAndReceive(_ as String, _ as JAXBElement) >> fakeChebiResponse
+            def result = searchService.searchChebi(inputQuery)
+        expect:
+            result == chebiList
+            result.size() == chebiList.size()
+        where:
+        inputQuery | chebiList | fakeChebiResponse
+        "Aky"      | [createChebiEntity("CHEBI:85154", "Akynzeo")] | getChebiResponse(chebiList)
+        "Amlo"     | [createChebiEntity("CHEBI:2668", "Amlodipine"), createChebiEntity("CHEBI:2669", "amlodipine benzenesulfonate")] | getChebiResponse(chebiList)
+
+    }
+
+    def createChebiElement(LiteEntityList entityList){
+        GetLiteEntityResponse response = new GetLiteEntityResponse()
+        response.setReturn(entityList)
+        return new JAXBElement(
+                new QName(GetLiteEntityResponse.class.getSimpleName()), GetLiteEntity.class, response)
+    }
+
+    def createChebiEntity(chebiId, chebiAscii){
+        def entity = new LiteEntity()
+        entity.setChebiId(chebiId)
+        entity.setChebiAsciiName(chebiAscii)
+        return entity
+    }
+
+    def getChebiResponse(chebiEntityList) {
+        def chebi = new LiteEntity()
+        LiteEntityList liteEntityList = new LiteEntityList();
+        chebiEntityList.each { it ->
+            liteEntityList.listElement.add(it);
+        }
+        return createChebiElement(liteEntityList);
     }
 }

@@ -15,11 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -79,9 +75,11 @@ public class StatisticsController {
                 map(UserActivity::getAnnotation).map(Annotation::getAnnotationSource)
                 .collect(Collectors.groupingByConcurrent(AnnotationSource::getDisease, Collectors.counting()))
                 .entrySet().stream()
-                .map(entry ->
-                        new DiseaseCount(entry.getKey().getDiseaseId(), entry.getKey().getDiseaseName(),
-                                entry.getValue())).collect(Collectors.toList());
+                .map(entry -> {
+                    return new DiseaseCount(entry.getKey().getDiseaseId(), entry.getKey().getDiseaseName(),
+                            entry.getValue());
+
+                }).collect(Collectors.toList());
     }
 
     /**

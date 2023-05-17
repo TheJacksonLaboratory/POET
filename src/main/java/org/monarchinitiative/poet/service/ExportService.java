@@ -125,7 +125,7 @@ public class ExportService {
         }
     }
 
-    private Version createNewReleaseVersion(){
+    Version createNewReleaseVersion(){
         return versionRepository.save(new Version(LocalDateTime.now()));
     }
 }
