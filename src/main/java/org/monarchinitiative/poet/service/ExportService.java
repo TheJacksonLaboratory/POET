@@ -71,6 +71,8 @@ public class ExportService {
             treatmentAnnotationList = annotationService.getOfficialTreatments();
         }
         try(CSVPrinter csvPrinter = format.print(writer)){
+            csvPrinter.printRecord("disease_id", "disease_name", "source_id", "maxo_id", "maxo_name", "hpo_id",
+                    "relation", "evidence", "extension_id", "extension_name", "comment", "author");
             for (TreatmentAnnotation annotation : treatmentAnnotationList) {
                 String reference;
                 if(annotation.getAnnotationSource().isDiseaseDatabaseSource()){
@@ -79,6 +81,8 @@ public class ExportService {
                     reference = annotation.getAnnotationSource().getPublication().getPublicationId();
                 }
 
+
+                annotationService.getLastUpdatedForAnnotation(annotation);
                 csvPrinter.printRecord(annotation.getAnnotationSource().getDisease().getEquivalentId(),
                         annotation.getAnnotationSource().getDisease().getDiseaseName(), reference,
                         annotation.getMaxoId(), annotation.getMaxoName(), annotation.getHpoId(), annotation.getRelation(),

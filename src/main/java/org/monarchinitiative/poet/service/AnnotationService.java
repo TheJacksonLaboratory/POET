@@ -81,7 +81,7 @@ public class AnnotationService {
             Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
             if(disease != null) {
                 List<PhenotypeAnnotation> annotations = this.phenotypeAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNotIn(disease, List.of(AnnotationStatus.RETIRED, AnnotationStatus.RETIRED_PENDING));
-                return (List<PhenotypeAnnotation>) getLastUpdatedForAnnotation(annotations);
+                return (List<PhenotypeAnnotation>) getLastUpdatedForAnnotations(annotations);
             } else {
                 throw AnnotationSourceException.diseaseNotFound(diseaseId);
             }
@@ -263,21 +263,23 @@ public class AnnotationService {
         Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
         if(disease != null) {
             List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNotIn(disease, List.of(AnnotationStatus.RETIRED, AnnotationStatus.RETIRED_PENDING));
-            return (List<TreatmentAnnotation>) getLastUpdatedForAnnotation(annotations);
+            return (List<TreatmentAnnotation>) getLastUpdatedForAnnotations(annotations);
         }
         throw AnnotationSourceException.diseaseNotFound(diseaseId);
     }
 
 
-    private List<? extends Annotation> getLastUpdatedForAnnotation(List<? extends Annotation> annotations) {
+     protected List<? extends Annotation> getLastUpdatedForAnnotations(List<? extends Annotation> annotations) {
         if(annotations.size() > 0){
-                return annotations.stream().peek(annotation -> {
-                    UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
-                    annotation.setLastUpdatedDate(activity.getDateTime());
-                }).sorted(Comparator.comparing(Annotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
+                return annotations.stream().peek(this::getLastUpdatedForAnnotation).sorted(Comparator.comparing(Annotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
         } else {
             return Collections.emptyList();
         }
+    }
+
+    protected void getLastUpdatedForAnnotation(Annotation annotation) {
+        UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
+        annotation.setLastUpdatedDate(activity.getDateTime());
     }
 
     /**
