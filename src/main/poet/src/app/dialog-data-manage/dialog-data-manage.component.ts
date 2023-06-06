@@ -14,10 +14,7 @@ import { ReleaseState } from '../shared/models/models';
 export class DialogDataManageComponent implements OnInit {
 
   title = 'Data Management';
-  selectedOntology;
-  selectedVersion;
   selectedAction = 'export';
-  selectedReleaseKey;
   releaseState = ReleaseState.NOT_STARTED;
   releaseText = '';
   exportForm = new UntypedFormGroup({
