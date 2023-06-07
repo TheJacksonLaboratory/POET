@@ -64,14 +64,12 @@ public class User {
         return orcid;
     }
 
-    public String getExportName(LocalDateTime time){
-        String identifier = "";
+    public String getExportName(){
         if (orcid != null && !orcid.isBlank()) {
-            identifier = String.format("ORCID:%s",orcid);
+            return String.format("ORCID:%s",orcid);
         } else {
-            identifier = email;
+            return email;
         }
-        return String.format("%s[%s]", identifier, DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH).format(time));
     }
 
     public CurationRole getCurationRole() {

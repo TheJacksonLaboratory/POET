@@ -49,12 +49,12 @@ class UserSpec extends Specification {
             def user = new User(authId, nickname, email, curationRole)
             user.setOrcid(inputOrcid)
         expect:
-            LocalDateTime dt = new SimpleDateFormat("yyyy-MM-dd").parse("2014-02-14").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            user.getExportName(dt) == expectedResult
+            //LocalDateTime dt = new SimpleDateFormat("yyyy-MM-dd").parse("2014-02-14").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            user.getExportName() == expectedResult
 
         where:
         authId  |   curationRole    |   email   |   nickname    |   inputOrcid  | expectedResult
-        "auth|1039" |   CurationRole.POET_CURATOR |   "curator@gmail.com"    | "the best curator"    | "0000-0002-3843-3472" | "ORCID:0000-0002-3843-3472[2014-02-14]"
-        "auth|103920" |   null                    |   "elevated.@gmail.com" | "even better curator" | ""   | "elevated.@gmail.com[2014-02-14]"
+        "auth|1039" |   CurationRole.POET_CURATOR |   "curator@gmail.com"    | "the best curator"    | "0000-0002-3843-3472" | "ORCID:0000-0002-3843-3472"
+        "auth|103920" |   null                    |   "elevated.@gmail.com" | "even better curator" | ""   | "elevated.@gmail.com"
     }
 }

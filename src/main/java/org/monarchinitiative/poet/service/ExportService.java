@@ -16,7 +16,9 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class ExportService {
@@ -54,7 +56,7 @@ public class ExportService {
                         annotation.getAnnotationSource().getDisease().getDiseaseName(),
                         annotation.getQualifier(), annotation.getHpoId(), reference, annotation.getEvidence(),
                         annotation.getOnset(), annotation.getFrequency(), annotation.getSex(), annotation.getModifier(),
-                        annotation.getOwner().getExportName(annotation.getLastUpdatedDate())
+                        annotation.getOwner().getExportName()
                 );
             }
         } catch (IOException e) {
@@ -72,7 +74,7 @@ public class ExportService {
         }
         try(CSVPrinter csvPrinter = format.print(writer)){
             csvPrinter.printRecord("disease_id", "disease_name", "source_id", "maxo_id", "maxo_name", "hpo_id",
-                    "relation", "evidence", "extension_id", "extension_name", "comment", "author");
+                    "relation", "evidence", "extension_id", "extension_name", "comment", "other", "author", "last_updated", "created");
             for (TreatmentAnnotation annotation : treatmentAnnotationList) {
                 String reference;
                 if(annotation.getAnnotationSource().isDiseaseDatabaseSource()){
@@ -81,13 +83,13 @@ public class ExportService {
                     reference = annotation.getAnnotationSource().getPublication().getPublicationId();
                 }
 
-
                 annotationService.getLastUpdatedForAnnotation(annotation);
-                csvPrinter.printRecord(annotation.getAnnotationSource().getDisease().getEquivalentId(),
+                annotationService.getCreatedDateForAnnotation(annotation);
+                csvPrinter.printRecord(annotation.getAnnotationSource().getDisease().getExportDiseaseId(),
                         annotation.getAnnotationSource().getDisease().getDiseaseName(), reference,
                         annotation.getMaxoId(), annotation.getMaxoName(), annotation.getHpoId(), annotation.getRelation(),
                         annotation.getEvidence(), annotation.getExtensionId(), annotation.getExtensionLabel(),
-                        annotation.getComment(), annotation.getOwner().getExportName(annotation.getLastUpdatedDate())
+                        annotation.getComment(), "", annotation.getOwner().getExportName(), annotation.getExportLastUpdatedDate(), annotation.getCreatedDate()
                 );
             }
         } catch (IOException e) {

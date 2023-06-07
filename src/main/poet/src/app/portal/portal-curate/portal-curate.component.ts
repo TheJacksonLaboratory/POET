@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { of } from "rxjs/internal/observable/of";
 import { CurationService } from '../../shared/services/curation/curation.service';
 import { AuthService } from '@auth0/auth0-angular';
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { fadeIn } from 'ng-animate';
 import { StateService } from '../../shared/services/state/state.service';
 import { Disease } from '../../shared/models/models';
-import { finalize } from 'rxjs/operators';
+import { catchError, finalize, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 @Component({

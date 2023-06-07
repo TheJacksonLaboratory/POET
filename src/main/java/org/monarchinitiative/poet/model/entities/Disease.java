@@ -111,6 +111,10 @@ public class Disease {
         this.treatmentCount = treatmentCount;
     }
 
+    public String getExportDiseaseId(){
+        return this.equivalentId == null || this.equivalentId.isBlank() ? this.diseaseId : this.equivalentId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -68,8 +68,10 @@ export class DialogDataManageComponent implements OnInit {
       if (this.exportForm.get('versionControl').value === 'official'){
         if (this.exportForm.get('ontologyControl').value === 'hpo'){
           window.open(environment.HPO_ANNOTATIONS_URL);
-        } else {
+        } else if (this.exportForm.get('ontologyControl').value === 'maxo') {
           // TODO: shouldn't get here
+          window.open(`${environment.POET_API_EXPORT_URL}${this.exportForm.get('ontologyControl').value}`);
+          this.dialogRef.close();
         }
       } else {
         window.open(`${environment.POET_API_EXPORT_URL}${this.exportForm.get('ontologyControl').value}?unstable=true`);

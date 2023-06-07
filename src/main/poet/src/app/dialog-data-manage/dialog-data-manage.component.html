@@ -16,7 +16,7 @@
         <mat-form-field appearance="fill">
           <mat-label>Select Ontology</mat-label>
           <mat-select formControlName="ontologyControl">
-            <mat-option [value]="'hpo'">Human Phenotype Ontology</mat-option>
+            <mat-option [value]="'hpo'" [disabled]="selectedAction == 'release'">Human Phenotype Ontology</mat-option>
             <mat-option [value]="'maxo'">Medical Action Ontology</mat-option>
           </mat-select>
         </mat-form-field>
@@ -25,7 +25,7 @@
         <mat-form-field appearance="fill">
           <mat-label>Select Version</mat-label>
           <mat-select formControlName="versionControl">
-            <mat-option [value]="'official'" [disabled]="this.exportForm.get('ontologyControl').value === 'maxo'">Official</mat-option>
+            <mat-option [value]="'official'">Official</mat-option>
             <mat-option [value]="'unstable'" [disabled]="this.exportForm.get('ontologyControl').value === 'hpo'">Unstable</mat-option>
           </mat-select>
         </mat-form-field>
