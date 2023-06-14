@@ -65,6 +65,14 @@ public class ExportService {
         }
     }
 
+    /***
+     * This method allows for the maxo annotations to be exported in tsv or csv format
+     * @param writer - the writer for the http respones
+     * @param format - the format you want tsv,csv
+     * @param unstable - whether to include accepted annotations or not.
+     *
+     * TODO: Expand the 'other' column to the model when we implement for now it is hardcoded blank.
+     */
     public void exportMAXOAnnotations(PrintWriter writer, CSVFormat format, boolean unstable){
         List<TreatmentAnnotation> treatmentAnnotationList;
         if(unstable){
@@ -98,6 +106,11 @@ public class ExportService {
         }
     }
 
+    /***
+     * Release annotations is our release pipeline where all accepted maxo or hpo terms get moved to official
+     * annotations and are tagged with a release date of when this method was called.
+     * TODO: Handle really bad things that happened.
+     */
     @Transactional(rollbackOn = Exception.class)
     public void releaseAnnotations(){
         // Create a new release version
