@@ -9,7 +9,9 @@ import org.monarchinitiative.poet.views.UserActivityViews;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 @Entity
@@ -46,6 +48,9 @@ public class Annotation {
     @JsonInclude()
     @JsonView({AnnotationViews.Simple.class, AnnotationViews.UserSpecific.class})
     private LocalDateTime lastUpdatedDate;
+
+    @Transient
+    private LocalDateTime createdDate;
 
     @OneToOne
     @JsonView({AnnotationViews.Simple.class, AnnotationViews.UserSpecific.class})
@@ -102,8 +107,20 @@ public class Annotation {
         return lastUpdatedDate;
     }
 
+    public String getExportLastUpdatedDate(){
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH).format(this.lastUpdatedDate);
+    }
+
     public void setLastUpdatedDate(LocalDateTime lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
+    }
+
+    public String getCreatedDate() {
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH).format(this.createdDate);
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
     public void newMessage(Message message){

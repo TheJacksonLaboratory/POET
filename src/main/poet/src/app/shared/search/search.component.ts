@@ -90,7 +90,7 @@ export class SearchComponent implements OnInit {
       // isnt an error
       if(poetResponse && !poetResponse.error){
         // if response does not include equivalent id or description
-        if(poetResponse.equivalentId == null || poetResponse.description){
+        if(poetResponse.equivalentId == null || poetResponse.description == null || poetResponse.description == ""){
           this.curationService.updateDisease(diseaseToSave).subscribe(() => {
             this.resetSearchForm();
             this.router.navigate(['/portal/curate/' + poetResponse.diseaseId]);
