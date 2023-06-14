@@ -86,6 +86,63 @@ class PhenotypeControllerSpec extends Specification {
         generateFakePhenotype(true)  | MockMvcResultMatchers.status().isBadRequest()
     }
 
+
+    def "when we test update phenotype annotation they pass"() {
+        given:
+        annotationService.updatePhenotypeAnnotation(_,_) >> null
+
+        expect:
+        mvc.perform(
+                MockMvcRequestBuilders.put("/api/v1/annotation/phenotypes/?review=${inputReview}", inputBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new JsonBuilder(inputBody).toPrettyString())).andExpect((ResultMatcher) expectedResponse)
+
+        where:
+        inputBody                 | inputReview    | expectedResponse
+        generateFakePhenotype(false) | "approve"  | MockMvcResultMatchers.status().isCreated()
+    }
+
+    def "when we test update phenotype annotation they fail"() {
+        given:
+        annotationService.updatePhenotypeAnnotation(_,_) >> null
+
+        expect:
+        mvc.perform(
+                MockMvcRequestBuilders.put("/api/v1/annotation/phenotypes/?review=${inputReview}", inputBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new JsonBuilder(inputBody).toPrettyString())).andExpect((ResultMatcher) expectedResponse)
+
+        where:
+        inputBody                 | inputReview    | expectedResponse
+        generateFakePhenotype(true) | "approve"  | MockMvcResultMatchers.status().isBadRequest()
+    }
+
+    def "when we test delete phenotype annotation they are deleted"() {
+        given:
+        annotationService.deletePhenotypeAnnotation(_,_) >> serviceResponse
+
+        expect:
+        mvc.perform(
+                MockMvcRequestBuilders.delete("/api/v1/annotation/phenotypes/${phenotypeId}")).andExpect((ResultMatcher) expectedResponse)
+
+        where:
+        phenotypeId | serviceResponse      | expectedResponse
+        1           | true                | MockMvcResultMatchers.status().isOk()
+    }
+
+    def "when we test delete phenotype annotation they cant be found"() {
+        given:
+        annotationService.deletePhenotypeAnnotation(_,_) >> serviceResponse
+
+        expect:
+        mvc.perform(
+                MockMvcRequestBuilders.delete("/api/v1/annotation/phenotypes/${phenotypeId}")).andExpect((ResultMatcher) expectedResponse)
+
+        where:
+        phenotypeId | serviceResponse      | expectedResponse
+        1           | false                | MockMvcResultMatchers.status().isInternalServerError()
+    }
+
     private static generateFakePhenotype(incompleteTreatmentAnnotation) {
         if (incompleteTreatmentAnnotation) {
             return  new PhenotypeRequest(null, "fake hpo name", "HP:02138",

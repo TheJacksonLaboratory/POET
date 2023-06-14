@@ -8,8 +8,6 @@ import spock.lang.Unroll
 @ActiveProfiles(value = "test")
 class TreatmentRequestSpec extends Specification {
 
-    def setup(){}
-
     void "test treatment request constructor"() {
         given:
         def treatmentRequest = new TreatmentRequest(null,
@@ -39,9 +37,5 @@ class TreatmentRequestSpec extends Specification {
         where:
         maxoId | maxoName | hpoName | hpoId | evidence | comment | relation | extensionId | extensionLabel | publicationId | publicationName | diseaseId | diseaseName
         "MAXO:9999001" | "surgical procedure" | "arachnodactyl" | "HP:0019193" | "fake evidence" | "some comment" | "some relation" | "some extension id" |  "some extension label" | "PMID:02923" | "the best publication" | "very serious disease" | "OMIM: 029223"
-    }
-
-    void "test treatment request equals, hashcode"(){
-
     }
 }

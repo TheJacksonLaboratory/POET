@@ -130,7 +130,7 @@ export class PortalDashboardComponent implements OnInit, AfterContentInit {
   }
 
   navigateToDisease(disease, category) {
-    this.stateService.setSelectedCategory(category);
+    this.stateService.setSelectedCategory(category.toLowerCase());
     const urlSegment = `/curate/${disease}`;
     this.router.navigateByUrl(urlSegment);
   }

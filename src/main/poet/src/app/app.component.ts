@@ -4,14 +4,13 @@ import { DOCUMENT } from '@angular/common';
 import { Router } from '@angular/router';
 import packageInfo from '../../package.json';
 import { UserService } from './shared/services/user/user.service';
-import {distinctUntilChanged} from 'rxjs/operators';
+import { distinctUntilChanged, first } from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogProfileComponent} from './dialog-profile/dialog-profile.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import { DialogDataManageComponent } from './dialog-data-manage/dialog-data-manage.component';
 import { environment } from '../environments/environment';
 import { StateService } from './shared/services/state/state.service';
-import { ReleaseState } from './shared/models/models';
 
 @Component({
   selector: 'app-root',
@@ -39,6 +38,15 @@ export class AppComponent implements OnInit {
           this.userService.checkUser();
           user.role = user[environment.AUTH0_ROLE_CLAIM];
           this.isElevated = this.userService.isRoleAdmin(user.role);
+          this.userService.getUserDetails().pipe(first()).subscribe((user) => {
+            if (user.orcid == null){
+              this._snackBar.open("ORCID iD is missing from your profile.", "Add ORCID iD", {
+                horizontalPosition: "left"
+              }).onAction().pipe(first()).subscribe(() => {
+                this.openProfile();
+              });
+            }
+          })
         }
       });
   }

@@ -16,7 +16,9 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class ExportService {
@@ -63,6 +65,14 @@ public class ExportService {
         }
     }
 
+    /***
+     * This method allows for the maxo annotations to be exported in tsv or csv format
+     * @param writer - the writer for the http respones
+     * @param format - the format you want tsv,csv
+     * @param unstable - whether to include accepted annotations or not.
+     *
+     * TODO: Expand the 'other' column to the model when we implement for now it is hardcoded blank.
+     */
     public void exportMAXOAnnotations(PrintWriter writer, CSVFormat format, boolean unstable){
         List<TreatmentAnnotation> treatmentAnnotationList;
         if(unstable){
@@ -71,6 +81,8 @@ public class ExportService {
             treatmentAnnotationList = annotationService.getOfficialTreatments();
         }
         try(CSVPrinter csvPrinter = format.print(writer)){
+            csvPrinter.printRecord("disease_id", "disease_name", "source_id", "maxo_id", "maxo_name", "hpo_id",
+                    "relation", "evidence", "extension_id", "extension_name", "comment", "other", "author", "last_updated", "created");
             for (TreatmentAnnotation annotation : treatmentAnnotationList) {
                 String reference;
                 if(annotation.getAnnotationSource().isDiseaseDatabaseSource()){
@@ -79,11 +91,13 @@ public class ExportService {
                     reference = annotation.getAnnotationSource().getPublication().getPublicationId();
                 }
 
-                csvPrinter.printRecord(annotation.getAnnotationSource().getDisease().getEquivalentId(),
+                annotationService.getLastUpdatedForAnnotation(annotation);
+                annotationService.getCreatedDateForAnnotation(annotation);
+                csvPrinter.printRecord(annotation.getAnnotationSource().getDisease().getExportDiseaseId(),
                         annotation.getAnnotationSource().getDisease().getDiseaseName(), reference,
                         annotation.getMaxoId(), annotation.getMaxoName(), annotation.getHpoId(), annotation.getRelation(),
                         annotation.getEvidence(), annotation.getExtensionId(), annotation.getExtensionLabel(),
-                        annotation.getComment(), annotation.getOwner().getExportName()
+                        annotation.getComment(), "", annotation.getOwner().getExportName(), annotation.getExportLastUpdatedDate(), annotation.getCreatedDate()
                 );
             }
         } catch (IOException e) {
@@ -92,6 +106,11 @@ public class ExportService {
         }
     }
 
+    /***
+     * Release annotations is our release pipeline where all accepted maxo or hpo terms get moved to official
+     * annotations and are tagged with a release date of when this method was called.
+     * TODO: Handle really bad things that happened.
+     */
     @Transactional(rollbackOn = Exception.class)
     public void releaseAnnotations(){
         // Create a new release version
@@ -125,7 +144,7 @@ public class ExportService {
         }
     }
 
-    private Version createNewReleaseVersion(){
+    Version createNewReleaseVersion(){
         return versionRepository.save(new Version(LocalDateTime.now()));
     }
 }

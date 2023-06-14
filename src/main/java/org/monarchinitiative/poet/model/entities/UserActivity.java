@@ -91,4 +91,8 @@ public class UserActivity {
     public int hashCode() {
         return Objects.hash(id, owner, annotation, dateTime, curationAction);
     }
+
+    public Annotation getOldAnnotation() {
+        return oldAnnotation;
+    }
 }

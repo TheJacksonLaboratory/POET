@@ -16,6 +16,19 @@
 
   & .display-id {
     font-size: .8rem;
+    display: flex;
+    align-items: center;
+
+    & a {
+      margin: 0 0 0 .5rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+
+      &:hover {
+        opacity: .75;
+      }
+    }
   }
 
   .mat-toolbar {

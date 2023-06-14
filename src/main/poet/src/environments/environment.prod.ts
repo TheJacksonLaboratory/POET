@@ -73,5 +73,5 @@ export const environment = {
   PUBMED_SUMMARY_URL: PUBMED_BASE_URL + 'esummary.fcgi',
   AUTH0_ROLE_CLAIM: 'https://poet.jax.org/role',
   AUTH0_ADMIN_ROLE: 'POET_ADMIN',
-  HPO_ANNOTATIONS_URL: 'http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa'
+  HPO_ANNOTATIONS_URL: 'https://github.com/obophenotype/human-phenotype-ontology/releases/latest/download/phenotype.hpoa'
 };

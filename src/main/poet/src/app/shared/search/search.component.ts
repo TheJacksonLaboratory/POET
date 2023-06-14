@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { catchError, debounceTime, finalize } from "rxjs/operators";
 import { tap } from "rxjs/internal/operators/tap";
 import { switchMap } from "rxjs/internal/operators/switchMap";
@@ -23,7 +23,7 @@ export class SearchComponent implements OnInit {
   @Input() role: string;
   @ViewChild(MatAutocompleteTrigger, {read: MatAutocompleteTrigger}) searchBar: MatAutocompleteTrigger;
   @ViewChild("search") searchInput: ElementRef<HTMLInputElement>;
-  searchControl = new FormControl();
+  searchControl = new UntypedFormControl();
   diseaseOptions: MonarchSearchResult[];
   isLoading = false;
   errorMsg: string;
@@ -90,7 +90,7 @@ export class SearchComponent implements OnInit {
       // isnt an error
       if(poetResponse && !poetResponse.error){
         // if response does not include equivalent id or description
-        if(poetResponse.equivalentId == null || poetResponse.description){
+        if(poetResponse.equivalentId == null || poetResponse.description == null || poetResponse.description == ""){
           this.curationService.updateDisease(diseaseToSave).subscribe(() => {
             this.resetSearchForm();
             this.router.navigate(['/portal/curate/' + poetResponse.diseaseId]);

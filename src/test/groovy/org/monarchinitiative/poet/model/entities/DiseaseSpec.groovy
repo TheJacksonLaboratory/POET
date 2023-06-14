@@ -23,4 +23,18 @@ class DiseaseSpec extends Specification {
             "MONDO:0910392" | "Marfan Syndrome"
             "MONDO:0093021" | "Ovarian Cancer"
     }
+
+    void "test disease export id method"(){
+        given:
+        def disease = new Disease(diseaseId, diseaseName)
+        disease.setEquivalentId(equivalentId)
+        expect:
+        disease.getExportDiseaseId() == expected
+
+        where:
+        diseaseId   |  diseaseName  | equivalentId  | expected
+        "OMIM:0910392" | "Marfan Syndrome" | ""     | diseaseId
+        "OMIM:0910393" | "Marfan Syndrome" | null     | diseaseId
+        "OMIM:0093021" | "Ovarian Cancer" | "MONDO:001913" | equivalentId
+    }
 }

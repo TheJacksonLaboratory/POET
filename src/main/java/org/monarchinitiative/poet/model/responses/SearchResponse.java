@@ -2,12 +2,9 @@ package org.monarchinitiative.poet.model.responses;
 
 public class SearchResponse {
 
-    private String id;
-    private String name;
-    private String type;
-
-    public SearchResponse(){}
-
+    private final String id;
+    private final String name;
+    private final String type;
     public SearchResponse(String id, String name,  String type){
         this.id = id;
         this.name = name;

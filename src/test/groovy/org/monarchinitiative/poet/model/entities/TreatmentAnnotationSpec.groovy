@@ -1,6 +1,7 @@
 package org.monarchinitiative.poet.model.entities
 
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus
+import org.monarchinitiative.poet.model.enumeration.Relation
 import org.monarchinitiative.poet.model.requests.TreatmentRequest
 import org.springframework.test.context.ActiveProfiles
 import spock.lang.Specification
@@ -32,7 +33,7 @@ class TreatmentAnnotationSpec extends Specification {
             treatmentAnnotation.getComment() == comment
             treatmentAnnotation.getExtensionLabel() == extensionLabel
             treatmentAnnotation.getExtensionId() == extensionId
-            treatmentAnnotation.getRelation() == relation
+            treatmentAnnotation.getRelation().toString() == relation
             treatmentAnnotation.getEvidence() == evidence
 
         where:
@@ -52,7 +53,7 @@ class TreatmentAnnotationSpec extends Specification {
             treatmentAnnotation.getComment() == treatmentRequest.getComment()
             treatmentAnnotation.getExtensionLabel() == treatmentRequest.getExtensionLabel()
             treatmentAnnotation.getExtensionId() == treatmentRequest.getExtensionId()
-            treatmentAnnotation.getRelation() == treatmentRequest.getRelation()
+            treatmentAnnotation.getRelation().toString() == treatmentRequest.getRelation()
             treatmentAnnotation.getEvidence() == treatmentRequest.getEvidence()
             treatmentAnnotation.getStatus() == annotationStatus
         where:

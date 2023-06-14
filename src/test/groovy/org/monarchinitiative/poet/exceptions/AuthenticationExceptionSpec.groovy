@@ -21,4 +21,16 @@ class AuthenticationExceptionSpec extends Specification {
         "robinp"      | "User robinp is not authorized to perform this action."
         "biox"        | "User biox is not authorized to perform this action."
     }
+
+    void "test authentication malformed"(){
+        given:
+        def exception = new AuthenticationException(malformed)
+
+        expect:
+        exception.getMessage() == expectedMessage
+
+        where:
+        malformed      | expectedMessage
+        false          | "Authentication or authentication claims are malformed."
+    }
 }

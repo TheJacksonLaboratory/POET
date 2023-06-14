@@ -8,14 +8,12 @@ import spock.lang.Unroll
 @ActiveProfiles(value = "test")
 class PhenotypeRequestSpec extends Specification {
 
-    def setup(){}
-
     void "test phenotype request constructor"() {
         given:
             def phenotypeRequest = new PhenotypeRequest(null, hpoName, hpoId, evidence, description, onset, publicationId,
                     publicationName, diseaseId, diseaseName, modifiers, frequency, qualifier, sex, "")
             def phenotypeRequest2 = new PhenotypeRequest(null, hpoName, hpoId, evidence, description, onset, publicationId,
-                    publicationName, diseaseId, diseaseName, modifiers, frequency, qualifier, sex, "")
+                    publicationName, diseaseId, diseaseName, modifiers, frequency, qualifier, "FEMALE", "")
 
         expect:
             phenotypeRequest.getHpoName() == hpoName
@@ -31,8 +29,9 @@ class PhenotypeRequestSpec extends Specification {
             phenotypeRequest.getFrequency() == frequency
             phenotypeRequest.getQualifier() == qualifier
             phenotypeRequest.getSex() == sex
-            phenotypeRequest.equals(phenotypeRequest2)
-            phenotypeRequest.hashCode() == phenotypeRequest2.hashCode()
+            !phenotypeRequest.equals(phenotypeRequest2)
+            phenotypeRequest.equals(phenotypeRequest)
+            phenotypeRequest.hashCode() == phenotypeRequest.hashCode()
 
         where:
         maxoId | maxoName | hpoName | hpoId | evidence | description | onset | publicationId | publicationName | diseaseId | diseaseName | modifiers | frequency | qualifier | sex

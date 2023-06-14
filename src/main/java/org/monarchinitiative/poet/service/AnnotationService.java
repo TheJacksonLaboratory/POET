@@ -13,9 +13,11 @@ import org.monarchinitiative.poet.repository.*;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -81,7 +83,7 @@ public class AnnotationService {
             Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
             if(disease != null) {
                 List<PhenotypeAnnotation> annotations = this.phenotypeAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNotIn(disease, List.of(AnnotationStatus.RETIRED, AnnotationStatus.RETIRED_PENDING));
-                return (List<PhenotypeAnnotation>) getLastUpdatedForAnnotation(annotations);
+                return (List<PhenotypeAnnotation>) getLastUpdatedForAnnotations(annotations);
             } else {
                 throw AnnotationSourceException.diseaseNotFound(diseaseId);
             }
@@ -263,21 +265,57 @@ public class AnnotationService {
         Disease disease = this.diseaseRepository.findDiseaseByDiseaseId(diseaseId);
         if(disease != null) {
             List<TreatmentAnnotation> annotations = this.treatmentAnnotationRepository.findAllByAnnotationSourceDiseaseAndStatusNotIn(disease, List.of(AnnotationStatus.RETIRED, AnnotationStatus.RETIRED_PENDING));
-            return (List<TreatmentAnnotation>) getLastUpdatedForAnnotation(annotations);
+            return (List<TreatmentAnnotation>) getLastUpdatedForAnnotations(annotations);
         }
         throw AnnotationSourceException.diseaseNotFound(diseaseId);
     }
 
 
-    private List<? extends Annotation> getLastUpdatedForAnnotation(List<? extends Annotation> annotations) {
+     protected List<? extends Annotation> getLastUpdatedForAnnotations(List<? extends Annotation> annotations) {
         if(annotations.size() > 0){
-                return annotations.stream().peek(annotation -> {
-                    UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
-                    annotation.setLastUpdatedDate(activity.getDateTime());
-                }).sorted(Comparator.comparing(Annotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
+                return annotations.stream().peek(this::getLastUpdatedForAnnotation).sorted(Comparator.comparing(Annotation::getLastUpdatedDate).reversed()).collect(Collectors.toList());
         } else {
             return Collections.emptyList();
         }
+    }
+
+    protected void getLastUpdatedForAnnotation(Annotation annotation) {
+        UserActivity activity = userActivityRespository.getMostRecentDateForAnnotationActivity(annotation.getId());
+        annotation.setLastUpdatedDate(activity.getDateTime());
+    }
+
+    protected void getCreatedDateForAnnotation(Annotation annotation){
+        // Try to find the created date for this annotation
+        UserActivity activity = userActivityRespository.getCreateDateForAnnotationActivity(annotation.getId());
+        if (activity == null) {
+            // Need to walk annotations recursively until we find a related creation
+            annotation.setCreatedDate(walkActivityForAnnotationCreation(annotation));
+        } else {
+            annotation.setCreatedDate(activity.getDateTime());
+        }
+    }
+
+    /**
+     * Recursive walk to find the first annotation creation date. This needs to happen because it is possible that
+     * an admin updated the annotation (which creates a new one). We deprecate the old annotation and attach it to the
+     * new user activity item so that we can still find out when the main annotation was created.
+     * @param annotation the annotation that did not have a user activity with
+     * @return the creation date
+     */
+    private LocalDateTime walkActivityForAnnotationCreation(Annotation annotation){
+        Optional<UserActivity> activitySingle = userActivityRespository.findUserActivityByAnnotation(annotation);
+        if(activitySingle.isPresent() && activitySingle.get().getOldAnnotation() != null){
+            Annotation old_annotation = activitySingle.get().getOldAnnotation();
+            UserActivity oldActivity = userActivityRespository.getCreateDateForAnnotationActivity(old_annotation.getId());
+            // If we cant find old activity recurse
+            if(oldActivity == null){
+                return walkActivityForAnnotationCreation(old_annotation);
+            } else {
+                return oldActivity.getDateTime();
+            }
+        }
+        // If things really break we will just return the last updated date
+        return annotation.getLastUpdatedDate();
     }
 
     /**

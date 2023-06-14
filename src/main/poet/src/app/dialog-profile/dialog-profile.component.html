@@ -11,13 +11,13 @@
       </div>
       <div class="profile-form-field">
         <mat-form-field appearance="fill" >
-          <mat-label>Orcid</mat-label>
-          <input matInput placeholder="Please enter your Orcid" formControlName="orcidFormControl">
+          <mat-label>ORCID iD</mat-label>
+          <input matInput placeholder="Please enter your ORCID" formControlName="orcidFormControl">
           <mat-error *ngIf="this.profileForm.get('orcidFormControl').hasError('required')">
-            Your orcid is missing.
+            Your ORCID iD is missing.
           </mat-error>
           <mat-error *ngIf="this.profileForm.get('orcidFormControl').hasError('pattern')">
-            Please enter a valid orcid.
+            Please enter a valid ORCID iD.
           </mat-error>
         </mat-form-field>
       </div>

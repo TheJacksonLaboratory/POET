@@ -1,25 +1,20 @@
 package org.monarchinitiative.poet.model.responses;
 
 public class Contribution {
-    Integer treatment;
-    Integer phenotype;
-    Integer phenopackets;
+    private final int treatment;
+    private final int phenotype;
 
-    public Contribution(Integer treatment, Integer phenotype, Integer phenopackets) {
-        this.treatment = treatment == null ? 0 : treatment;
-        this.phenotype = phenotype == null ? 0 : phenotype;
-        this.phenopackets = phenopackets == null ? 0 : phenopackets;
+    public Contribution(int treatment, int phenotype) {
+        this.treatment = Math.max(treatment, 0);
+        this.phenotype = Math.max(phenotype, 0);
     }
 
-    public Integer getTreatment() {
+    public int getTreatment() {
         return treatment;
     }
 
-    public Integer getPhenotype() {
+    public int getPhenotype() {
         return phenotype;
     }
 
-    public Integer getPhenopackets() {
-        return phenopackets;
-    }
 }

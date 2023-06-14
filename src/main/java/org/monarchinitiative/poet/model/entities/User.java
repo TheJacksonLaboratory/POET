@@ -7,6 +7,9 @@ import org.monarchinitiative.poet.views.UserActivityViews;
 import org.monarchinitiative.poet.views.UserViews;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Objects;
 
 @Entity
@@ -62,10 +65,10 @@ public class User {
     }
 
     public String getExportName(){
-        if (orcid != null) {
-            return String.format("%s[%s]", nickname, orcid);
+        if (orcid != null && !orcid.isBlank()) {
+            return String.format("ORCID:%s",orcid);
         } else {
-            return String.format("%s[]", nickname);
+            return email;
         }
     }
 
