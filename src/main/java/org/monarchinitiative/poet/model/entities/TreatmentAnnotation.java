@@ -134,4 +134,11 @@ public class TreatmentAnnotation extends Annotation {
     public String getExtensionLabel() {
         return extensionLabel;
     }
+
+    public String getExportPhenotypeId() {
+        if (hpoId.equals("HP:0000118")){
+            return super.getAnnotationSource().getDisease().getExportDiseaseId();
+        }
+        return hpoId;
+    }
 }
