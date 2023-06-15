@@ -93,9 +93,10 @@ public class ExportService {
 
                 annotationService.getLastUpdatedForAnnotation(annotation);
                 annotationService.getCreatedDateForAnnotation(annotation);
+                String hpoId = annotation.getHpoId();
                 csvPrinter.printRecord(annotation.getAnnotationSource().getDisease().getExportDiseaseId(),
                         annotation.getAnnotationSource().getDisease().getDiseaseName(), reference,
-                        annotation.getMaxoId(), annotation.getMaxoName(), annotation.getHpoId(), annotation.getRelation(),
+                        annotation.getMaxoId(), annotation.getMaxoName(), annotation.getExportPhenotypeId(), annotation.getRelation(),
                         annotation.getEvidence(), annotation.getExtensionId(), annotation.getExtensionLabel(),
                         annotation.getComment(), "", annotation.getOwner().getExportName(), annotation.getExportLastUpdatedDate(), annotation.getCreatedDate()
                 );
