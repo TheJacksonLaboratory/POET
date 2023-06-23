@@ -8,6 +8,10 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@Table(
+        uniqueConstraints=
+        @UniqueConstraint(columnNames={"publication_id", "disease_id"})
+)
 public class AnnotationSource {
 
     @Id
