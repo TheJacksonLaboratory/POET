@@ -3,7 +3,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { UntypedFormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CurationService } from '../../../shared/services/curation/curation.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { PubmedService } from '../../../shared/services/external/pubmed.service';
 import { StateService } from '../../../shared/services/state/state.service';
 import { Publication } from '../../../shared/models/models';
@@ -105,17 +105,28 @@ export class DialogSourceComponent implements OnInit {
         firstAuthor: this.selectedPublication.sortfirstauthor
       }
     };
-    this.curationService.savePublication(source).subscribe(() => {
-      this.annotatedPublications$ = this.curationService.getDiseasePublications(this.selectedDisease.diseaseId);
-      this.newPublication = false;
-      this.selectedPublication = source.publication;
-      this.closeDialog();
-    }, error => {
-      const message = this.getErrorMessage(error);
-      this._snackBar.open(message, 'Close', {
-        duration: 5000,
-      });
-    });
+
+    this.annotatedPublications$.pipe(
+      map(items =>
+      items.filter(item => item.publicationId == source.publication.publicationId)
+      )).subscribe((existing) => {
+        if(existing && existing.length > 0){
+          this.newPublication = false;
+          this.selectPublication(existing[0]);
+        } else {
+          this.curationService.savePublication(source).subscribe(() => {
+            this.annotatedPublications$ = this.curationService.getDiseasePublications(this.selectedDisease.diseaseId);
+            this.newPublication = false;
+            this.selectedPublication = source.publication;
+            this.closeDialog();
+          }, error => {
+            const message = this.getErrorMessage(error);
+            this._snackBar.open(message, 'Close', {
+              duration: 5000,
+            });
+          });
+        }
+    })
   }
 
   getErrorMessage(error: any) {
