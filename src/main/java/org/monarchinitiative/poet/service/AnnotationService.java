@@ -3,12 +3,12 @@ package org.monarchinitiative.poet.service;
 import org.monarchinitiative.poet.exceptions.AnnotationSourceException;
 import org.monarchinitiative.poet.exceptions.AuthenticationException;
 import org.monarchinitiative.poet.exceptions.DuplicateAnnotationException;
-import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
-import org.monarchinitiative.poet.model.requests.PhenotypeRequest;
-import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.model.entities.*;
+import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.model.enumeration.CurationAction;
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
+import org.monarchinitiative.poet.model.requests.PhenotypeRequest;
+import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.repository.*;
 import org.springframework.stereotype.Service;
 

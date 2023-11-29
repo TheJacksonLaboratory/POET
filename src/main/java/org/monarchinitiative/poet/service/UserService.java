@@ -5,10 +5,10 @@ import org.monarchinitiative.poet.exceptions.UserModificationException;
 import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.enumeration.CurationRole;
 import org.monarchinitiative.poet.repository.UserRepository;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 

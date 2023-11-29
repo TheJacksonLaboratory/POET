@@ -33,7 +33,7 @@ public class ExportController {
     @GetMapping(value = "/{ontology}")
     public void exportOntology(HttpServletResponse httpServletResponse, @PathVariable String ontology,
                                @RequestParam(name="delim", defaultValue = "tsv") String delim,
-                               @RequestParam(name="unstable", defaultValue = "true") boolean unstable)
+                               @RequestParam(name="unstable", defaultValue = "false") boolean unstable)
             throws IOException {
 
         String contentType = "text/tab-separated-values";

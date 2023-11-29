@@ -1,6 +1,9 @@
 package org.monarchinitiative.poet.repository;
 
-import org.monarchinitiative.poet.model.entities.*;
+import org.monarchinitiative.poet.model.entities.AnnotationSource;
+import org.monarchinitiative.poet.model.entities.Disease;
+import org.monarchinitiative.poet.model.entities.PhenotypeAnnotation;
+import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.model.responses.ReviewCount;
 import org.springframework.data.jpa.repository.Query;

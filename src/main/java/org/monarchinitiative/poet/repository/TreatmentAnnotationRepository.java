@@ -6,9 +6,9 @@ import org.monarchinitiative.poet.model.entities.TreatmentAnnotation;
 import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.model.enumeration.Relation;
+import org.monarchinitiative.poet.model.responses.ReviewCount;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.monarchinitiative.poet.model.responses.ReviewCount;
 
 import java.util.List;
 

@@ -1,7 +1,10 @@
 package org.monarchinitiative.poet.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import org.monarchinitiative.poet.model.entities.*;
+import org.monarchinitiative.poet.model.entities.Annotation;
+import org.monarchinitiative.poet.model.entities.AnnotationSource;
+import org.monarchinitiative.poet.model.entities.User;
+import org.monarchinitiative.poet.model.entities.UserActivity;
 import org.monarchinitiative.poet.model.enumeration.CurationAction;
 import org.monarchinitiative.poet.model.responses.AnnotationCount;
 import org.monarchinitiative.poet.model.responses.Contribution;
@@ -15,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
