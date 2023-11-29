@@ -6,7 +6,6 @@ import org.monarchinitiative.poet.model.responses.SearchResponse;
 import org.monarchinitiative.poet.repository.DiseaseRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.WebServiceTemplate;
-import org.springframework.ws.soap.client.core.SoapActionCallback;
 
 import javax.xml.bind.JAXBElement;
 import java.util.ArrayList;

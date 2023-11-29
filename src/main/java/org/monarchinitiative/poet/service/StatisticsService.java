@@ -2,10 +2,10 @@ package org.monarchinitiative.poet.service;
 
 
 import org.monarchinitiative.poet.model.entities.User;
+import org.monarchinitiative.poet.model.entities.UserActivity;
 import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.model.responses.AnnotationCount;
 import org.monarchinitiative.poet.model.responses.Contribution;
-import org.monarchinitiative.poet.model.entities.UserActivity;
 import org.monarchinitiative.poet.model.responses.ReviewCount;
 import org.monarchinitiative.poet.repository.DiseaseRepository;
 import org.monarchinitiative.poet.repository.PhenotypeAnnotationRepository;
@@ -18,7 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

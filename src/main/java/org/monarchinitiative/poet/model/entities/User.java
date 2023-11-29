@@ -7,9 +7,6 @@ import org.monarchinitiative.poet.views.UserActivityViews;
 import org.monarchinitiative.poet.views.UserViews;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.Objects;
 
 @Entity

@@ -2,8 +2,9 @@ package org.monarchinitiative.poet.controller.annotation;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.exceptions.AnnotationSourceException;
+import org.monarchinitiative.poet.model.entities.TreatmentAnnotation;
+import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.requests.TreatmentRequest;
-import org.monarchinitiative.poet.model.entities.*;
 import org.monarchinitiative.poet.service.AnnotationService;
 import org.monarchinitiative.poet.service.UserService;
 import org.monarchinitiative.poet.views.AnnotationViews;

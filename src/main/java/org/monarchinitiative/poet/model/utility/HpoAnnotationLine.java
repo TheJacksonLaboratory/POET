@@ -1,8 +1,6 @@
 package org.monarchinitiative.poet.model.utility;
 
 import com.google.common.collect.ImmutableList;
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoFrequency;
-import org.monarchinitiative.phenol.annotations.formats.hpo.HpoOnset;
 import org.monarchinitiative.phenol.base.PhenolException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;

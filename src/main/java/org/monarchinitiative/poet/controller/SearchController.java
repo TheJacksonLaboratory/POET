@@ -1,8 +1,6 @@
 package org.monarchinitiative.poet.controller;
 
-import org.monarchinitiative.model.responses.chebi.GetLiteEntityResponse;
 import org.monarchinitiative.model.responses.chebi.LiteEntity;
-import org.monarchinitiative.model.responses.chebi.LiteEntityList;
 import org.monarchinitiative.poet.model.responses.SearchResponse;
 import org.monarchinitiative.poet.service.SearchService;
 import org.springframework.web.bind.annotation.GetMapping;
