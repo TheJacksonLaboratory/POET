@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TreatmentCurationComponent } from './treatment-curation.component';
-import { HpoService } from "../../../shared/services/external/hpo.service";
+import { OntologyService } from "../../../shared/services/external/ontology.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { SharedModule } from "../../../shared/shared.module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { MonarchService } from "../../../shared/services/external/monarch.service";
+import { MondoService } from "../../../shared/services/external/mondo.service";
 
 describe('MaxoCurationComponent', () => {
   let component: TreatmentCurationComponent;
@@ -14,7 +14,7 @@ describe('MaxoCurationComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TreatmentCurationComponent],
-      providers: [HpoService, MonarchService],
+      providers: [OntologyService, MondoService],
       imports: [HttpClientTestingModule, SharedModule, NoopAnimationsModule]
     })
       .compileComponents();

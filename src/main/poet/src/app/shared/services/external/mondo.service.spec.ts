@@ -1,15 +1,15 @@
 import { TestBed } from '@angular/core/testing';
-import { MonarchService } from './monarch.service';
+import { MondoService } from './mondo.service';
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe('MonarchServiceService', () => {
-  let service: MonarchService;
+  let service: MondoService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule]
     });
-    service = TestBed.inject(MonarchService);
+    service = TestBed.inject(MondoService);
   });
 
   it('should be created', () => {

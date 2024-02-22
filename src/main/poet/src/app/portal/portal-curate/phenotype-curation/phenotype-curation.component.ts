@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { HpoService } from '../../../shared/services/external/hpo.service';
+import { OntologyService } from '../../../shared/services/external/ontology.service';
 import { AbstractControl, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, finalize, shareReplay, take, takeUntil } from 'rxjs/operators';
 import { AnchorSearchResult, HpoTerm } from '../../../shared/models/search-models';
@@ -16,7 +16,7 @@ import { UtilityService } from '../../../shared/services/utility.service';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'poet-phenotype-curation',
+  selector: 'app-phenotype-curation',
   templateUrl: './phenotype-curation.component.html',
   styleUrls: ['./phenotype-curation.component.scss']
 })
@@ -60,7 +60,7 @@ export class PhenotypeCurationComponent implements OnInit, OnDestroy {
 
   destroy$: Subject<boolean> = new Subject<boolean>();
 
-  constructor(public hpoService: HpoService,
+  constructor(public hpoService: OntologyService,
               public curationService: CurationService,
               public stateService: StateService,
               public utilityService: UtilityService,

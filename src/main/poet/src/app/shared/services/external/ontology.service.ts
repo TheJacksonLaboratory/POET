@@ -8,7 +8,7 @@ import { BehaviorSubject, Observable, of } from "rxjs";
 @Injectable({
   providedIn: 'root'
 })
-export class HpoService {
+export class OntologyService {
 
   private hpoTermDefinitionSubject: BehaviorSubject<any> = new BehaviorSubject<any>('');
 
@@ -44,20 +44,7 @@ export class HpoService {
   searchMaxoTerms(query: string): Observable<MaxoSearchResult[]> {
     let parameters: HttpParams = new HttpParams().set('q', query);
     return this.httpClient.get<any>(environment.HPO_API_MAXO_SEARCH_URL, {params: parameters})
-      .pipe(pluck('terms'),
-        map((maxoResults: HpoMaxoSearchResult[]) => {
-          return maxoResults.map((maxoResult) => {
-            return {
-              ...maxoResult.term,
-              synonym: maxoResult.synonym,
-              synonymMatched: maxoResult.synonymMatched
-            };
-          });
-        }),
-        map( (items: MaxoSearchResult[]) => {
-          return items.filter((item: MaxoSearchResult) => !item.name.toLowerCase().includes("obsolete"));
-        })
-      );
+      .pipe(pluck('terms'));
   }
 
   /**
@@ -68,16 +55,5 @@ export class HpoService {
   searchDescendants(query: string, start: string): Observable<AnchorSearchResult[]> {
     let parameters: HttpParams = new HttpParams().set('q', query).set('s', start)
     return this.httpClient.get<any>(environment.HPO_API_HPO_SEARCH_DESCENDANTS_URL, {params: parameters});
-  }
-
-  searchDiseases(query: string): any {
-    let parameters: HttpParams = new HttpParams().set('q', query);
-    return this.httpClient.get<any>(environment.HPO_API_HPO_SEARCH_URL, {params: parameters})
-      .pipe(pluck('diseases'),
-        map((items: any) => {
-          return items.filter((item) => {
-           return item.db == "OMIM";
-          });
-        }));
   }
 }

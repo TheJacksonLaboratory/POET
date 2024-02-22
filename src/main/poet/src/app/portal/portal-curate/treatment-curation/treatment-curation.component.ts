@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { HpoService } from '../../../shared/services/external/hpo.service';
+import { OntologyService } from '../../../shared/services/external/ontology.service';
 import {AbstractControl, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {
   catchError,
@@ -18,13 +18,13 @@ import { StateService } from '../../../shared/services/state/state.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogSourceComponent } from '../dialog-source/dialog-source.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MonarchService } from '../../../shared/services/external/monarch.service';
+import { MondoService } from '../../../shared/services/external/mondo.service';
 import { DialogReviewComponent } from '../dialog-review/dialog-review.component';
 import { UtilityService } from '../../../shared/services/utility.service';
 import { Observable, Subject } from 'rxjs';
 
 @Component({
-  selector: 'poet-treatment-curation',
+  selector: 'app-treatment-curation',
   templateUrl: './treatment-curation.component.html',
   styleUrls: ['./treatment-curation.component.scss']
 })
@@ -63,9 +63,9 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
 
   destroy$: Subject<boolean> = new Subject<boolean>();
 
-  constructor(public hpoService: HpoService,
+  constructor(public hpoService: OntologyService,
               public curationService: CurationService,
-              public monarchService: MonarchService,
+              public monarchService: MondoService,
               public stateService: StateService,
               public utilityService: UtilityService,
               public dialog: MatDialog,
@@ -225,7 +225,7 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
     const annotationSource = this.stateService.getSelectedSource();
     return {
       id: this.selectedAnnotation && this.selectedAnnotation.id ? this.selectedAnnotation.id : null,
-      maxoId: this.formControlGroup.get('maxoFormControl').value.ontologyId.toString(),
+      maxoId: this.formControlGroup.get('maxoFormControl').value.id.toString(),
       maxoName: this.formControlGroup.get('maxoFormControl').value.name,
       hpoId: this.formControlGroup.get('hpoFormControl').value.id,
       hpoName: this.formControlGroup.get('hpoFormControl').value.name,
@@ -261,7 +261,7 @@ export class TreatmentCurationComponent implements OnInit, OnDestroy {
   }
 
   setFormValues(annotation: any) {
-    this.formControlGroup.get('maxoFormControl').setValue({ontologyId: annotation.maxoId, name: annotation.maxoName});
+    this.formControlGroup.get('maxoFormControl').setValue({id: annotation.maxoId, name: annotation.maxoName});
     if (annotation.hpoId === 'HP:0000118'){
       this.formControlGroup.get('diseaseTreatmentControl').setValue(true);
       this.formControlGroup.get('hpoFormControl').disable();
