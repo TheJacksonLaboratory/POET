@@ -1,30 +1,22 @@
-export interface SearchResult {
-  type: string;
+export interface BaseTerm {
   id: string;
   name: string;
 }
 
-export interface MonarchSearchResult {
+export interface MondoSearchResult extends BaseTerm {
   match: string;
-  label: string;
-  id: string;
   omim_id: string;
   leaf: boolean;
 }
 
-export interface HpoTerm {
-  childrenCount?: number;
-  id: string;
-  name: string;
-  ontologyId?: string;
+export interface HpoTerm extends BaseTerm{
+  descendantCount?: number;
   synonym?: string;
 }
 
-export interface MaxoTerm {
+export interface MaxoTerm extends BaseTerm{
   comment: string;
   definition: string;
-  name: string;
-  ontologyId: string;
   synonyms: string[];
 }
 

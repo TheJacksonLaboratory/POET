@@ -6,14 +6,14 @@
            [matAutocomplete]="auto"
            [formControl]="searchControl" #search>
     <mat-error *ngIf="searchControl.hasError('notFound')">
-      Looks like there was an error with Monarch Services.
+      Could not find MONDO-OMIM connected disease.
     </mat-error>
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelection($event.option.value)"
                       [displayWith]="utilityService.displayMonarchSearchFn.bind(this)">
       <mat-option *ngIf="isLoading" class="is-loading">Loading...</mat-option>
       <ng-container *ngIf="!isLoading">
         <mat-option *ngFor="let disease of diseaseOptions" [value]="disease">
-          <div class="result-name"><b>{{disease.label}}</b></div>&nbsp;
+          <div class="result-name"><b>{{disease.name}}</b></div>&nbsp;
           <div class="result-id">
             {{disease.id}}<span *ngIf="disease.omim_id"> - </span> {{disease.omim_id}}
           </div>

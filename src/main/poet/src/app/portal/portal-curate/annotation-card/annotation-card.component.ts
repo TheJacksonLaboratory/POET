@@ -26,10 +26,10 @@ import { ConfirmSheetComponent } from './confirm-sheet/confirm-sheet.component';
 import { UtilityService } from '../../../shared/services/utility.service';
 import { tap } from 'rxjs/operators';
 import {UserService} from '../../../shared/services/user/user.service';
-import { HpoService } from '../../../shared/services/external/hpo.service';
+import { OntologyService } from '../../../shared/services/external/ontology.service';
 
 @Component({
-  selector: 'poet-annotation-card',
+  selector: 'app-annotation-card',
   templateUrl: './annotation-card.component.html',
   styleUrls: ['./annotation-card.component.scss'],
   animations: [
@@ -65,7 +65,7 @@ export class AnnotationCardComponent implements OnInit {
 
   constructor(public stateService: StateService, public curationService: CurationService, public utilityService: UtilityService,
               private _snackBar: MatSnackBar, private route: ActivatedRoute, private _bottomSheet: MatBottomSheet,
-              private cdk: ChangeDetectorRef, public userService: UserService, public hpoService: HpoService) {
+              private cdk: ChangeDetectorRef, public userService: UserService, public hpoService: OntologyService) {
   }
 
   ngOnInit(): void {

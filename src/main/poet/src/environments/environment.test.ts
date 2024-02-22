@@ -1,9 +1,9 @@
 import { HttpMethod } from '@auth0/auth0-angular';
 
 const POET_BASE_URL = 'https://ctpoet01lt.jax.org/api/v1';
-const MONARCH_BASE_URL = 'https://api.monarchinitiative.org/api';
 const PUBMED_BASE_URL = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
 const HPO_BASE_URL = 'https://hpo.jax.org/api/';
+const ONTOLOGY_SERVICE_BASE_URL = 'https://ontology.jax.org/api/';
 export const environment = {
   production: true,
   auth: {
@@ -64,12 +64,12 @@ export const environment = {
   POET_API_STATISTICS_ANNOTATION_URL: POET_BASE_URL + '/statistics/annotation/',
   POET_API_EXPORT_URL: POET_BASE_URL + '/export/',
   POET_API_RELEASE_URL: POET_BASE_URL + '/export/release',
-  HPO_API_HPO_SEARCH_URL: HPO_BASE_URL + 'hpo/search',
-  HPO_API_MAXO_SEARCH_URL: HPO_BASE_URL + 'maxo/search/',
+  HPO_API_HPO_SEARCH_URL: ONTOLOGY_SERVICE_BASE_URL + 'hp/search',
+  HPO_API_MAXO_SEARCH_URL: ONTOLOGY_SERVICE_BASE_URL + 'maxo/search',
   HPO_API_HPO_SEARCH_DESCENDANTS_URL: HPO_BASE_URL + 'hpo/search/descendants/',
-  HPO_API_TERM_URL: HPO_BASE_URL + 'hpo/term/',
-  MONARCH_SEARCH_URL: MONARCH_BASE_URL + '/search/entity/autocomplete/',
-  MONARCH_ENTITY_URL: MONARCH_BASE_URL + '/bioentity/',
+  HPO_API_TERM_URL: ONTOLOGY_SERVICE_BASE_URL + 'hp/terms/',
+  MONDO_SEARCH_URL: ONTOLOGY_SERVICE_BASE_URL + 'mondo/search',
+  MONDO_ENTITY_URL: ONTOLOGY_SERVICE_BASE_URL + 'mondo/terms/',
   PUBMED_SUMMARY_URL: PUBMED_BASE_URL + 'esummary.fcgi',
   AUTH0_ROLE_CLAIM: 'https://poet.jax.org/role',
   AUTH0_ADMIN_ROLE: 'POET_ADMIN',

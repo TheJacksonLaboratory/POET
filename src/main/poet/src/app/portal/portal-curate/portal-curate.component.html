@@ -27,14 +27,14 @@
     </nav>
   </div>
   <div class="curation-container" [fxLayout]="fxLayout" [fxLayoutAlign]="fxLayoutAlign" [@fadeIn]="selectedCategory">
-    <poet-annotation-card [fxFlex]="fxFlexAnnotations" [fxFlexOffset]="fxFlexAnnotationOffset" *ngIf="selectedDisease"
-                         (openForm)="handleForm($event)" [user]="user" [formOpen]="showForm"></poet-annotation-card>
-    <poet-treatment-curation [fxFlex]="fxFlexForm" [fxFlexOffset]="fxFlexFormOffset" [role]="user.role"
+    <app-annotation-card [fxFlex]="fxFlexAnnotations" [fxFlexOffset]="fxFlexAnnotationOffset" *ngIf="selectedDisease"
+                         (openForm)="handleForm($event)" [user]="user" [formOpen]="showForm"></app-annotation-card>
+    <app-treatment-curation [fxFlex]="fxFlexForm" [fxFlexOffset]="fxFlexFormOffset" [role]="user.role"
                              (handleForm)="handleForm($event)"
                             *ngIf="shouldShowTreatmentCard()">
-    </poet-treatment-curation>
-    <poet-phenotype-curation [fxFlex]="fxFlexForm" [fxFlexOffset]="fxFlexFormOffset"
+    </app-treatment-curation>
+    <app-phenotype-curation [fxFlex]="fxFlexForm" [fxFlexOffset]="fxFlexFormOffset"
                              [role]="user.role" (handleForm)="handleForm($event)" *ngIf="shouldShowPhenotypeCard()">
-    </poet-phenotype-curation>
+    </app-phenotype-curation>
   </div>
 </div>

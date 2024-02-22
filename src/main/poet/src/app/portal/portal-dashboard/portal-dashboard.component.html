@@ -67,7 +67,7 @@
               <mat-list-item class="activity-item" (click)="navigateToDisease(review.diseaseId, review.type)">
                 <span class="material-icons" mat-list-icon>engineering</span>
                 <p matLine>{{review.diseaseName}} needs review.</p>
-                <p class="activity-time" matLine>{{review.count}} {{review.type.toLowerCase()}} {{review.count == 1 ? "annotation" : "annotations"}}</p>
+                <p class="activity-time" matLine>{{review.count}} {{review.type.toLowerCase()}} {{review.count === 1 ? "annotation" : "annotations"}}</p>
               </mat-list-item>
             </mat-list>
             <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>

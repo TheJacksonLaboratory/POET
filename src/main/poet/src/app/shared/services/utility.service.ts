@@ -3,7 +3,7 @@ import { Annotation, ChebiEntity, Message } from '../models/models';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogMessagesComponent } from '../../portal/portal-curate/dialog-messages/dialog-messages.component';
 import { UserService } from './user/user.service';
-import { MonarchSearchResult } from '../models/search-models';
+import { MondoSearchResult } from '../models/search-models';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +42,7 @@ export class UtilityService {
   }
 
   displayMaxoFn(option) {
-    return option && option.name ? `${option.name} ${option.ontologyId}` : '';
+    return option && option.name ? `${option.name} ${option.id}` : '';
   }
 
   displayHpoFn(option) {
@@ -59,8 +59,8 @@ export class UtilityService {
     }
   }
 
-  displayMonarchSearchFn(monarchSearchResult: MonarchSearchResult) {
-    return monarchSearchResult ? monarchSearchResult.label : '';
+  displayMonarchSearchFn(monarchSearchResult: MondoSearchResult) {
+    return monarchSearchResult ? monarchSearchResult.name : '';
   }
 
   displayChebiFn(chebiEntity: any) {

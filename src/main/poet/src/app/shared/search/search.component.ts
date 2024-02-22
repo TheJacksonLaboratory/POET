@@ -5,10 +5,10 @@ import { tap } from "rxjs/internal/operators/tap";
 import { switchMap } from "rxjs/internal/operators/switchMap";
 import { CurationService } from "../services/curation/curation.service";
 import { of } from "rxjs/internal/observable/of";
-import { MonarchSearchResult } from "../models/search-models";
+import { MondoSearchResult } from "../models/search-models";
 import { Router } from "@angular/router";
 import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
-import { MonarchService } from "../services/external/monarch.service";
+import { MondoService } from "../services/external/mondo.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { forkJoin } from "rxjs";
 import { UtilityService } from "../services/utility.service";
@@ -24,11 +24,11 @@ export class SearchComponent implements OnInit {
   @ViewChild(MatAutocompleteTrigger, {read: MatAutocompleteTrigger}) searchBar: MatAutocompleteTrigger;
   @ViewChild("search") searchInput: ElementRef<HTMLInputElement>;
   searchControl = new UntypedFormControl();
-  diseaseOptions: MonarchSearchResult[];
+  diseaseOptions: MondoSearchResult[];
   isLoading = false;
   errorMsg: string;
 
-  constructor(private curationService: CurationService, private monarchService: MonarchService,
+  constructor(private curationService: CurationService, private monarchService: MondoService,
               public utilityService: UtilityService, private router: Router, private _snackBar: MatSnackBar) {
   }
 
@@ -47,7 +47,7 @@ export class SearchComponent implements OnInit {
             if(value.startsWith("OMIM:")){
               prefix = "OMIM";
             }
-            return this.monarchService.searchMonarch(value, prefix)
+            return this.monarchService.searchMondo(value, prefix)
               .pipe(
                 finalize(() => {
                   this.isLoading = false
@@ -56,8 +56,8 @@ export class SearchComponent implements OnInit {
           } else {
             return of();
           }
-        })).subscribe((data: MonarchSearchResult[]) => {
-            if (!data) {
+        })).subscribe((data: MondoSearchResult[]) => {
+            if (!data || data.length == 0) {
               this.searchControl.setErrors({notFound: true});
             }
             this.diseaseOptions = data;
@@ -73,7 +73,7 @@ export class SearchComponent implements OnInit {
     this.diseaseOptions = [];
   }
 
-  onSelection(monarchSearchResult: MonarchSearchResult) {
+  onSelection(monarchSearchResult: MondoSearchResult) {
     // Get the disease information first
     const monarchDiseaseHttp = this.monarchService.getDisease(monarchSearchResult.id).pipe(catchError(error => of(error)));
     const poetDiseaseHttp = this.curationService.getDisease(monarchSearchResult.omim_id).pipe(catchError(error => of(error)));

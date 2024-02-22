@@ -22,14 +22,6 @@ export class CurationService {
   constructor(private httpClient: HttpClient) {
   }
 
-  /**
-   * Search for publications and diseases by a query.
-   * @param query the search string, publications or diseases
-   */
-  searchAll(query: string) {
-    const parameters: HttpParams = new HttpParams().set('query', query);
-    return this.httpClient.get(environment.POET_API_SEARCH_URL, {params: parameters});
-  }
 
   /**
    * Search for chebi term by a query

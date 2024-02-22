@@ -65,9 +65,9 @@ describe('UtilityService', () => {
   });
 
   it('should return correct display maxo', () => {
-    expect(service.displayMaxoFn(fakeOptions[0])).toEqual("Name1 OntologyId1");
-    expect(service.displayMaxoFn(fakeOptions[1])).toEqual("Name2 OntologyId2");
-    expect(service.displayMaxoFn(fakeOptions[2])).toEqual("Name3 OntologyId3");
+    expect(service.displayMaxoFn(fakeOptions[0])).toEqual("Name1 Id1");
+    expect(service.displayMaxoFn(fakeOptions[1])).toEqual("Name2 Id2");
+    expect(service.displayMaxoFn(fakeOptions[2])).toEqual("Name3 Id3");
     expect(service.displayMaxoFn(fakeOptions[3])).toEqual("");
   });
 
@@ -249,9 +249,9 @@ describe('UtilityService', () => {
 
   function getFakeOptions()
   {
-    return [{ name: "Name1", id: "Id1", ontologyId: "OntologyId1"},
-      { name: "Name2", id: "Id2", ontologyId: "OntologyId2"},
-      { name: "Name3", id: "Id3", ontologyId: "OntologyId3"},
+    return [{ name: "Name1", id: "Id1"},
+      { name: "Name2", id: "Id2"},
+      { name: "Name3", id: "Id3"},
       {}
     ];
   }
