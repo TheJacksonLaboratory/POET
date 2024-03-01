@@ -7,55 +7,40 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.resource.PathResourceResolver;
+import org.springframework.web.util.UrlPathHelper;
+import org.springframework.web.util.pattern.PathPatternParser;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
 import java.io.IOException;
 
 @Configuration
-public class PoetConfiguration {
+@EnableWebMvc
+public class PoetConfiguration implements WebMvcConfigurer {
 
-    @Autowired
-    private Environment env;
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET","POST", "PUT", "DELETE", "OPTIONS", "HEAD");
+    }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**/*");
-            }
-
-            @Override
-            public void addResourceHandlers(ResourceHandlerRegistry registry) {
-                registry.addResourceHandler(env.getProperty("api.client").split(","))
-                        .addResourceLocations("classpath:/static/")
-                        .resourceChain(true)
-                        .addResolver(new PathResourceResolver() {
-                            @Override
-                            protected Resource getResource(String resourcePath, Resource location) throws IOException {
-                                Resource requestedResource = location.createRelative(resourcePath);
-                                return requestedResource.exists() && requestedResource.isReadable() ?
-                                        requestedResource : new ClassPathResource("/static/index.html");
-                            }
-                        });
-                registry.setOrder(Integer.MAX_VALUE);
-            }
-
-            @Override
-            public void addViewControllers(ViewControllerRegistry registry) {
-                registry.addViewController("/{spring:(?!assets)\\w+}")
-                        .setViewName("forward:/");
-                registry.addViewController("/**/{spring:\\w+}")
-                        .setViewName("forward:/");
-                registry.addViewController("/{spring:(?!assets)\\w+}/**{spring:?!(\\.js|\\.css)$}")
-                        .setViewName("forward:/");
-            }
-        };
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/*")
+                .addResourceLocations("classpath:/static/")
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver() {
+                    @Override
+                    protected Resource getResource(String resourcePath, Resource location) throws IOException {
+                        Resource requestedResource = location.createRelative(resourcePath);
+                        return requestedResource.exists() && requestedResource.isReadable() ?
+                                requestedResource : new ClassPathResource("/static/index.html");
+                    }
+                });
+        registry.setOrder(Integer.MAX_VALUE);
     }
 
     @Bean

@@ -13,41 +13,7 @@ export const environment = {
   },
   httpInterceptor: {
     allowedList: [
-      POET_BASE_URL + '/statistics/activity/',
-      POET_BASE_URL + '/statistics/contributions/',
-      POET_BASE_URL + '/statistics/annotation/work',
-      {
-        uri: POET_BASE_URL + '/annotation/*',
-        httpMethod: HttpMethod.Get,
-      },
-      {
-        uri: POET_BASE_URL + '/user/*',
-        httpMethod: HttpMethod.Get,
-      },
-      {
-        uri: POET_BASE_URL + '/user/*',
-        httpMethod: HttpMethod.Post,
-      },
-      {
-        uri: POET_BASE_URL + '/annotation/*',
-        httpMethod: HttpMethod.Post,
-      },
-      {
-        uri: POET_BASE_URL + '/annotation/*',
-        httpMethod: HttpMethod.Put,
-      },
-      {
-        uri: POET_BASE_URL + '/annotation/*',
-        httpMethod: HttpMethod.Delete,
-      },
-      {
-        uri: POET_BASE_URL + '/entity/disease/',
-        httpMethod: HttpMethod.Put,
-      },
-      {
-        uri: POET_BASE_URL + '/entity/publication/',
-        httpMethod: HttpMethod.Post,
-      },
+      POET_BASE_URL + '/*'
     ]
   },
   POET_BASE_URL,

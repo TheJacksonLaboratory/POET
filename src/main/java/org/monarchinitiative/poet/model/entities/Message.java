@@ -3,7 +3,7 @@ package org.monarchinitiative.poet.model.entities;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.views.AnnotationViews;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 public class Message {

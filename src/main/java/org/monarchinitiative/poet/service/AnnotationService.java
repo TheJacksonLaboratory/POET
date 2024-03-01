@@ -1,5 +1,6 @@
 package org.monarchinitiative.poet.service;
 
+import jakarta.transaction.Transactional;
 import org.monarchinitiative.poet.exceptions.AnnotationSourceException;
 import org.monarchinitiative.poet.exceptions.AuthenticationException;
 import org.monarchinitiative.poet.exceptions.DuplicateAnnotationException;
@@ -12,7 +13,6 @@ import org.monarchinitiative.poet.model.requests.TreatmentRequest;
 import org.monarchinitiative.poet.repository.*;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
@@ -96,7 +96,7 @@ public class AnnotationService {
      * @param phenotypeRequest a phenotype request body
      * @param user the user making the request
      */
-    @Transactional()
+    @Transactional
     public void createPhenotypeAnnotation(PhenotypeRequest phenotypeRequest, User user, boolean initialize) throws DuplicateAnnotationException {
         final AnnotationSource annotationSource = entityService.getAnnotationSource(phenotypeRequest.getPublicationId(), phenotypeRequest.getDiseaseId());
         if(annotationSource != null){

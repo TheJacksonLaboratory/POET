@@ -1,6 +1,6 @@
 package org.monarchinitiative.poet.model.entities;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 @Entity
 public class Version {

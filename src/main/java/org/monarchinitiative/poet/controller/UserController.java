@@ -42,7 +42,7 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping(value = "", headers = "Accept=application/json")
+    @PostMapping(value = "/", headers = "Accept=application/json")
     public ResponseEntity<?> updateOrcid(Authentication authentication,
                                          @RequestParam(value = "orcid") String orcid){
         userService.setUserOrcId(authentication, orcid);
@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @JsonView(UserViews.Simple.class)
-    @GetMapping(value = "", headers = "Accept=application/json")
+    @GetMapping(value = "/", headers = "Accept=application/json")
     public User getUserDetails(Authentication authentication){
         return userService.getExistingUser(authentication);
     }

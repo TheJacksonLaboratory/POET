@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.model.enumeration.CurationAction;
 import org.monarchinitiative.poet.views.UserActivityViews;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Objects;

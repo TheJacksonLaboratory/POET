@@ -16,41 +16,7 @@ export const environment = {
   },
   httpInterceptor: {
     allowedList: [
-      POET_BASE_URL + '/statistics/activity/',
-      POET_BASE_URL + '/statistics/contributions/',
-      POET_BASE_URL + '/statistics/annotation/work',
-      {
-        uri: POET_BASE_URL + '/annotation/*',
-        httpMethod: HttpMethod.Get,
-      },
-      {
-        uri: POET_BASE_URL + '/user/*',
-        httpMethod: HttpMethod.Get,
-      },
-      {
-        uri: POET_BASE_URL + '/user/*',
-        httpMethod: HttpMethod.Post,
-      },
-      {
-        uri: POET_BASE_URL + '/annotation/*',
-        httpMethod: HttpMethod.Post,
-      },
-      {
-        uri: POET_BASE_URL + '/annotation/*',
-        httpMethod: HttpMethod.Put,
-      },
-      {
-        uri: POET_BASE_URL + '/annotation/*',
-        httpMethod: HttpMethod.Delete,
-      },
-      {
-        uri: POET_BASE_URL + '/entity/disease/',
-        httpMethod: HttpMethod.Put,
-      },
-      {
-        uri: POET_BASE_URL + '/entity/publication/',
-        httpMethod: HttpMethod.Post,
-      },
+      POET_BASE_URL + '/*'
     ]
   },
   POET_BASE_URL,
@@ -61,9 +27,9 @@ export const environment = {
   POET_API_PHENOTYPES_ANNOTATION: POET_BASE_URL + '/annotation/phenotypes/',
   POET_API_DISEASE_ENTITY_URL: POET_BASE_URL + '/entity/disease/',
   POET_API_PUBLICATION_ENTITY_URL: POET_BASE_URL + '/entity/publication/',
-  POET_API_STATISTICS_ACTIVITY_URL: POET_BASE_URL + '/statistics/activity/',
+  POET_API_STATISTICS_ACTIVITY_URL: POET_BASE_URL + '/statistics/activity',
   POET_API_STATISTICS_ACTIVITY_DISEASE_URL: POET_BASE_URL + '/statistics/activity/disease',
-  POET_API_STATISTICS_CONTRIBUTION_URL: POET_BASE_URL + '/statistics/contributions/',
+  POET_API_STATISTICS_CONTRIBUTION_URL: POET_BASE_URL + '/statistics/contributions',
   POET_API_STATISTICS_ANNOTATION_URL: POET_BASE_URL + '/statistics/annotation/',
   POET_API_EXPORT_URL: POET_BASE_URL + '/export/',
   POET_API_RELEASE_URL: POET_BASE_URL + '/export/release',

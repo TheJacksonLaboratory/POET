@@ -1,13 +1,14 @@
 spring:
-  profiles: stage
+
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: https://dev-poet.us.auth0.com/
+          audiences: poet-api-audience
   datasource:
-    url: jdbc:mariadb://localhost:3306/poet
-    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/poet
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,12 +16,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: mappings
+        include: "health,mappings"
 auth0:
-  audience: poet-api-audience
   nickname: https://poet.jax.org/nickname
   email: https://poet.jax.org/email
 api:
   version: /api/v1
-  client: /,/portal/**
 initializePoet: false
