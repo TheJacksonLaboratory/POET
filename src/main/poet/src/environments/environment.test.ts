@@ -1,6 +1,6 @@
 import { HttpMethod } from '@auth0/auth0-angular';
 
-const POET_BASE_URL = 'https://ctpoet01lt.jax.org/api/v1';
+const POET_BASE_URL = 'https://ctpoet02lt.jax.org:8443/api/v1';
 const PUBMED_BASE_URL = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
 const HPO_BASE_URL = 'https://hpo.jax.org/api/';
 const ONTOLOGY_SERVICE_BASE_URL = 'https://ontology.jax.org/api/';
@@ -24,9 +24,9 @@ export const environment = {
   POET_API_PHENOTYPES_ANNOTATION: POET_BASE_URL + '/annotation/phenotypes/',
   POET_API_DISEASE_ENTITY_URL: POET_BASE_URL + '/entity/disease/',
   POET_API_PUBLICATION_ENTITY_URL: POET_BASE_URL + '/entity/publication/',
-  POET_API_STATISTICS_ACTIVITY_URL: POET_BASE_URL + '/statistics/activity/',
+  POET_API_STATISTICS_ACTIVITY_URL: POET_BASE_URL + '/statistics/activity',
   POET_API_STATISTICS_ACTIVITY_DISEASE_URL: POET_BASE_URL + '/statistics/activity/disease',
-  POET_API_STATISTICS_CONTRIBUTION_URL: POET_BASE_URL + '/statistics/contributions/',
+  POET_API_STATISTICS_CONTRIBUTION_URL: POET_BASE_URL + '/statistics/contributions',
   POET_API_STATISTICS_ANNOTATION_URL: POET_BASE_URL + '/statistics/annotation/',
   POET_API_EXPORT_URL: POET_BASE_URL + '/export/',
   POET_API_RELEASE_URL: POET_BASE_URL + '/export/release',
