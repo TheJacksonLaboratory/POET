@@ -1,5 +1,6 @@
 package org.monarchinitiative.poet
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.ApplicationContext
 import org.springframework.test.context.ActiveProfiles
@@ -8,8 +9,9 @@ import spock.lang.Specification
 
 
 @SpringBootTest
-@ContextConfiguration
-class ApplicationContextTest extends Specification {
+@ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class)
+@ActiveProfiles(value = "test")
+class ApplicationContextSpec extends Specification {
 
     @Autowired
     ApplicationContext context

@@ -7,7 +7,7 @@ import org.monarchinitiative.poet.views.DiseaseViews;
 import org.monarchinitiative.poet.views.PublicationViews;
 import org.monarchinitiative.poet.views.UserActivityViews;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

@@ -51,7 +51,7 @@ class AnnotationSourceExceptionSpec extends Specification {
         "OMIM:2222222" | "Could not find a valid disease with id OMIM:2222222."
     }
 
-    void "test exception message for disease and exists #desc"() {
+    void "test exception message for disease and exists"() {
         given:
         def exception = AnnotationSourceException.diseaseNotFound(diseaseId)
 

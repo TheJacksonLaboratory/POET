@@ -17,7 +17,7 @@ import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository
 import org.monarchinitiative.poet.repository.PublicationRepository
 import org.monarchinitiative.poet.repository.UserActivityRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer
+import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.support.AnnotationConfigContextLoader
@@ -26,7 +26,7 @@ import spock.lang.Unroll
 
 @Unroll
 @ActiveProfiles(value = "test")
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class], initializers = ConfigFileApplicationContextInitializer.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class], initializers = ConfigDataApplicationContextInitializer.class)
 class AnnotationServiceSpec extends Specification {
 
     @Autowired

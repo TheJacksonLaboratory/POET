@@ -7,7 +7,7 @@ import org.monarchinitiative.poet.repository.DiseaseRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.util.ArrayList;
 import java.util.List;
 

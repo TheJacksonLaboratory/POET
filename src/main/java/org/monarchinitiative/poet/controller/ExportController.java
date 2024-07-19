@@ -7,12 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @CrossOrigin
 @RestController
-@RequestMapping(value = "${api.version}/export/")
+@RequestMapping(value = "${api.version}/export")
 public class ExportController {
     private final ExportService exportService;
 

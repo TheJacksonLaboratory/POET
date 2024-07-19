@@ -7,7 +7,7 @@ import org.monarchinitiative.poet.model.enumeration.CurationRole
 import org.monarchinitiative.poet.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer
+import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.test.context.ActiveProfiles
@@ -17,7 +17,7 @@ import spock.lang.Specification
 import java.time.Instant
 
 @AutoConfigureMockMvc
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class], initializers = ConfigFileApplicationContextInitializer.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class], initializers = ConfigDataApplicationContextInitializer.class)
 @ActiveProfiles(value = "test")
 class UserServiceSpec extends Specification {
 

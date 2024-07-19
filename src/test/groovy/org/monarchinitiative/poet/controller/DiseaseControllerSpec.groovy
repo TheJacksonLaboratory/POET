@@ -1,6 +1,7 @@
 package org.monarchinitiative.poet.controller
 
 import groovy.json.JsonBuilder
+import org.springframework.context.annotation.ComponentScan.Filter
 import org.monarchinitiative.poet.model.entities.Disease
 import org.monarchinitiative.poet.model.entities.Publication
 import org.monarchinitiative.poet.model.requests.DiseaseRequest
@@ -11,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.context.annotation.FilterType;
+import org.monarchinitiative.poet.security.SecurityConfig
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultMatcher
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -21,7 +25,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 @AutoConfigureMockMvc
-@WebMvcTest(DiseaseController.class)
+@WebMvcTest(controllers =  [DiseaseController.class], includeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class))
 @ContextConfiguration
 @ActiveProfiles(value = "test")
 class DiseaseControllerSpec extends Specification {
@@ -36,13 +40,14 @@ class DiseaseControllerSpec extends Specification {
     private StatisticsService statisticsService = Stub()
 
     @Unroll
+    @WithMockUser(value = "spring")
     def "when we test get disease #desc"() {
         given:
         entityService.getDisease(_) >> inputDisease
 
 
         expect: "an annotation state"
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/entity/disease/${inputDiseaseId}/")).andExpect((ResultMatcher) expectedResponse)
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/entity/disease/${inputDiseaseId}")).andExpect((ResultMatcher) expectedResponse)
 
         where:
         inputDisease                                  | inputDiseaseId | expectedResponse                                    | desc

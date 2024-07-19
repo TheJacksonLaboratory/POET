@@ -2,12 +2,15 @@ package org.monarchinitiative.poet.controller.annotation
 
 import groovy.json.JsonBuilder
 import org.monarchinitiative.poet.model.requests.TreatmentRequest
+import org.monarchinitiative.poet.security.SecurityConfig
 import org.monarchinitiative.poet.service.AnnotationService
 import org.monarchinitiative.poet.service.UserService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.FilterType
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -20,7 +23,7 @@ import spock.lang.Unroll
 
 
 @AutoConfigureMockMvc
-@WebMvcTest(TreatmentController.class)
+@WebMvcTest(controllers =  [TreatmentController.class], includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class))
 @ContextConfiguration
 @ActiveProfiles(value = "test")
 class TreatmentControllerSpec extends Specification {

@@ -6,7 +6,7 @@ import org.monarchinitiative.poet.views.AnnotationViews;
 import org.monarchinitiative.poet.views.UserActivityViews;
 import org.monarchinitiative.poet.views.UserViews;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity

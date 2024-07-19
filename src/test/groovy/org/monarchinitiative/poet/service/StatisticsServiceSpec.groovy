@@ -11,7 +11,7 @@ import org.monarchinitiative.poet.repository.PhenotypeAnnotationRepository
 import org.monarchinitiative.poet.repository.TreatmentAnnotationRepository
 import org.monarchinitiative.poet.repository.UserActivityRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer
+import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -27,7 +27,7 @@ import spock.lang.Unroll
 
 @Unroll
 @ActiveProfiles(value = "test")
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class], initializers = ConfigFileApplicationContextInitializer.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class], initializers = ConfigDataApplicationContextInitializer.class)
 class StatisticsServiceSpec extends Specification {
 
     @Autowired
@@ -66,7 +66,7 @@ class StatisticsServiceSpec extends Specification {
 
     }
 
-    void "test that user contribution #desc"() {
+    void "test that user contribution"() {
         given:
         userActivityStub.countAllByAnnotation_AnnotationTypeAndOwnerAuthId(_ as String, _ as String) >> repositoryResponse
         def result = statisticsService.summarizeUserContributions(inputAuthentication)

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.monarchinitiative.poet.views.AnnotationViews;
 import org.monarchinitiative.poet.views.PublicationViews;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

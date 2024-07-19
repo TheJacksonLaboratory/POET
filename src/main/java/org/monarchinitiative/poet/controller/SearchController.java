@@ -34,7 +34,7 @@ public class SearchController {
      * @return a list of search response objects containing ids and names.
      * @since 0.5.0
      */
-    @GetMapping(value = "", headers = "Accept=application/json")
+    @GetMapping(value = "/", headers = "Accept=application/json")
     public List<SearchResponse> searchPublicationsAndDiseases(@RequestParam String query) {
         return searchService.searchDisease(query.trim());
     }

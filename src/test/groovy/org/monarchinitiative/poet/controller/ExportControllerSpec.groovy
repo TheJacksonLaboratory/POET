@@ -1,10 +1,13 @@
 package org.monarchinitiative.poet.controller
 
+import org.monarchinitiative.poet.security.SecurityConfig
 import org.monarchinitiative.poet.service.ExportService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.FilterType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
@@ -15,7 +18,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 @AutoConfigureMockMvc
-@WebMvcTest(ExportController.class)
+@WebMvcTest(controllers =  [ExportController.class], includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class))
 @ContextConfiguration
 @ActiveProfiles(value = "test")
 class ExportControllerSpec extends Specification {
@@ -47,7 +50,7 @@ class ExportControllerSpec extends Specification {
         given:
         exportService.releaseAnnotations() >> { throw serviceWork }
         expect:
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/export/release/")
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/export/release")
                 .param("key", inputKey)).andExpect((ResultMatcher) expectedResponse)
 
         where:
@@ -60,7 +63,7 @@ class ExportControllerSpec extends Specification {
     @Unroll
     def "when we test release ontology we pass"() {
         expect:
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/export/release/")
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/export/release")
                 .param("key", inputKey)).andExpect((ResultMatcher) expectedResponse)
 
         where:

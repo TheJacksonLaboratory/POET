@@ -12,12 +12,15 @@ import org.monarchinitiative.poet.model.enumeration.CurationRole
 import org.monarchinitiative.poet.model.responses.AnnotationCount
 import org.monarchinitiative.poet.model.responses.Contribution
 import org.monarchinitiative.poet.model.responses.ReviewCount
+import org.monarchinitiative.poet.security.SecurityConfig
 import org.monarchinitiative.poet.service.StatisticsService
 import org.monarchinitiative.poet.service.UserService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.FilterType
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.test.context.ActiveProfiles
@@ -32,7 +35,7 @@ import org.monarchinitiative.poet.model.enumeration.Category
 import org.springframework.http.MediaType
 
 @AutoConfigureMockMvc
-@WebMvcTest(StatisticsController.class)
+@WebMvcTest(controllers =  [StatisticsController.class], includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class))
 @ContextConfiguration
 @ActiveProfiles(value = "test")
 class StatisticsControllerSpec extends Specification {

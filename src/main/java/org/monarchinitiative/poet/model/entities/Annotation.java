@@ -7,7 +7,7 @@ import org.monarchinitiative.poet.model.enumeration.AnnotationStatus;
 import org.monarchinitiative.poet.views.AnnotationViews;
 import org.monarchinitiative.poet.views.UserActivityViews;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
