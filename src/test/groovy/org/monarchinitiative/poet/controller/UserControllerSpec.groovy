@@ -1,11 +1,14 @@
 package org.monarchinitiative.poet.controller
 
 import org.monarchinitiative.poet.model.entities.User
+import org.monarchinitiative.poet.security.SecurityConfig
 import org.monarchinitiative.poet.service.UserService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.FilterType
 import org.springframework.security.core.Authentication
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
@@ -18,7 +21,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 @AutoConfigureMockMvc
-@WebMvcTest(UserController.class)
+@WebMvcTest(controllers =  [UserController.class], includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class))
 @ContextConfiguration
 @ActiveProfiles(value = "test")
 class UserControllerSpec extends Specification {
@@ -51,7 +54,7 @@ class UserControllerSpec extends Specification {
     @Unroll
     def "when we test update orcid"() {
         expect:
-        mvc.perform(MockMvcRequestBuilders.post("/api/v1/user").param("orcid", inputOrcid)).andExpect((ResultMatcher) expectedResponse)
+        mvc.perform(MockMvcRequestBuilders.post("/api/v1/user/").param("orcid", inputOrcid)).andExpect((ResultMatcher) expectedResponse)
 
         where:
         inputOrcid | expectedResponse

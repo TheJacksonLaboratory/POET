@@ -2,11 +2,14 @@ package org.monarchinitiative.poet.controller
 
 import org.monarchinitiative.model.responses.chebi.LiteEntity
 import org.monarchinitiative.poet.model.responses.SearchResponse
+import org.monarchinitiative.poet.security.SecurityConfig
 import org.monarchinitiative.poet.service.SearchService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.FilterType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
@@ -17,7 +20,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 @AutoConfigureMockMvc
-@WebMvcTest(SearchController.class)
+@WebMvcTest(controllers =  [SearchController.class], includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class))
 @ContextConfiguration
 @ActiveProfiles(value = "test")
 class SearchControllerSpec extends Specification {
@@ -34,7 +37,7 @@ class SearchControllerSpec extends Specification {
 
 
         expect: "an annotation state"
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/search").param("query", searchTerm)).andExpect((ResultMatcher) expectedResponse);
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/search/").param("query", searchTerm)).andExpect((ResultMatcher) expectedResponse);
 
         where:
         serviceResponse                  | searchTerm      | expectedResponse                      | desc

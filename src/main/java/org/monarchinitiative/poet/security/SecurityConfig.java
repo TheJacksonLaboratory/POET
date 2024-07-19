@@ -32,7 +32,7 @@ public class SecurityConfig {
                 );
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                 authorizationManagerRequestMatcherRegistry.
-                        requestMatchers(String.format("%s/**",version)).authenticated().anyRequest().permitAll());
+                        requestMatchers(String.format("%s/user/**",version)).authenticated().anyRequest().permitAll());
         http.oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
         return http.build();
     }

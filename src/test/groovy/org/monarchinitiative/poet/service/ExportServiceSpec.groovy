@@ -2,7 +2,7 @@ package org.monarchinitiative.poet.service
 
 import org.monarchinitiative.poet.repository.VersionRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer
+import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.support.AnnotationConfigContextLoader
@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 
 @Unroll
 @ActiveProfiles(value = "test")
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class], initializers = ConfigFileApplicationContextInitializer.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class], initializers = ConfigDataApplicationContextInitializer.class)
 class ExportServiceSpec extends Specification {
 
     @Autowired

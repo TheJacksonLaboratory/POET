@@ -5,10 +5,9 @@ import org.monarchinitiative.model.responses.chebi.GetLiteEntityResponse
 import org.monarchinitiative.model.responses.chebi.LiteEntity
 import org.monarchinitiative.model.responses.chebi.LiteEntityList
 import org.monarchinitiative.poet.model.entities.Disease
-import org.monarchinitiative.poet.repository.AnnotationSourceRepository
 import org.monarchinitiative.poet.repository.DiseaseRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer
+import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.support.AnnotationConfigContextLoader
@@ -16,12 +15,13 @@ import org.springframework.ws.client.core.WebServiceTemplate
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import javax.xml.bind.JAXBElement
-import javax.xml.namespace.QName
+import jakarta.xml.bind.JAXBElement
+
+import javax.xml.namespace.QName;
 
 @Unroll
 @ActiveProfiles(value = "test")
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class],  initializers = ConfigFileApplicationContextInitializer.class )
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = [ServiceTestConfig.class],  initializers = ConfigDataApplicationContextInitializer.class )
 class SearchServiceSpec extends Specification {
     @Autowired
     DiseaseRepository diseaseStub;
@@ -67,7 +67,7 @@ class SearchServiceSpec extends Specification {
     }
 
 
-    void "test search chebi #desc"(){
+    void "test search chebi"(){
         given:
             webServiceTemplateStub.marshalSendAndReceive(_ as String, _ as JAXBElement) >> fakeChebiResponse
             def result = searchService.searchChebi(inputQuery)

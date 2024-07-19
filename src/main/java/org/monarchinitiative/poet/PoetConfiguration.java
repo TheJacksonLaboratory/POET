@@ -35,9 +35,13 @@ public class PoetConfiguration implements WebMvcConfigurer {
                 .addResolver(new PathResourceResolver() {
                     @Override
                     protected Resource getResource(String resourcePath, Resource location) throws IOException {
-                        Resource requestedResource = location.createRelative(resourcePath);
-                        return requestedResource.exists() && requestedResource.isReadable() ?
-                                requestedResource : new ClassPathResource("/static/index.html");
+                        if (resourcePath.startsWith("/api/")) {
+                            return null; // Return null to indicate not found
+                        } else {
+                            Resource requestedResource = location.createRelative(resourcePath);
+                            return requestedResource.exists() && requestedResource.isReadable() ?
+                                    requestedResource : new ClassPathResource("/static/index.html");
+                        }
                     }
                 });
         registry.setOrder(Integer.MAX_VALUE);

@@ -1,6 +1,7 @@
 package org.monarchinitiative.poet.controller.annotation;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.validation.Valid;
 import org.monarchinitiative.poet.model.entities.PhenotypeAnnotation;
 import org.monarchinitiative.poet.model.entities.User;
 import org.monarchinitiative.poet.model.requests.PhenotypeRequest;
@@ -12,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin
